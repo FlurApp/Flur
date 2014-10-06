@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "FLInitialMapViewController.h"
+#import <Parse/Parse.h>
 
 @interface AppDelegate ()
 
@@ -22,6 +23,9 @@
     self.window.rootViewController = control;
     [self.window makeKeyAndVisible];
     // Override point for customization after application launch.
+    [Parse setApplicationId:@"***REMOVED***"
+                  clientKey:@"***REMOVED***"];
+    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     return YES;
 }
 
