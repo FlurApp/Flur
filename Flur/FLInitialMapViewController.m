@@ -8,6 +8,7 @@
 
 @import MapKit;
 #import "FLInitialMapViewController.h"
+#import <Parse/Parse.h>
 
 @interface FLInitialMapViewController ()
 
@@ -80,6 +81,11 @@
 
 - (IBAction)addingFlur:(id)sender {
     NSLog(@"adding a flur");
+    PFObject *flurPin = [PFObject objectWithClassName:@"FlurPin"];
+    flurPin[@"user"] = @"Dave";
+    flurPin[@"location"] = @1;
+    flurPin[@"visible"] = @YES;
+    [flurPin saveInBackground];
 }
 
 - (void)didReceiveMemoryWarning {
