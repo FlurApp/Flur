@@ -20,6 +20,11 @@
 
 @property (nonatomic, strong, readwrite) UIButton *addButton;
 
+@property (nonatomic, readwrite) BOOL haveLoadedFlurs;
+@property (nonatomic, strong, readwrite) NSString *zipcode;
+
+
+
 @end
 
 @implementation FLInitialMapViewController
@@ -27,6 +32,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.haveLoadedFlurs = false;
     
     [[self view] setBackgroundColor:[UIColor whiteColor]];
     
@@ -56,6 +63,7 @@
     self.mapAnnotations = [[NSMutableArray alloc] init];
 }
 
+
 - (void)loadMapView {
     _mapView = [[MKMapView alloc] init];
     [_mapView setDelegate:self];
@@ -79,6 +87,41 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_mapView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:1.0]];
 }
 
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    NSLog(@"didFailWithError: %@", error);
+    UIAlertView *errorAlert = [[UIAlertView alloc]
+                               initWithTitle:@"Error" message:@"Failed to Get Your Location" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [errorAlert show];
+}
+
+- (void)findNearbyFlurs {
+    PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
+    [query whereKey:@"zipcode" equalTo:self.zipcode];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            for (PFObject *object in objects) {
+               
+            }
+        }
+    }];
+
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
+{
+    if (!self.haveLoadedFlurs) {
+        self.haveLoadedFlurs = true;
+        [self findNearbyFlurs];
+    }
+    NSLog(@"didUpdateToLocation: %@", newLocation);
+    CLLocation *currentLocation = newLocation;
+    
+    if (currentLocation != nil) {
+        //longitudeLabel.text = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.longitude];
+        //latitudeLabel.text = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.latitude];
+    }
+}
 - (IBAction)addingFlur:(id)sender {
     NSLog(@"adding a flur");
     PFObject *flurPin = [PFObject objectWithClassName:@"FlurPin"];

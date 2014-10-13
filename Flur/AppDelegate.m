@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "FLInitialMapViewController.h"
+#import "PhotoViewController.h"
 #import <Parse/Parse.h>
 
 @interface AppDelegate ()
@@ -19,13 +20,20 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    FLInitialMapViewController *control = [[FLInitialMapViewController alloc] init];
-    self.window.rootViewController = control;
-    [self.window makeKeyAndVisible];
+   
     // Override point for customization after application launch.
     [Parse setApplicationId:@"***REMOVED***"
                   clientKey:@"***REMOVED***"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    
+    FLInitialMapViewController *control = [[FLInitialMapViewController alloc] init];
+    self.window.rootViewController = control;
+    
+   // PhotoViewController *control = [[PhotoViewController alloc] init];
+    //self.window.rootViewController = control;
+    
+    
+    [self.window makeKeyAndVisible];
     return YES;
 }
 
