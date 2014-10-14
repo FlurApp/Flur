@@ -20,7 +20,6 @@
 		D96C15D819E1F6CA009E74DA /* FLFlurAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = D96C15D719E1F6CA009E74DA /* FLFlurAnnotation.m */; };
 		DBAFEB5B19EC3A1100312140 /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBAFEB5A19EC3A1100312140 /* PhotoViewController.m */; };
 		DBAFEB9B19EC4AC200312140 /* SinglePhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBAFEB9A19EC4AC200312140 /* SinglePhotoViewController.m */; };
-		DBAFEB9D19EC4C9F00312140 /* dog2.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = DBAFEB9C19EC4C9F00312140 /* dog2.jpeg */; };
 		DD2B870A11496D0D818274F5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81BBFEEC39205A7BD563743A /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -62,7 +61,6 @@
 		DBAFEB5A19EC3A1100312140 /* PhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
 		DBAFEB9919EC4AC200312140 /* SinglePhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SinglePhotoViewController.h; sourceTree = "<group>"; };
 		DBAFEB9A19EC4AC200312140 /* SinglePhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SinglePhotoViewController.m; sourceTree = "<group>"; };
-		DBAFEB9C19EC4C9F00312140 /* dog2.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dog2.jpeg; path = ../../../../Downloads/dog2.jpeg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,7 +150,6 @@
 		D903448419DD03CB00CF9532 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				DBAFEB9C19EC4C9F00312140 /* dog2.jpeg */,
 				D903448519DD03CB00CF9532 /* Info.plist */,
 				D903448619DD03CB00CF9532 /* main.m */,
 			);
@@ -259,7 +256,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D903449019DD03CB00CF9532 /* Main.storyboard in Resources */,
-				DBAFEB9D19EC4C9F00312140 /* dog2.jpeg in Resources */,
 				D903449219DD03CB00CF9532 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

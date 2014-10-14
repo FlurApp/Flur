@@ -8,9 +8,12 @@
 
 @import MapKit;
 #import "FLInitialMapViewController.h"
+#import "FLFlurAnnotation.h"
 #import <Parse/Parse.h>
 
-@interface FLInitialMapViewController ()
+@interface FLInitialMapViewController () {
+    CLLocation *currentLocation;
+}
 
 @property (nonatomic, strong, readwrite) MKMapView *mapView;
 @property (nonatomic, strong, readwrite) CLLocationManager *locationManager;
@@ -21,11 +24,12 @@
 @property (nonatomic, strong, readwrite) UIButton *addButton;
 
 @property (nonatomic, readwrite) BOOL haveLoadedFlurs;
-@property (nonatomic, strong, readwrite) NSString *zipcode;
+
 
 
 
 @end
+
 
 @implementation FLInitialMapViewController
 
@@ -95,40 +99,63 @@
     [errorAlert show];
 }
 
+// Find all flurs nearby based on the users position
 - (void)findNearbyFlurs {
+   
+    CGFloat kilometers = 2; // Must edit
+    
     PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
-    [query whereKey:@"zipcode" equalTo:self.zipcode];
+    [query setLimit:10];
+    [query whereKey:@"location"
+       nearGeoPoint:[PFGeoPoint geoPointWithLatitude:_locationManager.location.coordinate.latitude
+                                           longitude:_locationManager.location.coordinate.longitude]
+                                    withinKilometers:kilometers];
+    
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        NSLog(@"Num entries %lu", [objects count]);
         if (!error) {
             for (PFObject *object in objects) {
-               
+                PFGeoPoint * curLocation = [PFGeoPoint geoPointWithLocation:_locationManager.location];
+                double dist = [curLocation distanceInKilometersTo: object[@"location"]];
+                NSLog(@"Dist from pin: %f", dist);
+                FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:object];
+                [self.mapView addAnnotation:annotation];
             }
         }
     }];
-
 }
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
-{
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    
     if (!self.haveLoadedFlurs) {
         self.haveLoadedFlurs = true;
         [self findNearbyFlurs];
+        //[self findNearbyFlurs];
     }
+    
+    
     NSLog(@"didUpdateToLocation: %@", newLocation);
-    CLLocation *currentLocation = newLocation;
     
     if (currentLocation != nil) {
         //longitudeLabel.text = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.longitude];
         //latitudeLabel.text = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.latitude];
     }
 }
+
 - (IBAction)addingFlur:(id)sender {
-    NSLog(@"adding a flur");
+    
+    CLLocation *location = _locationManager.location;
+    CLLocationCoordinate2D coordinate = [location coordinate];
+    PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
+                                                  longitude:coordinate.longitude];
+    
     PFObject *flurPin = [PFObject objectWithClassName:@"FlurPin"];
-    flurPin[@"user"] = @"Dave";
-    flurPin[@"location"] = @1;
-    flurPin[@"visible"] = @YES;
-    [flurPin saveInBackground];
+    [flurPin setObject:geoPoint forKey:@"location"];
+    [flurPin setObject:@"codemang" forKey:@"username"];
+
+    [flurPin saveEventually:^(BOOL succeeded, NSError *error) {
+        if (succeeded) { }
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
