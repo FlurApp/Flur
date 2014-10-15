@@ -25,7 +25,7 @@
 
 @property (nonatomic, readwrite) BOOL haveLoadedFlurs;
 
-
+@property (nonatomic, strong, readwrite) NSMutableArray *viewablePins;
 
 
 @end
@@ -65,6 +65,7 @@
     
     
     self.mapAnnotations = [[NSMutableArray alloc] init];
+    self.viewablePins = [ [NSMutableArray alloc] init];
 }
 
 
@@ -99,6 +100,14 @@
     [errorAlert show];
 }
 
+- (bool)isCloseEnoughToView: (PFObject *) pin {
+    CGFloat maxViewableDistKilometers = 0.25;
+    PFGeoPoint * curLocation = [PFGeoPoint geoPointWithLocation:_locationManager.location];
+    double dist = [curLocation distanceInKilometersTo: pin[@"location"]];
+    return (dist <= maxViewableDistKilometers);
+
+}
+
 // Find all flurs nearby based on the users position
 - (void)findNearbyFlurs {
    
@@ -120,6 +129,15 @@
                 NSLog(@"Dist from pin: %f", dist);
                 FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:object];
                 [self.mapView addAnnotation:annotation];
+                [self.viewablePins addObject:object];
+            }
+        }
+        
+        // update pins I can open
+        for (PFObject *pin in self.viewablePins) {
+            if([self isCloseEnoughToView:pin]){
+                NSLog(@"Bingo");
+
             }
         }
     }];
