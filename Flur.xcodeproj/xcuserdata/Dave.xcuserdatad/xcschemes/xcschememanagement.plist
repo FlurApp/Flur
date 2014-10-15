@@ -4,35 +4,20 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Pods-Bolts.xcscheme</key>
+		<key>Flur.xcscheme</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Pods-Parse.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-		</dict>
-		<key>Pods.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>0C0D878BD9BF964A92C31779</key>
+		<key>D903448019DD03CB00CF9532</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BD65257771FF3E220DB6CF14</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>CEAE0085881F2E4724540181</key>
+		<key>D903449619DD03CB00CF9532</key>
 		<dict>
 			<key>primary</key>
 			<true/>

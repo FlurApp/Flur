@@ -31,8 +31,6 @@
 
 
 
-
-
 @end
 
 
@@ -73,6 +71,7 @@
     
     
     self.mapAnnotations = [[NSMutableArray alloc] init];
+    self.viewablePins = [ [NSMutableArray alloc] init];
 }
 
 
@@ -138,14 +137,16 @@
                 [self.viewablePins addObject:object];
                 FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:object];
                 [self.mapView addAnnotation:annotation];
-            }
-            
-            for (PFObject *object in self.viewablePins) {
-                if ([self isCloseEnoughToPin:object[@"location"]]) {
-                    NSLog(@"We are close enought!");
-                }
+                [self.viewablePins addObject:object];
             }
         }
+        
+        for (PFObject *object in self.viewablePins) {
+            if ([self isCloseEnoughToPin:object[@"location"]]) {
+                NSLog(@"We are close enought!");
+            }
+        }
+        
     }];
 }
 
