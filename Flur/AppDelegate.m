@@ -26,11 +26,11 @@
                   clientKey:@"***REMOVED***"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    FLInitialMapViewController *control = [[FLInitialMapViewController alloc] init];
-    self.window.rootViewController = control;
-    
-   // PhotoViewController *control = [[PhotoViewController alloc] init];
+   // FLInitialMapViewController *control = [[FLInitialMapViewController alloc] init];
     //self.window.rootViewController = control;
+    
+    PhotoViewController *control = [[PhotoViewController alloc] init];
+    self.window.rootViewController = control;
     
     
     [self.window makeKeyAndVisible];

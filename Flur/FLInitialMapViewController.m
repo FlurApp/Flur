@@ -25,6 +25,11 @@
 
 @property (nonatomic, readwrite) BOOL haveLoadedFlurs;
 
+@property (nonatomic, strong, readwrite) NSMutableArray *viewablePins;
+@property (nonatomic, strong, readwrite) PFGeoPoint *PFCurrentLocation;
+
+
+
 
 
 
@@ -38,6 +43,9 @@
     [super viewDidLoad];
     
     self.haveLoadedFlurs = false;
+    _viewablePins = [[NSMutableArray alloc] init];
+    _PFCurrentLocation = [[PFGeoPoint alloc] init];
+
     
     [[self view] setBackgroundColor:[UIColor whiteColor]];
     
@@ -99,9 +107,21 @@
     [errorAlert show];
 }
 
+- (BOOL) isCloseEnoughToPin:(PFGeoPoint*) point {
+    double dist = [self.PFCurrentLocation distanceInKilometersTo: point];
+    NSLog(@"Dist: %f", dist);
+    if (dist < .2)
+        return TRUE;
+    return FALSE;
+}
+
+- (PFGeoPoint*) PFCurrentLocation {
+    return [PFGeoPoint geoPointWithLocation:_locationManager.location];
+}
+
 // Find all flurs nearby based on the users position
 - (void)findNearbyFlurs {
-   
+    NSLog(@"Called find Nearby flurs");
     CGFloat kilometers = 2; // Must edit
     
     PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
@@ -112,14 +132,18 @@
                                     withinKilometers:kilometers];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        NSLog(@"Num entries %lu", [objects count]);
         if (!error) {
+            NSLog(@"Top of loop");
             for (PFObject *object in objects) {
-                PFGeoPoint * curLocation = [PFGeoPoint geoPointWithLocation:_locationManager.location];
-                double dist = [curLocation distanceInKilometersTo: object[@"location"]];
-                NSLog(@"Dist from pin: %f", dist);
+                [self.viewablePins addObject:object];
                 FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:object];
                 [self.mapView addAnnotation:annotation];
+            }
+            
+            for (PFObject *object in self.viewablePins) {
+                if ([self isCloseEnoughToPin:object[@"location"]]) {
+                    NSLog(@"We are close enought!");
+                }
             }
         }
     }];
@@ -127,15 +151,9 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
-    if (!self.haveLoadedFlurs) {
-        self.haveLoadedFlurs = true;
+
         [self findNearbyFlurs];
-        //[self findNearbyFlurs];
-    }
-    
-    
-    NSLog(@"didUpdateToLocation: %@", newLocation);
-    
+    NSLog(@"Updated Position");
     if (currentLocation != nil) {
         //longitudeLabel.text = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.longitude];
         //latitudeLabel.text = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.latitude];
