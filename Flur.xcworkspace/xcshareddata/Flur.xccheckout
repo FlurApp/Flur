@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>EA1EA31F-37CA-4603-ACDA-4ADB5A702CF7</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Flur</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>7DA13CEDBB5D36C488336629CAC4CEDC659AA3BE</key>
+		<string>github.com:lhashemi/Flur.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Flur.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>7DA13CEDBB5D36C488336629CAC4CEDC659AA3BE</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:lhashemi/Flur.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>7DA13CEDBB5D36C488336629CAC4CEDC659AA3BE</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7DA13CEDBB5D36C488336629CAC4CEDC659AA3BE</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Flur</string>
+		</dict>
+	</array>
+</dict>
+</plist>
