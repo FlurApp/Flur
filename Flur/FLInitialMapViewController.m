@@ -30,7 +30,6 @@
 
 
 
-
 @end
 
 
@@ -88,12 +87,16 @@
     back.backgroundColor = [UIColor whiteColor];
     back.frame = CGRectMake( 100, 200, 100, 100);
     [self.view addSubview:back];
-
-    
-    
     
 }
 
+- (bool)isCloseEnoughToView: (PFObject *) pin {
+        CGFloat maxViewableDistKilometers = 0.25;
+        PFGeoPoint * curLocation = [PFGeoPoint geoPointWithLocation:_locationManager.location];
+        double dist = [curLocation distanceInKilometersTo: pin[@"location"]];
+    
+        return (dist <= maxViewableDistKilometers);
+}
 
 - (void)loadMapView {
     _mapView = [[MKMapView alloc] init];
@@ -158,6 +161,11 @@
                 FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:object];
                 [self.mapView addAnnotation:annotation];
                 [self.viewablePins addObject:object];
+            }
+        }
+        for (PFObject *pin in self.viewablePins) {
+            if([self isCloseEnoughToView:pin]) {
+                NSLog(@"Bingo");
             }
         }
         
