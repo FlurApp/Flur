@@ -11,6 +11,8 @@
 #import "FLFlurAnnotation.h"
 #import <Parse/Parse.h>
 
+#define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
+
 @interface FLInitialMapViewController () {
     CLLocation *currentLocation;
 }
@@ -85,9 +87,47 @@
     [self.view addSubview:visualEffectView];
     
     UIView *back = [[UIView alloc] initWithFrame:self.view.frame];
-    back.backgroundColor = [UIColor whiteColor];
-    back.frame = CGRectMake( 100, 200, 100, 100);
+    [back setTranslatesAutoresizingMaskIntoConstraints:NO];
+    back.backgroundColor = RGB(200,200,200);
+    back.layer.cornerRadius = 7;
+    back.layer.masksToBounds = YES;
+    
     [self.view addSubview:back];
+
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:back
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeWidth
+                                                         multiplier:0.5
+                                                           constant:0]];
+    
+    // Height constraint, half of parent view height
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:back
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeHeight
+                                                         multiplier:0.5
+                                                           constant:0]];
+    
+    // Center horizontally
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:back
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    
+    // Center vertically
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:back
+                                                          attribute:NSLayoutAttributeCenterY
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterY
+                                                         multiplier:1.0
+                                                           constant:0.0]];
 
     
     
