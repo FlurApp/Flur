@@ -72,6 +72,26 @@
     
     self.mapAnnotations = [[NSMutableArray alloc] init];
     self.viewablePins = [ [NSMutableArray alloc] init];
+    
+    //UIVisualEffectView* t = [[UIVisualEffectView alloc] init];
+    
+    UIVisualEffect *blurEffect;
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    
+    UIVisualEffectView *visualEffectView;
+    visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    
+    visualEffectView.frame = self.view.bounds;
+    [self.view addSubview:visualEffectView];
+    
+    UIView *back = [[UIView alloc] initWithFrame:self.view.frame];
+    back.backgroundColor = [UIColor whiteColor];
+    back.frame = CGRectMake( 100, 200, 100, 100);
+    [self.view addSubview:back];
+
+    
+    
+    
 }
 
 
