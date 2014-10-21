@@ -173,17 +173,24 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
-    [self.mapManager updateLocation:newLocation];
-    //self.viewablePins = [self.mapManager getViewablePins];
-    [self.mapManager getViewablePins:^(NSMutableArray* allPins) {
-        for (FLPin* pin in allPins) {
-            NSLog(@"pin %@", pin);
-            FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:pin];
-            [self.mapView addAnnotation:annotation];
-        }
-    }];
-   
-
+    if([self.mapManager shouldRefreshMap]) {
+        
+        // update the location of last refresh (which is now current location)
+        self.mapManager.refreshLocation.latitude = newLocation.coordinate.latitude;
+        self.mapManager.refreshLocation.longitude = newLocation.coordinate.longitude;
+        
+        // update location
+        [self.mapManager updateLocation:newLocation];
+        
+        //self.viewablePins = [self.mapManager getViewablePins];
+        [self.mapManager getViewablePins:^(NSMutableArray* allPins) {
+            for (FLPin* pin in allPins) {
+                NSLog(@"pin %@", pin);
+                FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:pin];
+                [self.mapView addAnnotation:annotation];
+            }
+        }];
+    }
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {

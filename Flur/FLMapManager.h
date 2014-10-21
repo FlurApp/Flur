@@ -20,9 +20,10 @@
 @property (nonatomic, strong) NSMutableArray *viewablePins;
 
 //- (NSMutableArray*) getViewablePins;
-- (NSMutableArray *) getViewablePins:(void (^) (NSMutableArray* allPins)) completion;
-- (BOOL) isCloseEnough;
-- (BOOL) shouldRefresh;
+- (void) getViewablePins:(void (^) (NSMutableArray* allPins)) completion;
+- (NSMutableArray *) isCloseEnoughToOpen;
+- (BOOL) shouldRefreshMap;
+//- (BOOL) shouldCheckOpenablePins;
 - (double) currentLat;
 - (double) currentLng;
 - (void) addFlur;

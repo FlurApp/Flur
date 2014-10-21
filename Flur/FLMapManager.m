@@ -29,7 +29,7 @@
     self.currentLocation.longitude = newLocation.coordinate.longitude;
 }
 
-- (NSMutableArray *) getViewablePins:(void (^) (NSMutableArray* allPins)) completion {
+- (void) getViewablePins:(void (^) (NSMutableArray* allPins)) completion {
     
     PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
     [query setLimit:10];
@@ -51,7 +51,7 @@
         else
             NSLog(@"fuck");
     }];
-    return self.viewablePins;
+    return;
 
 }
 
@@ -63,20 +63,23 @@
     return self.currentLocation.longitude;
 }
 
-- (BOOL) isCloseEnough {
-    for (PFGeoPoint* pin in self.viewablePins) {
-        if ([self.currentLocation distanceInKilometersTo: pin] < closeToPinDistance) {
-            // WHAT
+- (NSMutableArray *) isCloseEnoughToOpen {
+    
+    NSMutableArray *pinsOpenable = [[NSMutableArray alloc] init];
+    
+    for (FLPin* pin in self.viewablePins) {
+        if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance) {
+            [pinsOpenable addObject: pin.objectId];
         }
     }
-    return TRUE;
+    return pinsOpenable;
 }
 
-- (BOOL) shouldRefresh {
+- (BOOL) shouldRefreshMap {
     if ([self.currentLocation distanceInKilometersTo: self.refreshLocation] > viewablePinRadius) {
         return true;
     }
-    return false;
+    return true;
 }
 
 - (void) addFlur {
