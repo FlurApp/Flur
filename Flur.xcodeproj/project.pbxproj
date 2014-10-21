@@ -18,7 +18,7 @@
 		D96C15D319E1CE0B009E74DA /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D96C15D219E1CE0B009E74DA /* CoreLocation.framework */; };
 		D96C15D519E1CE18009E74DA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D96C15D419E1CE18009E74DA /* MapKit.framework */; };
 		D96C15D819E1F6CA009E74DA /* FLFlurAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = D96C15D719E1F6CA009E74DA /* FLFlurAnnotation.m */; };
-		DB3CE56319F5F7DC0004066D /* small_flur.png in Resources */ = {isa = PBXBuildFile; fileRef = DB3CE56219F5F7DC0004066D /* small_flur.png */; };
+		DB3CE56519F5F8D00004066D /* small_flur.png in Resources */ = {isa = PBXBuildFile; fileRef = DB3CE56419F5F8D00004066D /* small_flur.png */; };
 		DB9BD30A19F59D800066FEB1 /* FLMapManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9BD30919F59D800066FEB1 /* FLMapManager.m */; };
 		DB9BD30D19F59DA30066FEB1 /* FLPin.m in Sources */ = {isa = PBXBuildFile; fileRef = DB9BD30C19F59DA30066FEB1 /* FLPin.m */; };
 		DBAFEB5B19EC3A1100312140 /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBAFEB5A19EC3A1100312140 /* PhotoViewController.m */; };
@@ -60,7 +60,7 @@
 		D96C15D419E1CE18009E74DA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		D96C15D619E1F6CA009E74DA /* FLFlurAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLFlurAnnotation.h; sourceTree = "<group>"; };
 		D96C15D719E1F6CA009E74DA /* FLFlurAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLFlurAnnotation.m; sourceTree = "<group>"; };
-		DB3CE56219F5F7DC0004066D /* small_flur.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = small_flur.png; sourceTree = "<group>"; };
+		DB3CE56419F5F8D00004066D /* small_flur.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = small_flur.png; path = Flur/small_flur.png; sourceTree = SOURCE_ROOT; };
 		DB9BD30819F59D800066FEB1 /* FLMapManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLMapManager.h; sourceTree = "<group>"; };
 		DB9BD30919F59D800066FEB1 /* FLMapManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLMapManager.m; sourceTree = "<group>"; };
 		DB9BD30B19F59DA30066FEB1 /* FLPin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLPin.h; sourceTree = "<group>"; };
@@ -162,7 +162,7 @@
 		D903448419DD03CB00CF9532 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				DB3CE56219F5F7DC0004066D /* small_flur.png */,
+				DB3CE56419F5F8D00004066D /* small_flur.png */,
 				D903448519DD03CB00CF9532 /* Info.plist */,
 				D903448619DD03CB00CF9532 /* main.m */,
 			);
@@ -270,7 +270,7 @@
 			files = (
 				D903449019DD03CB00CF9532 /* Main.storyboard in Resources */,
 				D903449219DD03CB00CF9532 /* Images.xcassets in Resources */,
-				DB3CE56319F5F7DC0004066D /* small_flur.png in Resources */,
+				DB3CE56519F5F8D00004066D /* small_flur.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
