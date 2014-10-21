@@ -180,6 +180,7 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
+    
     // Find all pins that I'm close enough to?
 
 }
