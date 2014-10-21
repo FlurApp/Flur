@@ -10,6 +10,7 @@
 #import "FLInitialMapViewController.h"
 #import "FLFlurAnnotation.h"
 #import <Parse/Parse.h>
+#import "FLMapManager.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 
@@ -30,6 +31,8 @@
 @property (nonatomic, strong, readwrite) NSMutableArray *viewablePins;
 @property (nonatomic, strong, readwrite) PFGeoPoint *PFCurrentLocation;
 
+@property (nonatomic, strong) FLMapManager* mapManager;
+
 
 
 
@@ -43,9 +46,10 @@
     [super viewDidLoad];
     
     self.haveLoadedFlurs = false;
+    
     _viewablePins = [[NSMutableArray alloc] init];
     _PFCurrentLocation = [[PFGeoPoint alloc] init];
-
+    _mapManager = [[FLMapManager alloc] init];
     
     [[self view] setBackgroundColor:[UIColor whiteColor]];
     
@@ -180,34 +184,8 @@
 
 // Find all flurs nearby based on the users position
 - (void)findNearbyFlurs {
-    NSLog(@"Called find Nearby flurs");
-    CGFloat kilometers = 2; // Must edit
-    
-    PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
-    [query setLimit:10];
-    [query whereKey:@"location"
-       nearGeoPoint:[PFGeoPoint geoPointWithLatitude:_locationManager.location.coordinate.latitude
-                                           longitude:_locationManager.location.coordinate.longitude]
-                                    withinKilometers:kilometers];
-    
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error) {
-            NSLog(@"Top of loop");
-            for (PFObject *object in objects) {
-                [self.viewablePins addObject:object];
-                FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:object];
-                [self.mapView addAnnotation:annotation];
-                [self.viewablePins addObject:object];
-            }
-        }
-        
-        for (PFObject *object in self.viewablePins) {
-            if ([self isCloseEnoughToPin:object[@"location"]]) {
-                NSLog(@"We are close enought!");
-            }
-        }
-        
-    }];
+    self.viewablePins = [self.mapManager getViewablePins];
+
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
