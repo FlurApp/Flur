@@ -68,13 +68,10 @@
     return returnedAnnotationView;
 }*/
 
-- (id)initWithObject:(PFObject *)aObject {
+- (id)initWithObject:(PFGeoPoint *)location {
     self = [super init];
     if (self) {
-        _object = aObject;
-        
-        PFGeoPoint *geoPoint = self.object[@"location"];
-        [self setGeoPoint:geoPoint];
+        [self setGeoPoint:location];
     }
     return self;
 }

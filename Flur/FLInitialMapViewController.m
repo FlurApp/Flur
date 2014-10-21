@@ -80,14 +80,14 @@
     
     //UIVisualEffectView* t = [[UIVisualEffectView alloc] init];
     
-    UIVisualEffect *blurEffect;
+   /* UIVisualEffect *blurEffect;
     blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     
     UIVisualEffectView *visualEffectView;
     visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     
     visualEffectView.frame = self.view.bounds;
-    [self.view addSubview:visualEffectView];
+    [self.view addSubview:visualEffectView];*/
     
     /*UIView *back = [[UIView alloc] initWithFrame:self.view.frame];
     [back setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -182,6 +182,11 @@
     
     
     // Find all pins that I'm close enough to?
+    self.viewablePins = [self.mapManager getViewablePins];
+    for (PFGeoPoint* pin in self.viewablePins) {
+        FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:pin];
+        [self.mapView addAnnotation:annotation];
+    }
 
 }
 
