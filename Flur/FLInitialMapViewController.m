@@ -206,19 +206,7 @@
 }
 
 - (IBAction)addingFlur:(id)sender {
-    
-    CLLocation *location = _locationManager.location;
-    CLLocationCoordinate2D coordinate = [location coordinate];
-    PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLatitude:coordinate.latitude
-                                                  longitude:coordinate.longitude];
-    
-    PFObject *flurPin = [PFObject objectWithClassName:@"FlurPin"];
-    [flurPin setObject:geoPoint forKey:@"location"];
-    [flurPin setObject:@"codemang" forKey:@"username"];
-
-    [flurPin saveEventually:^(BOOL succeeded, NSError *error) {
-        if (succeeded) { }
-    }];
+    [self.mapManager addFlur];
 }
 
 - (void)didReceiveMemoryWarning {
