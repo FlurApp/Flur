@@ -14,11 +14,15 @@
     self = [super init];
     
     if (self) {
-        self.location = object[@"location"];
+        self.coordinate = object[@"location"];
         self.username = object[@"username"];
     }
     
     return self;
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"Latitude: %f \n Longitude: %f\n", self.coordinate.latitude, self.coordinate.longitude];
 }
 
 @end

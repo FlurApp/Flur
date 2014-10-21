@@ -11,6 +11,7 @@
 #import "FLFlurAnnotation.h"
 #import <Parse/Parse.h>
 #import "FLMapManager.h"
+#import "FLPin.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 
@@ -137,14 +138,6 @@
     
 }
 
-- (bool)isCloseEnoughToView: (PFObject *) pin {
-        CGFloat maxViewableDistKilometers = 0.25;
-        PFGeoPoint * curLocation = [PFGeoPoint geoPointWithLocation:_locationManager.location];
-        double dist = [curLocation distanceInKilometersTo: pin[@"location"]];
-    
-        return (dist <= maxViewableDistKilometers);
-}
-
 - (void)loadMapView {
     _mapView = [[MKMapView alloc] init];
     [_mapView setDelegate:self];
@@ -180,14 +173,31 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
-    
-    // Find all pins that I'm close enough to?
-    self.viewablePins = [self.mapManager getViewablePins];
-    for (PFGeoPoint* pin in self.viewablePins) {
-        FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:pin];
-        [self.mapView addAnnotation:annotation];
-    }
+    [self.mapManager updateLocation:newLocation];
+    //self.viewablePins = [self.mapManager getViewablePins];
+    [self.mapManager getViewablePins:^(NSMutableArray* allPins) {
+        for (FLPin* pin in allPins) {
+            NSLog(@"pin %@", pin);
+            FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:pin];
+            [self.mapView addAnnotation:annotation];
+        }
+    }];
+   
 
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
+    if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
+        FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
+        MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
+        if (annotationView == nil)
+            annotationView = myLocation.annotationView;
+        else
+            annotationView.annotation = annotation;
+        return annotationView;
+    }
+    else
+        return nil;
 }
 
 - (IBAction)addingFlur:(id)sender {

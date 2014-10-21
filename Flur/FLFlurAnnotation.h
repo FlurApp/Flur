@@ -10,15 +10,15 @@
 #import <MapKit/MapKit.h>
 #import <Parse/Parse.h>
 #import <UIKit/UIKit.h>
+#import "FLPin.h"
 
 
 @interface FLFlurAnnotation : NSObject<MKAnnotation>
 
-/*- (FLFlurAnnotation *)initWithTitle:(NSString *)title prompt:(NSString *)prompt coordinate:(CLLocationCoordinate2D*)coordinate;
+//+ (MKAnnotationView *)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation;
 
-+ (MKAnnotationView *)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation;*/
-
-- (id)initWithObject:(PFGeoPoint*) location;
+- (id)initWithObject:(FLPin*) location;
+- (MKAnnotationView*) annotationView;
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 @property (nonatomic, readonly, copy) NSString *title;

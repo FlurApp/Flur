@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
-#define viewablePinRadius .5
+#define viewablePinRadius 2
 #define closeToPinDistance .2
 
 
@@ -19,12 +19,14 @@
 @property (nonatomic, strong) PFGeoPoint *refreshLocation;
 @property (nonatomic, strong) NSMutableArray *viewablePins;
 
-- (NSMutableArray*) getViewablePins;
+//- (NSMutableArray*) getViewablePins;
+- (NSMutableArray *) getViewablePins:(void (^) (NSMutableArray* allPins)) completion;
 - (BOOL) isCloseEnough;
 - (BOOL) shouldRefresh;
 - (double) currentLat;
 - (double) currentLng;
 - (void) addFlur;
+- (void) updateLocation: (CLLocation *) newLocation;
 
 - (instancetype) init;
 

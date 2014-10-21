@@ -11,9 +11,10 @@
 
 @interface FLPin : NSObject
 
-@property (nonatomic, strong) PFGeoPoint* location;
+@property (nonatomic, strong) PFGeoPoint* coordinate;
 @property (nonatomic, strong) NSString* username;
 
 - (instancetype) initWith: (PFObject *) object;
+- (NSString *)description;
 
 @end

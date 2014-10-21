@@ -18,14 +18,20 @@
         self.viewablePins = [[NSMutableArray alloc] init];
         self.currentLocation = [[PFGeoPoint alloc] init];
         self.refreshLocation = [[PFGeoPoint alloc] init];
+        
     }
     
     return self;
 }
 
-- (NSMutableArray *) getViewablePins {
+- (void) updateLocation: (CLLocation *) newLocation {
+    self.currentLocation.latitude = newLocation.coordinate.latitude;
+    self.currentLocation.longitude = newLocation.coordinate.longitude;
+}
+
+- (NSMutableArray *) getViewablePins:(void (^) (NSMutableArray* allPins)) completion {
     
-    PFQuery *query = [PFQuery queryWithClassName:@"FlurPi"];
+    PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
     [query setLimit:10];
     [query whereKey: @"location"
        nearGeoPoint: [PFGeoPoint geoPointWithLatitude: [self currentLat]
@@ -34,14 +40,19 @@
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
+            NSLog(@"TOP OF LOOP");
             for (int i=0; i<objects.count; i++) {
+                NSLog(@"Looping");
                 FLPin* pin = [[FLPin alloc] initWith: objects[i]];
                 [self.viewablePins addObject: pin];
             }
+            completion(self.viewablePins);
         }
+        else
+            NSLog(@"fuck");
     }];
-
     return self.viewablePins;
+
 }
 
 - (double) currentLat {
