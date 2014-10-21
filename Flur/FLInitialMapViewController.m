@@ -35,7 +35,6 @@
 
 
 
-
 @end
 
 
@@ -90,7 +89,7 @@
     visualEffectView.frame = self.view.bounds;
     [self.view addSubview:visualEffectView];
     
-    UIView *back = [[UIView alloc] initWithFrame:self.view.frame];
+    /*UIView *back = [[UIView alloc] initWithFrame:self.view.frame];
     [back setTranslatesAutoresizingMaskIntoConstraints:NO];
     back.backgroundColor = RGB(200,200,200);
     back.layer.cornerRadius = 7;
@@ -131,13 +130,20 @@
                                                              toItem:self.view
                                                           attribute:NSLayoutAttributeCenterY
                                                          multiplier:1.0
-                                                           constant:0.0]];
+                                                           constant:0.0]];*/
 
     
     
     
 }
 
+- (bool)isCloseEnoughToView: (PFObject *) pin {
+        CGFloat maxViewableDistKilometers = 0.25;
+        PFGeoPoint * curLocation = [PFGeoPoint geoPointWithLocation:_locationManager.location];
+        double dist = [curLocation distanceInKilometersTo: pin[@"location"]];
+    
+        return (dist <= maxViewableDistKilometers);
+}
 
 - (void)loadMapView {
     _mapView = [[MKMapView alloc] init];
