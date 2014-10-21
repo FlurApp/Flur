@@ -176,33 +176,12 @@
     [errorAlert show];
 }
 
-- (BOOL) isCloseEnoughToPin:(PFGeoPoint*) point {
-    double dist = [self.PFCurrentLocation distanceInKilometersTo: point];
-    NSLog(@"Dist: %f", dist);
-    if (dist < .2)
-        return TRUE;
-    return FALSE;
-}
 
-- (PFGeoPoint*) PFCurrentLocation {
-    return [PFGeoPoint geoPointWithLocation:_locationManager.location];
-}
-
-// Find all flurs nearby based on the users position
-- (void)findNearbyFlurs {
-    self.viewablePins = [self.mapManager getViewablePins];
-
-}
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
+    // Find all pins that I'm close enough to?
 
-        [self findNearbyFlurs];
-    NSLog(@"Updated Position");
-    if (currentLocation != nil) {
-        //longitudeLabel.text = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.longitude];
-        //latitudeLabel.text = [NSString stringWithFormat:@"%.8f", currentLocation.coordinate.latitude];
-    }
 }
 
 - (IBAction)addingFlur:(id)sender {
