@@ -18,6 +18,7 @@
 @property (nonatomic, strong) PFGeoPoint *currentLocation;
 @property (nonatomic, strong) PFGeoPoint *refreshLocation;
 @property (nonatomic, strong) NSMutableArray *viewablePins;
+@property (nonatomic) BOOL firstPinGrab;
 
 //- (NSMutableArray*) getViewablePins;
 - (void) getViewablePins:(void (^) (NSMutableArray* allPins)) completion;

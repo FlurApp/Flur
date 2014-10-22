@@ -18,7 +18,7 @@
         self.viewablePins = [[NSMutableArray alloc] init];
         self.currentLocation = [[PFGeoPoint alloc] init];
         self.refreshLocation = [[PFGeoPoint alloc] init];
-        
+        self.firstPinGrab = true;
     }
     
     return self;
@@ -76,10 +76,15 @@
 }
 
 - (BOOL) shouldRefreshMap {
-    if ([self.currentLocation distanceInKilometersTo: self.refreshLocation] > viewablePinRadius) {
+    
+    if(self.firstPinGrab) {
+        self.firstPinGrab = false;
         return true;
     }
-    return true;
+    else if ([self.currentLocation distanceInKilometersTo: self.refreshLocation] > viewablePinRadius) {
+        return true;
+    }
+    return false;
 }
 
 - (void) addFlur {
