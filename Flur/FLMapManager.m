@@ -24,9 +24,14 @@
     return self;
 }
 
-- (void) updateLocation: (CLLocation *) newLocation {
+- (void) updateCurrentLocation: (CLLocation *) newLocation andRefreshLocation: (BOOL) shouldRefresh {
     self.currentLocation.latitude = newLocation.coordinate.latitude;
     self.currentLocation.longitude = newLocation.coordinate.longitude;
+    
+    if (shouldRefresh) {
+        self.refreshLocation.latitude = newLocation.coordinate.latitude;
+        self.refreshLocation.longitude = newLocation.coordinate.longitude;
+    }
 }
 
 - (void) getViewablePins:(void (^) (NSMutableArray* allPins)) completion {
