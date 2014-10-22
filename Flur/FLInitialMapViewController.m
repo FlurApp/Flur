@@ -180,7 +180,8 @@
         self.mapManager.refreshLocation.longitude = newLocation.coordinate.longitude;
         
         // update location
-        [self.mapManager updateLocation:newLocation];
+        [self.mapManager updateCurrentLocation:newLocation
+                            andRefreshLocation:true];
         
         //self.viewablePins = [self.mapManager getViewablePins];
         [self.mapManager getViewablePins:^(NSMutableArray* allPins) {

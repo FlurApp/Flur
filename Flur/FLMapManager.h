@@ -28,7 +28,7 @@
 - (double) currentLat;
 - (double) currentLng;
 - (void) addFlur;
-- (void) updateLocation: (CLLocation *) newLocation;
+- (void) updateCurrentLocation: (CLLocation *) newLocation andRefreshLocation: (BOOL) shouldRefresh;
 
 - (instancetype) init;
 
