@@ -10,10 +10,6 @@
 
 @interface FLFlurAnnotation ()
 
-/*@property (nonatomic, strong) NSString *placeName;
-@property (nonatomic, strong) NSString *prompt;
-
-@property (nonatomic, readwrite) CLLocationCoordinate2D coordinate;*/
 @property (nonatomic, strong) PFObject *object;
 
 
@@ -21,52 +17,6 @@
 
 @implementation FLFlurAnnotation
 
-
-/*- (FLFlurAnnotation *)initWithTitle:(NSString *)title prompt:(NSString *)prompt coordinate:(CLLocationCoordinate2D *)coordinate
-{    
-    if (self = [[FLFlurAnnotation alloc] init]) {
-        [self setPlaceName:title];
-        [self setPrompt:prompt];
-        [self setCoordinate:*coordinate];
-        
-    }
-    else {
-        NSLog(@"DIDN'T ALLOC INIT IN ANNOTATION");
-    }
-    
-    return self;
-}
-
-- (NSString *)title
-{
-    return self.placeName;
-}
-
-- (NSString *)subtitle
-{
-    return self.prompt;
-}
-
-
-+ (MKAnnotationView *)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation {
-    
-    MKAnnotationView *returnedAnnotationView =
-    	[mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass([FLFlurAnnotation class])];
-    
-    if (returnedAnnotationView == nil)
-    {
-        returnedAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:NSStringFromClass([FLFlurAnnotation class])];
-        
-        returnedAnnotationView.canShowCallout = YES;
-        
-    }
-    else
-    {
-        returnedAnnotationView.annotation = annotation;
-    }
-    
-    return returnedAnnotationView;
-}*/
 
 - (id)initWithObject:(FLPin *)location {
     self = [super init];
@@ -86,9 +36,12 @@
     
     annotationView.enabled = YES;
     annotationView.canShowCallout = YES;
-    annotationView.image = [UIImage imageNamed:@"small_flur.png"];
+    annotationView.image = [UIImage imageNamed:@"flur_25px.png"];
+    annotationView.canShowCallout = NO;
     return annotationView;
 }
+
+
 
 
 @end

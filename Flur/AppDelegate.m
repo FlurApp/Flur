@@ -26,16 +26,31 @@
                   clientKey:@"***REMOVED***"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    FLInitialMapViewController *control = [[FLInitialMapViewController alloc] init];
-    self.window.rootViewController = control;
+   
+    FLInitialMapViewController * control = [FLInitialMapViewController new];
     
-    //PhotoViewController *control = [[PhotoViewController alloc] init];
-    //self.window.rootViewController = control;
+    self.navController = [[UINavigationController alloc] initWithRootViewController: control];
+    [self.navController setNavigationBarHidden:YES];
+
+    self.window.rootViewController = self.navController;
     
+    // Setup navigation bar programmatically
     
+    // Boiler plate code from AppDelegate
+    self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
 }
+
+- (void) switchController:(NSString*) controllerName {
+    NSLog(@"Swithcing %@", controllerName);
+    if ([controllerName isEqual:@"PhotoViewController"]) {
+        NSLog(@"In");
+        PhotoViewController *newController = [[PhotoViewController alloc] init];
+        [self.navController pushViewController:newController animated:true];
+    }
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
