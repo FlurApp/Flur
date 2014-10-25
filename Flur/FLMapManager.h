@@ -17,11 +17,12 @@
 
 @property (nonatomic, strong) PFGeoPoint *currentLocation;
 @property (nonatomic, strong) PFGeoPoint *refreshLocation;
-@property (nonatomic, strong) NSMutableArray *viewablePins;
+@property (nonatomic, strong) NSMutableDictionary *openablePins;
+@property (nonatomic, strong) NSMutableDictionary *nonOpenablePins;
 @property (nonatomic) BOOL firstPinGrab;
 
 //- (NSMutableArray*) getViewablePins;
-- (void) getViewablePins:(void (^) (NSMutableArray* allPins)) completion;
+- (void) getViewablePins:(void (^) (NSMutableDictionary* allNonOpenablePins)) completion;
 - (NSMutableArray *) isCloseEnoughToOpen;
 - (BOOL) shouldRefreshMap;
 //- (BOOL) shouldCheckOpenablePins;
@@ -29,6 +30,11 @@
 - (double) currentLng;
 - (void) addFlur;
 - (void) updateCurrentLocation: (CLLocation *) newLocation andRefreshLocation: (BOOL) shouldRefresh;
+
+- (NSMutableArray*) getNewlyOpenablePins;
+- (NSMutableArray*) getNewlyNonOpenablePins;
+
+
 
 - (instancetype) init;
 

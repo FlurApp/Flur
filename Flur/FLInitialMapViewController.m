@@ -194,30 +194,29 @@
                             andRefreshLocation:true];
         
         //self.viewablePins = [self.mapManager getViewablePins];
-        [self.mapManager getViewablePins:^(NSMutableArray* allPins) {
-            for (FLPin* pin in allPins) {
-                NSLog(@"pin %@", pin);
+        [self.mapManager getViewablePins:^(NSMutableDictionary* allNonOpenablePins) {
+            NSLog(@"All Pins %@", allNonOpenablePins);
+            for (FLPin* pin in allNonOpenablePins) {
                 FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:pin];
+                NSLog(@"pin %@", pin);
+
                 [self.mapView addAnnotation:annotation];
             }
+            // findNewlyOpenable()
+
         }];
     }
+    else {
+        // findNewlyOpenable()
+        // findNewlyUnopenable()
+    }
+    
+    
 }
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
     NSLog(@"hey");
-    while (true) {
-        view.image = [UIImage imageNamed:@"small_flur.png"];
-        sleep(3);
-        NSLog(@"ha");
-        view.image = [UIImage imageNamed:@"flur_25px.png"];
-        sleep(3);
-        NSLog(@"ha");
-
-    }
-
     
-    //[self showOverlay];
 }
 
 - (void) showOverlay {
@@ -281,32 +280,8 @@
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
         if (annotationView == nil) {
             annotationView = myLocation.annotationView;
-            UIImageView* imgView = [[UIImageView alloc] init];
-            imgView.animationImages = [NSArray arrayWithObjects:
-                                                 [UIImage imageNamed:@"frame_000.gif"],
-                                       [UIImage imageNamed:@"frame_001.gif"],
-                                       [UIImage imageNamed:@"frame_002.gif"],
-                                       [UIImage imageNamed:@"frame_003.gif"],
-                                       [UIImage imageNamed:@"frame_004.gif"],
-                                       [UIImage imageNamed:@"frame_005.gif"],
-                                       [UIImage imageNamed:@"frame_006.gif"],
-                                       [UIImage imageNamed:@"frame_007.gif"],
-                                       [UIImage imageNamed:@"frame_008.gif"],
-                                       [UIImage imageNamed:@"frame_009.gif"],
-                                       [UIImage imageNamed:@"frame_010.gif"],
-                                       [UIImage imageNamed:@"frame_011.gif"],
-                                       [UIImage imageNamed:@"frame_012.gif"],
-                                       [UIImage imageNamed:@"frame_013.gif"],
-                                       [UIImage imageNamed:@"frame_014.gif"], nil];
-            imgView.animationDuration = 1.0f;
-            imgView.animationRepeatCount = 0;
-            [imgView startAnimating];
             
-            CGRect r = imgView.frame;
-            r.size.height = r.size.width = 60;
-            imgView.frame = r;
             
-            [annotationView addSubview:imgView];
         }
         else {
             annotationView.annotation = annotation;

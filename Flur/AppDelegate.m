@@ -45,9 +45,14 @@
 - (void) switchController:(NSString*) controllerName {
     NSLog(@"Swithcing %@", controllerName);
     if ([controllerName isEqual:@"PhotoViewController"]) {
-        NSLog(@"In");
         PhotoViewController *newController = [[PhotoViewController alloc] init];
-        [self.navController pushViewController:newController animated:true];
+        //[self.navController pushViewController:newController animated:true];
+        [UIView animateWithDuration:0.75
+                         animations:^{
+                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+                             [self.navController pushViewController:newController animated:NO];
+                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
+                         }];
     }
 }
 

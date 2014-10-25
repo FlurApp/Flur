@@ -16,7 +16,7 @@
     if (self) {
         self.coordinate = object[@"location"];
         self.username = object[@"username"];
-        self.objectId = object[@"objectId"];
+        self.objectId = [object objectId];
     }
     
     return self;

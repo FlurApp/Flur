@@ -17,6 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor blackColor];
 
     // GET IMAGE
     PFQuery *query = [PFQuery queryWithClassName:@"Images"];
