@@ -17,11 +17,13 @@
 
 //+ (MKAnnotationView *)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation;
 
-- (id)initWithObject:(FLPin*) location;
+- (id)initWithPin:(FLPin*) location isAnimated:(bool)isAnimated;
+- (id)initWithAnnotation:(FLFlurAnnotation*)annotation isAnimated:(bool)isAnimated;
 - (MKAnnotationView*) annotationView;
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 @property (nonatomic, readonly, copy) NSString *title;
 @property (nonatomic, readonly, copy) NSString *subtitle;
+@property (nonatomic) bool isAnimated;
 
 @end

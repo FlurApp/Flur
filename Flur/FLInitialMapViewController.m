@@ -31,6 +31,9 @@
 @property (nonatomic, strong, readwrite) UIButton *addButton;
 @property (nonatomic, strong, readwrite) UIButton *addButton2;
 
+@property (nonatomic, strong, readwrite) NSMutableDictionary *allAnnotations;
+
+
 
 @property (nonatomic, readwrite) BOOL haveLoadedFlurs;
 
@@ -54,6 +57,7 @@
     _viewablePins = [[NSMutableArray alloc] init];
     _PFCurrentLocation = [[PFGeoPoint alloc] init];
     _mapManager = [[FLMapManager alloc] init];
+    _allAnnotations = [[NSMutableDictionary alloc] init];
     
     [[self view] setBackgroundColor:[UIColor whiteColor]];
     
@@ -69,36 +73,6 @@
     //----loading Initial View----//
     [self loadMapView];
     [self loadTopBar];
-    
-    
-    // Add button
-    _addButton = [[UIButton alloc] init];
-    [_addButton setTitle:@"Add a Flur" forState:UIControlStateNormal];
-    [_addButton setBackgroundColor:[UIColor blueColor]];
-    [_addButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_addButton addTarget:self action:@selector(switchingView:) forControlEvents:UIControlEventTouchDown];
-    [[self view] addSubview:_addButton];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_addButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:100]];
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_addButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:-10]];
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_addButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:-10]];
-    
-    /*_addButton2 = [[UIButton alloc] init];
-    [_addButton2 setTitle:@"switch views" forState:UIControlStateNormal];
-    [_addButton2 setBackgroundColor:[UIColor redColor]];
-    [_addButton2 setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_addButton2 addTarget:self action:@selector(switchingView:) forControlEvents:UIControlEventTouchDown];
-    [[self view] addSubview:_addButton2];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_addButton2 attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:10]];
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_addButton2 attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:10]];
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_addButton2 attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];*/
-
-    
-
-    
-    
-
     
     
     
@@ -184,35 +158,49 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
     if([self.mapManager shouldRefreshMap]) {
-        
-        // update the location of last refresh (which is now current location)
-        self.mapManager.refreshLocation.latitude = newLocation.coordinate.latitude;
-        self.mapManager.refreshLocation.longitude = newLocation.coordinate.longitude;
-        
         // update location
         [self.mapManager updateCurrentLocation:newLocation
                             andRefreshLocation:true];
         
-        //self.viewablePins = [self.mapManager getViewablePins];
         [self.mapManager getViewablePins:^(NSMutableDictionary* allNonOpenablePins) {
-            NSLog(@"All Pins %@", allNonOpenablePins);
-            for (FLPin* pin in allNonOpenablePins) {
-                FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithObject:pin];
-                NSLog(@"pin %@", pin);
-
+            for (id key in allNonOpenablePins) {
+                FLPin * pin = [allNonOpenablePins objectForKey:key];
+                FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin
+                                                                             isAnimated:false];
+                [self.allAnnotations setObject:annotation forKey:pin.objectId];
                 [self.mapView addAnnotation:annotation];
             }
-            // findNewlyOpenable()
-
+            NSMutableArray *indexes = [self.mapManager getNewlyOpenablePins];
+            [self updateAnnotations:indexes isNowOpenable:true];
         }];
     }
     else {
-        // findNewlyOpenable()
-        // findNewlyUnopenable()
+        [self.mapManager updateCurrentLocation:newLocation
+                            andRefreshLocation:false];
+        
+        NSMutableArray *indexes = [self.mapManager getNewlyOpenablePins];
+        [self updateAnnotations:indexes isNowOpenable:true];
     }
     
     
 }
+
+- (void) updateAnnotations:(NSMutableArray *)indexes isNowOpenable:(BOOL)isNowOpenable {
+    NSLog(@"Indexes: %@", indexes);
+    for (NSString* objectId in indexes) {
+        FLFlurAnnotation* f = [self.allAnnotations objectForKey:objectId];
+        FLFlurAnnotation *newAnnotation = [[FLFlurAnnotation alloc] initWithAnnotation:f
+                                                                            isAnimated:true];
+        
+        [self.allAnnotations removeObjectForKey:objectId];
+        [self.mapView removeAnnotation:f];
+
+      
+        [self.allAnnotations setObject:newAnnotation forKey:objectId];
+        [self.mapView addAnnotation:newAnnotation];
+    }
+}
+
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
     NSLog(@"hey");
@@ -277,11 +265,25 @@
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
     if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
+        // NSLog(myLocation.is)
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
         if (annotationView == nil) {
             annotationView = myLocation.annotationView;
             
-            
+            if (myLocation.isAnimated) {
+                UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+                animatedImageView.animationImages = [NSArray arrayWithObjects:
+                                                     [UIImage imageNamed:@"frame_000.gif"],
+                                                     [UIImage imageNamed:@"frame_001.gif"],
+                                                     [UIImage imageNamed:@"frame_002.gif"],
+                                                     [UIImage imageNamed:@"frame_003.gif"], nil];
+                animatedImageView.animationDuration = 1.0f;
+                animatedImageView.animationRepeatCount = 0;
+                [animatedImageView startAnimating];
+                [animatedImageView setFrame: CGRectMake(0,0,25,25)];
+                [annotationView addSubview:animatedImageView];
+
+            }
         }
         else {
             annotationView.annotation = annotation;

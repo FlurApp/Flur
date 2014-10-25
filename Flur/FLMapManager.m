@@ -91,14 +91,20 @@
 - (NSMutableArray*) getNewlyOpenablePins {
     
     NSMutableArray *pinsOpenable = [[NSMutableArray alloc] init];
-    
-    for (FLPin* pin in self.nonOpenablePins) {
+    NSLog(@"Current location: %@", self.currentLocation);
+    for (id key in self.nonOpenablePins) {
+
+        FLPin * pin = [self.nonOpenablePins objectForKey:key];
+        NSLog(@"pin location: %@", pin.coordinate);
+
         if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance) {
+            NSLog(@"matched");
             [pinsOpenable addObject: pin.objectId];
-            [self.nonOpenablePins removeObjectForKey:pin.objectId];
             [self.openablePins setObject:pin forKey:pin.objectId];
         }
     }
+    
+    [self.nonOpenablePins removeObjectsForKeys:pinsOpenable];
     return pinsOpenable;
 }
 
@@ -107,13 +113,16 @@
 - (NSMutableArray*) getNewlyNonOpenablePins {
     NSMutableArray *pinsNonOpenable = [[NSMutableArray alloc] init];
     
-    for (FLPin* pin in self.openablePins) {
+    for (id key in self.openablePins) {
+        
+        FLPin * pin = [self.openablePins objectForKey:key];
         if ([self.currentLocation distanceInKilometersTo: pin.coordinate] >= closeToPinDistance) {
             [pinsNonOpenable addObject: pin.objectId];
-            [self.openablePins removeObjectForKey:pin.objectId];
             [self.nonOpenablePins setObject:pin forKey:pin.objectId];
         }
     }
+    
+    [self.openablePins removeObjectsForKeys:pinsNonOpenable];
     return pinsNonOpenable;
 }
 

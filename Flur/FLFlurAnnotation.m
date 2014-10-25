@@ -18,12 +18,22 @@
 @implementation FLFlurAnnotation
 
 
-- (id)initWithObject:(FLPin *)location {
+- (id)initWithPin:(FLPin *)location isAnimated:(bool)isAnimated {
     self = [super init];
     if (self) {
         CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(location.coordinate.latitude,
                                                                   location.coordinate.longitude);
         _coordinate = coord;
+        _isAnimated = isAnimated;
+    }
+    return self;
+}
+
+- (id)initWithAnnotation:(FLFlurAnnotation*)annotation isAnimated:(bool)isAnimated {
+    self = [super init];
+    if (self) {
+        _coordinate = annotation.coordinate;
+        _isAnimated = isAnimated;
     }
     return self;
 }
@@ -36,7 +46,10 @@
     
     annotationView.enabled = YES;
     annotationView.canShowCallout = YES;
-    annotationView.image = [UIImage imageNamed:@"flur_25px.png"];
+    
+    if (!self.isAnimated)
+        annotationView.image = [UIImage imageNamed:@"flur_25px.png"];
+    
     annotationView.canShowCallout = NO;
     return annotationView;
 }
