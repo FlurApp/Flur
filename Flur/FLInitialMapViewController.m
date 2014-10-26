@@ -212,23 +212,54 @@ getusericonwithdeviceid
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
-    NSLog(@"hey");
-    
+    FLFlurAnnotation* fa = view.annotation;
+    NSString* id = fa.objectId;
+    FLPin* p = [self.allAnnotations objectForKey: id];
+    [self showOverlay:p];
+    return;
 }
 
-- (void) showOverlay {
-     UIVisualEffectView* t = [[UIVisualEffectView alloc] init];
-     
+- (void) showOverlay: (FLPin*) pin {
+    
      UIVisualEffect *blurEffect;
      blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
      
-     UIVisualEffectView *visualEffectView;
-     visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-     
-     visualEffectView.frame = self.view.bounds;
-     [self.view addSubview:visualEffectView];
-     
-     UIView *back = [[UIView alloc] initWithFrame:self.view.frame];
+     UIVisualEffectView *blurEffectView;
+     blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    
+    // Vibrancy effect
+    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
+    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+    [vibrancyEffectView setFrame:self.view.bounds];
+    
+    // Label for vibrant text
+    UILabel *vibrantLabel = [[UILabel alloc] init];
+    [vibrantLabel setText:pin.objectId];
+    [vibrantLabel setFont:[UIFont systemFontOfSize:52.0f]];
+    [vibrantLabel sizeToFit];
+    [vibrantLabel setCenter: self.view.center];
+    
+    // build button for contributing
+    UIButton *contributeButton = [[UIButton alloc] init];
+    [contributeButton setTitle:@"Contribute" forState:UIControlStateNormal];
+    [contributeButton setEnabled:TRUE];
+    [contributeButton setCenter: self.view.center];
+
+    
+    // Add label to the vibrancy view
+    [[vibrancyEffectView contentView] addSubview:vibrantLabel];
+    
+    // add contribute button to vibrancy view
+    [[vibrancyEffectView contentView] addSubview:contributeButton];
+    
+    // Add the vibrancy view to the blur view
+    [[blurEffectView contentView] addSubview:vibrancyEffectView];
+    
+    // add blur view to view
+    blurEffectView.frame = self.view.bounds;
+    [self.view addSubview:blurEffectView];
+    
+     /*UIView *back = [[UIView alloc] initWithFrame:self.view.frame];
      [back setTranslatesAutoresizingMaskIntoConstraints:NO];
      back.backgroundColor = RGB(200,200,200);
      back.layer.cornerRadius = 7;
@@ -268,7 +299,7 @@ getusericonwithdeviceid
                                                               toItem:self.view
                                                            attribute:NSLayoutAttributeCenterY
                                                           multiplier:1.0
-                                                            constant:0.0]];
+                                                            constant:0.0]];*/
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
@@ -336,6 +367,8 @@ getusericonwithdeviceid
     
     // Dispose of any resources that can be recreated.
 }
+
+
 
 - (UIColor*) colorWithHexString:(NSString*)hex {
     NSString *cString = [[hex stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
