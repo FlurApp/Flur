@@ -25,6 +25,7 @@
                                                                   location.coordinate.longitude);
         _coordinate = coord;
         _isAnimated = isAnimated;
+        _objectId = location.objectId;
     }
     return self;
 }
@@ -47,11 +48,8 @@
                                                                     reuseIdentifier:@"MyCustomAnnotation"];
     
     annotationView.enabled = YES;
-    annotationView.canShowCallout = YES;
-    
-    annotationView.image = [UIImage imageNamed:@"flur_25px.png"];
-    
     annotationView.canShowCallout = NO;
+    annotationView.image = [UIImage imageNamed:@"flur_25px.png"];
     return annotationView;
 }
 

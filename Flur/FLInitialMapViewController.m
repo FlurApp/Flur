@@ -30,13 +30,11 @@
 
 @property (nonatomic, strong, readwrite) UIButton *addButton;
 @property (nonatomic, strong, readwrite) UIButton *addButton2;
+@property (nonatomic, strong, readwrite) UIButton *contributeButton;
 
 @property (nonatomic, strong, readwrite) NSMutableDictionary *allAnnotations;
 
 @property (nonatomic, strong, readwrite) NSMutableArray *test;
-
-
-
 
 
 @property (nonatomic, readwrite) BOOL haveLoadedFlurs;
@@ -101,8 +99,6 @@
     
     [self.mapViewContainer addSubview:self.mapView];
     
-
-    
     [self.view addSubview:self.mapViewContainer];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
@@ -121,9 +117,9 @@
     topBar.backgroundColor = [self colorWithHexString:@"3F72F5"];
     [self.view addSubview:topBar];
  
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:50]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
@@ -138,7 +134,7 @@
     [topBarTitle setTextAlignment:UITextAlignmentCenter];
     
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarTitle attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
@@ -231,23 +227,88 @@
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
-    NSLog(@"hey");
-    
+    FLFlurAnnotation* fa = view.annotation;
+    NSString* id = fa.objectId;
+    FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
+    [self showOverlay:p];
+    return;
 }
 
-- (void) showOverlay {
-     UIVisualEffectView* t = [[UIVisualEffectView alloc] init];
-     
-     UIVisualEffect *blurEffect;
+- (void) showOverlay: (FLPin*) pin {
+    
+     UIBlurEffect *blurEffect;
      blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
      
-     UIVisualEffectView *visualEffectView;
-     visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-     
-     visualEffectView.frame = self.view.bounds;
-     [self.view addSubview:visualEffectView];
-     
-     UIView *back = [[UIView alloc] initWithFrame:self.view.frame];
+     UIVisualEffectView *blurEffectView;
+     blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    
+    // Vibrancy effect
+    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
+    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+    [vibrancyEffectView setFrame:self.view.bounds];
+    
+    // Label for vibrant text
+    UILabel *vibrantLabel = [[UILabel alloc] init];
+    [vibrantLabel setText:[pin returnPrompt]];
+    [vibrantLabel setTextAlignment:NSTextAlignmentCenter];
+    [vibrantLabel setNumberOfLines:0];
+    [vibrantLabel setLineBreakMode:NSLineBreakByWordWrapping];
+    [vibrantLabel setFont:[UIFont systemFontOfSize:35.0f]];
+//    [[vibrantLabel layer] setBorderWidth:2.0];
+    [[vibrantLabel layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+    [vibrantLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+  
+//    [vibrantLabel sizeToFit];
+    
+    
+    // build button for contributing
+    UIButton *contributeButton = [[UIButton alloc] init];
+    [contributeButton setTitle:@"Contribute" forState:UIControlStateNormal];
+    [[contributeButton titleLabel] setFont:[UIFont systemFontOfSize:30.0]];
+    [contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[contributeButton layer] setCornerRadius:10];
+    [[contributeButton layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+    [[contributeButton layer] setBorderWidth:2.0];
+    [contributeButton setEnabled:TRUE];
+    [contributeButton setCenter: self.view.center];
+    [contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
+    
+    [self setContributeButton:contributeButton];
+    
+    [vibrantLabel sizeToFit];
+    
+    // add contribute button to vibrancy view
+    [[vibrancyEffectView contentView] addSubview:contributeButton];
+    
+    //setting the layout for the contribute button
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-120]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    
+    
+    // Add label to the vibrancy view
+    [[vibrancyEffectView contentView] addSubview:vibrantLabel];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTop multiplier:1 constant:150]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contributeButton attribute:NSLayoutAttributeTop multiplier:1 constant:-10]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1 constant:10]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1 constant:-10]];
+    
+    
+    // Add the vibrancy view to the blur view
+    [[blurEffectView contentView] addSubview:vibrancyEffectView];
+    
+    // add blur view to view
+    blurEffectView.frame = self.view.bounds;
+    [self.view addSubview:blurEffectView];
+    
+     /*UIView *back = [[UIView alloc] initWithFrame:self.view.frame];
      [back setTranslatesAutoresizingMaskIntoConstraints:NO];
      back.backgroundColor = RGB(200,200,200);
      back.layer.cornerRadius = 7;
@@ -287,7 +348,7 @@
                                                               toItem:self.view
                                                            attribute:NSLayoutAttributeCenterY
                                                           multiplier:1.0
-                                                            constant:0.0]];
+                                                            constant:0.0]];*/
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
@@ -333,11 +394,17 @@
     [appDelegate switchController:@"PhotoViewController"];
 }
 
+- (IBAction)contributingToFlur:(id)sender {
+    NSLog(@"clicked contribute");
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
     // Dispose of any resources that can be recreated.
 }
+
+
 
 - (UIColor*) colorWithHexString:(NSString*)hex {
     NSString *cString = [[hex stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
