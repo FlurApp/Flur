@@ -33,6 +33,10 @@
 
 @property (nonatomic, strong, readwrite) NSMutableDictionary *allAnnotations;
 
+@property (nonatomic, strong, readwrite) NSMutableArray *test;
+
+
+
 
 
 @property (nonatomic, readwrite) BOOL haveLoadedFlurs;
@@ -58,6 +62,8 @@
     _PFCurrentLocation = [[PFGeoPoint alloc] init];
     _mapManager = [[FLMapManager alloc] init];
     _allAnnotations = [[NSMutableDictionary alloc] init];
+    _test = [[NSMutableArray alloc] init];
+
     
     [[self view] setBackgroundColor:[UIColor whiteColor]];
     
@@ -186,18 +192,21 @@
 }
 
 - (void) updateAnnotations:(NSMutableArray *)indexes isNowOpenable:(BOOL)isNowOpenable {
-    NSLog(@"Indexes: %@", indexes);
     for (NSString* objectId in indexes) {
         FLFlurAnnotation* f = [self.allAnnotations objectForKey:objectId];
         FLFlurAnnotation *newAnnotation = [[FLFlurAnnotation alloc] initWithAnnotation:f
                                                                             isAnimated:true];
-        
-        [self.allAnnotations removeObjectForKey:objectId];
+        NSLog(@"hello");
+        [self.mapView viewForAnnotation:f].image = [UIImage imageNamed:@""];
+
+        //[self.mapView viewForAnnotation:self.test[0]].image = [UIImage imageNamed:@""];
+       /* [self.allAnnotations removeObjectForKey:objectId];
         [self.mapView removeAnnotation:f];
+getusericonwithdeviceid
 
       
-        [self.allAnnotations setObject:newAnnotation forKey:objectId];
-        [self.mapView addAnnotation:newAnnotation];
+        //[self.allAnnotations setObject:newAnnotation forKey:objectId];
+        [self.mapView addAnnotation:newAnnotation];*/
     }
 }
 
@@ -265,7 +274,6 @@
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
     if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
-        // NSLog(myLocation.is)
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
         if (annotationView == nil) {
             annotationView = myLocation.annotationView;
@@ -281,12 +289,31 @@
                 animatedImageView.animationRepeatCount = 0;
                 [animatedImageView startAnimating];
                 [animatedImageView setFrame: CGRectMake(0,0,25,25)];
+               // annotationView.image = [UIImage imageNamed:@"frame_000.gif"];
+
                 [annotationView addSubview:animatedImageView];
 
             }
         }
         else {
             annotationView.annotation = annotation;
+            if (myLocation.isAnimated) {
+                UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+                animatedImageView.animationImages = [NSArray arrayWithObjects:
+                                                     [UIImage imageNamed:@"frame_000.gif"],
+                                                     [UIImage imageNamed:@"frame_001.gif"],
+                                                     [UIImage imageNamed:@"frame_002.gif"],
+                                                     [UIImage imageNamed:@"frame_003.gif"], nil];
+                animatedImageView.animationDuration = 1.0f;
+                animatedImageView.animationRepeatCount = 0;
+                [animatedImageView startAnimating];
+                [animatedImageView setFrame: CGRectMake(0,0,25,25)];
+                annotationView.image = [UIImage imageNamed:@""];
+
+                [annotationView addSubview:animatedImageView];
+                
+            }
+
             
         }
         return annotationView;

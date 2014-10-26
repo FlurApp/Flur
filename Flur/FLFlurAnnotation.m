@@ -32,7 +32,9 @@
 - (id)initWithAnnotation:(FLFlurAnnotation*)annotation isAnimated:(bool)isAnimated {
     self = [super init];
     if (self) {
-        _coordinate = annotation.coordinate;
+        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(annotation.coordinate.latitude,
+                                                                  annotation.coordinate.longitude);
+        _coordinate = coord;
         _isAnimated = isAnimated;
     }
     return self;
@@ -47,11 +49,14 @@
     annotationView.enabled = YES;
     annotationView.canShowCallout = YES;
     
-    if (!self.isAnimated)
-        annotationView.image = [UIImage imageNamed:@"flur_25px.png"];
+    annotationView.image = [UIImage imageNamed:@"flur_25px.png"];
     
     annotationView.canShowCallout = NO;
     return annotationView;
+}
+
+-(NSString *) description {
+    return [NSString stringWithFormat:@"lat: %f   lng: %f    isAnimated: %@", self.coordinate.latitude, self.coordinate.longitude, self.isAnimated  ? @"Yes" : @"No"];
 }
 
 

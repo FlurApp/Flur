@@ -20,10 +20,12 @@
 - (id)initWithPin:(FLPin*) location isAnimated:(bool)isAnimated;
 - (id)initWithAnnotation:(FLFlurAnnotation*)annotation isAnimated:(bool)isAnimated;
 - (MKAnnotationView*) annotationView;
+-(NSString *) description;
 
 @property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
 @property (nonatomic, readonly, copy) NSString *title;
 @property (nonatomic, readonly, copy) NSString *subtitle;
 @property (nonatomic) bool isAnimated;
+
 
 @end

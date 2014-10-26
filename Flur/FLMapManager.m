@@ -48,7 +48,6 @@
         if (!error) {
             for (int i=0; i<objects.count; i++) {
                 FLPin* pin = [[FLPin alloc] initWith: objects[i]];
-                NSLog(@"%@", pin);
                 [self.nonOpenablePins setObject:pin forKey: pin.objectId];
             }
             completion(self.nonOpenablePins);
@@ -91,14 +90,12 @@
 - (NSMutableArray*) getNewlyOpenablePins {
     
     NSMutableArray *pinsOpenable = [[NSMutableArray alloc] init];
-    NSLog(@"Current location: %@", self.currentLocation);
+
     for (id key in self.nonOpenablePins) {
 
         FLPin * pin = [self.nonOpenablePins objectForKey:key];
-        NSLog(@"pin location: %@", pin.coordinate);
 
         if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance) {
-            NSLog(@"matched");
             [pinsOpenable addObject: pin.objectId];
             [self.openablePins setObject:pin forKey:pin.objectId];
         }
