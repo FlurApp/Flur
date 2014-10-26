@@ -17,6 +17,7 @@
         self.coordinate = object[@"location"];
         self.username = object[@"username"];
         self.objectId = [object objectId];
+        self.prompt = object[@"prompt"];
     }
     
     return self;
