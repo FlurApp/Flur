@@ -18,9 +18,15 @@
         self.username = object[@"username"];
         self.objectId = [object objectId];
         self.prompt = object[@"prompt"];
+//        NSLog(self.prompt);
+        NSLog(@"objectId: %@ prompt: %@", self.objectId, self.prompt);
     }
     
     return self;
+}
+
+- (NSString *)returnPrompt {
+    return self.prompt;
 }
 
 - (NSString *)description {

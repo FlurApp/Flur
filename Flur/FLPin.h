@@ -18,5 +18,6 @@
 
 - (instancetype) initWith: (PFObject *) object;
 - (NSString *)description;
+- (NSString *)returnPrompt;
 
 @end

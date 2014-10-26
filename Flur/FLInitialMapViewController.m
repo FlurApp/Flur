@@ -30,6 +30,7 @@
 
 @property (nonatomic, strong, readwrite) UIButton *addButton;
 @property (nonatomic, strong, readwrite) UIButton *addButton2;
+@property (nonatomic, strong, readwrite) UIButton *contributeButton;
 
 @property (nonatomic, strong, readwrite) NSMutableDictionary *allAnnotations;
 
@@ -100,8 +101,6 @@
      //[self.mapView setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     [self.mapViewContainer addSubview:self.mapView];
-    
-
     
     [self.view addSubview:self.mapViewContainer];
     
@@ -233,7 +232,7 @@
 {
     FLFlurAnnotation* fa = view.annotation;
     NSString* id = fa.objectId;
-    FLPin* p = [self.allAnnotations objectForKey: id];
+    FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
     [self showOverlay:p];
     return;
 }
@@ -253,10 +252,17 @@
     
     // Label for vibrant text
     UILabel *vibrantLabel = [[UILabel alloc] init];
-    [vibrantLabel setText:pin.prompt];
-    [vibrantLabel setFont:[UIFont systemFontOfSize:52.0f]];
-    [vibrantLabel sizeToFit];
-    [vibrantLabel setCenter: self.view.center];
+    [vibrantLabel setText:[pin returnPrompt]];
+    [vibrantLabel setTextAlignment:NSTextAlignmentCenter];
+    [vibrantLabel setNumberOfLines:0];
+    [vibrantLabel setLineBreakMode:NSLineBreakByWordWrapping];
+    [vibrantLabel setFont:[UIFont systemFontOfSize:35.0f]];
+//    [[vibrantLabel layer] setBorderWidth:2.0];
+    [[vibrantLabel layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+    [vibrantLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+  
+//    [vibrantLabel sizeToFit];
+    
     
     // build button for contributing
     UIButton *contributeButton = [[UIButton alloc] init];
@@ -268,22 +274,35 @@
     [[contributeButton layer] setBorderWidth:2.0];
     [contributeButton setEnabled:TRUE];
     [contributeButton setCenter: self.view.center];
-
+    [contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
     
-    // Add label to the vibrancy view
-    [[vibrancyEffectView contentView] addSubview:vibrantLabel];
+    [self setContributeButton:contributeButton];
+    
+    [vibrantLabel sizeToFit];
     
     // add contribute button to vibrancy view
     [[vibrancyEffectView contentView] addSubview:contributeButton];
     
     //setting the layout for the contribute button
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-100]];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-120]];
     
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-20]];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
     
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
     
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    
+    
+    // Add label to the vibrancy view
+    [[vibrancyEffectView contentView] addSubview:vibrantLabel];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTop multiplier:1 constant:150]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contributeButton attribute:NSLayoutAttributeTop multiplier:1 constant:-10]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1 constant:10]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1 constant:-10]];
+    
     
     // Add the vibrancy view to the blur view
     [[blurEffectView contentView] addSubview:vibrancyEffectView];
@@ -376,6 +395,10 @@
 - (IBAction)switchingView:(id)sender {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate switchController:@"PhotoViewController"];
+}
+
+- (IBAction)contributingToFlur:(id)sender {
+    NSLog(@"clicked contribute");
 }
 
 - (void)didReceiveMemoryWarning {
