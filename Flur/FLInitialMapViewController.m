@@ -184,8 +184,11 @@
         [self.mapManager updateCurrentLocation:newLocation
                             andRefreshLocation:false];
         
-        NSMutableArray *indexes = [self.mapManager getNewlyOpenablePins];
-        [self updateAnnotations:indexes isNowOpenable:true];
+        NSMutableArray *indexes1 = [self.mapManager getNewlyOpenablePins];
+        [self updateAnnotations:indexes1 isNowOpenable:true];
+        
+        NSMutableArray *indexes2 = [self.mapManager getNewlyNonOpenablePins];
+        [self updateAnnotations:indexes2 isNowOpenable:false];
     }
     
     
@@ -194,19 +197,37 @@
 - (void) updateAnnotations:(NSMutableArray *)indexes isNowOpenable:(BOOL)isNowOpenable {
     for (NSString* objectId in indexes) {
         FLFlurAnnotation* f = [self.allAnnotations objectForKey:objectId];
-        FLFlurAnnotation *newAnnotation = [[FLFlurAnnotation alloc] initWithAnnotation:f
-                                                                            isAnimated:true];
-        NSLog(@"hello");
-        [self.mapView viewForAnnotation:f].image = [UIImage imageNamed:@""];
+        
+        if (isNowOpenable) {
+            f.isAnimated = true;
+            
+            [self.mapView viewForAnnotation:f].image = [UIImage imageNamed:@""];
+            
+            UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+            animatedImageView.tag = 10;
+            animatedImageView.animationImages = [NSArray arrayWithObjects:
+                                                 [UIImage imageNamed:@"frame_000.gif"],
+                                                 [UIImage imageNamed:@"frame_001.gif"],
+                                                 [UIImage imageNamed:@"frame_002.gif"],
+                                                 [UIImage imageNamed:@"frame_003.gif"], nil];
+            animatedImageView.animationDuration = 1.0f;
+            animatedImageView.animationRepeatCount = 0;
+            [animatedImageView startAnimating];
+            [animatedImageView setFrame: CGRectMake(0,0,25,25)];
+            
+            
+            [[self.mapView viewForAnnotation:f] addSubview:animatedImageView];
 
-        //[self.mapView viewForAnnotation:self.test[0]].image = [UIImage imageNamed:@""];
-       /* [self.allAnnotations removeObjectForKey:objectId];
-        [self.mapView removeAnnotation:f];
-getusericonwithdeviceid
-
-      
-        //[self.allAnnotations setObject:newAnnotation forKey:objectId];
-        [self.mapView addAnnotation:newAnnotation];*/
+        }
+        else {
+            for (UIView *subView in [[self.mapView viewForAnnotation:f] subviews]) {
+                if (subView.tag == 10) {
+                    [subView removeFromSuperview];
+                }
+            }
+            [self.mapView viewForAnnotation:f].image = [UIImage imageNamed:@"flur_25px.png"];
+        }
+        
     }
 }
 
@@ -275,51 +296,34 @@ getusericonwithdeviceid
     if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
+        
         if (annotationView == nil) {
             annotationView = myLocation.annotationView;
-            
-            if (myLocation.isAnimated) {
-                UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-                animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                                     [UIImage imageNamed:@"frame_000.gif"],
-                                                     [UIImage imageNamed:@"frame_001.gif"],
-                                                     [UIImage imageNamed:@"frame_002.gif"],
-                                                     [UIImage imageNamed:@"frame_003.gif"], nil];
-                animatedImageView.animationDuration = 1.0f;
-                animatedImageView.animationRepeatCount = 0;
-                [animatedImageView startAnimating];
-                [animatedImageView setFrame: CGRectMake(0,0,25,25)];
-               // annotationView.image = [UIImage imageNamed:@"frame_000.gif"];
-
-                [annotationView addSubview:animatedImageView];
-
-            }
         }
         else {
             annotationView.annotation = annotation;
-            if (myLocation.isAnimated) {
-                UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-                animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                                     [UIImage imageNamed:@"frame_000.gif"],
-                                                     [UIImage imageNamed:@"frame_001.gif"],
-                                                     [UIImage imageNamed:@"frame_002.gif"],
-                                                     [UIImage imageNamed:@"frame_003.gif"], nil];
-                animatedImageView.animationDuration = 1.0f;
-                animatedImageView.animationRepeatCount = 0;
-                [animatedImageView startAnimating];
-                [animatedImageView setFrame: CGRectMake(0,0,25,25)];
-                annotationView.image = [UIImage imageNamed:@""];
-
-                [annotationView addSubview:animatedImageView];
-                
-            }
-
-            
         }
+        
         return annotationView;
     }
     else
         return nil;
+}
+
+- (void) createDisplayForPin: (MKAnnotationView *) annotationView isAnimated:(BOOL) isAnimated {
+    if (isAnimated) {
+        UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        animatedImageView.animationImages = [NSArray arrayWithObjects:
+                                             [UIImage imageNamed:@"frame_000.gif"],
+                                             [UIImage imageNamed:@"frame_001.gif"],
+                                             [UIImage imageNamed:@"frame_002.gif"],
+                                             [UIImage imageNamed:@"frame_003.gif"], nil];
+        animatedImageView.animationDuration = 1.0f;
+        animatedImageView.animationRepeatCount = 0;
+        [animatedImageView startAnimating];
+        [animatedImageView setFrame: CGRectMake(0,0,25,25)];
+        [annotationView addSubview:animatedImageView];
+    }
 }
 
 - (IBAction)addingFlur:(id)sender {
