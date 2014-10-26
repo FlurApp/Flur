@@ -11,33 +11,104 @@
 
 @interface SinglePhotoViewController ()
 
+@property (strong, nonatomic) NSLayoutConstraint* yConstraint;
+
 @end
 
 @implementation SinglePhotoViewController
 
+- (instancetype) initWithSlideUp:(bool) slideUp {
+    self = [super initWithNibName:nil bundle:nil];
+    if (self) {
+        self.slideUp = slideUp;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor blackColor];
+    
+    UIImageView *imageView = [[UIImageView alloc] init];
+    
+    
+    imageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [imageView setImage:[UIImage imageNamed:@""]];
+    imageView.tag = 1;
+    
+    [self.view addSubview:imageView];
+    
+    
+    self.yConstraint = [NSLayoutConstraint constraintWithItem:imageView
+                                               attribute:NSLayoutAttributeCenterY
+                                               relatedBy:NSLayoutRelationEqual
+                                                  toItem:self.view
+                                               attribute:NSLayoutAttributeCenterY
+                                              multiplier:1.0
+                                                constant:0];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    
+    if (self.slideUp) {
+        self.yConstraint.constant = 1000;
+        [self.view addConstraint: self.yConstraint];
+    }
+    else {
+        [self.view addConstraint: self.yConstraint];
+    }
+}
 
-    // GET IMAGE
-    PFQuery *query = [PFQuery queryWithClassName:@"Images"];
-    [query whereKey:@"pinId" equalTo:self.pinId];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error) {
-            for (PFObject *object in objects) {
-                PFFile *imageFile = [object objectForKey:@"imageFile"];
-                [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-                    if (!error) {
-                        UIImage *image = [UIImage imageWithData:data];
-                        UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-                        [iv setImage:image];
-                        [self.view addSubview:iv];
-     
-                    }
-                }];
-            }
+- (void) setImage:(NSData *) data {
+    UIImage *image = [UIImage imageWithData:data];
+    UIImageView *imageViewPointer;
+    for (UIView *subView in [self.view subviews]) {
+        if (subView.tag == 1) {
+            imageViewPointer = (UIImageView*) subView;
+            [imageViewPointer setImage:image];
         }
-     }];
+    }
+    
+    double imageRatio = (self.view.frame.size.width-20)/image.size.width;
+    double x = image.size.width * imageRatio;
+    double y = image.size.height* imageRatio;
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
+                                                       attribute:NSLayoutAttributeHeight
+                                                       relatedBy:NSLayoutRelationEqual
+                                                          toItem:nil
+                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                      multiplier:1.0
+                                                        constant:y]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
+                                                       attribute:NSLayoutAttributeWidth
+                                                       relatedBy:NSLayoutRelationEqual
+                                                          toItem:nil
+                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                      multiplier:1.0
+                                                        constant:x]];
+    
+    
+    
+    [self.view layoutIfNeeded];
+    self.yConstraint.constant = 0;
+    NSLog(@"safd");
+    [UIView animateWithDuration:0.7
+                     animations:^{
+                         [self.view layoutIfNeeded];
+                     }];
+}
+
+- (void) displayImage:(NSData* ) data {
+    UIImage *image = [UIImage imageWithData:data];
+    UIImageView *imageView = [[UIImageView alloc] init];
+    
+    imageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [imageView setImage:image];
+    
+    [self.view addSubview:imageView];
+
+
+
     
 }
 

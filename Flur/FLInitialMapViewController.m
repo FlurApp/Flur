@@ -99,9 +99,6 @@
     
     
     
-    //[[self view] setTranslatesAutoresizingMaskIntoConstraints:NO];
-     //[self.mapView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
     [self.mapViewContainer addSubview:self.mapView];
     
 
@@ -176,6 +173,7 @@
                 [self.allAnnotations setObject:annotation forKey:pin.objectId];
                 [self.mapView addAnnotation:annotation];
             }
+            
             NSMutableArray *indexes = [self.mapManager getNewlyOpenablePins];
             [self updateAnnotations:indexes isNowOpenable:true];
         }];
