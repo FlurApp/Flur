@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "FLInitialMapViewController.h"
 #import "PhotoViewController.h"
+#import "FLCameraViewController.h"
 #import <Parse/Parse.h>
 
 @interface AppDelegate ()
@@ -43,7 +44,7 @@
 }
 
 - (void) switchController:(NSString*) controllerName {
-    NSLog(@"Swithcing %@", controllerName);
+    NSLog(@"Switching %@", controllerName);
     if ([controllerName isEqual:@"PhotoViewController"]) {
         PhotoViewController *newController = [[PhotoViewController alloc] init];
         //[self.navController pushViewController:newController animated:true];
@@ -51,6 +52,15 @@
                          animations:^{
                              [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
                              [self.navController pushViewController:newController animated:NO];
+                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
+                         }];
+    }
+    else if ([controllerName isEqual:@"FLCameraViewController"]) {
+        FLCameraViewController *camController = [[FLCameraViewController alloc] init];
+        [UIView animateWithDuration:0.75
+                         animations:^{
+                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+                             [self.navController pushViewController:camController animated:NO];
                              [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
                          }];
     }

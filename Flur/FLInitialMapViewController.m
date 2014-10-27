@@ -233,7 +233,9 @@
     FLFlurAnnotation* fa = view.annotation;
     NSString* id = fa.objectId;
     FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
-    [self showOverlay:p];
+    if(p) {
+        [self showOverlay:p];
+    }
     return;
 }
 
@@ -399,6 +401,8 @@
 
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate switchController:@"FLCameraViewController"];
 }
 
 - (void)didReceiveMemoryWarning {
