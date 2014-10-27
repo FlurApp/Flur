@@ -50,43 +50,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    /*PFFile *imageFile = [PFFile fileWithName:@"test.gif" data: UIImagePNGRepresentation([UIImage imageNamed:@"frame_000.gif"])];
-    
-    //HUD creation here (see example for code)
-    
-    // Save PFFile
-    [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (!error) {
-            // Hide old HUD, show completed HUD (see example for code)
-            
-            // Create a PFObject around a PFFile and associate it with the current user
-            PFObject *userPhoto = [PFObject objectWithClassName:@"Images"];
-            [userPhoto setObject:imageFile forKey:@"imageFile"];
-            [userPhoto setObject:@"testID" forKey:@"pinId"];
-
-            
-            [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (!error) {
-                    NSLog(@"GOOD");
-                }
-                else{
-                    // Log details of the failure
-                    NSLog(@"Error: %@ %@", error, [error userInfo]);
-                }
-            }];
-        }
-        else{
-            // Log details of the failure
-            NSLog(@"Error: %@ %@", error, [error userInfo]);
-        }
-    } progressBlock:^(int percentDone) {
-        NSLog(@"Working");
-        // Update your progress spinner here. percentDone will be between 0 and 100.
-        //HUD.progress = (float)percentDone/100;
-    }];*/
-    
-    
-    // Allocate space for all data members
+       // Allocate space for all data members
     self.viewPrompt =       [[UILabel alloc] init];
     self.currentPicture =   [[UILabel alloc] init];
     self.topBar =           [[UIView alloc] initWithFrame:CGRectZero];
