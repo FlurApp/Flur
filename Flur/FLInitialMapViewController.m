@@ -206,10 +206,10 @@
             UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
             animatedImageView.tag = 10;
             animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                                 [UIImage imageNamed:@"frame_000.gif"],
-                                                 [UIImage imageNamed:@"frame_001.gif"],
-                                                 [UIImage imageNamed:@"frame_002.gif"],
-                                                 [UIImage imageNamed:@"frame_003.gif"], nil];
+                                                 [UIImage imageNamed:@"frame_0.gif"],
+                                                 [UIImage imageNamed:@"frame_1.gif"],
+                                                 [UIImage imageNamed:@"frame_2.gif"],
+                                                 [UIImage imageNamed:@"frame_3.gif"], nil];
             animatedImageView.animationDuration = 1.0f;
             animatedImageView.animationRepeatCount = 0;
             [animatedImageView startAnimating];
@@ -361,10 +361,10 @@
     if (isAnimated) {
         UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
         animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                             [UIImage imageNamed:@"frame_000.gif"],
-                                             [UIImage imageNamed:@"frame_001.gif"],
-                                             [UIImage imageNamed:@"frame_002.gif"],
-                                             [UIImage imageNamed:@"frame_003.gif"], nil];
+                                             [UIImage imageNamed:@"frame_0.gif"],
+                                             [UIImage imageNamed:@"frame_1.gif"],
+                                             [UIImage imageNamed:@"frame_2.gif"],
+                                             [UIImage imageNamed:@"frame_3.gif"], nil];
         animatedImageView.animationDuration = 1.0f;
         animatedImageView.animationRepeatCount = 0;
         [animatedImageView startAnimating];
