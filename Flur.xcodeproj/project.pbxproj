@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		55050A0619FDE52B00E27F94 /* FLCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55050A0419FDE52B00E27F94 /* FLCameraViewController.m */; };
 		D903448719DD03CB00CF9532 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D903448619DD03CB00CF9532 /* main.m */; };
 		D903448A19DD03CB00CF9532 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D903448919DD03CB00CF9532 /* AppDelegate.m */; };
 		D903448D19DD03CB00CF9532 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D903448C19DD03CB00CF9532 /* ViewController.m */; };
@@ -84,6 +85,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		55050A0419FDE52B00E27F94 /* FLCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLCameraViewController.m; sourceTree = "<group>"; };
+		55050A0519FDE52B00E27F94 /* FLCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLCameraViewController.h; sourceTree = "<group>"; };
 		81BBFEEC39205A7BD563743A /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		848EB5AE47E94637A9943476 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D810A8B308AD2E3E47B33233 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -228,6 +231,8 @@
 		D903448319DD03CB00CF9532 /* Flur */ = {
 			isa = PBXGroup;
 			children = (
+				55050A0419FDE52B00E27F94 /* FLCameraViewController.m */,
+				55050A0519FDE52B00E27F94 /* FLCameraViewController.h */,
 				D903448819DD03CB00CF9532 /* AppDelegate.h */,
 				D903448919DD03CB00CF9532 /* AppDelegate.m */,
 				D903448B19DD03CB00CF9532 /* ViewController.h */,
@@ -518,6 +523,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D96C15D819E1F6CA009E74DA /* FLFlurAnnotation.m in Sources */,
+				55050A0619FDE52B00E27F94 /* FLCameraViewController.m in Sources */,
 				DBAFEB9B19EC4AC200312140 /* SinglePhotoViewController.m in Sources */,
 				D903448D19DD03CB00CF9532 /* ViewController.m in Sources */,
 				DB9BD30D19F59DA30066FEB1 /* FLPin.m in Sources */,
