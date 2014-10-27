@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.example.$(PRODUCT_NAME:rfc1034identifier)</string>
+	<string>com.SteveZuck.$(PRODUCT_NAME:rfc1034identifier)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -22,6 +22,10 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Allow Flur to use your location to allow you to Flur!</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Allow Flur to use your location to allow you to Flur!</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -43,9 +47,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow Flur to use your location to allow you to Flur!</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Allow Flur to use your location to allow you to Flur!</string>
 </dict>
 </plist>
