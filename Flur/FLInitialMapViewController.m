@@ -204,10 +204,10 @@
             UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
             animatedImageView.tag = 10;
             animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                                 [UIImage imageNamed:@"/frame_000.gif"],
-                                                 [UIImage imageNamed:@"/frame_001.gif"],
-                                                 [UIImage imageNamed:@"/frame_002.gif"],
-                                                 [UIImage imageNamed:@"/frame_003.gif"], nil];
+                                                 [UIImage imageNamed:@"frame_000.gif"],
+                                                 [UIImage imageNamed:@"frame_001.gif"],
+                                                 [UIImage imageNamed:@"frame_002.gif"],
+                                                 [UIImage imageNamed:@"frame_003.gif"], nil];
             animatedImageView.animationDuration = 1.0f;
             animatedImageView.animationRepeatCount = 0;
             [animatedImageView startAnimating];
@@ -346,10 +346,10 @@
     if (isAnimated) {
         UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
         animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                             [UIImage imageNamed:@"Flur/frame_000.gif"],
-                                             [UIImage imageNamed:@"Flur/frame_001.gif"],
-                                             [UIImage imageNamed:@"Flur/frame_002.gif"],
-                                             [UIImage imageNamed:@"Flur/frame_003.gif"], nil];
+                                             [UIImage imageNamed:@"frame_000.gif"],
+                                             [UIImage imageNamed:@"frame_001.gif"],
+                                             [UIImage imageNamed:@"frame_002.gif"],
+                                             [UIImage imageNamed:@"frame_003.gif"], nil];
         animatedImageView.animationDuration = 1.0f;
         animatedImageView.animationRepeatCount = 0;
         [animatedImageView startAnimating];
@@ -375,7 +375,7 @@
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"FLCameraViewController"];
+    [appDelegate switchController:@"PhotoViewController"];
 }
 
 - (void)didReceiveMemoryWarning {
