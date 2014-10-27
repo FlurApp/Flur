@@ -53,9 +53,25 @@
         self.stillImageOutput = newStillImageOutput;
     }
     
-    NSLog(@"Before start running session");
-    [self.session startRunning];
-    NSLog(@"After start running session");
+    AVCaptureConnection *videoConnection = nil;
+    for (AVCaptureConnection *connection in newStillImageOutput.connections) {
+        for (AVCaptureInputPort *port in [connection inputPorts]) {
+            if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
+                videoConnection = connection;
+                break;
+            }
+        }
+        if (videoConnection) { break; }
+    }
+    
+    [[self stillImageOutput] captureStillImageAsynchronouslyFromConnection:videoConnection
+     completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+         if (imageDataSampleBuffer != NULL) {
+             NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+             UIImage *image = [[UIImage alloc] initWithData:imageData];
+             
+         }
+     }];
     
     return;
 }
