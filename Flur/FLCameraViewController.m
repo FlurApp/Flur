@@ -41,7 +41,6 @@
     for (AVCaptureDevice *device in devices) {
         if ([device position] == AVCaptureDevicePositionBack) {
             self.device = device;
-            NSLog(@"FOND THAT SHIT");
         }
     }
     
@@ -59,7 +58,6 @@
     [newStillImageOutput setOutputSettings:outputSettings];
     
     if ([self.session canAddOutput:newStillImageOutput]) {
-        NSLog(@"adding output:");
         [self.session addOutput:newStillImageOutput];
         self.stillImageOutput = newStillImageOutput;
     }
@@ -86,9 +84,7 @@
 }
 
 - (void)loadCameraButton {
-    
-    NSLog(@"loadcamera button");
-    
+
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
 //    [button setBackgroundColor:[UIColor blackColor]];
@@ -109,8 +105,6 @@
 
 - (IBAction)takePicture:(id)sender {
     
-    NSLog(@"take picture");
-    
     AVCaptureConnection *videoConnection = nil;
     for (AVCaptureConnection *connection in self.stillImageOutput.connections) {
         for (AVCaptureInputPort *port in [connection inputPorts]) {
@@ -120,10 +114,6 @@
             }
         }
         if (videoConnection) { break; }
-    }
-    
-    if (videoConnection == nil) {
-        NSLog(@"no video connection");
     }
     
     [[self stillImageOutput] captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
@@ -143,18 +133,17 @@
     [[self view] addSubview:[self imageTaken]];
     [_imageTaken setFrame:self.view.frame];
     
-    NSLog(@"CONFIGURE IMAGE VIEW");
     _retakeButton = [[UIButton alloc] init];
     [_retakeButton setTitle:@"Retake" forState:UIControlStateNormal];
     [_retakeButton setEnabled:TRUE];
     [_retakeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_retakeButton addTarget:self action:@selector(retakePicture:) forControlEvents:UIControlEventTouchDown];
     
-    [[self imageTaken] addSubview:_retakeButton];
+    [[self view] addSubview:_retakeButton];
     
-    [[self imageTaken] addConstraint:[NSLayoutConstraint constraintWithItem:_retakeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[self imageTaken] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_retakeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
     
-    [[self imageTaken] addConstraint:[NSLayoutConstraint constraintWithItem:_retakeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self imageTaken] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_retakeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
     
     _useButton = [[UIButton alloc] init];
     [_useButton setTitle:@"Use Photo" forState:UIControlStateNormal];
@@ -162,22 +151,17 @@
     [_useButton setEnabled:TRUE];
     [_useButton addTarget:self action:@selector(uploadImage:) forControlEvents:UIControlEventTouchDown];
     
-    [[self imageTaken] addSubview:_useButton];
+    [[self view] addSubview:_useButton];
     
-    [[self imageTaken] addConstraint:[NSLayoutConstraint constraintWithItem:_useButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[self imageTaken] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_useButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
     
-    [[self imageTaken] addConstraint:[NSLayoutConstraint constraintWithItem:_useButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self imageTaken] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
-    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_useButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
     
 }
 
 - (IBAction)uploadImage:(id)sender {
     
-    
-    NSLog(@"uploadImage");
-    
     PFFile *imageFile = [PFFile fileWithName:@"test.gif" data:imageData];
-//     PFFile *imageFile = [PFFile fileWithName:@"test.gif" data:UIImagePNGRepresentation([UIImage imageNamed:@"frame_0.gif"])];
 
     // Save PFFile
     [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -188,10 +172,7 @@
             
             
             [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (!error) {
-                    NSLog(@"GOOD");
-                }
-                else{
+                if (error) {
                     // Log details of the failure
                     NSLog(@"Error: %@ %@", error, [error userInfo]);
                 }
@@ -202,7 +183,6 @@
             NSLog(@"Error: %@ %@", error, [error userInfo]);
         }
     } progressBlock:^(int percentDone) {
-        NSLog(@"Working");
         // Update your progress spinner here. percentDone will be between 0 and 100.
         //HUD.progress = (float)percentDone/100;
     }];
@@ -211,42 +191,10 @@
 -(IBAction)retakePicture:(id)sender {
     
     NSLog(@"retake picture");
+    [_retakeButton removeFromSuperview];
+    [_useButton removeFromSuperview];
     [_imageTaken removeFromSuperview];
 }
-
-- (void) uploadImage:(NSData*) data {
-     PFFile *imageFile = [PFFile fileWithName:@"test.gif" data: data];
-          
-     // Save PFFile
-     [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-         if (!error) {
-             PFObject *userPhoto = [PFObject objectWithClassName:@"Images"];
-             [userPhoto setObject:imageFile forKey:@"imageFile"];
-             [userPhoto setObject:@"testID" forKey:@"pinId"];
-             
-             
-             [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                 if (!error) {
-                     NSLog(@"GOOD");
-                 }
-                 else{
-                     // Log details of the failure
-                     NSLog(@"Error: %@ %@", error, [error userInfo]);
-                 }
-             }];
-         }
-         else{
-             // Log details of the failure
-             NSLog(@"Error: %@ %@", error, [error userInfo]);
-         }
-     } progressBlock:^(int percentDone) {
-         NSLog(@"Working");
-         // Update your progress spinner here. percentDone will be between 0 and 100.
-         //HUD.progress = (float)percentDone/100;
-     }];
-}
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

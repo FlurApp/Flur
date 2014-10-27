@@ -657,7 +657,7 @@
 				INFOPLIST_FILE = Flur/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2c82dc0f-f5a4-4c7c-875a-67cb9a42146c";
+				PROVISIONING_PROFILE = "5bd487f3-1baa-4be8-bb21-26b2dfc8eb39";
 			};
 			name = Debug;
 		};
@@ -672,7 +672,7 @@
 				INFOPLIST_FILE = Flur/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2c82dc0f-f5a4-4c7c-875a-67cb9a42146c";
+				PROVISIONING_PROFILE = "5bd487f3-1baa-4be8-bb21-26b2dfc8eb39";
 			};
 			name = Release;
 		};
