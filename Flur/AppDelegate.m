@@ -31,7 +31,7 @@
     FLInitialMapViewController * control = [FLInitialMapViewController new];
     PhotoViewController *c = [PhotoViewController new];
     
-    self.navController = [[UINavigationController alloc] initWithRootViewController: control];
+    self.navController = [[UINavigationController alloc] initWithRootViewController: c];
     [self.navController setNavigationBarHidden:YES];
 
     self.window.rootViewController = self.navController;

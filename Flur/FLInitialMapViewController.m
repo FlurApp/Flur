@@ -390,7 +390,7 @@
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"PhotoViewController"];
+    [appDelegate switchController:@"FLCameraViewController"];
 }
 
 - (void)didReceiveMemoryWarning {
