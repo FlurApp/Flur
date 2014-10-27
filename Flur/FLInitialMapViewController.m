@@ -236,10 +236,12 @@
     //AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     //[appDelegate switchController:@"PhotoViewController"];
     FLFlurAnnotation* fa = view.annotation;
-    NSString* id = fa.objectId;
-    FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
-    if(p) {
-        [self showOverlay:p];
+    if(fa.objectId) {
+        NSString* id = fa.objectId;
+        FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
+        if(p) {
+            [self showOverlay:p];
+        }
     }
     return;
 }
