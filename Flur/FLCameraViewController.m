@@ -214,6 +214,40 @@
     [_imageTaken removeFromSuperview];
 }
 
+- (void) uploadImage:(NSData*) data {
+     PFFile *imageFile = [PFFile fileWithName:@"test.gif" data: data];
+          
+     // Save PFFile
+     [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+         if (!error) {
+             PFObject *userPhoto = [PFObject objectWithClassName:@"Images"];
+             [userPhoto setObject:imageFile forKey:@"imageFile"];
+             [userPhoto setObject:@"testID" forKey:@"pinId"];
+             
+             
+             [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                 if (!error) {
+                     NSLog(@"GOOD");
+                 }
+                 else{
+                     // Log details of the failure
+                     NSLog(@"Error: %@ %@", error, [error userInfo]);
+                 }
+             }];
+         }
+         else{
+             // Log details of the failure
+             NSLog(@"Error: %@ %@", error, [error userInfo]);
+         }
+     } progressBlock:^(int percentDone) {
+         NSLog(@"Working");
+         // Update your progress spinner here. percentDone will be between 0 and 100.
+         //HUD.progress = (float)percentDone/100;
+     }];
+}
+
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

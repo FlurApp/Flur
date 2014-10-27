@@ -14,5 +14,5 @@
     @property (assign, nonatomic) NSString* pinId;
 
     - (instancetype) initWithPin: (NSString*) pinId;
-- (void) method;
+
 @end

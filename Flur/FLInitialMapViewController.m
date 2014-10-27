@@ -133,7 +133,7 @@
     [topBarTitle setText:@"Flur"];
     [topBarTitle setTextColor:[UIColor whiteColor]];
     topBarTitle.backgroundColor = [UIColor clearColor];
-    [topBarTitle setTextAlignment:UITextAlignmentCenter];
+    [topBarTitle setTextAlignment:NSTextAlignmentCenter];
     
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
@@ -390,7 +390,7 @@
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"PhotoViewController"];
+    [appDelegate switchController:@"FLCameraViewController"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -400,7 +400,7 @@
 }
 
 - (void)exitBlur:(UITapGestureRecognizer *)recognizer {
-    CGPoint location = [recognizer locationInView:[recognizer.view superview]];
+    // CGPoint location = [recognizer locationInView:[recognizer.view superview]];
     [self.blurEffectView removeFromSuperview];
 }
 

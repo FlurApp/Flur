@@ -14,20 +14,19 @@
 
 @interface PhotoViewController ()
 
+// UI elements
 @property   (strong, nonatomic) UIImageView * spinner;
 @property   (strong, nonatomic) UILabel * viewPrompt;
 @property   (strong, nonatomic) UIView * topBar;
 @property   (strong, nonatomic) UIView * bottomBar;
 @property   (strong, nonatomic) UILabel* currentPicture;
 
-
+// Used to pass top/bottom bar to SinglePhotoVC so it can toggle views
 @property   (strong, nonatomic) NSMutableArray *viewsToToggle;
 
-
-
-
-
 @property (strong, nonatomic) NSMutableArray *allPhotos;
+
+// Used to detect whether two async calls have returned
 @property (nonatomic) int count;
 @property (nonatomic) bool topBarVisible;
 
@@ -42,6 +41,7 @@
     if (self) {
         self.pinId = pinId;
         self.topBarVisible = false;
+        self.count = 0;
     }
     
     return self;
@@ -50,58 +50,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    /*PFFile *imageFile = [PFFile fileWithName:@"test.gif" data: UIImagePNGRepresentation([UIImage imageNamed:@"frame_000.gif"])];
+       // Allocate space for all data members
+    self.viewPrompt =       [[UILabel alloc] init];
+    self.currentPicture =   [[UILabel alloc] init];
+    self.topBar =           [[UIView alloc] initWithFrame:CGRectZero];
+    self.bottomBar =        [[UIView alloc] initWithFrame:CGRectZero];
+    self.spinner =          [[UIImageView alloc] initWithFrame:self.view.bounds];
     
-    //HUD creation here (see example for code)
-    
-    // Save PFFile
-    [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (!error) {
-            // Hide old HUD, show completed HUD (see example for code)
-            
-            // Create a PFObject around a PFFile and associate it with the current user
-            PFObject *userPhoto = [PFObject objectWithClassName:@"Images"];
-            [userPhoto setObject:imageFile forKey:@"imageFile"];
-            [userPhoto setObject:@"testID" forKey:@"pinId"];
+    self.viewsToToggle =    [[NSMutableArray alloc] init];
+    self.allPhotos =        [[NSMutableArray alloc] init];
 
-            
-            [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (!error) {
-                    NSLog(@"GOOD");
-                }
-                else{
-                    // Log details of the failure
-                    NSLog(@"Error: %@ %@", error, [error userInfo]);
-                }
-            }];
-        }
-        else{
-            // Log details of the failure
-            NSLog(@"Error: %@ %@", error, [error userInfo]);
-        }
-    } progressBlock:^(int percentDone) {
-        NSLog(@"Working");
-        // Update your progress spinner here. percentDone will be between 0 and 100.
-        //HUD.progress = (float)percentDone/100;
-    }];*/
-    
-    
-    
-    
     self.view.backgroundColor = [UIColor blackColor];
-    self.allPhotos = [[NSMutableArray alloc] init];
-    self.viewPrompt = [[UILabel alloc] init];
-    self.currentPicture = [[UILabel alloc] init];
-
-    self.spinner = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    self.topBarVisible = true;
-    self.viewsToToggle = [[NSMutableArray alloc] init];
-
     self.pinId = @"c8kzGmjHaU";
-    self.count = 0;
 
     
-    // SET UP CONTROLLER
+    // Set up controller for the multiple page view
     self.pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
     
     self.pageController.dataSource = self;
@@ -119,8 +82,14 @@
     [[self view] addSubview:[self.pageController view]];
     [self.pageController didMoveToParentViewController:self];
     
+    // Load custom views
     [self loadViews];
+    
+    // Wait until all views have been generated to pass the list of views that the SinglePhotoVC should
+    // control
     initialViewController.viewsToToggle = self.viewsToToggle;
+    
+    // Query DB and load view when ready
     [self displayAllData];
 
  
@@ -128,22 +97,6 @@
         // Do any additional setup after loading the view.
 }
 
-- (void)replaceTopConstraintOnView:(UIView *)view withAttribute:(NSLayoutAttribute) attribute
-                      withConstant:(float)constant
-{
-    [self.view.constraints enumerateObjectsUsingBlock:^(NSLayoutConstraint *constraint, NSUInteger idx, BOOL *stop) {
-        if ((constraint.firstItem == view) && (constraint.firstAttribute == attribute)) {
-            constraint.constant = constant;
-        }
-    }];
-}
-
-- (void)animateConstraints
-{
-    [UIView animateWithDuration:0.8 animations:^{
-        [self.view layoutIfNeeded];
-    }];
-}
 
 
 - (void) loadSpinner {
@@ -202,11 +155,7 @@
                                                         constant:100.0]];
 }
 
-- (void) loadViews {
-    [self loadSpinner];
-    
-    
-    self.topBar = [[UIView alloc] initWithFrame:CGRectZero];
+- (void) loadTopBar {
     self.topBar.translatesAutoresizingMaskIntoConstraints = NO;
     self.topBar.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.topBar];
@@ -221,12 +170,12 @@
     
     UIButton *exitButton = [[UIButton alloc] init];
     exitButton.translatesAutoresizingMaskIntoConstraints = NO;
-
+    
     UIImage * exitImage = [UIImage imageNamed:@"exit_image.png"];
     [exitButton setBackgroundImage:exitImage forState:UIControlStateNormal];
     [exitButton addTarget:self
-                 action:@selector(navBack)
-       forControlEvents:UIControlEventTouchUpInside];
+                   action:@selector(navBack)
+         forControlEvents:UIControlEventTouchUpInside];
     
     [self.topBar addSubview:exitButton];
     
@@ -245,10 +194,9 @@
     
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:5]];
+}
 
-
-    
-    self.bottomBar = [[UIView alloc] initWithFrame:CGRectZero];
+- (void) loadBottomBar {
     self.bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
     //self.bottomBar.backgroundColor = [UIColor blackColor];
     [self.view addSubview:self.bottomBar];
@@ -259,7 +207,7 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomBar attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-
+    
     
     [self.viewsToToggle addObject:self.topBar];
     [self.viewsToToggle addObject:self.bottomBar];
@@ -273,7 +221,7 @@
     UIVisualEffectView *blurEffectView;
     blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
-
+    
     
     [self.bottomBar addSubview:blurEffectView];
     
@@ -285,19 +233,14 @@
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-
-    self.viewPrompt = [[UILabel alloc] init];
+    
     self.viewPrompt.translatesAutoresizingMaskIntoConstraints = NO;
     [self.viewPrompt setTextColor:[UIColor whiteColor]];
     
-    //self.viewPrompt.backgroundColor = [UIColor redColor];
     [self.bottomBar addSubview:self.viewPrompt];
     
     self.viewPrompt.numberOfLines = 0;
     self.viewPrompt.lineBreakMode = NSLineBreakByWordWrapping;
-    //self.viewPrompt.preferredMaxLayoutWidth = 200;
-    
-
     
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
     
@@ -307,10 +250,12 @@
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
     
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
-    
-    
-    
-    /*[[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];*/
+}
+
+- (void) loadViews {
+    [self loadSpinner];
+    [self loadTopBar];
+    [self loadBottomBar];
 }
 
 
@@ -400,8 +345,6 @@
 
 }
 
-
-
 - (void) loadPrompt:(void (^) (NSString* prompt)) completion{
     PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
     [query whereKey:@"objectId" equalTo:self.pinId];
@@ -414,6 +357,24 @@
         else {
             NSLog(@"fuck");
         }
+    }];
+}
+
+
+- (void)replaceTopConstraintOnView:(UIView *)view withAttribute:(NSLayoutAttribute) attribute
+                      withConstant:(float)constant
+{
+    [self.view.constraints enumerateObjectsUsingBlock:^(NSLayoutConstraint *constraint, NSUInteger idx, BOOL *stop) {
+        if ((constraint.firstItem == view) && (constraint.firstAttribute == attribute)) {
+            constraint.constant = constant;
+        }
+    }];
+}
+
+- (void)animateConstraints
+{
+    [UIView animateWithDuration:0.8 animations:^{
+        [self.view layoutIfNeeded];
     }];
 }
 
@@ -487,6 +448,7 @@
         // the book was on before the gesture started is still the correct page
         return;
     }
+    
     // Everytime a page is turned, grab the index of the current page, display as current photo number
     SinglePhotoViewController* a= [self.pageController.viewControllers lastObject];
     NSLog(@"index %lu", a.index);
