@@ -159,6 +159,14 @@
     [self updateAnnotations:indexes isNowOpenable:true];
 }
 
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
+{
+    MKAnnotationView* annotationView = [mapView viewForAnnotation:userLocation];
+    mapView.userLocation.title = @"";
+    annotationView.canShowCallout = NO;
+    
+}
+
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
     if([self.mapManager shouldRefreshMap]) {
@@ -390,7 +398,7 @@
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"PhotoViewController"];
+    [appDelegate switchController:@"FLCameraViewController"];
 }
 
 - (void)didReceiveMemoryWarning {
