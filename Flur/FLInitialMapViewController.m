@@ -227,6 +227,8 @@
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
+    //AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    //[appDelegate switchController:@"PhotoViewController"];
     FLFlurAnnotation* fa = view.annotation;
     NSString* id = fa.objectId;
     FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
@@ -390,6 +392,11 @@
 }
 
 - (IBAction)switchingView:(id)sender {
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate switchController:@"PhotoViewController"];
+}
+
+- (void) switchController {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate switchController:@"PhotoViewController"];
 }

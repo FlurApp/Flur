@@ -69,6 +69,7 @@
 		DBC4C0D019FD6FFA00BDD66B /* frame_026.gif in Resources */ = {isa = PBXBuildFile; fileRef = DBC4C0B319FD6FFA00BDD66B /* frame_026.gif */; };
 		DBC4C0D119FD6FFA00BDD66B /* frame_027.gif in Resources */ = {isa = PBXBuildFile; fileRef = DBC4C0B419FD6FFA00BDD66B /* frame_027.gif */; };
 		DBC4C0D219FD6FFA00BDD66B /* frame_028.gif in Resources */ = {isa = PBXBuildFile; fileRef = DBC4C0B519FD6FFA00BDD66B /* frame_028.gif */; };
+		DBC4C0D619FDC62600BDD66B /* exit_image.png in Resources */ = {isa = PBXBuildFile; fileRef = DBC4C0D519FDC62600BDD66B /* exit_image.png */; };
 		DD2B870A11496D0D818274F5 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81BBFEEC39205A7BD563743A /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -161,6 +162,7 @@
 		DBC4C0B319FD6FFA00BDD66B /* frame_026.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = frame_026.gif; sourceTree = "<group>"; };
 		DBC4C0B419FD6FFA00BDD66B /* frame_027.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = frame_027.gif; sourceTree = "<group>"; };
 		DBC4C0B519FD6FFA00BDD66B /* frame_028.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = frame_028.gif; sourceTree = "<group>"; };
+		DBC4C0D519FDC62600BDD66B /* exit_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = exit_image.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,6 +256,7 @@
 		D903448419DD03CB00CF9532 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				DBC4C0D519FDC62600BDD66B /* exit_image.png */,
 				DBC4C09819FD6FFA00BDD66B /* loading-gif */,
 				DB3ADA5A19FB336B0038E860 /* frame_000.gif */,
 				DB3ADA5B19FB336B0038E860 /* frame_001.gif */,
@@ -449,6 +452,7 @@
 				DB88878B19FA0E3500851575 /* flur_25px.png in Resources */,
 				DBC4C0B919FD6FFA00BDD66B /* frame_003.gif in Resources */,
 				DBC4C0BD19FD6FFA00BDD66B /* frame_007.gif in Resources */,
+				DBC4C0D619FDC62600BDD66B /* exit_image.png in Resources */,
 				DB3ADA6B19FB336B0038E860 /* frame_002.gif in Resources */,
 				DB3ADA7219FB336B0038E860 /* frame_009.gif in Resources */,
 				DB3ADA7319FB336B0038E860 /* frame_010.gif in Resources */,

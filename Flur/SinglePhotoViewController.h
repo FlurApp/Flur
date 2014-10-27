@@ -19,6 +19,9 @@
 @property (assign, nonatomic) NSString* pinId;
 @property (nonatomic) bool slideUp;
 @property (strong, nonatomic) NSData* data;
+@property   (strong, nonatomic) NSMutableArray *viewsToToggle;
+
+
 
 
 @end

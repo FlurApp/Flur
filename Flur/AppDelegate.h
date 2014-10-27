@@ -14,6 +14,8 @@
 @property (strong, nonatomic) UINavigationController *navController;
 
 - (void) switchController:(NSString*) controllerName;
+- (void) popMyself;
+
 
 
 @end

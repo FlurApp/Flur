@@ -30,10 +30,11 @@
     FLInitialMapViewController * control = [FLInitialMapViewController new];
     PhotoViewController *c = [PhotoViewController new];
     
-    self.navController = [[UINavigationController alloc] initWithRootViewController: c];
+    self.navController = [[UINavigationController alloc] initWithRootViewController: control];
     [self.navController setNavigationBarHidden:YES];
 
     self.window.rootViewController = self.navController;
+    self.window.backgroundColor = [UIColor blackColor];
     
     // Setup navigation bar programmatically
     
@@ -54,9 +55,31 @@
                              [self.navController pushViewController:newController animated:NO];
                              [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
                          }];
+        /*CATransition* transition = [CATransition animation];
+        transition.duration = 0.5;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        transition.type = kCATransitionFade; //kCATransitionMoveIn; //, kCATransitionPush, kCATransitionReveal, kCATransitionFade
+        //transition.subtype = kCATransitionFromTop; //kCATransitionFromLeft, kCATransitionFromRight, kCATransitionFromTop, kCATransitionFromBottom
+        [self.navController.view.layer addAnimation:transition forKey:nil];
+        [[self navController] pushViewController:newController animated:NO];*/
     }
 }
 
+- (void) popMyself {
+    /*[UIView animateWithDuration:0.75
+                     animations:^{
+                         [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+                         [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
+                     }];
+    [self.navController popViewControllerAnimated:NO];*/
+    CATransition* transition = [CATransition animation];
+    transition.duration = 0.5;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    transition.type = kCATransitionFade; //kCATransitionMoveIn; //, kCATransitionPush, kCATransitionReveal, kCATransitionFade
+    //transition.subtype = kCATransitionFromTop; //kCATransitionFromLeft, kCATransitionFromRight, kCATransitionFromTop, kCATransitionFromBottom
+    [self.navController.view.layer addAnimation:transition forKey:nil];
+    [[self navController] popViewControllerAnimated:NO];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
