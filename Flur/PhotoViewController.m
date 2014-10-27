@@ -50,6 +50,44 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    /*PFFile *imageFile = [PFFile fileWithName:@"test.gif" data: UIImagePNGRepresentation([UIImage imageNamed:@"frame_000.gif"])];
+    
+    //HUD creation here (see example for code)
+    
+    // Save PFFile
+    [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+            // Hide old HUD, show completed HUD (see example for code)
+            
+            // Create a PFObject around a PFFile and associate it with the current user
+            PFObject *userPhoto = [PFObject objectWithClassName:@"Images"];
+            [userPhoto setObject:imageFile forKey:@"imageFile"];
+            [userPhoto setObject:@"testID" forKey:@"pinId"];
+
+            
+            [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (!error) {
+                    NSLog(@"GOOD");
+                }
+                else{
+                    // Log details of the failure
+                    NSLog(@"Error: %@ %@", error, [error userInfo]);
+                }
+            }];
+        }
+        else{
+            // Log details of the failure
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+    } progressBlock:^(int percentDone) {
+        NSLog(@"Working");
+        // Update your progress spinner here. percentDone will be between 0 and 100.
+        //HUD.progress = (float)percentDone/100;
+    }];*/
+    
+    
+    
+    
     self.view.backgroundColor = [UIColor blackColor];
     self.allPhotos = [[NSMutableArray alloc] init];
     self.viewPrompt = [[UILabel alloc] init];
@@ -203,7 +241,7 @@
     
     [self.topBar addSubview:self.currentPicture];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
     
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:5]];
@@ -215,7 +253,6 @@
     //self.bottomBar.backgroundColor = [UIColor blackColor];
     [self.view addSubview:self.bottomBar];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-80]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
@@ -253,16 +290,25 @@
     self.viewPrompt.translatesAutoresizingMaskIntoConstraints = NO;
     [self.viewPrompt setTextColor:[UIColor whiteColor]];
     
-    //[self.viewPrompt setTextAlignment:UITextAlignmentCenter];
-    
+    //self.viewPrompt.backgroundColor = [UIColor redColor];
     [self.bottomBar addSubview:self.viewPrompt];
+    
+    self.viewPrompt.numberOfLines = 0;
+    self.viewPrompt.lineBreakMode = NSLineBreakByWordWrapping;
+    //self.viewPrompt.preferredMaxLayoutWidth = 200;
+    
+
     
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
     
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-10]];
     
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
+    
+    
     
     /*[[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];*/
 }
@@ -291,6 +337,7 @@
     [self loadPrompt:^(NSString * prompt) {
         self.count++;
         [self.viewPrompt setText:prompt];
+        self.viewPrompt.text = @"Hey there this is a test its very good and long and dadff fuck this";
         if (self.count == 2) {
             [self animateAllData];
         }
@@ -299,9 +346,6 @@
 
 
 - (void) animateAllData {
-    [self replaceTopConstraintOnView:self.viewPrompt withAttribute:NSLayoutAttributeTop withConstant:30];
-    [self animateConstraints];
-    
     
     [UIView beginAnimations:@"fade in" context:nil];
     [UIView setAnimationDuration:1.0];
@@ -313,19 +357,33 @@
 }
 
 - (void) loadPhotos:(void (^) ()) completion {
-    // GET IMAGE
-    __block bool loadedFirst = false;
+    
+    // Create the query
     PFQuery *query = [PFQuery queryWithClassName:@"Images"];
     [query whereKey:@"pinId" equalTo:self.pinId];
+    [query orderByAscending:@"createdAt"];
+    
+    // Set to true once we have loaded our first photo
+    __block bool loadedFirst = false;
+
+    // Run query to download all relevant photos
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
+            // Now know how many photos are returned, set label in UI showing what photo you are
+            // on out of how many photos are returned.
             self.currentPicture.text =[NSString stringWithFormat:@"1/%lu", objects.count];
-
+            
+            // Iterate over all objects and download corresponding data
             for (PFObject *object in objects) {
                 PFFile *imageFile = [object objectForKey:@"imageFile"];
                 [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                     if (!error) {
+                        
+                        // Add data to our container for photos
                         [self.allPhotos addObject:data];
+                        
+                        // If this is the first photo you have loaded, run completion handler to animate
+                        // the screen.
                         if (!loadedFirst) {
                             loadedFirst = true;
                             completion();
@@ -364,15 +422,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
     
@@ -404,13 +453,14 @@
 }
 
 - (SinglePhotoViewController *)viewControllerAtIndex:(NSUInteger)index {
-    NSData* data = [self.allPhotos count] == 0 ? [[NSData alloc] init] : self.allPhotos[index];
+    
     SinglePhotoViewController *childViewController = [[SinglePhotoViewController alloc] initWithSlideUp: [self.allPhotos count] == 0];
+    
     childViewController.index = index;
     childViewController.pinId = self.pinId;
     childViewController.viewsToToggle = self.viewsToToggle;
 
-    
+    NSData* data = [self.allPhotos count] == 0 ? [[NSData alloc] init] : self.allPhotos[index];
     if ([data length] != 0)
     [childViewController setImage:data];
     
@@ -437,7 +487,7 @@
         // the book was on before the gesture started is still the correct page
         return;
     }
-   // NSLog(@"current index %lu", ((SinglePhotoViewController*)(previousViewControllers[0])).index);
+    // Everytime a page is turned, grab the index of the current page, display as current photo number
     SinglePhotoViewController* a= [self.pageController.viewControllers lastObject];
     NSLog(@"index %lu", a.index);
     

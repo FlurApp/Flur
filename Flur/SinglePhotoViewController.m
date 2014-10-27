@@ -13,7 +13,6 @@
 
 @property (strong, nonatomic) NSLayoutConstraint* yConstraint;
 @property (strong, nonatomic) UIView* seeThroughContainer;
-@property (nonatomic) bool topBarVisible;
 
 
 
@@ -21,14 +20,20 @@
 
 @implementation SinglePhotoViewController
 
+static bool topBarVisible = false;
+
 - (instancetype) initWithSlideUp:(bool) slideUp {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.slideUp = slideUp;
-        self.topBarVisible = false;
     }
     return self;
 }
+
++ (void) setTopBarVisible:(bool)visible {
+    topBarVisible = visible;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -84,13 +89,13 @@
 
 - (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
     CGPoint location = [recognizer locationInView:[recognizer.view superview]];
-    
     [self toggleViews];
 }
 
 - (void) toggleViews {
     for (UIView* view in self.viewsToToggle) {
-        if (self.topBarVisible) {
+        if (topBarVisible) {
+            NSLog(@"Toggling");
             [UIView beginAnimations:@"fade in" context:nil];
             [UIView setAnimationDuration:.5];
             view.alpha = 0;
@@ -103,7 +108,7 @@
             [UIView commitAnimations];
         }
     }
-    self.topBarVisible = !self.topBarVisible;
+    topBarVisible = !topBarVisible;
 }
 
 - (void) setImage:(NSData *) data {
@@ -141,7 +146,6 @@
     [self.view layoutIfNeeded];
     
     if (self.slideUp) {
-        NSLog(@"helloooo");
         self.yConstraint.constant = 0;
         [UIView animateWithDuration:0.7
                          animations:^{

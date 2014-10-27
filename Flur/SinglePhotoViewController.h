@@ -21,6 +21,8 @@
 @property (strong, nonatomic) NSData* data;
 @property   (strong, nonatomic) NSMutableArray *viewsToToggle;
 
++ (bool) topBarVisible;
++ (void) setTopBarVisible:(bool)visible;
 
 
 
