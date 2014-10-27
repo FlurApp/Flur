@@ -23,7 +23,6 @@
 
 //- (NSMutableArray*) getViewablePins;
 - (void) getViewablePins:(void (^) (NSMutableDictionary* allNonOpenablePins)) completion;
-- (NSMutableArray *) isCloseEnoughToOpen;
 - (BOOL) shouldRefreshMap;
 //- (BOOL) shouldCheckOpenablePins;
 - (double) currentLat;

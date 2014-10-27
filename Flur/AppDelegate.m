@@ -28,7 +28,7 @@
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
    
-    FLInitialMapViewController * control = [FLInitialMapViewController new];
+    // FLInitialMapViewController * control = [FLInitialMapViewController new];
     PhotoViewController *c = [PhotoViewController new];
     
     self.navController = [[UINavigationController alloc] initWithRootViewController: c];
