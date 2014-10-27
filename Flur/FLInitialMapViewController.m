@@ -235,6 +235,11 @@
 {
     //AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     //[appDelegate switchController:@"PhotoViewController"];
+    id<MKAnnotation> annotation = view.annotation;
+    if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        return;
+        // this is where you can find the annotation type is whether it is userlocation or not...
+    }
     FLFlurAnnotation* fa = view.annotation;
     if(fa.objectId) {
         NSString* id = fa.objectId;
