@@ -110,7 +110,7 @@
 		D96C15D419E1CE18009E74DA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		D96C15D619E1F6CA009E74DA /* FLFlurAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLFlurAnnotation.h; sourceTree = "<group>"; };
 		D96C15D719E1F6CA009E74DA /* FLFlurAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLFlurAnnotation.m; sourceTree = "<group>"; };
-		DB3ADA5A19FB336B0038E860 /* frame_000.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = frame_000.gif; sourceTree = "<group>"; };
+		DB3ADA5A19FB336B0038E860 /* frame_000.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = frame_000.gif; path = Flur/frame_000.gif; sourceTree = SOURCE_ROOT; };
 		DB3ADA5B19FB336B0038E860 /* frame_001.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = frame_001.gif; sourceTree = "<group>"; };
 		DB3ADA5C19FB336B0038E860 /* frame_002.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = frame_002.gif; sourceTree = "<group>"; };
 		DB3ADA5D19FB336B0038E860 /* frame_003.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = frame_003.gif; sourceTree = "<group>"; };
@@ -387,10 +387,11 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0600;
-				ORGANIZATIONNAME = lhashemi;
+				ORGANIZATIONNAME = "Steve Zuckerman";
 				TargetAttributes = {
 					D903448019DD03CB00CF9532 = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = 6V6CG978VS;
 					};
 					D903449619DD03CB00CF9532 = {
 						CreatedOnToolsVersion = 6.0;
@@ -650,9 +651,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Flur/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "2c82dc0f-f5a4-4c7c-875a-67cb9a42146c";
 			};
 			name = Debug;
 		};
@@ -662,9 +667,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Flur/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "2c82dc0f-f5a4-4c7c-875a-67cb9a42146c";
 			};
 			name = Release;
 		};

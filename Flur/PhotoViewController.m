@@ -115,9 +115,9 @@
     for(int i=0; i<29; i++) {
         NSString* imageName;
         if (i < 10)
-            imageName = [NSString stringWithFormat:@"frame_00%d.gif", i];
+            imageName = [NSString stringWithFormat:@"Flur/loading-gif/frame_00%d.gif", i];
         else
-            imageName = [NSString stringWithFormat:@"frame_0%d.gif", i];
+            imageName = [NSString stringWithFormat:@"Flur/loading-gif/frame_0%d.gif", i];
 
         [frameHolders addObject:[UIImage imageNamed:imageName]];
     }
