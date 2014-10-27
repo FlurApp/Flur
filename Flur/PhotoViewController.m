@@ -11,6 +11,7 @@
 #import <Parse/Parse.h>
 #import "AppDelegate.h"
 
+#define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 
 @interface PhotoViewController ()
 
@@ -157,7 +158,8 @@
 
 - (void) loadTopBar {
     self.topBar.translatesAutoresizingMaskIntoConstraints = NO;
-    self.topBar.backgroundColor = [UIColor whiteColor];
+    self.topBar.backgroundColor = RGB(215,215,215);
+
     [self.view addSubview:self.topBar];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
@@ -167,6 +169,22 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    UIView* topBarBottomBorder = [[UIView alloc] init];
+    topBarBottomBorder.translatesAutoresizingMaskIntoConstraints = NO;
+    topBarBottomBorder.backgroundColor = RGB(100,100,100);
+    
+    [self.topBar addSubview:topBarBottomBorder];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarBottomBorder attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-1]];
+
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarBottomBorder attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+    
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarBottomBorder attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarBottomBorder attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
     
     UIButton *exitButton = [[UIButton alloc] init];
     exitButton.translatesAutoresizingMaskIntoConstraints = NO;

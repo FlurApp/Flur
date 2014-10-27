@@ -97,6 +97,10 @@
     [self.mapView setShowsUserLocation:YES];
     [self.mapView setUserTrackingMode:MKUserTrackingModeFollowWithHeading];
     
+    /*CLLocationCoordinate2D = CLLocationCoordinate2DMake(self.loc, <#CLLocationDegrees longitude#>)
+    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(self.locationManager.location, 500, 500);
+    MKCoordinateRegion adjustedRegion = [self.mapView regionThatFits:viewRegion];
+    [self.mapView setRegion:adjustedRegion animated:YES];*/
     
     
     [self.mapViewContainer addSubview:self.mapView];

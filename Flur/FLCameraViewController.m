@@ -79,7 +79,7 @@
 
 - (void) uploadImage:(NSData*) data {
      PFFile *imageFile = [PFFile fileWithName:@"test.gif" data: data];
-          
+    
      // Save PFFile
      [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
          if (!error) {
