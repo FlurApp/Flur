@@ -163,6 +163,14 @@
     [self updateAnnotations:indexes isNowOpenable:true];
 }
 
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
+{
+    MKAnnotationView* annotationView = [mapView viewForAnnotation:userLocation];
+    mapView.userLocation.title = @"";
+    annotationView.canShowCallout = NO;
+    
+}
+
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
     if([self.mapManager shouldRefreshMap]) {
