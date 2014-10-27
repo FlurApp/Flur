@@ -38,6 +38,7 @@ static bool topBarVisible = false;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Create a clear container for detecting finger presses
     self.seeThroughContainer = [[UIView alloc] initWithFrame:CGRectZero];
     self.seeThroughContainer.translatesAutoresizingMaskIntoConstraints = NO;
     self.seeThroughContainer.backgroundColor = [UIColor clearColor];
@@ -51,16 +52,15 @@ static bool topBarVisible = false;
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.seeThroughContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
 
-    
+    // Add finger press detection
     UITapGestureRecognizer *singleFingerTap =
     [[UITapGestureRecognizer alloc] initWithTarget:self
                                             action:@selector(handleSingleTap:)];
     [self.seeThroughContainer addGestureRecognizer:singleFingerTap];
 
     
+    // Add image container for displaying images, initially empty image
     UIImageView *imageView = [[UIImageView alloc] init];
-    
-    
     imageView.translatesAutoresizingMaskIntoConstraints = NO;
     [imageView setImage:[UIImage imageNamed:@""]];
     imageView.tag = 1;
@@ -78,6 +78,7 @@ static bool topBarVisible = false;
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
+    // If this photo should slide up (first photo) change its y constraint to off the screen
     if (self.slideUp) {
         self.yConstraint.constant = 1000;
         [self.view addConstraint: self.yConstraint];
@@ -87,15 +88,16 @@ static bool topBarVisible = false;
     }
 }
 
+// On finger press, toggle top and bottom bar
 - (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
-    CGPoint location = [recognizer locationInView:[recognizer.view superview]];
+    // CGPoint location = [recognizer locationInView:[recognizer.view superview]];
     [self toggleViews];
 }
+
 
 - (void) toggleViews {
     for (UIView* view in self.viewsToToggle) {
         if (topBarVisible) {
-            NSLog(@"Toggling");
             [UIView beginAnimations:@"fade in" context:nil];
             [UIView setAnimationDuration:.5];
             view.alpha = 0;
@@ -111,7 +113,10 @@ static bool topBarVisible = false;
     topBarVisible = !topBarVisible;
 }
 
+
 - (void) setImage:(NSData *) data {
+    
+    // Create image from data and find correct subview to put it in
     UIImage *image = [UIImage imageWithData:data];
     UIImageView *imageViewPointer;
     for (UIView *subView in [self.view subviews]) {
@@ -121,10 +126,12 @@ static bool topBarVisible = false;
         }
     }
     
+    // Calculate size of image depending on screen size
     double imageRatio = (self.view.frame.size.width)/image.size.width;
     double x = image.size.width * imageRatio;
     double y = image.size.height* imageRatio;
     
+    // Set size of image
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
                                                        attribute:NSLayoutAttributeHeight
                                                        relatedBy:NSLayoutRelationEqual
@@ -142,9 +149,9 @@ static bool topBarVisible = false;
                                                         constant:x]];
     
     
-    
     [self.view layoutIfNeeded];
     
+    // If photo should slide up, animate changing the y constraint
     if (self.slideUp) {
         self.yConstraint.constant = 0;
         [UIView animateWithDuration:0.7
@@ -156,31 +163,9 @@ static bool topBarVisible = false;
     }
 }
 
-- (void) displayImage:(NSData* ) data {
-    UIImage *image = [UIImage imageWithData:data];
-    UIImageView *imageView = [[UIImageView alloc] init];
-    
-    imageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [imageView setImage:image];
-    
-    [self.view addSubview:imageView];
-
-    
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
