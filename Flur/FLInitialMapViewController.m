@@ -152,7 +152,10 @@
     [errorAlert show];
 }
 
-
+- (void) updateOpenablePins {
+    NSMutableArray *indexes = [self.mapManager getNewlyOpenablePins];
+    [self updateAnnotations:indexes isNowOpenable:true];
+}
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
@@ -170,8 +173,9 @@
                 [self.mapView addAnnotation:annotation];
             }
             
-            NSMutableArray *indexes = [self.mapManager getNewlyOpenablePins];
-            [self updateAnnotations:indexes isNowOpenable:true];
+            [self performSelector:@selector(updateOpenablePins) withObject:self afterDelay:2];
+            
+         
         }];
     }
     else {
@@ -245,6 +249,7 @@
      
      UIVisualEffectView *blurEffectView;
      blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    blurEffectView.alpha = 0;
     
     // Vibrancy effect
     UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
@@ -312,47 +317,11 @@
     blurEffectView.frame = self.view.bounds;
     [self.view addSubview:blurEffectView];
     
-     /*UIView *back = [[UIView alloc] initWithFrame:self.view.frame];
-     [back setTranslatesAutoresizingMaskIntoConstraints:NO];
-     back.backgroundColor = RGB(200,200,200);
-     back.layer.cornerRadius = 7;
-     back.layer.masksToBounds = YES;
-     
-     [self.view addSubview:back];
-     
-     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:back attribute:NSLayoutAttributeWidth
-                                                           relatedBy:NSLayoutRelationEqual
-                                                              toItem:self.view
-                                                           attribute:NSLayoutAttributeWidth
-                                                          multiplier:0.5
-                                                            constant:0]];
-     
-     // Height constraint, half of parent view height
-     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:back
-                                                           attribute:NSLayoutAttributeHeight
-                                                           relatedBy:NSLayoutRelationEqual
-                                                              toItem:self.view
-                                                           attribute:NSLayoutAttributeHeight
-                                                          multiplier:0.5
-                                                            constant:0]];
-     
-     // Center horizontally
-     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:back
-                                                           attribute:NSLayoutAttributeCenterX
-                                                           relatedBy:NSLayoutRelationEqual
-                                                              toItem:self.view
-                                                           attribute:NSLayoutAttributeCenterX
-                                                          multiplier:1.0
-                                                            constant:0.0]];
-     
-     // Center vertically
-     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:back
-                                                           attribute:NSLayoutAttributeCenterY
-                                                           relatedBy:NSLayoutRelationEqual
-                                                              toItem:self.view
-                                                           attribute:NSLayoutAttributeCenterY
-                                                          multiplier:1.0
-                                                            constant:0.0]];*/
+    [UIView beginAnimations:@"fade in" context:nil];
+    [UIView setAnimationDuration:.2];
+    blurEffectView.alpha = 1;
+    [UIView commitAnimations];
+    NSLog(@"yes");
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
