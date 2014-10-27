@@ -31,6 +31,8 @@
 @property (nonatomic, strong, readwrite) UIButton *addButton;
 @property (nonatomic, strong, readwrite) UIButton *addButton2;
 @property (nonatomic, strong, readwrite) UIButton *contributeButton;
+@property (nonatomic, strong, readwrite) UIVisualEffectView *blurEffectView;
+
 
 @property (nonatomic, strong, readwrite) NSMutableDictionary *allAnnotations;
 
@@ -233,6 +235,11 @@
 {
     //AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     //[appDelegate switchController:@"PhotoViewController"];
+    id<MKAnnotation> annotation = view.annotation;
+    if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        return;
+        // this is where you can find the annotation type is whether it is userlocation or not...
+    }
     FLFlurAnnotation* fa = view.annotation;
     if(fa.objectId) {
         NSString* id = fa.objectId;
@@ -249,9 +256,8 @@
      UIBlurEffect *blurEffect;
      blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
      
-     UIVisualEffectView *blurEffectView;
-     blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    blurEffectView.alpha = 0;
+     self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+     self.blurEffectView.alpha = 0;
     
     // Vibrancy effect
     UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
@@ -313,17 +319,24 @@
     
     
     // Add the vibrancy view to the blur view
-    [[blurEffectView contentView] addSubview:vibrancyEffectView];
+    [[self.blurEffectView contentView] addSubview:vibrancyEffectView];
     
     // add blur view to view
-    blurEffectView.frame = self.view.bounds;
-    [self.view addSubview:blurEffectView];
+    self.blurEffectView.frame = self.view.bounds;
+    [self.view addSubview:self.blurEffectView];
+    
+    UITapGestureRecognizer *singleFingerTap =
+    [[UITapGestureRecognizer alloc] initWithTarget:self
+                                            action:@selector(exitBlur:)];
+    [self.blurEffectView addGestureRecognizer:singleFingerTap];
+
     
     [UIView beginAnimations:@"fade in" context:nil];
     [UIView setAnimationDuration:.2];
-    blurEffectView.alpha = 1;
+    self.blurEffectView.alpha = 1;
     [UIView commitAnimations];
-    NSLog(@"yes");
+    
+    
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
@@ -384,6 +397,11 @@
     [super didReceiveMemoryWarning];
     
     // Dispose of any resources that can be recreated.
+}
+
+- (void)exitBlur:(UITapGestureRecognizer *)recognizer {
+    CGPoint location = [recognizer locationInView:[recognizer.view superview]];
+    [self.blurEffectView removeFromSuperview];
 }
 
 
