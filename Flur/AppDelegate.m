@@ -33,9 +33,9 @@ static UINavigationController *navController;
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
    
-     //FLInitialMapViewController * control = [FLInitialMapViewController new];
-    PhotoViewController * control = [[PhotoViewController alloc] initWithData:
-                                     [[NSMutableDictionary alloc]init] ];
+     FLInitialMapViewController * control = [FLInitialMapViewController new];
+    /*PhotoViewController * control = [[PhotoViewController alloc] initWithData:
+                                     [[NSMutableDictionary alloc]init] ];*/
     
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];

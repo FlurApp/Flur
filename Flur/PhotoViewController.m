@@ -41,11 +41,11 @@
     self = [super init];
     
     if (self) {
-        //self.pin = [data objectForKey:@"FLPin"];
+        self.pin = [data objectForKey:@"FLPin"];
         self.topBarVisible = false;
-        //self.allPhotos = [data objectForKey:@"allPhotos"];
+        self.allPhotos = [data objectForKey:@"allPhotos"];
         self.allPhotos = [[NSMutableArray alloc] init];
-        [self.allPhotos addObject:UIImagePNGRepresentation([UIImage imageNamed:@"frame_000.gif"])];
+        //[self.allPhotos addObject:UIImagePNGRepresentation([UIImage imageNamed:@"frame_000.gif"])];
     }
     
     return self;
