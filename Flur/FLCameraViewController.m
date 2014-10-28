@@ -28,6 +28,8 @@
 
 @property (nonatomic, strong) NSMutableArray* allPhotos;
 @property (nonatomic, strong) NSMutableDictionary* dataToPass;
+@property (nonatomic, strong) NSData *imageData;
+
 
 @property (nonatomic) int count;
 
@@ -38,7 +40,6 @@
 
 @implementation FLCameraViewController {
     BOOL retake;
-    NSData *imageData;
 }
 
 - (id)initWithPin:(FLPin *)pin {
@@ -46,8 +47,9 @@
     if (self) {
         self.pin = pin;
         self.count = 0;
-        self.dataToPass = [[NSMutableDictionary alloc] init];
         self.allPhotos = [[NSMutableArray alloc] init];
+
+        NSLog(@"SCORE");
     }
     
     NSLog(@"PIN2: %@", self.pin);
@@ -146,7 +148,7 @@
             NSData *data = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
             UIImage *image = [[UIImage alloc] initWithData:data];
             _imageTaken = [[UIImageView alloc] initWithImage:image];
-            imageData = data;
+            self.imageData = data;
             [self configureImageView];
         }
     }];
@@ -187,7 +189,8 @@
 - (IBAction)uploadImage:(id)sender {
     [self loadPhotos];
     
-    PFFile *imageFile = [PFFile fileWithName:@"t.gif" data:imageData];
+    PFFile *imageFile = [PFFile fileWithName:@"t.gif" data:self.imageData];
+    self.dataToPass = [[NSMutableDictionary alloc] init];
 
     // Save PFFile
     [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -196,14 +199,14 @@
             [userPhoto setObject:imageFile forKey:@"imageFile"];
             [userPhoto setObject:self.pin.pinId forKey:@"pinId"];
             
-            
             [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (error) {
                     // Log details of the failure
                     NSLog(@"Error: %@ %@", error, [error userInfo]);
                 }
                 else {
-                    [self.dataToPass setObject:imageData forKey:@"uploadedPhoto"];
+
+                    [self.dataToPass setObject:self.imageData forKey:@"uploadedPhoto"];
                     [self handOffToPhotoVC];
                 }
             }];
@@ -216,11 +219,6 @@
         // Update your progress spinner here. percentDone will be between 0 and 100.
         //HUD.progress = (float)percentDone/100;
     }];
-    
-    
-    //Now switch views to PhotoViewController for the Pin
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"PhotoViewController" withPin:[self pin]];
 }
 
 - (void) loadPhotos {
@@ -235,20 +233,25 @@
         if (!error) {
             
             // Iterate over all objects and download corresponding data
+            int i = 0;
             for (PFObject *object in objects) {
+                i++;
                 PFFile *imageFile = [object objectForKey:@"imageFile"];
                 [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                     if (!error) {
-                        [self.allPhotos addObject:data];
+                        //[self.allPhotos addObject:data];
                     }
                     else {
                         NSLog(@"fuck me");
                     }
                     
-                    if ([object isEqual:[objects lastObject]]) {
+                    if (i == objects.count) {
+
                         [self.dataToPass setObject:self.allPhotos forKey:@"downloadedPhotos"];
+                        NSLog(@"ready to go");
                         [self handOffToPhotoVC];
                     }
+                    
                 }];
                 
             }
@@ -261,7 +264,7 @@
     self.count++;
     if (self.count == 2) {
         // Check that there are no duplicates and that the uploaded image is there
-        [AppDelegate switchViewController:@"PhotoViewController" withData:self.dataToPass];
+        // [AppDelegate switchViewController:@"PhotoViewController" withData:self.dataToPass];
     }
 }
 
