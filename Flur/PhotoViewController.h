@@ -12,7 +12,7 @@
 @interface PhotoViewController : UIViewController <UIPageViewControllerDataSource>
 
     @property (strong, nonatomic) UIPageViewController *pageController;
-    @property (assign, nonatomic) NSString* pinId;
+    @property (assign, nonatomic) FLPin* pin;
 
     - (instancetype) initWithData: (NSMutableDictionary*) data;
 

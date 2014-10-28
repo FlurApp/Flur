@@ -10,9 +10,7 @@
 
 @interface SinglePhotoViewController : UIViewController
 
-- (instancetype) initWithSlideUp:(bool) slideUp;
 - (void) setImage:(NSData *) data;
-
 
 @property (assign, nonatomic) NSInteger index;
 @property (assign, nonatomic) NSString* imageName;

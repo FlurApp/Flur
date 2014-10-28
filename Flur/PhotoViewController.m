@@ -16,7 +16,6 @@
 @interface PhotoViewController ()
 
 // UI elements
-@property   (strong, nonatomic) UIImageView * spinner;
 @property   (strong, nonatomic) UILabel * viewPrompt;
 @property   (strong, nonatomic) UIView * topBar;
 @property   (strong, nonatomic) UIView * bottomBar;
@@ -26,6 +25,8 @@
 @property   (strong, nonatomic) NSMutableArray *viewsToToggle;
 
 @property (strong, nonatomic) NSMutableArray *allPhotos;
+@property (strong, nonatomic) NSString *prompt;
+
 
 // Used to detect whether two async calls have returned
 @property (nonatomic) int count;
@@ -40,12 +41,12 @@
     self = [super init];
     
     if (self) {
-        FLPin *pin = [data objectForKey:@"FLPin"];
-        self.pinId = pin.pinId;
+        //self.pin = [data objectForKey:@"FLPin"];
         self.topBarVisible = false;
-        self.count = 0;
+        //self.allPhotos = [data objectForKey:@"allPhotos"];
+        self.allPhotos = [[NSMutableArray alloc] init];
+        [self.allPhotos addObject:UIImagePNGRepresentation([UIImage imageNamed:@"frame_000.gif"])];
     }
-    NSLog(@"Pin 3: %@", self.pinId);
     
     return self;
 }
@@ -58,10 +59,8 @@
     self.currentPicture =   [[UILabel alloc] init];
     self.topBar =           [[UIView alloc] initWithFrame:CGRectZero];
     self.bottomBar =        [[UIView alloc] initWithFrame:CGRectZero];
-    self.spinner =          [[UIImageView alloc] initWithFrame:self.view.bounds];
     
     self.viewsToToggle =    [[NSMutableArray alloc] init];
-    self.allPhotos =        [[NSMutableArray alloc] init];
 
     self.view.backgroundColor = [UIColor blackColor];
 //    self.pinId = @"c8kzGmjHaU";
@@ -87,75 +86,6 @@
     
     // Load custom views
     [self loadViews];
-    
-    // Wait until all views have been generated to pass the list of views that the SinglePhotoVC should
-    // control
-    initialViewController.viewsToToggle = self.viewsToToggle;
-    
-    // Query DB and load view when ready
-    [self displayAllData];
-
- 
-
-        // Do any additional setup after loading the view.
-}
-
-
-
-- (void) loadSpinner {
-    self.spinner.translatesAutoresizingMaskIntoConstraints = NO;
-
-    NSMutableArray* frameHolders = [[NSMutableArray alloc] init];
-    for(int i=0; i<29; i++) {
-        NSString* imageName;
-        if (i < 10)
-            imageName = [NSString stringWithFormat:@"frame_00%d.gif", i];
-        else
-            imageName = [NSString stringWithFormat:@"frame_0%d.gif", i];
-
-        [frameHolders addObject:[UIImage imageNamed:imageName]];
-    }
-    
-    self.spinner.animationImages = [[NSArray alloc] initWithArray:frameHolders];
-    self.spinner.animationDuration = 1.0f;
-    self.spinner.animationRepeatCount = 0;
-    [self.spinner startAnimating];
-    [self.view addSubview:self.spinner];
-    
-
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
-                                 attribute:NSLayoutAttributeCenterY
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.view
-                                 attribute:NSLayoutAttributeCenterY
-                                multiplier:1.0
-                                                           constant:0.0]];
-    
-    // Center Horizontally
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
-                                 attribute:NSLayoutAttributeCenterX
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.view
-                                 attribute:NSLayoutAttributeCenterX
-                                multiplier:1.0
-                                                           constant:0.0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
-                                                       attribute:NSLayoutAttributeHeight
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:nil
-                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                      multiplier:1.0
-                                                        constant:100.0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
-                                                       attribute:NSLayoutAttributeWidth
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:nil
-                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                      multiplier:1.0
-                                                        constant:100.0]];
 }
 
 - (void) loadTopBar {
@@ -207,7 +137,7 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-5]];
     
-    self.currentPicture.text = @"";
+    self.currentPicture.text = [NSString stringWithFormat:@"1/%d", self.allPhotos.count];
     [self.currentPicture setTextColor:[UIColor blackColor]];
     self.currentPicture.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -275,6 +205,7 @@
     
     self.viewPrompt.translatesAutoresizingMaskIntoConstraints = NO;
     [self.viewPrompt setTextColor:[UIColor whiteColor]];
+    self.viewPrompt.text = self.pin.prompt;
     
     [self.bottomBar addSubview:self.viewPrompt];
     
@@ -292,7 +223,6 @@
 }
 
 - (void) loadViews {
-    [self loadSpinner];
     [self loadTopBar];
     [self loadBottomBar];
 }
@@ -301,120 +231,6 @@
 - (void) navBack {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate popMyself];
-}
-
-- (void) displayAllData {
-    [self displayPrompt];
-    [self displayPhoto];
-}
-
-- (void) displayPhoto {
-    [self loadPhotos:^() {
-        self.count++;
-        if (self.count == 2) {
-            [self animateAllData];
-        }
-    }];
-}
-
-- (void) displayPrompt {
-    [self loadPrompt:^(NSString * prompt) {
-        self.count++;
-        [self.viewPrompt setText:prompt];
-        //self.viewPrompt.text = @"Hey there this is a test its very good and long and dadff fuck this";
-        if (self.count == 2) {
-            [self animateAllData];
-        }
-    }];
-}
-
-
-- (void) animateAllData {
-    
-    [UIView beginAnimations:@"fade in" context:nil];
-    [UIView setAnimationDuration:1.0];
-    self.spinner.alpha = 0;
-    [UIView commitAnimations];
-    
-    SinglePhotoViewController *currentSinglePhoto = [self.pageController.viewControllers lastObject];
-    [currentSinglePhoto setImage:self.allPhotos[0]];
-}
-
-- (void) loadPhotos:(void (^) ()) completion {
-    
-    // Create the query
-    PFQuery *query = [PFQuery queryWithClassName:@"Images"];
-    [query whereKey:@"pinId" equalTo:self.pinId];
-    [query orderByAscending:@"createdAt"];
-    
-    // Set to true once we have loaded our first photo
-    __block bool loadedFirst = false;
-
-    // Run query to download all relevant photos
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error) {
-            // Now know how many photos are returned, set label in UI showing what photo you are
-            // on out of how many photos are returned.
-            self.currentPicture.text =[NSString stringWithFormat:@"1/%lu", objects.count];
-            
-            // Iterate over all objects and download corresponding data
-            for (PFObject *object in objects) {
-                PFFile *imageFile = [object objectForKey:@"imageFile"];
-                [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-                    if (!error) {
-                        
-                        // Add data to our container for photos
-                        [self.allPhotos addObject:data];
-                        
-                        // If this is the first photo you have loaded, run completion handler to animate
-                        // the screen.
-                        if (!loadedFirst) {
-                            loadedFirst = true;
-                            completion();
-                        }
-                    }
-                    else {
-                        NSLog(@"fuck me");
-                    }
-                }];
-
-            }
-        }
-    }];
-
-}
-
-- (void) loadPrompt:(void (^) (NSString* prompt)) completion{
-    PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
-    [query whereKey:@"objectId" equalTo:self.pinId];
-    
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error) {
-            PFObject* object = objects[0];
-            completion(object[@"prompt"]);
-        }
-        else {
-            NSLog(@"fuck");
-        }
-    }];
-}
-
-
-- (void)replaceTopConstraintOnView:(UIView *)view withAttribute:(NSLayoutAttribute) attribute
-                      withConstant:(float)constant
-{
-    [self.view.constraints enumerateObjectsUsingBlock:^(NSLayoutConstraint *constraint, NSUInteger idx, BOOL *stop) {
-        if ((constraint.firstItem == view) && (constraint.firstAttribute == attribute)) {
-            constraint.constant = constant;
-        }
-    }];
-}
-
-- (void)animateConstraints
-{
-    [UIView animateWithDuration:0.8 animations:^{
-        [self.view layoutIfNeeded];
-    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -454,16 +270,11 @@
 
 - (SinglePhotoViewController *)viewControllerAtIndex:(NSUInteger)index {
     
-    SinglePhotoViewController *childViewController = [[SinglePhotoViewController alloc] initWithSlideUp: [self.allPhotos count] == 0];
+    SinglePhotoViewController *childViewController = [[SinglePhotoViewController alloc] init];
     
     childViewController.index = index;
-    childViewController.pinId = self.pinId;
     childViewController.viewsToToggle = self.viewsToToggle;
-
-    NSData* data = [self.allPhotos count] == 0 ? [[NSData alloc] init] : self.allPhotos[index];
-    if ([data length] != 0)
-    [childViewController setImage:data];
-    
+    [childViewController setImage:self.allPhotos[index]];
     
     return childViewController;    
 }
