@@ -215,18 +215,6 @@
     
 }
 
-- (void)removeAllPinsButUserLocation
-{
-    id userLocation = [self.mapView userLocation];
-    NSMutableArray *pins = [[NSMutableArray alloc] initWithArray:[self.mapView annotations]];
-    if ( userLocation != nil ) {
-        [pins removeObject:userLocation]; // avoid removing user location off the map
-    }
-    
-    [self.mapView removeAnnotations:pins];
-    pins = nil;
-}
-
 - (void) updateAnnotations:(NSMutableArray *)indexes isNowOpenable:(BOOL)isNowOpenable {
     for (NSString* pinId in indexes) {
         FLFlurAnnotation* f = [self.allAnnotations objectForKey:pinId];
@@ -266,6 +254,7 @@
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
+    NSLog(@"clicked");
     id<MKAnnotation> annotation = view.annotation;
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
         return;
@@ -421,8 +410,6 @@
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
     FLButton *buttonClicked = (FLButton *)sender;
-    
-    NSLog(@"Pin1: %@", buttonClicked.pin);
     
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:buttonClicked.pin forKey:@"FLPin"];

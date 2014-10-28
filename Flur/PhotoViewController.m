@@ -45,7 +45,6 @@
         self.topBarVisible = false;
         self.count = 0;
     }
-    NSLog(@"Pin 3: %@", self.pinId);
     
     return self;
 }
