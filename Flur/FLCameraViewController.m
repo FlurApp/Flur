@@ -215,7 +215,6 @@
                     [flurPin incrementKey:@"contentCount"];
                     [flurPin save];
                     
-                    [self.dataToPass setObject:self.imageData forKey:@"uploadedPhoto"];
                     [self handOffToPhotoVC];
                 }
             }];
@@ -249,15 +248,13 @@
                 PFFile *imageFile = [object objectForKey:@"imageFile"];
                 [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                     if (!error) {
-                        //[self.allPhotos addObject:data];
+                        [self.allPhotos addObject:data];
                     }
                     else {
                         NSLog(@"fack me");
                     }
                     
                     if (i == objects.count) {
-
-                        [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
                         NSLog(@"ready to go");
                         [self handOffToPhotoVC];
                     }
@@ -271,14 +268,21 @@
     
 - (void) handOffToPhotoVC {
     
-    if (self.allPhotos.count != self.pin.contentCount) {
-        [self.allPhotos addObject: self.imageData];
-        [self.dataToPass removeObjectForKey:@"allPhotos"];
-        [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
-    }
+
     
     self.count++;
     if (self.count == 2) {
+        NSLog(@"hey");
+        NSLog(@"Pin %lu", self.pin.contentCount);
+        if (self.allPhotos.count != self.pin.contentCount) {
+            [self.allPhotos addObject: self.imageData];
+        }
+        NSLog(@"out");
+        [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
+        NSLog(@"out2");
+
+
+        
         // Check that there are no duplicates and that the uploaded image is there
         // [AppDelegate switchViewController:@"PhotoViewController" withData:self.dataToPass];
         [AppDelegate switchViewController:@"PhotoViewController" withData:self.dataToPass];
