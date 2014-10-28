@@ -118,7 +118,8 @@
     UIView *topBar = [[UIView alloc] initWithFrame:CGRectZero];
     topBar.translatesAutoresizingMaskIntoConstraints = NO;
     //topBar.backgroundColor = RGB(166, 219, 245);
-    topBar.backgroundColor = RGB(86, 165, 204);
+    //topBar.backgroundColor = RGB(86, 165, 204);
+    topBar.backgroundColor = [self colorWithHexString:@"3f72f5 "];
 
     [self.view addSubview:topBar];
  
