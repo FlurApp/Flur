@@ -18,8 +18,7 @@
 - (void) popMyself;
 
 + (void) switchViewController:(NSString*)controllerName withData:(NSMutableDictionary*) data;
-
-
++ (void) popPhotoVC;
 
 
 @end

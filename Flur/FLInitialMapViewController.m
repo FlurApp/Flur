@@ -64,7 +64,6 @@
     _allAnnotations = [[NSMutableDictionary alloc] init];
     _test = [[NSMutableArray alloc] init];
 
-    
     [[self view] setBackgroundColor:[UIColor whiteColor]];
     
     //----Setting up the Location Manager-----//
@@ -96,11 +95,6 @@
     [self.mapView setPitchEnabled:YES];
     [self.mapView setShowsUserLocation:YES];
     [self.mapView setUserTrackingMode:MKUserTrackingModeFollowWithHeading];
-    
-    /*CLLocationCoordinate2D = CLLocationCoordinate2DMake(self.loc, <#CLLocationDegrees longitude#>)
-    MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(self.locationManager.location, 500, 500);
-    MKCoordinateRegion adjustedRegion = [self.mapView regionThatFits:viewRegion];
-    [self.mapView setRegion:adjustedRegion animated:YES];*/
     
     
     [self.mapViewContainer addSubview:self.mapView];

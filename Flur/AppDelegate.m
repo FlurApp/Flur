@@ -77,6 +77,15 @@ static UINavigationController *navController;
     }
 }
 
++ (void) popPhotoVC {
+    NSLog(@"Called correctly");
+    NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
+    [navArray removeObjectAtIndex:1];
+    
+    [navController setViewControllers:navArray animated:YES];
+    [navController popViewControllerAnimated:YES];
+}
+
 - (void) popMyself {
     /*[UIView animateWithDuration:0.75
                      animations:^{

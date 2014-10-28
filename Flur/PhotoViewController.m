@@ -228,8 +228,9 @@
 
 
 - (void) navBack {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate popMyself];
+   // AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+   // [appDelegate popMyself];
+    [AppDelegate popPhotoVC];
 }
 
 - (void)didReceiveMemoryWarning {
