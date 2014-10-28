@@ -14,6 +14,6 @@
     @property (strong, nonatomic) UIPageViewController *pageController;
     @property (assign, nonatomic) NSString* pinId;
 
-    - (instancetype) initWithPin: (FLPin*) pin;
+    - (instancetype) initWithData: (NSMutableDictionary*) data;
 
 @end

@@ -36,10 +36,11 @@
 
 @implementation PhotoViewController
 
-- (instancetype) initWithPin: (FLPin*) pin {
+- (instancetype) initWithData: (NSMutableDictionary*) data {
     self = [super init];
     
     if (self) {
+        FLPin *pin = [data objectForKey:@"FLPin"];
         self.pinId = pin.pinId;
         self.topBarVisible = false;
         self.count = 0;

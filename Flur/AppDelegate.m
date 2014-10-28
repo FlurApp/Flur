@@ -46,40 +46,11 @@
     return YES;
 }
 
-- (void) switchController:(NSString*) controllerName {
-    NSLog(@"Switching %@", controllerName);
-    if ([controllerName isEqual:@"PhotoViewController"]) {
-        PhotoViewController *newController = [[PhotoViewController alloc] init];
-        //[self.navController pushViewController:newController animated:true];
-        [UIView animateWithDuration:0.75
-                         animations:^{
-                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                             [self.navController pushViewController:newController animated:NO];
-                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
-                         }];
-        /*CATransition* transition = [CATransition animation];
-        transition.duration = 0.5;
-        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-        transition.type = kCATransitionFade; //kCATransitionMoveIn; //, kCATransitionPush, kCATransitionReveal, kCATransitionFade
-        //transition.subtype = kCATransitionFromTop; //kCATransitionFromLeft, kCATransitionFromRight, kCATransitionFromTop, kCATransitionFromBottom
-        [self.navController.view.layer addAnimation:transition forKey:nil];
-        [[self navController] pushViewController:newController animated:NO];*/
-    }
-    else if ([controllerName isEqual:@"FLCameraViewController"]) {
-        FLCameraViewController *camController = [[FLCameraViewController alloc] init];
-        [UIView animateWithDuration:0.75
-                         animations:^{
-                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                             [self.navController pushViewController:camController animated:NO];
-                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
-                         }];
-    }
-}
-
-- (void)switchController:(NSString *)controllerName withPin:(FLPin *)pin {
+- (void)switchController:(NSString *)controllerName withData:(NSMutableDictionary*)data {
     
     if ([controllerName isEqualToString:@"FLCameraViewController"]) {
-        FLCameraViewController *camController = [[FLCameraViewController alloc] initWithPin:pin];
+        
+        FLCameraViewController *camController = [[FLCameraViewController alloc] initWithData:data];
         [UIView animateWithDuration:0.75
                          animations:^{
                              [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
@@ -87,7 +58,7 @@
                              [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
                          }];
     } else if ([controllerName isEqualToString:@"PhotoViewController"]) {
-        PhotoViewController *photoController = [[PhotoViewController alloc] initWithPin:pin];
+        PhotoViewController *photoController = [[PhotoViewController alloc] initWithData:data];
         [UIView animateWithDuration:0.75
                          animations:^{
                              [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];

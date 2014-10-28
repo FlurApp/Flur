@@ -408,7 +408,7 @@
     [self.mapManager addFlur];
 }
 
-- (IBAction)switchingView:(id)sender {
+/*- (IBAction)switchingView:(id)sender {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate switchController:@"PhotoViewController"];
 }
@@ -416,7 +416,7 @@
 - (void) switchController {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate switchController:@"PhotoViewController"];
-}
+}*/
 
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
@@ -424,7 +424,10 @@
     
     NSLog(@"Pin1: %@", buttonClicked.pin);
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"FLCameraViewController" withPin:buttonClicked.pin];
+    
+    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+    [data setObject:buttonClicked.pin forKey:@"FLPin"];
+    [appDelegate switchController:@"FLCameraViewController" withData:data];
 }
 
 - (void)didReceiveMemoryWarning {

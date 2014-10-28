@@ -33,9 +33,10 @@
     NSData *imageData;
 }
 
-- (id)initWithPin:(FLPin *)pin {
+- (id)initWithData:(NSMutableDictionary *)data {
     self = [super init];
     if (self) {
+        FLPin *pin = [data objectForKey:@"FLPin"];
         [self setPin:pin];
     }
     NSLog(@"PIN2: %@", self.pin);
@@ -203,7 +204,9 @@
     
     //Now switch views to PhotoViewController for the Pin
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"PhotoViewController" withPin:[self pin]];
+    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+    [data setObject:self.pin forKey:@"FLPin"];
+    [appDelegate switchController:@"PhotoViewController" withData:data];
 }
 
 -(IBAction)retakePicture:(id)sender {
