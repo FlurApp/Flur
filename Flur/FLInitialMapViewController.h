@@ -13,4 +13,6 @@
 
 @interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate>
 
+- (void) removeBlur;
+
 @end

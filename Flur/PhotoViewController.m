@@ -42,9 +42,8 @@
     
     if (self) {
         self.pin = [data objectForKey:@"FLPin"];
-        self.topBarVisible = false;
+        self.topBarVisible = true;
         self.allPhotos = [data objectForKey:@"allPhotos"];
-        //[self.allPhotos addObject:UIImagePNGRepresentation([UIImage imageNamed:@"frame_000.gif"])];
     }
     
     return self;
@@ -52,7 +51,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
        // Allocate space for all data members
     self.viewPrompt =       [[UILabel alloc] init];
     self.currentPicture =   [[UILabel alloc] init];
@@ -86,6 +85,8 @@
     // Load custom views
     [self loadViews];
 }
+
+
 
 - (void) loadTopBar {
     self.topBar.translatesAutoresizingMaskIntoConstraints = NO;
@@ -164,8 +165,8 @@
     [self.viewsToToggle addObject:self.topBar];
     [self.viewsToToggle addObject:self.bottomBar];
     
-    self.topBar.alpha = 0;
-    self.bottomBar.alpha = 0;
+    self.topBar.alpha = 1;
+    self.bottomBar.alpha = 1;
     
     UIBlurEffect *blurEffect;
     blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];

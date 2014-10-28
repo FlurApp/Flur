@@ -72,15 +72,18 @@
     [_locationManager requestAlwaysAuthorization];
     
     _locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
-    _locationManager.distanceFilter = 500;
+    _locationManager.distanceFilter = 3;
     [_locationManager startUpdatingLocation];
     
     //----loading Initial View----//
     [self loadMapView];
     [self loadTopBar];
     
-    
-    
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+-(UIStatusBarStyle)preferredStatusBarStyle{
+    return UIStatusBarStyleLightContent;
 }
 
 - (void)loadMapView {
@@ -168,7 +171,7 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-    
+    NSLog(@"moved");
     [self.mapManager updateCurrentLocation:newLocation
                         andRefreshLocation:false];
     
@@ -418,6 +421,10 @@
 
 - (void)exitBlur:(UITapGestureRecognizer *)recognizer {
     // CGPoint location = [recognizer locationInView:[recognizer.view superview]];
+    [self.blurEffectView removeFromSuperview];
+}
+
+- (void) removeBlur {
     [self.blurEffectView removeFromSuperview];
 }
 

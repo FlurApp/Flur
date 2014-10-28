@@ -36,7 +36,7 @@ static UINavigationController *navController;
      FLInitialMapViewController * control = [FLInitialMapViewController new];
     /*PhotoViewController * control = [[PhotoViewController alloc] initWithData:
                                      [[NSMutableDictionary alloc]init] ];*/
-    
+
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
     navController.navigationBar.barStyle = UIBarStyleBlack;
@@ -81,6 +81,8 @@ static UINavigationController *navController;
     NSLog(@"Called correctly");
     NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
     [navArray removeObjectAtIndex:1];
+    
+    [(FLInitialMapViewController*)[navArray objectAtIndex:0] removeBlur];
     
     [navController setViewControllers:navArray animated:YES];
     [navController popViewControllerAnimated:YES];

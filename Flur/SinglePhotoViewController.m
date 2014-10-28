@@ -20,7 +20,7 @@
 
 @implementation SinglePhotoViewController
 
-static bool topBarVisible = false;
+static bool topBarVisible = true;
 static bool firstToggle = true;
 
 
@@ -39,6 +39,9 @@ static bool firstToggle = true;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [UIView animateWithDuration:1 animations:^{
+        [self setNeedsStatusBarAppearanceUpdate];
+    }];
     
     // Create a clear container for detecting finger presses
     self.seeThroughContainer = [[UIView alloc] initWithFrame:CGRectZero];
@@ -91,21 +94,29 @@ static bool firstToggle = true;
 
 
 - (void) toggleViews {
+    firstToggle = false;
     for (UIView* view in self.viewsToToggle) {
         if (topBarVisible) {
             [UIView beginAnimations:@"fade in" context:nil];
             [UIView setAnimationDuration:.5];
             view.alpha = 0;
             [UIView commitAnimations];
+            [[UIApplication sharedApplication] setStatusBarHidden:YES];
         }
         else {
             [UIView beginAnimations:@"fade in" context:nil];
             [UIView setAnimationDuration:.5];
             view.alpha = 1;
             [UIView commitAnimations];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+
         }
     }
     topBarVisible = !topBarVisible;
+}
+
+-(UIStatusBarStyle)preferredStatusBarStyle{
+    return UIStatusBarStyleLightContent;
 }
 
 
@@ -145,6 +156,11 @@ static bool firstToggle = true;
     
     
     [self.view layoutIfNeeded];
+    
+    if (firstToggle) {
+        firstToggle = false;
+        [self performSelector:@selector(toggleViews) withObject:self afterDelay:3];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
