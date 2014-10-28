@@ -36,10 +36,11 @@
 
 @implementation PhotoViewController
 
-- (instancetype) initWithPin: (FLPin*) pin {
+- (instancetype) initWithData: (NSMutableDictionary*) data {
     self = [super init];
     
     if (self) {
+        FLPin *pin = [data objectForKey:@"FLPin"];
         self.pinId = pin.pinId;
         self.topBarVisible = false;
         self.count = 0;
@@ -320,7 +321,7 @@
     [self loadPrompt:^(NSString * prompt) {
         self.count++;
         [self.viewPrompt setText:prompt];
-        self.viewPrompt.text = @"Hey there this is a test its very good and long and dadff fuck this";
+        //self.viewPrompt.text = @"Hey there this is a test its very good and long and dadff fuck this";
         if (self.count == 2) {
             [self animateAllData];
         }

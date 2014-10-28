@@ -12,6 +12,6 @@
 
 @interface FLCameraViewController : UIViewController
 
-- (id)initWithPin:(FLPin *)pin;
+- (id)initWithData:(NSMutableDictionary*) data;
 
 @end

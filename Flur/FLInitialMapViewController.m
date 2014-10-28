@@ -170,7 +170,7 @@
     MKAnnotationView* annotationView = [mapView viewForAnnotation:userLocation];
     mapView.userLocation.title = @"";
     annotationView.canShowCallout = NO;
-    
+    NSLog(@"Location:%f, %f", userLocation.location.coordinate.latitude, userLocation.location.coordinate.longitude);
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
@@ -266,8 +266,6 @@
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
-    //AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    //[appDelegate switchController:@"PhotoViewController"];
     id<MKAnnotation> annotation = view.annotation;
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
         return;
@@ -410,7 +408,7 @@
     [self.mapManager addFlur];
 }
 
-- (IBAction)switchingView:(id)sender {
+/*- (IBAction)switchingView:(id)sender {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate switchController:@"PhotoViewController"];
 }
@@ -418,15 +416,17 @@
 - (void) switchController {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate switchController:@"PhotoViewController"];
-}
+}*/
 
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
     FLButton *buttonClicked = (FLButton *)sender;
     
     NSLog(@"Pin1: %@", buttonClicked.pin);
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"FLCameraViewController" withPin:buttonClicked.pin];
+    
+    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+    [data setObject:buttonClicked.pin forKey:@"FLPin"];
+    [AppDelegate switchViewController:@"FLCameraViewController" withData:data];
 }
 
 - (void)didReceiveMemoryWarning {

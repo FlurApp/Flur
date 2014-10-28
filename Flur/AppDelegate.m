@@ -19,9 +19,9 @@
 
 @implementation AppDelegate
             
-+ (void) switchTest {
-    
-}
+static UINavigationController *navController;
+
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -36,11 +36,11 @@
      FLInitialMapViewController * control = [FLInitialMapViewController new];
      //PhotoViewController * control = [PhotoViewController new];
     
-    self.navController = [[UINavigationController alloc] initWithRootViewController: control];
-    [self.navController setNavigationBarHidden:YES];
-    self.navController.navigationBar.barStyle = UIBarStyleBlack;
+    navController = [[UINavigationController alloc] initWithRootViewController: control];
+    [navController setNavigationBarHidden:YES];
+    navController.navigationBar.barStyle = UIBarStyleBlack;
 
-    self.window.rootViewController = self.navController;
+    self.window.rootViewController = navController;
     self.window.backgroundColor = [UIColor blackColor];
     
     // Setup navigation bar programmatically
@@ -51,59 +51,29 @@
     return YES;
 }
 
-- (void) switchController:(NSString*) controllerName {
-    NSLog(@"Switching %@", controllerName);
-    if ([controllerName isEqual:@"PhotoViewController"]) {
-        PhotoViewController *newController = [[PhotoViewController alloc] init];
-        //[self.navController pushViewController:newController animated:true];
-        [UIView animateWithDuration:0.75
-                         animations:^{
-                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                             [self.navController pushViewController:newController animated:NO];
-                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
-                         }];
-        /*CATransition* transition = [CATransition animation];
-        transition.duration = 0.5;
-        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-        transition.type = kCATransitionFade; //kCATransitionMoveIn; //, kCATransitionPush, kCATransitionReveal, kCATransitionFade
-        //transition.subtype = kCATransitionFromTop; //kCATransitionFromLeft, kCATransitionFromRight, kCATransitionFromTop, kCATransitionFromBottom
-        [self.navController.view.layer addAnimation:transition forKey:nil];
-        [[self navController] pushViewController:newController animated:NO];*/
-    }
-    else if ([controllerName isEqual:@"FLCameraViewController"]) {
-        FLCameraViewController *camController = [[FLCameraViewController alloc] init];
-        [UIView animateWithDuration:0.75
-                         animations:^{
-                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                             [self.navController pushViewController:camController animated:NO];
-                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
-                         }];
-    }
-}
-
-- (void)switchController:(NSString *)controllerName withPin:(FLPin *)pin {
-    
++ (void) switchViewController:(NSString*)controllerName withData:(NSMutableDictionary*) data {
     if ([controllerName isEqualToString:@"FLCameraViewController"]) {
-        FLCameraViewController *camController = [[FLCameraViewController alloc] initWithPin:pin];
+        
+        FLCameraViewController *camController = [[FLCameraViewController alloc] initWithData:data];
+        NSLog(@"hey");
         [UIView animateWithDuration:0.75
                          animations:^{
                              [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                             [self.navController pushViewController:camController animated:NO];
-                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
+                             [navController pushViewController:camController animated:NO];
+                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
                          }];
     } else if ([controllerName isEqualToString:@"PhotoViewController"]) {
-        PhotoViewController *photoController = [[PhotoViewController alloc] initWithPin:pin];
+        PhotoViewController *photoController = [[PhotoViewController alloc] initWithData:data];
         [UIView animateWithDuration:0.75
                          animations:^{
                              [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                             [self.navController pushViewController:photoController animated:NO];
-                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
+                             [navController pushViewController:photoController animated:NO];
+                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
                          }];
     } else {
         NSLog(@"Not a correct controllerName for switchController");
         EXIT_FAILURE;
     }
-    
 }
 
 - (void) popMyself {
@@ -118,8 +88,8 @@
     transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     transition.type = kCATransitionFade; //kCATransitionMoveIn; //, kCATransitionPush, kCATransitionReveal, kCATransitionFade
     //transition.subtype = kCATransitionFromTop; //kCATransitionFromLeft, kCATransitionFromRight, kCATransitionFromTop, kCATransitionFromBottom
-    [self.navController.view.layer addAnimation:transition forKey:nil];
-    [[self navController] popViewControllerAnimated:NO];
+    //[self.navController.view.layer addAnimation:transition forKey:nil];
+    //[[self navController] popViewControllerAnimated:NO];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

@@ -12,13 +12,12 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) UINavigationController *navController;
 
 - (void) switchController:(NSString*) controllerName;
-- (void) switchController:(NSString *)controllerName withPin:(FLPin *)pin;
+- (void) switchController:(NSString *)controllerName withData:(NSMutableDictionary*)data;
 - (void) popMyself;
 
-+ (void) switchViewController:(NSString*)nextVC withData:(NSMutableDictionary*) dataToPass;
++ (void) switchViewController:(NSString*)controllerName withData:(NSMutableDictionary*) data;
 
 
 

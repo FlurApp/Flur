@@ -42,14 +42,16 @@
     BOOL retake;
 }
 
-- (id)initWithPin:(FLPin *)pin {
+- (id)initWithData:(NSMutableDictionary *)data {
     self = [super init];
     if (self) {
+        FLPin *pin = [data objectForKey:@"FLPin"];
         self.pin = pin;
+
         self.count = 0;
         self.allPhotos = [[NSMutableArray alloc] init];
+        NSLog(@"made it");
 
-        NSLog(@"SCORE");
     }
     
     NSLog(@"PIN2: %@", self.pin);
@@ -265,7 +267,10 @@
     if (self.count == 2) {
         // Check that there are no duplicates and that the uploaded image is there
         // [AppDelegate switchViewController:@"PhotoViewController" withData:self.dataToPass];
+        [AppDelegate switchViewController:@"PhotoViewController" withData:self.dataToPass];
+
     }
+ 
 }
 
 -(IBAction)retakePicture:(id)sender {
