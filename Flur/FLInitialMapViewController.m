@@ -172,8 +172,10 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    
     [self.mapManager updateCurrentLocation:newLocation
                         andRefreshLocation:false];
+    
     if([self.mapManager shouldRefreshMap]) {
      
         [self.allAnnotations removeAllObjects];
@@ -181,6 +183,7 @@
         
         [self.mapManager updateCurrentLocation:newLocation
                             andRefreshLocation:true];
+        
         [self.mapManager getViewablePins:^(NSMutableDictionary* allNonOpenablePins) {
             NSLog(@"Num returned %lu", allNonOpenablePins.count);
             for (id key in allNonOpenablePins) {
@@ -419,6 +422,7 @@
     NSLog(@"clicked contribute");
     FLButton *buttonClicked = (FLButton *)sender;
     
+    NSLog(@"Pin1: %@", buttonClicked.pin);
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate switchController:@"FLCameraViewController" withPin:buttonClicked.pin];
 }

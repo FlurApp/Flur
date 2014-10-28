@@ -37,6 +37,9 @@
 
 - (void) getViewablePins:(void (^) (NSMutableDictionary* allNonOpenablePins)) completion {
     
+    [self.nonOpenablePins removeAllObjects];
+    [self.openablePins removeAllObjects];
+    
     PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
     [query setLimit:10];
     [query whereKey: @"location"
@@ -48,12 +51,7 @@
         if (!error) {
             for (int i=0; i<objects.count; i++) {
                 FLPin* pin = [[FLPin alloc] initWith: objects[i]];
-<<<<<<< HEAD
-                
-                [self.nonOpenablePins setObject:pin forKey: pin.objectId];
-=======
-                [self.nonOpenablePins setObject:pin forKey: pin.pinId];
->>>>>>> eee9eaa313f0b1f3db67cfb686ccd7a1aa76bb5a
+                    [self.nonOpenablePins setObject:pin forKey: pin.pinId];
             }
             completion(self.nonOpenablePins);
         }
@@ -95,15 +93,16 @@
 - (NSMutableArray*) getNewlyOpenablePins {
     
     NSMutableArray *pinsOpenable = [[NSMutableArray alloc] init];
-    [self.nonOpenablePins removeAllObjects];
-    [self.openablePins removeAllObjects];
+  
 
 
     for (id key in self.nonOpenablePins) {
 
         FLPin * pin = [self.nonOpenablePins objectForKey:key];
+        NSLog(@"Dist %f", [self.currentLocation distanceInKilometersTo: pin.coordinate]);
 
         if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance) {
+            NSLog(@"YA openable");
             [pinsOpenable addObject: pin.pinId];
             [self.openablePins setObject:pin forKey:pin.pinId];
         }

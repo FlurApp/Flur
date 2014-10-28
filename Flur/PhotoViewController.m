@@ -36,14 +36,15 @@
 
 @implementation PhotoViewController
 
-- (instancetype) initWithPin: (NSString*) pinId {
+- (instancetype) initWithPin: (FLPin*) pin {
     self = [super init];
     
     if (self) {
-        self.pinId = pinId;
+        self.pinId = pin.pinId;
         self.topBarVisible = false;
         self.count = 0;
     }
+    NSLog(@"Pin 3: %@", self.pinId);
     
     return self;
 }

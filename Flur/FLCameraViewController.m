@@ -34,10 +34,11 @@
 }
 
 - (id)initWithPin:(FLPin *)pin {
-    
-    if ([super init]) {
+    self = [super init];
+    if (self) {
         [self setPin:pin];
     }
+    NSLog(@"PIN2: %@", self.pin);
     return self;
 }
 
@@ -173,14 +174,14 @@
 
 - (IBAction)uploadImage:(id)sender {
     
-    PFFile *imageFile = [PFFile fileWithName:@"test.gif" data:imageData];
+    PFFile *imageFile = [PFFile fileWithName:@"t.gif" data:imageData];
 
     // Save PFFile
     [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {
             PFObject *userPhoto = [PFObject objectWithClassName:@"Images"];
             [userPhoto setObject:imageFile forKey:@"imageFile"];
-            [userPhoto setObject:@"testID" forKey:@"pinId"];
+            [userPhoto setObject:self.pin.pinId forKey:@"pinId"];
             
             
             [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

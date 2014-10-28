@@ -28,15 +28,9 @@
                   clientKey:@"***REMOVED***"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-<<<<<<< HEAD
    
      FLInitialMapViewController * control = [FLInitialMapViewController new];
      //PhotoViewController * control = [PhotoViewController new];
-
-=======
-     FLInitialMapViewController * control = [FLInitialMapViewController new];
-//    PhotoViewController *control = [PhotoViewController new];
->>>>>>> eee9eaa313f0b1f3db67cfb686ccd7a1aa76bb5a
     
     self.navController = [[UINavigationController alloc] initWithRootViewController: control];
     [self.navController setNavigationBarHidden:YES];
@@ -93,7 +87,7 @@
                              [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
                          }];
     } else if ([controllerName isEqualToString:@"PhotoViewController"]) {
-        PhotoViewController *photoController = [[PhotoViewController alloc] initWithPin:pin.pinId];
+        PhotoViewController *photoController = [[PhotoViewController alloc] initWithPin:pin];
         [UIView animateWithDuration:0.75
                          animations:^{
                              [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
