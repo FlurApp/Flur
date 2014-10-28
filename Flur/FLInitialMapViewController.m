@@ -168,7 +168,7 @@
     MKAnnotationView* annotationView = [mapView viewForAnnotation:userLocation];
     mapView.userLocation.title = @"";
     annotationView.canShowCallout = NO;
-    
+    NSLog(@"Location:%f, %f", userLocation.location.coordinate.latitude, userLocation.location.coordinate.longitude);
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {

@@ -320,7 +320,7 @@
     [self loadPrompt:^(NSString * prompt) {
         self.count++;
         [self.viewPrompt setText:prompt];
-        self.viewPrompt.text = @"Hey there this is a test its very good and long and dadff fuck this";
+        //self.viewPrompt.text = @"Hey there this is a test its very good and long and dadff fuck this";
         if (self.count == 2) {
             [self animateAllData];
         }
