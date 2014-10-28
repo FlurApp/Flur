@@ -19,10 +19,14 @@
 
 @implementation AppDelegate
             
++ (void) switchTest {
+    
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-   
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UIView appearance] setTintColor:[UIColor whiteColor]]; 
     // Override point for customization after application launch.
     [Parse setApplicationId:@"***REMOVED***"
                   clientKey:@"***REMOVED***"];
@@ -34,6 +38,7 @@
     
     self.navController = [[UINavigationController alloc] initWithRootViewController: control];
     [self.navController setNavigationBarHidden:YES];
+    self.navController.navigationBar.barStyle = UIBarStyleBlack;
 
     self.window.rootViewController = self.navController;
     self.window.backgroundColor = [UIColor blackColor];

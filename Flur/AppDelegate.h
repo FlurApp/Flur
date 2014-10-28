@@ -18,6 +18,9 @@
 - (void) switchController:(NSString *)controllerName withPin:(FLPin *)pin;
 - (void) popMyself;
 
++ (void) switchViewController:(NSString*)nextVC withData:(NSMutableDictionary*) dataToPass;
+
+
 
 
 @end

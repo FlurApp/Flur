@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "FLButton.h"
 #import <Parse/Parse.h>
+#import "AppDelegate.h"
 
 @interface FLCameraViewController ()
 
@@ -23,8 +24,15 @@
 @property (nonatomic, readwrite) UIButton* cameraButton;
 @property (nonatomic, readwrite) UIButton* retakeButton;
 @property (nonatomic, readwrite) UIButton* useButton;
-
 @property (nonatomic, readwrite) UIImageView* imageTaken;
+
+@property (nonatomic, strong) NSMutableArray* allPhotos;
+@property (nonatomic, strong) NSMutableDictionary* dataToPass;
+
+@property (nonatomic) int count;
+
+
+
 
 @end
 
@@ -36,8 +44,12 @@
 - (id)initWithPin:(FLPin *)pin {
     self = [super init];
     if (self) {
-        [self setPin:pin];
+        self.pin = pin;
+        self.count = 0;
+        self.dataToPass = [[NSMutableDictionary alloc] init];
+        self.allPhotos = [[NSMutableArray alloc] init];
     }
+    
     NSLog(@"PIN2: %@", self.pin);
     return self;
 }
@@ -173,6 +185,7 @@
 }
 
 - (IBAction)uploadImage:(id)sender {
+    [self loadPhotos];
     
     PFFile *imageFile = [PFFile fileWithName:@"t.gif" data:imageData];
 
@@ -189,6 +202,10 @@
                     // Log details of the failure
                     NSLog(@"Error: %@ %@", error, [error userInfo]);
                 }
+                else {
+                    [self.dataToPass setObject:imageData forKey:@"uploadedPhoto"];
+                    [self handOffToPhotoVC];
+                }
             }];
         }
         else{
@@ -204,6 +221,48 @@
     //Now switch views to PhotoViewController for the Pin
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate switchController:@"PhotoViewController" withPin:[self pin]];
+}
+
+- (void) loadPhotos {
+    
+    // Create the query
+    PFQuery *query = [PFQuery queryWithClassName:@"Images"];
+    [query whereKey:@"pinId" equalTo:self.pin.pinId];
+    [query orderByAscending:@"createdAt"];
+    
+    // Run query to download all relevant photos
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            
+            // Iterate over all objects and download corresponding data
+            for (PFObject *object in objects) {
+                PFFile *imageFile = [object objectForKey:@"imageFile"];
+                [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+                    if (!error) {
+                        [self.allPhotos addObject:data];
+                    }
+                    else {
+                        NSLog(@"fuck me");
+                    }
+                    
+                    if ([object isEqual:[objects lastObject]]) {
+                        [self.dataToPass setObject:self.allPhotos forKey:@"downloadedPhotos"];
+                        [self handOffToPhotoVC];
+                    }
+                }];
+                
+            }
+        }
+    }];
+    
+}
+    
+- (void) handOffToPhotoVC {
+    self.count++;
+    if (self.count == 2) {
+        // Check that there are no duplicates and that the uploaded image is there
+        [AppDelegate switchViewController:@"PhotoViewController" withData:self.dataToPass];
+    }
 }
 
 -(IBAction)retakePicture:(id)sender {
