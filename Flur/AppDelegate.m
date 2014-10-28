@@ -28,8 +28,8 @@
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
    
-     //FLInitialMapViewController * control = [FLInitialMapViewController new];
-     PhotoViewController * control = [PhotoViewController new];
+     FLInitialMapViewController * control = [FLInitialMapViewController new];
+     //PhotoViewController * control = [PhotoViewController new];
 
     
     self.navController = [[UINavigationController alloc] initWithRootViewController: control];

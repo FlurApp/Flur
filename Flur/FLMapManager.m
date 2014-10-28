@@ -48,6 +48,7 @@
         if (!error) {
             for (int i=0; i<objects.count; i++) {
                 FLPin* pin = [[FLPin alloc] initWith: objects[i]];
+                
                 [self.nonOpenablePins setObject:pin forKey: pin.objectId];
             }
             completion(self.nonOpenablePins);
@@ -90,6 +91,9 @@
 - (NSMutableArray*) getNewlyOpenablePins {
     
     NSMutableArray *pinsOpenable = [[NSMutableArray alloc] init];
+    [self.nonOpenablePins removeAllObjects];
+    [self.openablePins removeAllObjects];
+
 
     for (id key in self.nonOpenablePins) {
 

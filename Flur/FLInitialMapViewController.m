@@ -25,7 +25,6 @@
 
 @property (nonatomic, strong, readwrite) CLLocationManager *locationManager;
 
-@property (nonatomic, strong, readwrite) NSMutableArray *mapAnnotations;
 @property (nonatomic, strong, readwrite) UIPopoverController *contributePopover;
 
 @property (nonatomic, strong, readwrite) UIButton *addButton;
@@ -172,13 +171,17 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-    
+    [self.mapManager updateCurrentLocation:newLocation
+                        andRefreshLocation:false];
     if([self.mapManager shouldRefreshMap]) {
-        // update location
+     
+        [self.allAnnotations removeAllObjects];
+        [self.mapView removeAnnotations:self.mapView.annotations];
+        
         [self.mapManager updateCurrentLocation:newLocation
                             andRefreshLocation:true];
-        
         [self.mapManager getViewablePins:^(NSMutableDictionary* allNonOpenablePins) {
+            NSLog(@"Num returned %lu", allNonOpenablePins.count);
             for (id key in allNonOpenablePins) {
                 FLPin * pin = [allNonOpenablePins objectForKey:key];
                 FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin
@@ -204,6 +207,18 @@
     }
     
     
+}
+
+- (void)removeAllPinsButUserLocation
+{
+    id userLocation = [self.mapView userLocation];
+    NSMutableArray *pins = [[NSMutableArray alloc] initWithArray:[self.mapView annotations]];
+    if ( userLocation != nil ) {
+        [pins removeObject:userLocation]; // avoid removing user location off the map
+    }
+    
+    [self.mapView removeAnnotations:pins];
+    pins = nil;
 }
 
 - (void) updateAnnotations:(NSMutableArray *)indexes isNowOpenable:(BOOL)isNowOpenable {
