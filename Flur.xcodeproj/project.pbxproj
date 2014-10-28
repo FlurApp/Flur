@@ -19,6 +19,7 @@
 		D96C15D319E1CE0B009E74DA /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D96C15D219E1CE0B009E74DA /* CoreLocation.framework */; };
 		D96C15D519E1CE18009E74DA /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D96C15D419E1CE18009E74DA /* MapKit.framework */; };
 		D96C15D819E1F6CA009E74DA /* FLFlurAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = D96C15D719E1F6CA009E74DA /* FLFlurAnnotation.m */; };
+		D979FD6419FF1A3900635B87 /* FLButton.m in Sources */ = {isa = PBXBuildFile; fileRef = D979FD6319FF1A3900635B87 /* FLButton.m */; };
 		DB3ADA6919FB336B0038E860 /* frame_0.gif in Resources */ = {isa = PBXBuildFile; fileRef = DB3ADA5A19FB336B0038E860 /* frame_0.gif */; };
 		DB3ADA6A19FB336B0038E860 /* frame_1.gif in Resources */ = {isa = PBXBuildFile; fileRef = DB3ADA5B19FB336B0038E860 /* frame_1.gif */; };
 		DB3ADA6B19FB336B0038E860 /* frame_2.gif in Resources */ = {isa = PBXBuildFile; fileRef = DB3ADA5C19FB336B0038E860 /* frame_2.gif */; };
@@ -110,6 +111,8 @@
 		D96C15D419E1CE18009E74DA /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		D96C15D619E1F6CA009E74DA /* FLFlurAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLFlurAnnotation.h; sourceTree = "<group>"; };
 		D96C15D719E1F6CA009E74DA /* FLFlurAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLFlurAnnotation.m; sourceTree = "<group>"; };
+		D979FD6219FF1A3900635B87 /* FLButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLButton.h; sourceTree = "<group>"; };
+		D979FD6319FF1A3900635B87 /* FLButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLButton.m; sourceTree = "<group>"; };
 		DB3ADA5A19FB336B0038E860 /* frame_0.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = frame_0.gif; path = Flur/frame_0.gif; sourceTree = SOURCE_ROOT; };
 		DB3ADA5B19FB336B0038E860 /* frame_1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = frame_1.gif; sourceTree = "<group>"; };
 		DB3ADA5C19FB336B0038E860 /* frame_2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = frame_2.gif; sourceTree = "<group>"; };
@@ -246,6 +249,8 @@
 				D96C15D719E1F6CA009E74DA /* FLFlurAnnotation.m */,
 				D96C15CF19E0B536009E74DA /* FLInitialMapViewController.h */,
 				D96C15D019E0B536009E74DA /* FLInitialMapViewController.m */,
+				D979FD6219FF1A3900635B87 /* FLButton.h */,
+				D979FD6319FF1A3900635B87 /* FLButton.m */,
 				D96C15CC19E0B336009E74DA /* FLMasterNavigationController.h */,
 				D96C15CD19E0B336009E74DA /* FLMasterNavigationController.m */,
 				D903449119DD03CB00CF9532 /* Images.xcassets */,
@@ -526,6 +531,7 @@
 				D96C15D819E1F6CA009E74DA /* FLFlurAnnotation.m in Sources */,
 				55050A0619FDE52B00E27F94 /* FLCameraViewController.m in Sources */,
 				DBAFEB9B19EC4AC200312140 /* SinglePhotoViewController.m in Sources */,
+				D979FD6419FF1A3900635B87 /* FLButton.m in Sources */,
 				D903448D19DD03CB00CF9532 /* ViewController.m in Sources */,
 				DB9BD30D19F59DA30066FEB1 /* FLPin.m in Sources */,
 				D903448A19DD03CB00CF9532 /* AppDelegate.m in Sources */,

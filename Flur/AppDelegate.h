@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FLPin.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -14,6 +15,7 @@
 @property (strong, nonatomic) UINavigationController *navController;
 
 - (void) switchController:(NSString*) controllerName;
+- (void) switchController:(NSString *)controllerName withPin:(FLPin *)pin;
 - (void) popMyself;
 
 

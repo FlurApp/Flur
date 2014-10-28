@@ -8,7 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
+#import "FLPin.h"
 
 @interface FLCameraViewController : UIViewController
+
+- (id)initWithPin:(FLPin *)pin;
 
 @end

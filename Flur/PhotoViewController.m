@@ -62,7 +62,7 @@
     self.allPhotos =        [[NSMutableArray alloc] init];
 
     self.view.backgroundColor = [UIColor blackColor];
-    self.pinId = @"c8kzGmjHaU";
+//    self.pinId = @"c8kzGmjHaU";
 
     
     // Set up controller for the multiple page view
