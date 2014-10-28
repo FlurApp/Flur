@@ -273,7 +273,7 @@
     self.count++;
     if (self.count == 2) {
         NSLog(@"hey");
-        NSLog(@"Pin %lu", self.pin.contentCount);
+        NSLog(@"Pin %lu", (long)self.pin.contentCount);
         if (self.allPhotos.count != self.pin.contentCount) {
             [self.allPhotos addObject: self.imageData];
         }
