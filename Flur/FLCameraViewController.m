@@ -207,7 +207,12 @@
                     NSLog(@"Error: %@ %@", error, [error userInfo]);
                 }
                 else {
-
+                    
+                    self.pin.contentCount++;
+                    PFObject* flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin" objectId:self.pin.pinId];
+                    [flurPin incrementKey:@"contentCount"];
+                    [flurPin save];
+                    
                     [self.dataToPass setObject:self.imageData forKey:@"uploadedPhoto"];
                     [self handOffToPhotoVC];
                 }
@@ -249,7 +254,7 @@
                     
                     if (i == objects.count) {
 
-                        [self.dataToPass setObject:self.allPhotos forKey:@"downloadedPhotos"];
+                        [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
                         NSLog(@"ready to go");
                         [self handOffToPhotoVC];
                     }
@@ -265,8 +270,8 @@
     
     if (self.allPhotos.count != self.pin.contentCount) {
         [self.allPhotos addObject: self.imageData];
-        [self.dataToPass removeObjectForKey:@"downloadedPhotos"];
-        [self.dataToPass setObject:self.allPhotos forKey:@"downloadedPhotos"];
+        [self.dataToPass removeObjectForKey:@"allPhotos"];
+        [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
     }
     
     self.count++;
