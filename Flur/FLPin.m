@@ -16,10 +16,8 @@
     if (self) {
         self.coordinate = object[@"location"];
         self.username = object[@"username"];
-        self.objectId = [object objectId];
+        self.pinId = [object objectId];
         self.prompt = object[@"prompt"];
-//        NSLog(self.prompt);
-        NSLog(@"objectId: %@ prompt: %@", self.objectId, self.prompt);
     }
     
     return self;

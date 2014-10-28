@@ -86,7 +86,7 @@
                              [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
                          }];
     } else if ([controllerName isEqualToString:@"PhotoViewController"]) {
-        PhotoViewController *photoController = [[PhotoViewController alloc] initWithPin:pin.objectId];
+        PhotoViewController *photoController = [[PhotoViewController alloc] initWithPin:pin.pinId];
         [UIView animateWithDuration:0.75
                          animations:^{
                              [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];

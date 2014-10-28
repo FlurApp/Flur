@@ -184,7 +184,7 @@
                 FLPin * pin = [allNonOpenablePins objectForKey:key];
                 FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin
                                                                              isAnimated:false];
-                [self.allAnnotations setObject:annotation forKey:pin.objectId];
+                [self.allAnnotations setObject:annotation forKey:pin.pinId];
                 [self.mapView addAnnotation:annotation];
             }
             
@@ -208,8 +208,8 @@
 }
 
 - (void) updateAnnotations:(NSMutableArray *)indexes isNowOpenable:(BOOL)isNowOpenable {
-    for (NSString* objectId in indexes) {
-        FLFlurAnnotation* f = [self.allAnnotations objectForKey:objectId];
+    for (NSString* pinId in indexes) {
+        FLFlurAnnotation* f = [self.allAnnotations objectForKey:pinId];
         
         if (isNowOpenable) {
             f.isAnimated = true;
@@ -254,8 +254,8 @@
         // this is where you can find the annotation type is whether it is userlocation or not...
     }
     FLFlurAnnotation* fa = view.annotation;
-    if(fa.objectId) {
-        NSString* id = fa.objectId;
+    if(fa.pinId) {
+        NSString* id = fa.pinId;
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
         if(p) {
             [self showOverlay:p];
