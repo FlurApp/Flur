@@ -70,24 +70,17 @@ static bool firstToggle = true;
     [self.view addSubview:imageView];
     
     
-    self.yConstraint = [NSLayoutConstraint constraintWithItem:imageView
-                                               attribute:NSLayoutAttributeCenterY
-                                               relatedBy:NSLayoutRelationEqual
-                                                  toItem:self.view
-                                               attribute:NSLayoutAttributeCenterY
-                                              multiplier:1.0
-                                                constant:0];
-    
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
-    // If this photo should slide up (first photo) change its y constraint to off the screen
-    if (self.slideUp) {
-        self.yConstraint.constant = 1000;
-        [self.view addConstraint: self.yConstraint];
-    }
-    else {
-        [self.view addConstraint: self.yConstraint];
-    }
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+                                                            attribute:NSLayoutAttributeCenterY
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:self.view
+                                                            attribute:NSLayoutAttributeCenterY
+                                                           multiplier:1.0
+                                                             constant:0]];
+    
+
 }
 
 // On finger press, toggle top and bottom bar
@@ -152,22 +145,6 @@ static bool firstToggle = true;
     
     
     [self.view layoutIfNeeded];
-    
-    // If photo should slide up, animate changing the y constraint
-    if (self.slideUp) {
-        self.yConstraint.constant = 0;
-        [UIView animateWithDuration:0.7
-                         animations:^{
-                             [self.view layoutIfNeeded];
-                             [self performSelector:@selector(toggleViews) withObject:self afterDelay:.70];
-
-                         }];
-        
-        if (firstToggle) {
-            firstToggle = true;
-            [self performSelector:@selector(toggleViews) withObject:self afterDelay:3];
-        }
-    }
 }
 
 - (void)didReceiveMemoryWarning {
