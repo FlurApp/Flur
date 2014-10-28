@@ -47,10 +47,11 @@
     if (self) {
         FLPin *pin = [data objectForKey:@"FLPin"];
         self.pin = pin;
-
         self.count = 0;
         self.allPhotos = [[NSMutableArray alloc] init];
-        NSLog(@"made it");
+        self.dataToPass = [[NSMutableDictionary alloc] init];
+        [self.dataToPass setObject:pin forKey:@"FLPin"];
+
 
     }
     
@@ -192,7 +193,6 @@
     [self loadPhotos];
     
     PFFile *imageFile = [PFFile fileWithName:@"t.gif" data:self.imageData];
-    self.dataToPass = [[NSMutableDictionary alloc] init];
 
     // Save PFFile
     [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
