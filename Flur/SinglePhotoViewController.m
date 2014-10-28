@@ -21,6 +21,8 @@
 @implementation SinglePhotoViewController
 
 static bool topBarVisible = false;
+static bool firstToggle = true;
+
 
 - (instancetype) initWithSlideUp:(bool) slideUp {
     self = [super initWithNibName:nil bundle:nil];
@@ -160,6 +162,11 @@ static bool topBarVisible = false;
                              [self performSelector:@selector(toggleViews) withObject:self afterDelay:.70];
 
                          }];
+        
+        if (firstToggle) {
+            firstToggle = true;
+            [self performSelector:@selector(toggleViews) withObject:self afterDelay:3];
+        }
     }
 }
 

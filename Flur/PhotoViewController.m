@@ -158,33 +158,36 @@
 
 - (void) loadTopBar {
     self.topBar.translatesAutoresizingMaskIntoConstraints = NO;
-    self.topBar.backgroundColor = RGB(215,215,215);
 
     [self.view addSubview:self.topBar];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:70]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
-    UIView* topBarBottomBorder = [[UIView alloc] init];
-    topBarBottomBorder.translatesAutoresizingMaskIntoConstraints = NO;
-    topBarBottomBorder.backgroundColor = RGB(100,100,100);
+    UIBlurEffect *blurEffect;
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     
-    [self.topBar addSubview:topBarBottomBorder];
+    UIVisualEffectView *blurEffectView;
+    blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarBottomBorder attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-1]];
+    
+    [self.topBar addSubview:blurEffectView];
+    
+    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    
+    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+    
+    
+    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
 
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarBottomBorder attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
-    
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarBottomBorder attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
-     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarBottomBorder attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
     
     UIButton *exitButton = [[UIButton alloc] init];
     exitButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -234,7 +237,7 @@
     self.bottomBar.alpha = 0;
     
     UIBlurEffect *blurEffect;
-    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     
     UIVisualEffectView *blurEffectView;
     blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
@@ -252,6 +255,22 @@
     
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
+    UILabel* prompt = [[UILabel alloc] init];
+    prompt.translatesAutoresizingMaskIntoConstraints = NO;
+    prompt.text = @"What did we do?";
+    [prompt setTextColor:RGB(98,234,239)];
+    
+    [self.bottomBar addSubview:prompt];
+    
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:prompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
+    
+    
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:prompt attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:prompt attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
+    
+    
+    
     self.viewPrompt.translatesAutoresizingMaskIntoConstraints = NO;
     [self.viewPrompt setTextColor:[UIColor whiteColor]];
     
@@ -260,7 +279,7 @@
     self.viewPrompt.numberOfLines = 0;
     self.viewPrompt.lineBreakMode = NSLineBreakByWordWrapping;
     
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:prompt attribute:NSLayoutAttributeBottom multiplier:1.0 constant:5]];
     
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-10]];
     
