@@ -7,9 +7,13 @@
 //
 
 #import "FLCameraViewController.h"
+#import "AppDelegate.h"
+#import "FLButton.h"
 #import <Parse/Parse.h>
 
 @interface FLCameraViewController ()
+
+@property (nonatomic, readwrite) FLPin* pin;
 
 @property (nonatomic) AVCaptureDevice* device;
 @property (nonatomic) AVCaptureSession* session;
@@ -27,6 +31,14 @@
 @implementation FLCameraViewController {
     BOOL retake;
     NSData *imageData;
+}
+
+- (id)initWithPin:(FLPin *)pin {
+    
+    if ([super init]) {
+        [self setPin:pin];
+    }
+    return self;
 }
 
 - (void)viewDidLoad {
@@ -186,6 +198,11 @@
         // Update your progress spinner here. percentDone will be between 0 and 100.
         //HUD.progress = (float)percentDone/100;
     }];
+    
+    
+    //Now switch views to PhotoViewController for the Pin
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate switchController:@"PhotoViewController" withPin:[self pin]];
 }
 
 -(IBAction)retakePicture:(id)sender {

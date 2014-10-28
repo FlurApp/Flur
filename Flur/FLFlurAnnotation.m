@@ -25,7 +25,7 @@
                                                                   location.coordinate.longitude);
         _coordinate = coord;
         _isAnimated = isAnimated;
-        _objectId = location.objectId;
+        _pinId = location.pinId;
     }
     return self;
 }

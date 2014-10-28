@@ -13,6 +13,7 @@
 #import "FLMapManager.h"
 #import "FLPin.h"
 #import "AppDelegate.h"
+#import "FLButton.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 
@@ -29,7 +30,7 @@
 
 @property (nonatomic, strong, readwrite) UIButton *addButton;
 @property (nonatomic, strong, readwrite) UIButton *addButton2;
-@property (nonatomic, strong, readwrite) UIButton *contributeButton;
+@property (nonatomic, strong, readwrite) FLButton *contributeButton;
 @property (nonatomic, strong, readwrite) UIVisualEffectView *blurEffectView;
 
 
@@ -186,7 +187,7 @@
                 FLPin * pin = [allNonOpenablePins objectForKey:key];
                 FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin
                                                                              isAnimated:false];
-                [self.allAnnotations setObject:annotation forKey:pin.objectId];
+                [self.allAnnotations setObject:annotation forKey:pin.pinId];
                 [self.mapView addAnnotation:annotation];
             }
             
@@ -222,8 +223,8 @@
 }
 
 - (void) updateAnnotations:(NSMutableArray *)indexes isNowOpenable:(BOOL)isNowOpenable {
-    for (NSString* objectId in indexes) {
-        FLFlurAnnotation* f = [self.allAnnotations objectForKey:objectId];
+    for (NSString* pinId in indexes) {
+        FLFlurAnnotation* f = [self.allAnnotations objectForKey:pinId];
         
         if (isNowOpenable) {
             f.isAnimated = true;
@@ -268,8 +269,8 @@
         // this is where you can find the annotation type is whether it is userlocation or not...
     }
     FLFlurAnnotation* fa = view.annotation;
-    if(fa.objectId) {
-        NSString* id = fa.objectId;
+    if(fa.pinId) {
+        NSString* id = fa.pinId;
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
         if(p) {
             [self showOverlay:p];
@@ -282,7 +283,7 @@
     
      UIBlurEffect *blurEffect;
      blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-     
+    
      self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
      self.blurEffectView.alpha = 0;
     
@@ -306,7 +307,7 @@
     
     
     // build button for contributing
-    UIButton *contributeButton = [[UIButton alloc] init];
+    FLButton *contributeButton = [[FLButton alloc] initWithPin:pin];
     [contributeButton setTitle:@"Contribute" forState:UIControlStateNormal];
     [[contributeButton titleLabel] setFont:[UIFont systemFontOfSize:30.0]];
     [contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -416,8 +417,10 @@
 
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
+    FLButton *buttonClicked = (FLButton *)sender;
+    
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"FLCameraViewController"];
+    [appDelegate switchController:@"FLCameraViewController" withPin:buttonClicked.pin];
 }
 
 - (void)didReceiveMemoryWarning {

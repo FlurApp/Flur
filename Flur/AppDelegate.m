@@ -10,6 +10,7 @@
 #import "FLInitialMapViewController.h"
 #import "PhotoViewController.h"
 #import "FLCameraViewController.h"
+#import "FLPin.h"
 #import <Parse/Parse.h>
 
 @interface AppDelegate ()
@@ -27,10 +28,15 @@
                   clientKey:@"***REMOVED***"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
+<<<<<<< HEAD
    
      FLInitialMapViewController * control = [FLInitialMapViewController new];
      //PhotoViewController * control = [PhotoViewController new];
 
+=======
+     FLInitialMapViewController * control = [FLInitialMapViewController new];
+//    PhotoViewController *control = [PhotoViewController new];
+>>>>>>> eee9eaa313f0b1f3db67cfb686ccd7a1aa76bb5a
     
     self.navController = [[UINavigationController alloc] initWithRootViewController: control];
     [self.navController setNavigationBarHidden:YES];
@@ -74,6 +80,31 @@
                              [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
                          }];
     }
+}
+
+- (void)switchController:(NSString *)controllerName withPin:(FLPin *)pin {
+    
+    if ([controllerName isEqualToString:@"FLCameraViewController"]) {
+        FLCameraViewController *camController = [[FLCameraViewController alloc] initWithPin:pin];
+        [UIView animateWithDuration:0.75
+                         animations:^{
+                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+                             [self.navController pushViewController:camController animated:NO];
+                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
+                         }];
+    } else if ([controllerName isEqualToString:@"PhotoViewController"]) {
+        PhotoViewController *photoController = [[PhotoViewController alloc] initWithPin:pin.pinId];
+        [UIView animateWithDuration:0.75
+                         animations:^{
+                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+                             [self.navController pushViewController:photoController animated:NO];
+                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.navController.view cache:NO];
+                         }];
+    } else {
+        NSLog(@"Not a correct controllerName for switchController");
+        EXIT_FAILURE;
+    }
+    
 }
 
 - (void) popMyself {
