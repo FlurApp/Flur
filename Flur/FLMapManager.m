@@ -48,7 +48,7 @@
         if (!error) {
             for (int i=0; i<objects.count; i++) {
                 FLPin* pin = [[FLPin alloc] initWith: objects[i]];
-                [self.nonOpenablePins setObject:pin forKey: pin.objectId];
+                [self.nonOpenablePins setObject:pin forKey: pin.pinId];
             }
             completion(self.nonOpenablePins);
         }
@@ -96,8 +96,8 @@
         FLPin * pin = [self.nonOpenablePins objectForKey:key];
 
         if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance) {
-            [pinsOpenable addObject: pin.objectId];
-            [self.openablePins setObject:pin forKey:pin.objectId];
+            [pinsOpenable addObject: pin.pinId];
+            [self.openablePins setObject:pin forKey:pin.pinId];
         }
     }
     
@@ -114,8 +114,8 @@
         
         FLPin * pin = [self.openablePins objectForKey:key];
         if ([self.currentLocation distanceInKilometersTo: pin.coordinate] >= closeToPinDistance) {
-            [pinsNonOpenable addObject: pin.objectId];
-            [self.nonOpenablePins setObject:pin forKey:pin.objectId];
+            [pinsNonOpenable addObject: pin.pinId];
+            [self.nonOpenablePins setObject:pin forKey:pin.pinId];
         }
     }
     
