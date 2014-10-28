@@ -18,6 +18,7 @@
         self.username = object[@"username"];
         self.pinId = [object objectId];
         self.prompt = object[@"prompt"];
+        self.contentCount = (int) object[@"contentCount"];
     }
     
     return self;

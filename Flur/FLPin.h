@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSString* username;
 @property (nonatomic, strong) NSString* pinId;
 @property (nonatomic, strong) NSString* prompt;
+@property (nonatomic) NSInteger contentCount;
 
 - (instancetype) initWith: (PFObject *) object;
 - (NSString *)description;

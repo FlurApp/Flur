@@ -244,7 +244,7 @@
                         //[self.allPhotos addObject:data];
                     }
                     else {
-                        NSLog(@"fuck me");
+                        NSLog(@"fack me");
                     }
                     
                     if (i == objects.count) {
@@ -255,7 +255,6 @@
                     }
                     
                 }];
-                
             }
         }
     }];
@@ -263,6 +262,13 @@
 }
     
 - (void) handOffToPhotoVC {
+    
+    if (self.allPhotos.count != self.pin.contentCount) {
+        [self.allPhotos addObject: self.imageData];
+        [self.dataToPass removeObjectForKey:@"downloadedPhotos"];
+        [self.dataToPass setObject:self.allPhotos forKey:@"downloadedPhotos"];
+    }
+    
     self.count++;
     if (self.count == 2) {
         // Check that there are no duplicates and that the uploaded image is there
