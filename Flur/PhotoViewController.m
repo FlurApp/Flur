@@ -16,7 +16,6 @@
 @interface PhotoViewController ()
 
 // UI elements
-@property   (strong, nonatomic) UIImageView * spinner;
 @property   (strong, nonatomic) UILabel * viewPrompt;
 @property   (strong, nonatomic) UIView * topBar;
 @property   (strong, nonatomic) UIView * bottomBar;
@@ -44,6 +43,7 @@
         self.pinId = pin.pinId;
         self.topBarVisible = false;
         self.count = 0;
+        self.allPhotos = [data objectForKey:@"allPhotos"];
     }
     
     return self;
@@ -57,10 +57,8 @@
     self.currentPicture =   [[UILabel alloc] init];
     self.topBar =           [[UIView alloc] initWithFrame:CGRectZero];
     self.bottomBar =        [[UIView alloc] initWithFrame:CGRectZero];
-    self.spinner =          [[UIImageView alloc] initWithFrame:self.view.bounds];
     
     self.viewsToToggle =    [[NSMutableArray alloc] init];
-    self.allPhotos =        [[NSMutableArray alloc] init];
 
     self.view.backgroundColor = [UIColor blackColor];
 //    self.pinId = @"c8kzGmjHaU";
@@ -97,64 +95,6 @@
  
 
         // Do any additional setup after loading the view.
-}
-
-
-
-- (void) loadSpinner {
-    self.spinner.translatesAutoresizingMaskIntoConstraints = NO;
-
-    NSMutableArray* frameHolders = [[NSMutableArray alloc] init];
-    for(int i=0; i<29; i++) {
-        NSString* imageName;
-        if (i < 10)
-            imageName = [NSString stringWithFormat:@"frame_00%d.gif", i];
-        else
-            imageName = [NSString stringWithFormat:@"frame_0%d.gif", i];
-
-        [frameHolders addObject:[UIImage imageNamed:imageName]];
-    }
-    
-    self.spinner.animationImages = [[NSArray alloc] initWithArray:frameHolders];
-    self.spinner.animationDuration = 1.0f;
-    self.spinner.animationRepeatCount = 0;
-    [self.spinner startAnimating];
-    [self.view addSubview:self.spinner];
-    
-
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
-                                 attribute:NSLayoutAttributeCenterY
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.view
-                                 attribute:NSLayoutAttributeCenterY
-                                multiplier:1.0
-                                                           constant:0.0]];
-    
-    // Center Horizontally
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
-                                 attribute:NSLayoutAttributeCenterX
-                                 relatedBy:NSLayoutRelationEqual
-                                    toItem:self.view
-                                 attribute:NSLayoutAttributeCenterX
-                                multiplier:1.0
-                                                           constant:0.0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
-                                                       attribute:NSLayoutAttributeHeight
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:nil
-                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                      multiplier:1.0
-                                                        constant:100.0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
-                                                       attribute:NSLayoutAttributeWidth
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:nil
-                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                      multiplier:1.0
-                                                        constant:100.0]];
 }
 
 - (void) loadTopBar {
@@ -291,7 +231,6 @@
 }
 
 - (void) loadViews {
-    [self loadSpinner];
     [self loadTopBar];
     [self loadBottomBar];
 }
@@ -332,7 +271,6 @@
     
     [UIView beginAnimations:@"fade in" context:nil];
     [UIView setAnimationDuration:1.0];
-    self.spinner.alpha = 0;
     [UIView commitAnimations];
     
     SinglePhotoViewController *currentSinglePhoto = [self.pageController.viewControllers lastObject];
@@ -456,7 +394,6 @@
     SinglePhotoViewController *childViewController = [[SinglePhotoViewController alloc] initWithSlideUp: [self.allPhotos count] == 0];
     
     childViewController.index = index;
-    childViewController.pinId = self.pinId;
     childViewController.viewsToToggle = self.viewsToToggle;
 
     NSData* data = [self.allPhotos count] == 0 ? [[NSData alloc] init] : self.allPhotos[index];

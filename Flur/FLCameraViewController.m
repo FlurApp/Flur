@@ -25,6 +25,8 @@
 @property (nonatomic, readwrite) UIButton* retakeButton;
 @property (nonatomic, readwrite) UIButton* useButton;
 @property (nonatomic, readwrite) UIImageView* imageTaken;
+@property (strong, nonatomic) UIImageView * spinner;
+
 
 @property (nonatomic, strong) NSMutableArray* allPhotos;
 @property (nonatomic, strong) NSMutableDictionary* dataToPass;
@@ -221,6 +223,7 @@
         // Update your progress spinner here. percentDone will be between 0 and 100.
         //HUD.progress = (float)percentDone/100;
     }];
+    [self loadSpinner];
 }
 
 - (void) loadPhotos {
@@ -284,6 +287,86 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) loadSpinner {
+    
+    UIBlurEffect *blurEffect;
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    
+    UIVisualEffectView* blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    blurEffectView.alpha = 1;
+    
+    // Vibrancy effect
+    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
+    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+    [vibrancyEffectView setFrame:self.view.bounds];
+    
+    
+    
+    
+    // Add the vibrancy view to the blur view
+    [[blurEffectView contentView] addSubview:vibrancyEffectView];
+    
+    // add blur view to view
+    blurEffectView.frame = self.view.bounds;
+    [self.view addSubview: blurEffectView];
+    
+    self.spinner = [[UIImageView alloc] init];
+    self.spinner.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    NSMutableArray* frameHolders = [[NSMutableArray alloc] init];
+    for(int i=0; i<29; i++) {
+        NSString* imageName;
+        if (i < 10)
+            imageName = [NSString stringWithFormat:@"frame_00%d.gif", i];
+        else
+            imageName = [NSString stringWithFormat:@"frame_0%d.gif", i];
+        
+        [frameHolders addObject:[UIImage imageNamed:imageName]];
+    }
+    
+    self.spinner.animationImages = [[NSArray alloc] initWithArray:frameHolders];
+    self.spinner.animationDuration = 1.0f;
+    self.spinner.animationRepeatCount = 0;
+    [self.spinner startAnimating];
+    [self.view addSubview:self.spinner];
+    
+    
+    
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
+                                                          attribute:NSLayoutAttributeCenterY
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterY
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    
+    // Center Horizontally
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
+                                                          attribute:NSLayoutAttributeCenterX
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeCenterX
+                                                         multiplier:1.0
+                                                           constant:0.0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:100.0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:100.0]];
 }
 
 /*
