@@ -367,6 +367,10 @@
             
             // Iterate over all objects and download corresponding data
             int i = 0;
+            if (objects.count == 0)
+                [self handOffToPhotoVC];
+
+
             for (PFObject *object in objects) {
                 i++;
                 PFFile *imageFile = [object objectForKey:@"imageFile"];

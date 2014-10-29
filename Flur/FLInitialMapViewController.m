@@ -156,7 +156,7 @@
     flurImageContainer.translatesAutoresizingMaskIntoConstraints = NO;
     [topBar addSubview:flurImageContainer];
     
-    [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
+    [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
     
     [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
@@ -173,7 +173,7 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:80.0]];
+                                                           constant:70.0]];
 
     
   
