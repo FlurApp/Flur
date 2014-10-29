@@ -28,8 +28,7 @@
 
 @property (nonatomic, strong, readwrite) UIPopoverController *contributePopover;
 
-@property (nonatomic, strong, readwrite) UIButton *addButton;
-@property (nonatomic, strong, readwrite) UIButton *addButton2;
+@property (nonatomic, strong, readwrite) UIButton *addFlurButton;
 @property (nonatomic, strong, readwrite) FLButton *contributeButton;
 @property (nonatomic, strong, readwrite) UIVisualEffectView *blurEffectView;
 
@@ -136,6 +135,21 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+
+
+    // add flur button
+    UIButton* addFlurButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    [addFlurButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [addFlurButton addTarget:self action:@selector(addingFlur:) forControlEvents:UIControlEventTouchDown];
+    
+    [self setAddFlurButton:addFlurButton];
+    [self.view addSubview: self.addFlurButton];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1 constant:30]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTrailing multiplier:1 constant:-15]];
+    
     
     UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
     UIImageView *flurImageContainer = [[UIImageView alloc] initWithImage:flurImage];
@@ -425,6 +439,7 @@
 }
 
 - (IBAction)addingFlur:(id)sender {
+    NSLog(@"adding flur");
     [self.mapManager addFlur];
 }
 
