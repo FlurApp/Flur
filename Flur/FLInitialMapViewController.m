@@ -119,8 +119,8 @@
     topBar.translatesAutoresizingMaskIntoConstraints = NO;
     //topBar.backgroundColor = RGB(166, 219, 245);
     //topBar.backgroundColor = RGB(86, 165, 204);
-    topBar.backgroundColor = [self colorWithHexString:@"65BAAD"];
-    
+    topBar.backgroundColor = [self colorWithHexString:@"3f72f5 "];
+
     [self.view addSubview:topBar];
  
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
@@ -244,7 +244,11 @@
                     [subView removeFromSuperview];
                 }
             }
-            [self.mapView viewForAnnotation:f].image = [UIImage imageNamed:@"flur_25px.png"];
+            [self.mapView viewForAnnotation:f].image = [UIImage imageNamed:@"flur_152px@2x.png"];
+            /*UIImageView* image = [[UIImageView alloc] initWithImage:[UIImage
+                                                         imageNamed:@"flur_152px@2x.png"]];
+            [[self.mapView viewForAnnotation:f] addSubview:image];*/
+
         }
         
     }
@@ -264,6 +268,7 @@
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
         if(p) {
             [self showOverlay:p];
+            [self.mapView deselectAnnotation:view.annotation animated:false];
         }
     }
     return;
