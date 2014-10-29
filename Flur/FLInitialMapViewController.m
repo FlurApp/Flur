@@ -252,11 +252,43 @@
             UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
             animatedImageView.tag = 10;
             animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                                 [UIImage imageNamed:@"frame_0.gif"],
-                                                 [UIImage imageNamed:@"frame_1.gif"],
-                                                 [UIImage imageNamed:@"frame_2.gif"],
-                                                 [UIImage imageNamed:@"frame_3.gif"], nil];
-            animatedImageView.animationDuration = 1.0f;
+                                                 [UIImage imageNamed:@"14.png"],
+                                                 [UIImage imageNamed:@"14.png"],
+                                                 [UIImage imageNamed:@"14.png"],
+                                                 [UIImage imageNamed:@"14.png"],
+                                                 [UIImage imageNamed:@"14.png"],
+                                                 [UIImage imageNamed:@"13.png"],
+                                                 [UIImage imageNamed:@"12.png"],
+                                                 [UIImage imageNamed:@"11.png"],
+                                                 [UIImage imageNamed:@"10.png"],
+                                                 [UIImage imageNamed:@"9.png"],
+                                                 [UIImage imageNamed:@"8.png"],
+                                                 [UIImage imageNamed:@"7.png"],
+                                                 [UIImage imageNamed:@"6.png"],
+                                                 [UIImage imageNamed:@"5.png"],
+                                                 [UIImage imageNamed:@"4.png"],
+                                                 [UIImage imageNamed:@"3.png"],
+                                                 [UIImage imageNamed:@"2.png"],
+                                                 [UIImage imageNamed:@"1.png"],
+                                                 [UIImage imageNamed:@"0.png"],
+                                                 [UIImage imageNamed:@"0.png"],
+                                                 [UIImage imageNamed:@"0.png"],
+                                                 [UIImage imageNamed:@"0.png"],
+                                                 [UIImage imageNamed:@"0.png"],
+                                                 [UIImage imageNamed:@"1.png"],
+                                                 [UIImage imageNamed:@"2.png"],
+                                                 [UIImage imageNamed:@"3.png"],
+                                                 [UIImage imageNamed:@"4.png"],
+                                                 [UIImage imageNamed:@"5.png"],
+                                                 [UIImage imageNamed:@"6.png"],
+                                                 [UIImage imageNamed:@"7.png"],
+                                                 [UIImage imageNamed:@"8.png"],
+                                                 [UIImage imageNamed:@"9.png"],
+                                                 [UIImage imageNamed:@"10.png"],
+                                                 [UIImage imageNamed:@"11.png"],
+                                                 [UIImage imageNamed:@"12.png"],
+                                                 [UIImage imageNamed:@"13.png"], nil];
+            animatedImageView.animationDuration = 1.3f;
             animatedImageView.animationRepeatCount = 0;
             [animatedImageView startAnimating];
             [animatedImageView setFrame: CGRectMake(0,0,25,25)];
@@ -316,8 +348,7 @@
     
     // Label for vibrant text
     UILabel *vibrantLabel = [[UILabel alloc] init];
-    //[vibrantLabel setText:[pin returnPrompt]];
-    [vibrantLabel setText:@"Hey there you should take a picture of yourself with a stranger and then some else."];
+    [vibrantLabel setText:[pin returnPrompt]];
 
     [vibrantLabel setTextAlignment:NSTextAlignmentCenter];
     [vibrantLabel setNumberOfLines:0];
@@ -420,10 +451,42 @@
     if (isAnimated) {
         UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
         animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                             [UIImage imageNamed:@"frame_0.gif"],
-                                             [UIImage imageNamed:@"frame_1.gif"],
-                                             [UIImage imageNamed:@"frame_2.gif"],
-                                             [UIImage imageNamed:@"frame_3.gif"], nil];
+                                             [UIImage imageNamed:@"14.png"],
+                                             [UIImage imageNamed:@"14.png"],
+                                             [UIImage imageNamed:@"14.png"],
+                                             [UIImage imageNamed:@"14.png"],
+                                             [UIImage imageNamed:@"14.png"],
+                                             [UIImage imageNamed:@"13.png"],
+                                             [UIImage imageNamed:@"12.png"],
+                                             [UIImage imageNamed:@"11.png"],
+                                             [UIImage imageNamed:@"10.png"],
+                                             [UIImage imageNamed:@"9.png"],
+                                             [UIImage imageNamed:@"8.png"],
+                                             [UIImage imageNamed:@"7.png"],
+                                             [UIImage imageNamed:@"6.png"],
+                                             [UIImage imageNamed:@"5.png"],
+                                             [UIImage imageNamed:@"4.png"],
+                                             [UIImage imageNamed:@"3.png"],
+                                             [UIImage imageNamed:@"2.png"],
+                                             [UIImage imageNamed:@"1.png"],
+                                             [UIImage imageNamed:@"0.png"],
+                                             [UIImage imageNamed:@"0.png"],
+                                             [UIImage imageNamed:@"0.png"],
+                                             [UIImage imageNamed:@"0.png"],
+                                             [UIImage imageNamed:@"0.png"],
+                                             [UIImage imageNamed:@"1.png"],
+                                             [UIImage imageNamed:@"2.png"],
+                                             [UIImage imageNamed:@"3.png"],
+                                             [UIImage imageNamed:@"4.png"],
+                                             [UIImage imageNamed:@"5.png"],
+                                             [UIImage imageNamed:@"6.png"],
+                                             [UIImage imageNamed:@"7.png"],
+                                             [UIImage imageNamed:@"8.png"],
+                                             [UIImage imageNamed:@"9.png"],
+                                             [UIImage imageNamed:@"10.png"],
+                                             [UIImage imageNamed:@"11.png"],
+                                             [UIImage imageNamed:@"12.png"],
+                                             [UIImage imageNamed:@"13.png"], nil];
         animatedImageView.animationDuration = 1.0f;
         animatedImageView.animationRepeatCount = 0;
         [animatedImageView startAnimating];
