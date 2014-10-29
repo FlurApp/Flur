@@ -151,6 +151,17 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
     
+    // hamburger
+   /* UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
+    UIImageView *hamburgerContainer = [[UIImageView alloc] initWithImage:hamburger];
+    [hamburgerContainer setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    [[self view] addSubview:hamburgerContainer];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hamburgerContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:33]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hamburgerContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:17]];*/
+    
     
     UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
     UIImageView *flurImageContainer = [[UIImageView alloc] initWithImage:flurImage];
