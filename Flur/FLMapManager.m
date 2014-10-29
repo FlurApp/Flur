@@ -74,7 +74,7 @@
         self.firstPinGrab = false;
         return true;
     }
-    else if ([self.currentLocation distanceInKilometersTo: self.refreshLocation] > viewablePinRadius) {
+    else if ([self.currentLocation distanceInKilometersTo: self.refreshLocation] > refreshRadius) {
         return true;
     }
     return false;
