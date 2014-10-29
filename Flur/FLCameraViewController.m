@@ -123,17 +123,37 @@
 
 - (void)loadCameraButton {
 
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    UIButton *button = [[UIButton alloc]init];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[button layer] setBorderColor:[[UIColor whiteColor] CGColor]];
-    [[button layer] setBorderWidth:2.0];
+
     [button addTarget:self action:@selector(takePicture:) forControlEvents:UIControlEventTouchDown];
+
+
+    
     [self setCameraButton:button];
+    [self.cameraButton setImage:[UIImage imageNamed:@"takePhoto.png"] forState:UIControlStateNormal];
+
     
     [[self view] addSubview:self.cameraButton];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
+    
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.cameraButton
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:40.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.cameraButton
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:40.0]];
 
 }
 
@@ -141,14 +161,30 @@
     
     UIButton *button = [[UIButton alloc] init];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [button setTitle:@"Back" forState:UIControlStateNormal];
     [button addTarget:self action:@selector(returnToMap:) forControlEvents:UIControlEventTouchDown];
+    [button setImage:[UIImage imageNamed:@"leaveCamera.png"] forState:UIControlStateNormal];
+
     [self setBackButton:button];
     
     [[self view] addSubview:self.backButton];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-5]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:5]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:40.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:40.0]];
 }
 
 - (IBAction)returnToMap:(id)sender {
