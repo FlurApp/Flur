@@ -88,6 +88,15 @@ static UINavigationController *navController;
     [navController popViewControllerAnimated:YES];
 }
 
++ (void) popCameraVC {
+    NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
+    [navArray removeLastObject];
+    
+    [(FLInitialMapViewController*)[navArray objectAtIndex:0] removeBlur];
+    
+    [navController setViewControllers:navArray animated:YES];
+    [navController popViewControllerAnimated:YES];
+}
 
 - (void) popMyself {
     /*[UIView animateWithDuration:0.75

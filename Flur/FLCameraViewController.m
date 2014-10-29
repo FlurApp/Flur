@@ -149,6 +149,8 @@
 
 - (IBAction)returnToMap:(id)sender {
     
+    [AppDelegate popCameraVC];
+    
 }
 
 - (IBAction)takePicture:(id)sender {
