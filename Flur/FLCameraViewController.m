@@ -65,6 +65,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [[self view] setBackgroundColor:[UIColor blackColor]];
+    [self setNeedsStatusBarAppearanceUpdate];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+
+
     
     self.session = [[AVCaptureSession alloc] init];
     
@@ -175,6 +179,7 @@
     [_retakeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_retakeButton addTarget:self action:@selector(retakePicture:) forControlEvents:UIControlEventTouchDown];
     [_retakeButton setImage:[UIImage imageNamed:@"retake.png"] forState:UIControlStateNormal];
+    _retakeButton.alpha = 0;
 
     
     [[self view] addSubview:_retakeButton];
@@ -203,7 +208,8 @@
     [_useButton setEnabled:TRUE];
     [_useButton addTarget:self action:@selector(uploadImage:) forControlEvents:UIControlEventTouchDown];
     [_useButton setImage:[UIImage imageNamed:@"uploadPhoto.png"] forState:UIControlStateNormal];
-
+    _useButton.alpha = 0;
+    
     [[self view] addSubview:_useButton];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_useButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
@@ -227,6 +233,13 @@
                                                            constant:30.0]];
     
     [_cameraButton setHidden:YES];
+    
+    [UIView beginAnimations:@"fade in" context:nil];
+    [UIView setAnimationDuration:.4];
+    _retakeButton.alpha = 1;
+    _useButton.alpha = 1;
+
+    [UIView commitAnimations];
 }
 
 - (IBAction)uploadImage:(id)sender {
