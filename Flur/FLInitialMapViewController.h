@@ -11,7 +11,7 @@
 @import CoreLocation;
 @import MapKit;
 
-@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate>
+@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextViewDelegate>
 
 - (void) removeBlur;
 
