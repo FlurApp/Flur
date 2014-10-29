@@ -119,7 +119,10 @@
     topBar.translatesAutoresizingMaskIntoConstraints = NO;
     //topBar.backgroundColor = RGB(166, 219, 245);
     //topBar.backgroundColor = RGB(86, 165, 204);
-    topBar.backgroundColor = [self colorWithHexString:@"3f72f5 "];
+    //topBar.backgroundColor = [self colorWithHexString:@"3f72f5 "];
+    topBar.backgroundColor = RGB(106, 147, 217);
+   // topBar.backgroundColor = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"texture1.jpg"]];
+
 
     [self.view addSubview:topBar];
  
@@ -147,6 +150,35 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarTitle attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarTitle attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    UIButton* uploadPhotoButton = [[UIButton alloc] init];
+    uploadPhotoButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [topBar addSubview:uploadPhotoButton];
+    [uploadPhotoButton setImage:[UIImage imageNamed:@"uploadPhoto.png"] forState:UIControlStateNormal];
+
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:uploadPhotoButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:20]];
+    
+
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:uploadPhotoButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+    
+
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:uploadPhotoButton
+                                                       attribute:NSLayoutAttributeHeight
+                                                       relatedBy:NSLayoutRelationEqual
+                                                          toItem:nil
+                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                      multiplier:1.0
+                                                        constant:20.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:uploadPhotoButton
+                                                       attribute:NSLayoutAttributeWidth
+                                                       relatedBy:NSLayoutRelationEqual
+                                                          toItem:nil
+                                                       attribute:NSLayoutAttributeNotAnAttribute
+                                                      multiplier:1.0
+                                                        constant:20.0]];
+
     
 }
 
