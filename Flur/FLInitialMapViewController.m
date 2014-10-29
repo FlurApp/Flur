@@ -145,9 +145,9 @@
     [self setAddFlurButton:addFlurButton];
     [self.view addSubview: self.addFlurButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1 constant:30]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1 constant:33]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTrailing multiplier:1 constant:-15]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
     
     
     UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
@@ -173,10 +173,6 @@
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
                                                            constant:70.0]];
-
-    
-  
-
     
 }
 
@@ -304,7 +300,7 @@
     return;
 }
 
-- (void) showOverlay: (FLPin*) pin {
+- (void) showOverlay:(FLPin*) pin {
     
      UIBlurEffect *blurEffect;
      blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
