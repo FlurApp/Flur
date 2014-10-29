@@ -296,7 +296,7 @@
             animatedImageView.animationDuration = 1.3f;
             animatedImageView.animationRepeatCount = 0;
             [animatedImageView startAnimating];
-            [animatedImageView setFrame: CGRectMake(-15,-15,30,30)];
+            [animatedImageView setFrame: CGRectMake(-15,-15,50,50)];
             
             
             [[self.mapView viewForAnnotation:f] addSubview:animatedImageView];
