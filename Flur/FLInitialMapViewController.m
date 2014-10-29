@@ -137,7 +137,6 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
 
-
     // add flur button
     UIButton* addFlurButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
     [addFlurButton setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -390,18 +389,6 @@
     self.blurEffectView.alpha = 1;
     [UIView commitAnimations];
     
-
-    //[self.contributeButton addTarget:self action:@selector(contributeButtonNormal:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-}
-
-- (void) contributeButtonHighlight {
-    self.contributeButton.backgroundColor = [UIColor redColor];
-}
-
-- (void) contributeButtonNormal {
-    
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
@@ -443,20 +430,9 @@
     [self.mapManager addFlur];
 }
 
-/*- (IBAction)switchingView:(id)sender {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"PhotoViewController"];
-}
-
-- (void) switchController {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate switchController:@"PhotoViewController"];
-}*/
 
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
-    //self.contributeButton.backgroundColor = [UIColor redColor];
-    //[self.contributeButton setTitle:@"hey" forState:UIControlStateNormal];
     
     FLButton *buttonClicked = (FLButton *)sender;
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
@@ -478,8 +454,6 @@
 - (void) removeBlur {
     [self.blurEffectView removeFromSuperview];
 }
-
-
 
 - (UIColor*) colorWithHexString:(NSString*)hex {
     NSString *cString = [[hex stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
