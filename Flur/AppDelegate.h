@@ -19,6 +19,7 @@
 
 + (void) switchViewController:(NSString*)controllerName withData:(NSMutableDictionary*) data;
 + (void) popPhotoVC;
++ (void) popCameraVC;
 
 
 @end

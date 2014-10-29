@@ -24,6 +24,7 @@
 @property (nonatomic, readwrite) UIButton* cameraButton;
 @property (nonatomic, readwrite) UIButton* retakeButton;
 @property (nonatomic, readwrite) UIButton* useButton;
+@property (nonatomic, readwrite) UIButton* backButton;
 @property (nonatomic, readwrite) UIImageView* imageTaken;
 @property (strong, nonatomic) UIImageView * spinner;
 
@@ -110,7 +111,8 @@
     
     retake = false;
     [self loadCameraButton];
-    [self.cameraButton bringSubviewToFront:self.view];
+    [self loadBackButton];
+    
     
     return;
 }
@@ -119,7 +121,6 @@
 
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
-//    [button setBackgroundColor:[UIColor blackColor]];
     [[button layer] setBorderColor:[[UIColor whiteColor] CGColor]];
     [[button layer] setBorderWidth:2.0];
     [button addTarget:self action:@selector(takePicture:) forControlEvents:UIControlEventTouchDown];
@@ -128,15 +129,28 @@
     [[self view] addSubview:self.cameraButton];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
-    
-    /*[[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:self.view.frame.size.width/2]];*/
-    
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
-    
-//    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-200]];
-    
-    
 
+}
+
+- (void)loadBackButton {
+    
+    UIButton *button = [[UIButton alloc] init];
+    [button setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [button setTitle:@"Back" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(returnToMap:) forControlEvents:UIControlEventTouchDown];
+    [self setBackButton:button];
+    
+    [[self view] addSubview:self.backButton];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-5]];
+}
+
+- (IBAction)returnToMap:(id)sender {
+    
+    [AppDelegate popCameraVC];
+    
 }
 
 - (IBAction)takePicture:(id)sender {
