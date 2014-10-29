@@ -64,7 +64,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [[self view] setBackgroundColor:[UIColor whiteColor]];
+    [[self view] setBackgroundColor:[UIColor blackColor]];
     
     self.session = [[AVCaptureSession alloc] init];
     
@@ -95,7 +95,7 @@
     }
     
     AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
-    [captureVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+    [captureVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
     
     captureVideoPreviewLayer.frame = self.view.bounds;
     [self.view.layer addSublayer:captureVideoPreviewLayer];
@@ -120,15 +120,15 @@
     UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
 //    [button setBackgroundColor:[UIColor blackColor]];
-    [[button layer] setBorderColor:[[UIColor blackColor] CGColor]];
+    [[button layer] setBorderColor:[[UIColor whiteColor] CGColor]];
     [[button layer] setBorderWidth:2.0];
     [button addTarget:self action:@selector(takePicture:) forControlEvents:UIControlEventTouchDown];
     [self setCameraButton:button];
     
     [[self view] addSubview:self.cameraButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-100]];
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:150]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:self.view.frame.size.width/2]];
 //    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-200]];
     
     
@@ -163,6 +163,7 @@
 - (void)configureImageView {
     
     [[self view] addSubview:[self imageTaken]];
+    _imageTaken.contentMode = UIViewContentModeScaleAspectFit;
     [_imageTaken setFrame:self.view.frame];
     
     _retakeButton = [[UIButton alloc] init];
@@ -221,6 +222,7 @@
                                                          multiplier:1.0
                                                            constant:30.0]];
     
+    [_cameraButton setHidden:YES];
 }
 
 - (IBAction)uploadImage:(id)sender {
@@ -329,6 +331,7 @@
     [_retakeButton removeFromSuperview];
     [_useButton removeFromSuperview];
     [_imageTaken removeFromSuperview];
+    [_cameraButton setHidden:NO];
 }
 
 - (void)didReceiveMemoryWarning {
