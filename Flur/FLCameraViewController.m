@@ -12,6 +12,8 @@
 #import <Parse/Parse.h>
 #import "AppDelegate.h"
 
+#define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
+
 @interface FLCameraViewController ()
 
 @property (nonatomic, readwrite) FLPin* pin;
@@ -65,9 +67,30 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [[self view] setBackgroundColor:[UIColor blackColor]];
+    //[[self view] setBackgroundColor: RGB(111, 225 ,242)];
+    /*self.view.backgroundColor =[UIColor colorWithPatternImage: [UIImage imageNamed:@"texture.jpg"]];
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    
+    UIBlurEffect *blurEffect;
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    
+    UIVisualEffectView* blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    
+    // Vibrancy effect
+    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
+    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+    [vibrancyEffectView setFrame:self.view.bounds];
+    
+    [[blurEffectView contentView] addSubview:vibrancyEffectView];
+    
+    // add blur view to view
+    blurEffectView.frame = self.view.bounds;
+    [self.view addSubview:blurEffectView];*/
+    self.view.backgroundColor = [UIColor blackColor];
+    [self setNeedsStatusBarAppearanceUpdate];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+
 
 
     
@@ -136,7 +159,7 @@
     
     [[self view] addSubview:self.cameraButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-55]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
@@ -168,8 +191,8 @@
     
     [[self view] addSubview:self.backButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:5]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton
                                                           attribute:NSLayoutAttributeHeight

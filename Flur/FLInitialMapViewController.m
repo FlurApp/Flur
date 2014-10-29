@@ -56,6 +56,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setNeedsStatusBarAppearanceUpdate];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    
     self.haveLoadedFlurs = false;
     
     _viewablePins = [[NSMutableArray alloc] init];
@@ -134,50 +137,32 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
-    UILabel* topBarTitle = [[UILabel alloc] init];
-    topBarTitle.translatesAutoresizingMaskIntoConstraints = NO;
-    [topBar addSubview:topBarTitle];
-    [topBarTitle setText:@"Flur"];
-    [topBarTitle setTextColor:[UIColor whiteColor]];
-    topBarTitle.backgroundColor = [UIColor clearColor];
-    [topBarTitle setTextAlignment:NSTextAlignmentCenter];
+    UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
+    UIImageView *flurImageContainer = [[UIImageView alloc] initWithImage:flurImage];
+    flurImageContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    [topBar addSubview:flurImageContainer];
     
+    [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
+    [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarTitle attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarTitle attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarTitle attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
-    UIButton* uploadPhotoButton = [[UIButton alloc] init];
-    uploadPhotoButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [topBar addSubview:uploadPhotoButton];
-    [uploadPhotoButton setImage:[UIImage imageNamed:@"uploadPhoto.png"] forState:UIControlStateNormal];
+    [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:30.0]];
+    [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:80.0]];
 
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:uploadPhotoButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:20]];
-    
-
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:uploadPhotoButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
-    
-
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:uploadPhotoButton
-                                                       attribute:NSLayoutAttributeHeight
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:nil
-                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                      multiplier:1.0
-                                                        constant:20.0]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:uploadPhotoButton
-                                                       attribute:NSLayoutAttributeWidth
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:nil
-                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                      multiplier:1.0
-                                                        constant:20.0]];
+  
 
     
 }
@@ -334,39 +319,39 @@
     
     
     // build button for contributing
-    FLButton *contributeButton = [[FLButton alloc] initWithPin:pin];
-    [contributeButton setTitle:@"Contribute" forState:UIControlStateNormal];
-    [[contributeButton titleLabel] setFont:[UIFont systemFontOfSize:30.0]];
-    [contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[contributeButton layer] setCornerRadius:10];
-    [[contributeButton layer] setBorderColor:[[UIColor whiteColor] CGColor]];
-    [[contributeButton layer] setBorderWidth:2.0];
-    [contributeButton setEnabled:TRUE];
-    [contributeButton setCenter: self.view.center];
-    [contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
+    self.contributeButton = [[FLButton alloc] initWithPin:pin];
+    [self.contributeButton setTitle:@"Contribute" forState:UIControlStateNormal];
+    [[self.contributeButton titleLabel] setFont:[UIFont systemFontOfSize:30.0]];
+    [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[self.contributeButton layer] setCornerRadius:10];
+    [[self.contributeButton layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+    [[self.contributeButton layer] setBorderWidth:2.0];
+    [self.contributeButton setEnabled:TRUE];
+    [self.contributeButton setCenter: self.view.center];
+    [self.contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
     
-    [self setContributeButton:contributeButton];
+    [self setContributeButton:self.contributeButton];
     
     [vibrantLabel sizeToFit];
     
     // add contribute button to vibrancy view
-    [[vibrancyEffectView contentView] addSubview:contributeButton];
+    [[vibrancyEffectView contentView] addSubview:self.contributeButton];
     
     //setting the layout for the contribute button
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-120]];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-120]];
     
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
     
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
     
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
     
     
     // Add label to the vibrancy view
     [[vibrancyEffectView contentView] addSubview:vibrantLabel];
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTop multiplier:1 constant:150]];
     
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contributeButton attribute:NSLayoutAttributeTop multiplier:1 constant:-10]];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contributeButton attribute:NSLayoutAttributeTop multiplier:1 constant:-10]];
     
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1 constant:10]];
     
@@ -391,6 +376,17 @@
     self.blurEffectView.alpha = 1;
     [UIView commitAnimations];
     
+
+    //[self.contributeButton addTarget:self action:@selector(contributeButtonNormal:) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+}
+
+- (void) contributeButtonHighlight {
+    self.contributeButton.backgroundColor = [UIColor redColor];
+}
+
+- (void) contributeButtonNormal {
     
 }
 
@@ -444,8 +440,10 @@
 
 - (IBAction)contributingToFlur:(id)sender {
     NSLog(@"clicked contribute");
-    FLButton *buttonClicked = (FLButton *)sender;
+    //self.contributeButton.backgroundColor = [UIColor redColor];
+    //[self.contributeButton setTitle:@"hey" forState:UIControlStateNormal];
     
+    FLButton *buttonClicked = (FLButton *)sender;
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:buttonClicked.pin forKey:@"FLPin"];
     [AppDelegate switchViewController:@"FLCameraViewController" withData:data];

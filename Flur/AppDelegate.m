@@ -96,6 +96,7 @@ static UINavigationController *navController;
     
     [navController setViewControllers:navArray animated:YES];
     [navController popViewControllerAnimated:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 - (void) popMyself {
