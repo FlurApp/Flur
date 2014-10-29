@@ -49,7 +49,17 @@
     
     annotationView.enabled = YES;
     annotationView.canShowCallout = NO;
-    annotationView.image = [UIImage imageNamed:@"flur_25px.png"];
+   // annotationView.image = [UIImage imageNamed:@"14.png"];
+    
+    UIImageView* animatedImageView = [[UIImageView alloc] init];
+    animatedImageView.tag = 10;
+    [animatedImageView setImage:[UIImage imageNamed:@"14.png"]];
+                                         
+    [animatedImageView setFrame: CGRectMake(0,0,30,30)];
+    
+    
+    [annotationView addSubview:animatedImageView];
+    
     return annotationView;
 }
 

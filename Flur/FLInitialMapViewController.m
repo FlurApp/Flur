@@ -293,7 +293,7 @@
             animatedImageView.animationDuration = 1.3f;
             animatedImageView.animationRepeatCount = 0;
             [animatedImageView startAnimating];
-            [animatedImageView setFrame: CGRectMake(0,0,25,25)];
+            [animatedImageView setFrame: CGRectMake(0,0,30,30)];
             
             
             [[self.mapView viewForAnnotation:f] addSubview:animatedImageView];
@@ -305,7 +305,7 @@
                     [subView removeFromSuperview];
                 }
             }
-            [self.mapView viewForAnnotation:f].image = [UIImage imageNamed:@"flur_152px@2x.png"];
+            [self.mapView viewForAnnotation:f].image = [UIImage imageNamed:@"14.png"];
             /*UIImageView* image = [[UIImageView alloc] initWithImage:[UIImage
                                                          imageNamed:@"flur_152px@2x.png"]];
             [[self.mapView viewForAnnotation:f] addSubview:image];*/
