@@ -312,7 +312,7 @@
             animatedImageView.tag = 10;
             [animatedImageView setImage:[UIImage imageNamed:@"14.png"]];
             
-            [animatedImageView setFrame: CGRectMake(0,0,30,30)];
+            [animatedImageView setFrame: CGRectMake(-15,-15,30,30)];
             
             
             [[self.mapView viewForAnnotation:f] addSubview:animatedImageView];
