@@ -166,10 +166,11 @@
     [_imageTaken setFrame:self.view.frame];
     
     _retakeButton = [[UIButton alloc] init];
-    [_retakeButton setTitle:@"Retake" forState:UIControlStateNormal];
     [_retakeButton setEnabled:TRUE];
     [_retakeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_retakeButton addTarget:self action:@selector(retakePicture:) forControlEvents:UIControlEventTouchDown];
+    [_retakeButton setImage:[UIImage imageNamed:@"retake.png"] forState:UIControlStateNormal];
+
     
     [[self view] addSubview:_retakeButton];
     
@@ -177,17 +178,48 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_retakeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
     
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_retakeButton
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:30.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_retakeButton
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:30.0]];
+    
     _useButton = [[UIButton alloc] init];
-    [_useButton setTitle:@"Use Photo" forState:UIControlStateNormal];
     [_useButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_useButton setEnabled:TRUE];
     [_useButton addTarget:self action:@selector(uploadImage:) forControlEvents:UIControlEventTouchDown];
-    
+    [_useButton setImage:[UIImage imageNamed:@"uploadPhoto.png"] forState:UIControlStateNormal];
+
     [[self view] addSubview:_useButton];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_useButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-50]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_useButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_useButton
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:30.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_useButton
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:30.0]];
     
 }
 
