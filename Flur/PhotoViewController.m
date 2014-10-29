@@ -123,30 +123,50 @@
     
     UIButton *exitButton = [[UIButton alloc] init];
     exitButton.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    UIImage * exitImage = [UIImage imageNamed:@"exit_image.png"];
-    [exitButton setBackgroundImage:exitImage forState:UIControlStateNormal];
+    [exitButton setImage:[UIImage imageNamed:@"leaveCamera.png"] forState:UIControlStateNormal];
+
+   
     [exitButton addTarget:self
                    action:@selector(navBack)
          forControlEvents:UIControlEventTouchUpInside];
     
     [self.topBar addSubview:exitButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
     
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-5]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
+    
+    
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:exitButton
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:30.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:exitButton
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:30.0]];
+    
     
     self.currentPicture.text = [NSString stringWithFormat:@"1/%d", self.allPhotos.count];
-    [self.currentPicture setTextColor:[UIColor blackColor]];
+    [self.currentPicture setTextColor:[UIColor whiteColor]];
+    [self.currentPicture setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Thin" size:25]];
+
     self.currentPicture.translatesAutoresizingMaskIntoConstraints = NO;
     
     [self.topBar addSubview:self.currentPicture];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:30]];
     
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:5]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
 }
 
 - (void) loadBottomBar {
@@ -188,6 +208,8 @@
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
     UILabel* prompt = [[UILabel alloc] init];
+    [prompt setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Regular" size:23]];
+
     prompt.translatesAutoresizingMaskIntoConstraints = NO;
     prompt.text = @"What did we do?";
     [prompt setTextColor:RGB(98,234,239)];
@@ -205,6 +227,8 @@
     
     self.viewPrompt.translatesAutoresizingMaskIntoConstraints = NO;
     [self.viewPrompt setTextColor:[UIColor whiteColor]];
+    [self.viewPrompt setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:18]];
+
     self.viewPrompt.text = self.pin.prompt;
     
     [self.bottomBar addSubview:self.viewPrompt];

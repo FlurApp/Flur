@@ -39,10 +39,8 @@ static bool firstToggle = true;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [UIView animateWithDuration:1 animations:^{
-        [self setNeedsStatusBarAppearanceUpdate];
-    }];
-    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+
     // Create a clear container for detecting finger presses
     self.seeThroughContainer = [[UIView alloc] initWithFrame:CGRectZero];
     self.seeThroughContainer.translatesAutoresizingMaskIntoConstraints = NO;
