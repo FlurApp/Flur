@@ -306,6 +306,7 @@
                                                            constant:30.0]];
     
     [_cameraButton setHidden:YES];
+    [_backButton setHidden:YES];
     
     [UIView beginAnimations:@"fade in" context:nil];
     [UIView setAnimationDuration:.4];
@@ -426,6 +427,7 @@
     [_useButton removeFromSuperview];
     [_imageTaken removeFromSuperview];
     [_cameraButton setHidden:NO];
+    [_backButton setHidden:NO];
 }
 
 - (void)didReceiveMemoryWarning {
