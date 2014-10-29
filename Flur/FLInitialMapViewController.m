@@ -452,7 +452,7 @@
     [label setTextAlignment:NSTextAlignmentCenter];
     [label setNumberOfLines:0];
     [label setLineBreakMode:NSLineBreakByWordWrapping];
-    [label setFont:[UIFont systemFontOfSize:35.0f]];
+    [label setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:33]];
     [[label layer] setBorderColor:[[UIColor whiteColor] CGColor]];
     [label setTranslatesAutoresizingMaskIntoConstraints:NO];
     
@@ -499,8 +499,8 @@
 
 - (IBAction)addingFlur:(id)sender {
     NSLog(@"adding flur");
-    [self showAddPromptToNewFlurOverlay];
-//    [self.mapManager addFlur];
+//    [self showAddPromptToNewFlurOverlay];
+    [self.mapManager addFlur];
 }
 
 
