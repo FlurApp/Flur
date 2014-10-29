@@ -244,7 +244,11 @@
                     [subView removeFromSuperview];
                 }
             }
-            [self.mapView viewForAnnotation:f].image = [UIImage imageNamed:@"flur_25px.png"];
+            [self.mapView viewForAnnotation:f].image = [UIImage imageNamed:@"flur_152px@2x.png"];
+            /*UIImageView* image = [[UIImageView alloc] initWithImage:[UIImage
+                                                         imageNamed:@"flur_152px@2x.png"]];
+            [[self.mapView viewForAnnotation:f] addSubview:image];*/
+
         }
         
     }
@@ -264,6 +268,7 @@
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
         if(p) {
             [self showOverlay:p];
+            [self.mapView deselectAnnotation:view.annotation animated:false];
         }
     }
     return;
