@@ -13,8 +13,8 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-- (void) switchController:(NSString*) controllerName;
-- (void) switchController:(NSString *)controllerName withData:(NSMutableDictionary*)data;
+//- (void) switchController:(NSString*) controllerName;
+//- (void) switchController:(NSString *)controllerName withData:(NSMutableDictionary*)data;
 - (void) popMyself;
 
 + (void) switchViewController:(NSString*)controllerName withData:(NSMutableDictionary*) data;

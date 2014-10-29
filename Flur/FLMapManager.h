@@ -10,7 +10,7 @@
 #import <Parse/Parse.h>
 
 #define viewablePinRadius 2
-#define closeToPinDistance .2 //how close we are to open a pin
+#define closeToPinDistance .002 //how close we are to open a pin
 
 
 @interface FLMapManager : NSObject
