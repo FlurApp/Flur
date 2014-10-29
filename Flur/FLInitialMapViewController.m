@@ -344,6 +344,9 @@
     [self.contributeButton setEnabled:TRUE];
     [self.contributeButton setCenter: self.view.center];
     [self.contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
+    self.contributeButton.font = [UIFont fontWithName:@"AppleSDGothicNeo-Light" size:33];
+
+
     
     
     
