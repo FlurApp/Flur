@@ -31,6 +31,8 @@
 @property (nonatomic, strong, readwrite) UIButton *addFlurButton;
 @property (nonatomic, strong, readwrite) FLButton *contributeButton;
 @property (nonatomic, strong, readwrite) UIVisualEffectView *blurEffectView;
+@property (nonatomic, strong, readwrite) UIVisualEffectView *addPinBlurEffectView;
+@property (nonatomic, strong, readwrite) UITextView *promptTextView;
 
 
 @property (nonatomic, strong, readwrite) NSMutableDictionary *allAnnotations;
@@ -421,9 +423,73 @@
     }
 }
 
+- (void)showAddPromptToNewFlurOverlay {
+    UIBlurEffect *blurEffect;
+    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    
+    _addPinBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    _addPinBlurEffectView.alpha = 0;
+    
+    //Vibrancy effect
+    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
+    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+    [vibrancyEffectView setFrame:self.view.bounds];
+    
+    //Label for Prompting User
+    UILabel *label = [[UILabel alloc] init];
+    [label setText:@"Enter Prompt for Your New Flur"];
+    [label setTextAlignment:NSTextAlignmentCenter];
+    [label setNumberOfLines:0];
+    [label setLineBreakMode:NSLineBreakByWordWrapping];
+    [label setFont:[UIFont systemFontOfSize:35.0f]];
+    [[label layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+    [label setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    [[vibrancyEffectView contentView] addSubview:label];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTop multiplier:1 constant:150]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1 constant:10]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1 constant:-10]];
+    
+//    UITextView *textView = [[UITextView alloc] init];
+//    [textView setUserInteractionEnabled:YES];
+//    [textView setTranslatesAutoresizingMaskIntoConstraints:NO];
+//    [[textView layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+//    [[textView layer] setBorderWidth:2.0];
+//    
+//    [self setPromptTextView:textView];
+//    
+//    [[vibrancyEffectView contentView] addSubview:self.promptTextView];
+//    
+//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:label attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
+//    
+//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
+//    
+//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
+    
+    [[_addPinBlurEffectView contentView] addSubview:vibrancyEffectView];
+    _addPinBlurEffectView.frame = self.view.bounds;
+    [self.view addSubview:self.addPinBlurEffectView];
+    
+    UITapGestureRecognizer *singleFingerTap =
+    [[UITapGestureRecognizer alloc] initWithTarget:self
+                                            action:@selector(exitEnterPromptBlur:)];
+    [self.addPinBlurEffectView addGestureRecognizer:singleFingerTap];
+    
+    
+    [UIView beginAnimations:@"fade in" context:nil];
+    [UIView setAnimationDuration:.2];
+    self.addPinBlurEffectView.alpha = 1;
+    [UIView commitAnimations];
+    
+}
+
+
 - (IBAction)addingFlur:(id)sender {
     NSLog(@"adding flur");
-    [self.mapManager addFlur];
+    [self showAddPromptToNewFlurOverlay];
+//    [self.mapManager addFlur];
 }
 
 
@@ -445,6 +511,10 @@
 - (void)exitBlur:(UITapGestureRecognizer *)recognizer {
     // CGPoint location = [recognizer locationInView:[recognizer.view superview]];
     [self.blurEffectView removeFromSuperview];
+}
+
+- (void)exitEnterPromptBlur:(UITapGestureRecognizer *)recognizer {
+    [self.addPinBlurEffectView removeFromSuperview];
 }
 
 - (void) removeBlur {
