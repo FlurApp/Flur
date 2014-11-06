@@ -70,7 +70,6 @@
     NSURL *url = [documentsDirectory URLByAppendingPathComponent:documentName];
     self.document = [[UIManagedDocument alloc] initWithFileURL:url];
     
-    self.document = [[UIManagedDocument alloc] initWithFileURL:url];
     if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
         [self.document openWithCompletionHandler:^(BOOL success) {
             if (success) [self documentIsReady];
@@ -82,6 +81,7 @@
                        if (!success) NSLog(@"couldn’t create document at %@", url);
                    }];
         }
+    
     
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
@@ -116,7 +116,9 @@
 - (void) documentIsReady {
     NSLog(@"HELOOOO");
     if (self.document.documentState == UIDocumentStateNormal) { // start using document
+        
         NSManagedObjectContext *context = self.document.managedObjectContext;
+        
         /*User *user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
                                                      inManagedObjectContext:context];*/
         
