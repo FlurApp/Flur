@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
 //
 
+#import <Parse/Parse.h>
 #import "FLLoginViewController.h"
 
 #define MAXLENGTH 15
@@ -114,6 +115,27 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void) signupWithUsername:(NSString*)username withPassword:(NSString*)password {
+    PFUser *user = [PFUser user];
+    user.username = username;
+    user.password = password;
+    [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (error) {
+            // Display an alert view to show the error message
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[error userInfo][@"error"]
+                                                                message:nil
+                                                               delegate:self
+                                                      cancelButtonTitle:nil
+                                                      otherButtonTitles:@"OK", nil];
+            [alertView show];
+            // Bring the keyboard back up, because they probably need to change something.
+            return;
+        }
+        else {
+            
+        }
+    }];
+}
 /*
 #pragma mark - Navigation
 
