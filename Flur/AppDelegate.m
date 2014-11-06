@@ -12,6 +12,7 @@
 #import "FLCameraViewController.h"
 #import "FLLoginViewController.h"
 #import "FLPin.h"
+#import "FLLoginViewController.h"
 #import <Parse/Parse.h>
 
 @interface AppDelegate ()
@@ -27,7 +28,8 @@ static UINavigationController *navController;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    [[UIView appearance] setTintColor:[UIColor whiteColor]]; 
+    [[UIView appearance] setTintColor:[UIColor whiteColor]];
+    
     // Override point for customization after application launch.
     [Parse setApplicationId:@"***REMOVED***"
                   clientKey:@"***REMOVED***"];
@@ -38,7 +40,6 @@ static UINavigationController *navController;
     /*PhotoViewController * control = [[PhotoViewController alloc] initWithData:
                                      [[NSMutableDictionary alloc]init] ];*/
     FLLoginViewController * control = [FLLoginViewController new];
-
 
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
