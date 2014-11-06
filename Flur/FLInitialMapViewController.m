@@ -14,6 +14,7 @@
 #import "FLPin.h"
 #import "AppDelegate.h"
 #import "FLButton.h"
+#import "User.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 
@@ -46,6 +47,8 @@
 @property (nonatomic, strong, readwrite) PFGeoPoint *PFCurrentLocation;
 
 @property (nonatomic, strong) FLMapManager* mapManager;
+@property (nonatomic, strong) UIManagedDocument * document;
+
 
 
 
@@ -57,6 +60,29 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
+                                                     inDomains:NSUserDomainMask] firstObject];
+    
+    NSString* documentName = @"MyDocument";
+    NSURL *url = [documentsDirectory URLByAppendingPathComponent:documentName];
+    self.document = [[UIManagedDocument alloc] initWithFileURL:url];
+    
+    self.document = [[UIManagedDocument alloc] initWithFileURL:url];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
+        [self.document openWithCompletionHandler:^(BOOL success) {
+            if (success) [self documentIsReady];
+            if (!success) NSLog(@"couldn’t open document at %@", url);
+        }]; } else {
+            [self.document saveToURL:url forSaveOperation:UIDocumentSaveForCreating
+                   completionHandler:^(BOOL success) {
+                       if (success) [self documentIsReady];
+                       if (!success) NSLog(@"couldn’t create document at %@", url);
+                   }];
+        }
+    
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
@@ -84,6 +110,36 @@
     [self loadTopBar];
     
     [self setNeedsStatusBarAppearanceUpdate];
+}
+
+
+- (void) documentIsReady {
+    NSLog(@"HELOOOO");
+    if (self.document.documentState == UIDocumentStateNormal) { // start using document
+        NSManagedObjectContext *context = self.document.managedObjectContext;
+        /*User *user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
+                                                     inManagedObjectContext:context];*/
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"User"];
+        request.fetchBatchSize = 1;
+        request.fetchLimit = 1;
+        
+        NSError *error;
+        NSArray *users = [context executeFetchRequest:request error:&error];
+        if (!users) {
+            NSLog(@"Error loading user");
+        }
+        else {
+            if (users.count == 1) {
+                NSLog(@"we have a user");
+            }
+            else {
+                NSLog(@"No user");
+            }
+            //[self.document.managedObjectContext deleteObject:users[0]];
+            //users = nil;
+        }
+    }
 }
 
 -(UIStatusBarStyle)preferredStatusBarStyle{
@@ -208,11 +264,9 @@
     MKAnnotationView* annotationView = [mapView viewForAnnotation:userLocation];
     mapView.userLocation.title = @"";
     annotationView.canShowCallout = NO;
-    NSLog(@"Location:%f, %f", userLocation.location.coordinate.latitude, userLocation.location.coordinate.longitude);
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
-    NSLog(@"moved");
     [self.mapManager updateCurrentLocation:newLocation
                         andRefreshLocation:false];
     
@@ -225,7 +279,6 @@
                             andRefreshLocation:true];
         
         [self.mapManager getViewablePins:^(NSMutableDictionary* allNonOpenablePins) {
-            NSLog(@"Num returned %lu", allNonOpenablePins.count);
             for (id key in allNonOpenablePins) {
                 FLPin * pin = [allNonOpenablePins objectForKey:key];
                 FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin
@@ -339,7 +392,6 @@
 
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
 {
-    NSLog(@"clicked");
     id<MKAnnotation> annotation = view.annotation;
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
         return;

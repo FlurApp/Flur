@@ -101,10 +101,8 @@
     for (id key in self.nonOpenablePins) {
 
         FLPin * pin = [self.nonOpenablePins objectForKey:key];
-        NSLog(@"Dist %f", [self.currentLocation distanceInKilometersTo: pin.coordinate]);
 
         if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance) {
-            NSLog(@"YA openable");
             [pinsOpenable addObject: pin.pinId];
             [self.openablePins setObject:pin forKey:pin.pinId];
         }

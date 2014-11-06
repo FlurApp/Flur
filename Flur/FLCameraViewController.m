@@ -11,6 +11,7 @@
 #import "FLButton.h"
 #import <Parse/Parse.h>
 #import "AppDelegate.h"
+#import "FLPhotoManager.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 
@@ -35,6 +36,10 @@
 @property (nonatomic, strong) NSMutableDictionary* dataToPass;
 @property (nonatomic, strong) NSData *imageData;
 
+@property (nonatomic, strong) FLPhotoManager *photoManager;
+
+
+
 
 @property (nonatomic) int count;
 
@@ -56,8 +61,8 @@
         self.allPhotos = [[NSMutableArray alloc] init];
         self.dataToPass = [[NSMutableDictionary alloc] init];
         [self.dataToPass setObject:pin forKey:@"FLPin"];
-
-
+        self.photoManager = [[FLPhotoManager alloc] init];
+        
     }
     
     NSLog(@"PIN2: %@", self.pin);
@@ -66,6 +71,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+  
     // Do any additional setup after loading the view.
     //[[self view] setBackgroundColor: RGB(111, 225 ,242)];
     /*self.view.backgroundColor =[UIColor colorWithPatternImage: [UIImage imageNamed:@"texture.jpg"]];
@@ -143,6 +149,7 @@
     
     return;
 }
+
 
 - (void)loadCameraButton {
 
@@ -279,7 +286,7 @@
     _useButton = [[UIButton alloc] init];
     [_useButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_useButton setEnabled:TRUE];
-    [_useButton addTarget:self action:@selector(uploadImage:) forControlEvents:UIControlEventTouchDown];
+    [_useButton addTarget:self action:@selector(uploadImageButtonClick:) forControlEvents:UIControlEventTouchDown];
     [_useButton setImage:[UIImage imageNamed:@"uploadPhoto.png"] forState:UIControlStateNormal];
     _useButton.alpha = 0;
     
@@ -316,82 +323,28 @@
     [UIView commitAnimations];
 }
 
-- (IBAction)uploadImage:(id)sender {
-    [self loadPhotos];
-    
-    PFFile *imageFile = [PFFile fileWithName:@"t.gif" data:self.imageData];
-
-    // Save PFFile
-    [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (!error) {
-            PFObject *userPhoto = [PFObject objectWithClassName:@"Images"];
-            [userPhoto setObject:imageFile forKey:@"imageFile"];
-            [userPhoto setObject:self.pin.pinId forKey:@"pinId"];
-            
-            [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (error) {
-                    // Log details of the failure
-                    NSLog(@"Error: %@ %@", error, [error userInfo]);
-                }
-                else {
-                    
-                    self.pin.contentCount++;
-                    PFObject* flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin" objectId:self.pin.pinId];
-                    [flurPin incrementKey:@"contentCount"];
-                    [flurPin save];
-                    
-                    [self handOffToPhotoVC];
-                }
-            }];
-        }
-        else{
-            // Log details of the failure
-            NSLog(@"Error: %@ %@", error, [error userInfo]);
-        }
-    } progressBlock:^(int percentDone) {
-        // Update your progress spinner here. percentDone will be between 0 and 100.
-        //HUD.progress = (float)percentDone/100;
-    }];
+- (IBAction)uploadImageButtonClick:(id)sender {
     [self loadSpinner];
+    NSLog(@"fuck you");
+    [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray *allPhotos) {
+        NSLog(@"Yrrrr");
+
+        self.allPhotos = allPhotos;
+        NSLog(@"Count: %lu", self.allPhotos.count);
+        [self handOffToPhotoVC];
+    }];
+    
+    [self.photoManager uploadPhotoWithData:self.imageData withPin:self.pin withCompletion:^{
+        NSLog(@"YEEE");
+        [self handOffToPhotoVC];
+    }];
 }
 
 - (void) loadPhotos {
-    
-    // Create the query
-    PFQuery *query = [PFQuery queryWithClassName:@"Images"];
-    [query whereKey:@"pinId" equalTo:self.pin.pinId];
-    [query orderByAscending:@"createdAt"];
-    
-    // Run query to download all relevant photos
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error) {
-            
-            // Iterate over all objects and download corresponding data
-            int i = 0;
-            if (objects.count == 0)
-                [self handOffToPhotoVC];
-
-
-            for (PFObject *object in objects) {
-                i++;
-                PFFile *imageFile = [object objectForKey:@"imageFile"];
-                [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-                    if (!error) {
-                        [self.allPhotos addObject:data];
-                    }
-                    else {
-                        NSLog(@"fack me");
-                    }
-                    
-                    if (i == objects.count) {
-                        NSLog(@"ready to go");
-                        [self handOffToPhotoVC];
-                    }
-                    
-                }];
-            }
-        }
+    [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray* allPhotos) {
+        
     }];
+
     
 }
     
@@ -401,7 +354,7 @@
     
     self.count++;
     if (self.count == 2) {
-        NSLog(@"hey");
+        NSLog(@"handOffToPhotoVC Running");
         NSLog(@"Pin %lu", (long)self.pin.contentCount);
         if (self.allPhotos.count != self.pin.contentCount) {
             [self.allPhotos addObject: self.imageData];
