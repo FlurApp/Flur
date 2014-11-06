@@ -10,6 +10,7 @@
 #import "FLInitialMapViewController.h"
 #import "PhotoViewController.h"
 #import "FLCameraViewController.h"
+#import "FLLoginViewController.h"
 #import "FLPin.h"
 #import "FLLoginViewController.h"
 #import <Parse/Parse.h>
@@ -35,10 +36,12 @@ static UINavigationController *navController;
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
    
-     FLInitialMapViewController * control = [FLInitialMapViewController new];
-     FLLoginViewController *c = [[FLLoginViewController alloc] init];
+     //FLInitialMapViewController * control = [FLInitialMapViewController new];
+    /*PhotoViewController * control = [[PhotoViewController alloc] initWithData:
+                                     [[NSMutableDictionary alloc]init] ];*/
+    FLLoginViewController * control = [FLLoginViewController new];
 
-    navController = [[UINavigationController alloc] initWithRootViewController: c];
+    navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
     navController.navigationBar.barStyle = UIBarStyleBlack;
 
