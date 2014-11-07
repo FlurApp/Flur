@@ -151,7 +151,7 @@
 }
 
 - (IBAction)loginToFlur:(id)sender {
-    NSLog(@"clicked sign up!");
+    NSLog(@"clicked login!");
     
     //do a bunch of login shit:
 }
