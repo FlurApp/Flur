@@ -12,11 +12,11 @@
 #define MAXLENGTH 15
 
 
-@interface test : UITextField<UITextFieldDelegate>
+@interface FLTextField : UITextField<UITextFieldDelegate>
 
 @end
 
-@implementation test
+@implementation FLTextField
 
 - (CGRect)textRectForBounds:(CGRect)bounds {
     return CGRectInset( bounds , 10 , 10 );
@@ -34,6 +34,9 @@
 
 @property (nonatomic, strong, readwrite) UIButton *signupButton;
 @property (nonatomic, strong, readwrite) UIButton *loginButton;
+@property (nonatomic, strong) FLTextField* usernameInput;
+@property (nonatomic, strong) FLTextField* passwordInput;
+
 
 
 @end
@@ -43,55 +46,55 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    test *usernameInput = [[test alloc] init];
-    usernameInput.delegate = self;
+    self.usernameInput = [[FLTextField alloc] init];
+    self.usernameInput.delegate = self;
     
-    usernameInput.placeholder = @"Username";
-    usernameInput.backgroundColor = [UIColor redColor];
-    usernameInput.textColor = [UIColor blackColor];
-    usernameInput.layer.cornerRadius = 5;
-    usernameInput.layer.masksToBounds = YES;
+    self.usernameInput.placeholder = @"Username";
+    self.usernameInput.backgroundColor = [UIColor redColor];
+    self.usernameInput.textColor = [UIColor blackColor];
+    self.usernameInput.layer.cornerRadius = 5;
+    self.usernameInput.layer.masksToBounds = YES;
     
-    usernameInput.layer.borderColor=[[UIColor blackColor]CGColor];
-    usernameInput.layer.borderWidth= 1.0f;
+    self.usernameInput.layer.borderColor=[[UIColor blackColor]CGColor];
+    self.usernameInput.layer.borderWidth= 1.0f;
     
-    [usernameInput setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.usernameInput setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    [self.view addSubview:usernameInput];
+    [self.view addSubview:self.usernameInput];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:usernameInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:usernameInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:usernameInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:usernameInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
     
     
     
-    test *passwordInput = [[test alloc] init];
-    passwordInput.delegate = self;
+    self.passwordInput = [[FLTextField alloc] init];
+    self.passwordInput.delegate = self;
     
-    passwordInput.placeholder = @"Password";
-    passwordInput.backgroundColor = [UIColor redColor];
-    passwordInput.textColor = [UIColor blackColor];
-    passwordInput.layer.cornerRadius = 5;
-    passwordInput.layer.masksToBounds = YES;
+    self.passwordInput.placeholder = @"Password";
+    self.passwordInput.backgroundColor = [UIColor redColor];
+    self.passwordInput.textColor = [UIColor blackColor];
+    self.passwordInput.layer.cornerRadius = 5;
+    self.passwordInput.layer.masksToBounds = YES;
     
-    passwordInput.layer.borderColor=[[UIColor blackColor]CGColor];
-    passwordInput.layer.borderWidth= 1.0f;
+    self.passwordInput.layer.borderColor=[[UIColor blackColor]CGColor];
+    self.passwordInput.layer.borderWidth= 1.0f;
     
-    [passwordInput setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.passwordInput setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    [self.view addSubview:passwordInput];
+    [self.view addSubview:self.passwordInput];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:passwordInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:usernameInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.usernameInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:passwordInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
     
     
     // Do any additional setup after loading the view.
@@ -144,9 +147,7 @@
 }
 
 - (IBAction)signUp:(id)sender {
-    NSLog(@"clicked sign up!");
-    
-    //do a bunch of sign up shit:
+    [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
 }
 
 - (IBAction)loginToFlur:(id)sender {
