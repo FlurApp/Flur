@@ -27,9 +27,11 @@ static FLMasterNavigationController *navigationController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    // Initialize window
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
 
+    // Set appearance of status bar
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UIView appearance] setTintColor:[UIColor whiteColor]];
     
@@ -38,92 +40,15 @@ static FLMasterNavigationController *navigationController;
                   clientKey:@"***REMOVED***"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    
-    // local user core data thing
-   
-    /*PhotoViewController * control = [[PhotoViewController alloc] initWithData:
-                                     [[NSMutableDictionary alloc]init] ];*/
-    
-   /* FLLoginViewController * control_login = [FLLoginViewController new];
-    FLInitialMapViewController * control_map = [FLInitialMapViewController new];
-    UIViewController *control;
-
-
-
-    navController = [[UINavigationController alloc] initWithRootViewController: control];
-    [navController setNavigationBarHidden:YES];
-    navController.navigationBar.barStyle = UIBarStyleBlack;
-
-    self.window.rootViewController = navController;*/
-    
+    // Create navigation controller
     [FLMasterNavigationController init];
     self.window.rootViewController = [FLMasterNavigationController getNavController];
-    
-    // Setup navigation bar programmatically
     
     // Boiler plate code from AppDelegate
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
 }
-
-/*+ (void) switchViewController:(NSString*)controllerName withData:(NSMutableDictionary*) data {
-    if ([controllerName isEqualToString:@"FLCameraViewController"]) {
-        
-        FLCameraViewController *camController = [[FLCameraViewController alloc] initWithData:data];
-        [UIView animateWithDuration:0.75
-                         animations:^{
-                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                             [navController pushViewController:camController animated:NO];
-                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
-                         }];
-    } else if ([controllerName isEqualToString:@"PhotoViewController"]) {
-        PhotoViewController *photoController = [[PhotoViewController alloc] initWithData:data];
-        [UIView animateWithDuration:0.75
-                         animations:^{
-                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                             [navController pushViewController:photoController animated:NO];
-                             [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
-                         }];
-    } else {
-        NSLog(@"Not a correct controllerName for switchController");
-        EXIT_FAILURE;
-    }
-}
-
-+ (void) popPhotoVC {
-    NSLog(@"Called correctly");
-    NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
-    [navArray removeObjectAtIndex:1];
-    
-    [(FLInitialMapViewController*)[navArray objectAtIndex:0] removeBlur];
-    
-    [navController setViewControllers:navArray animated:YES];
-    [navController popViewControllerAnimated:YES];
-}
-
-+ (void) popCameraVC {
-    NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
-    [navArray removeLastObject];
-    
-    [(FLInitialMapViewController*)[navArray objectAtIndex:0] removeBlur];
-    
-    [navController setViewControllers:navArray animated:YES];
-    [navController popViewControllerAnimated:YES];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-}
-
-- (void) popMyself {
-
-    CATransition* transition = [CATransition animation];
-    transition.duration = 0.5;
-    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    transition.type = kCATransitionFade; //kCATransitionMoveIn; //, kCATransitionPush, kCATransitionReveal, kCATransitionFade
-    //transition.subtype = kCATransitionFromTop; //kCATransitionFromLeft, kCATransitionFromRight, kCATransitionFromTop, kCATransitionFromBottom
-    //[self.navController.view.layer addAnimation:transition forKey:nil];
-    //[[self navController] popViewControllerAnimated:NO];
-}*/
-
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
