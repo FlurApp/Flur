@@ -36,7 +36,7 @@
 @property (nonatomic, strong, readwrite) UIButton *loginButton;
 @property (nonatomic, strong) FLTextField* usernameInput;
 @property (nonatomic, strong) FLTextField* passwordInput;
-
+@property (nonatomic, strong) UIManagedDocument * document;
 
 
 @end
@@ -142,7 +142,6 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:30]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-30]];
-    
 
 }
 

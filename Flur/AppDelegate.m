@@ -17,6 +17,8 @@
 
 @interface AppDelegate ()
 
+@property (nonatomic, strong) UIManagedDocument * document;
+
 @end
 
 @implementation AppDelegate
@@ -35,11 +37,42 @@ static UINavigationController *navController;
                   clientKey:@"***REMOVED***"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
+    
+    // local user core data thing
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
+                                                     inDomains:NSUserDomainMask] firstObject];
+    
+    NSString* documentName = @"MyDocument";
+    NSURL *url = [documentsDirectory URLByAppendingPathComponent:documentName];
+    self.document = [[UIManagedDocument alloc] initWithFileURL:url];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
+        [self.document openWithCompletionHandler:^(BOOL success) {
+            if (success) [self documentIsReady];
+            if (!success) NSLog(@"couldn’t open document at %@", url);
+        }]; } else {
+            [self.document saveToURL:url forSaveOperation:UIDocumentSaveForCreating
+                   completionHandler:^(BOOL success) {
+                       if (success) [self documentIsReady];
+                       if (!success) NSLog(@"couldn’t create document at %@", url);
+                   }];
+        }
+
    
-     //FLInitialMapViewController * control = [FLInitialMapViewController new];
     /*PhotoViewController * control = [[PhotoViewController alloc] initWithData:
                                      [[NSMutableDictionary alloc]init] ];*/
-    FLLoginViewController * control = [FLLoginViewController new];
+    FLLoginViewController * control_login = [FLLoginViewController new];
+    FLInitialMapViewController * control_map = [FLInitialMapViewController new];
+    UIViewController *control;
+    
+    if([self documentIsReady]) {
+        control = control_map;
+    }
+    else
+        control = control_login;
+
 
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
@@ -116,6 +149,40 @@ static UINavigationController *navController;
     //transition.subtype = kCATransitionFromTop; //kCATransitionFromLeft, kCATransitionFromRight, kCATransitionFromTop, kCATransitionFromBottom
     //[self.navController.view.layer addAnimation:transition forKey:nil];
     //[[self navController] popViewControllerAnimated:NO];
+}
+
+- (BOOL) documentIsReady {
+    NSLog(@"HELOOOO");
+    if (self.document.documentState == UIDocumentStateNormal) { // start using document
+        
+        NSManagedObjectContext *context = self.document.managedObjectContext;
+        
+        /*User *user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
+         inManagedObjectContext:context];*/
+        
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"User"];
+        request.fetchBatchSize = 1;
+        request.fetchLimit = 1;
+        
+        NSError *error;
+        NSArray *users = [context executeFetchRequest:request error:&error];
+        if (!users) {
+            NSLog(@"Error loading user");
+            return false;
+        }
+        else {
+            if (users.count == 1) {
+                NSLog(@"we have a user");
+                return true;
+            }
+            else {
+                return false;
+            }
+            //[self.document.managedObjectContext deleteObject:users[0]];
+            //users = nil;
+        }
+    }
+    return false;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

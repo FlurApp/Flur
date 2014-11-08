@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "FLPin.h"
+#import <MobileCoreServices/MobileCoreServices.h>
+#import "User.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

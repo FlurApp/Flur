@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+#import "User.h"
 
 @interface FLLoginViewController : UIViewController
 
