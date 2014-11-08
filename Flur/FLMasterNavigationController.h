@@ -11,4 +11,8 @@
 
 @interface FLMasterNavigationController : UINavigationController
 
++ (void) init;
++ (UINavigationController*) getNavController;
++ (void) switchToViewController:(NSString*)newControllerName fromViewController:(NSString*)oldControllerName withData:(NSMutableDictionary*) data;
+
 @end

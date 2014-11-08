@@ -6,10 +6,11 @@
 //  Copyright (c) 2014 lhashemi. All rights reserved.
 //
 
+#import <Parse/Parse.h>
+
 #import "PhotoViewController.h"
 #import "SinglePhotoViewController.h"
-#import <Parse/Parse.h>
-#import "AppDelegate.h"
+#import "FLMasterNavigationController.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 
@@ -255,7 +256,7 @@
 - (void) navBack {
    // AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
    // [appDelegate popMyself];
-    [AppDelegate popPhotoVC];
+    [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"PhotoViewController" withData:[[NSMutableDictionary alloc]init]];
 }
 
 - (void)didReceiveMemoryWarning {
