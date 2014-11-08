@@ -7,12 +7,14 @@
 //
 
 @import MapKit;
-#import "FLInitialMapViewController.h"
-#import "FLFlurAnnotation.h"
+
 #import <Parse/Parse.h>
+
+#import "FLInitialMapViewController.h"
+#import "FLMasterNavigationController.h"
+#import "FLFlurAnnotation.h"
 #import "FLMapManager.h"
 #import "FLPin.h"
-#import "AppDelegate.h"
 #import "FLButton.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
@@ -594,7 +596,9 @@
     FLButton *buttonClicked = (FLButton *)sender;
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:buttonClicked.pin forKey:@"FLPin"];
-    [AppDelegate switchViewController:@"FLCameraViewController" withData:data];
+    [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
+                                      fromViewController:@"FLInitialMapViewController"
+                                                withData:data];
 }
 
 - (void)didReceiveMemoryWarning {

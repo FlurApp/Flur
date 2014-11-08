@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 lhashemi. All rights reserved.
 //
 
-#import "FLCameraViewController.h"
-#import "AppDelegate.h"
-#import "FLButton.h"
 #import <Parse/Parse.h>
-#import "AppDelegate.h"
+
+#import "FLMasterNavigationController.h"
+#import "FLCameraViewController.h"
+#import "FLButton.h"
 #import "FLPhotoManager.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
@@ -219,7 +219,7 @@
 
 - (IBAction)returnToMap:(id)sender {
     
-    [AppDelegate popCameraVC];
+    [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLCameraViewController" withData:self.dataToPass];
     
 }
 
@@ -367,7 +367,7 @@
         
         // Check that there are no duplicates and that the uploaded image is there
         // [AppDelegate switchViewController:@"PhotoViewController" withData:self.dataToPass];
-        [AppDelegate switchViewController:@"PhotoViewController" withData:self.dataToPass];
+        [FLMasterNavigationController switchToViewController:@"PhotoViewController" fromViewController:@"FLCameraViewController" withData:self.dataToPass];
 
     }
  
