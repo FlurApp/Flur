@@ -151,9 +151,7 @@
 }
 
 - (IBAction)loginToFlur:(id)sender {
-    NSLog(@"clicked login!");
-    
-    //do a bunch of login shit:
+    [self loginWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
 }
 
 - (BOOL)textField:(UITextField *) textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -198,6 +196,21 @@
             
         }
     }];
+}
+
+- (void) loginWithUsername:(NSString*)username withPassword:(NSString*)password {
+    [PFUser logInWithUsernameInBackground:username password:password
+                                    block:^(PFUser *user, NSError *error) {
+                                        if (user) {
+                                            // Do stuff after successful login.
+                                            NSLog(@"successful login");
+                                        } else {
+                                            // The login failed. Check error to see why.
+                                            NSLog(@"login failed...");
+                                            
+                                            // check reasons...and display
+                                        }
+                                    }];
 }
 
 
