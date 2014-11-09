@@ -16,6 +16,11 @@
 
 static UIManagedDocument * document;
 static bool documentLoaded = false;
+static bool userFound = false;
+
++ (BOOL) getUserFound {
+    return userFound;
+}
 
 
 + (void) openDocument {
@@ -38,7 +43,10 @@ static bool documentLoaded = false;
         }]; } else {
             [document saveToURL:url forSaveOperation:UIDocumentSaveForCreating
                    completionHandler:^(BOOL success) {
-                       if (success) [self documentIsReady];
+                       if (success) {
+                           documentLoaded = true;
+                           [self documentIsReady];
+                       }
                        if (!success) NSLog(@"couldn’t create document at %@", url);
                    }];
         }
@@ -55,7 +63,7 @@ static bool documentLoaded = false;
 }
 
 
-+ (BOOL) documentIsReady {
++ (void) documentIsReady {
     NSLog(@"HELOOOO");
     if (document.documentState == UIDocumentStateNormal) { // start using document
         
@@ -70,21 +78,19 @@ static bool documentLoaded = false;
         NSArray *users = [context executeFetchRequest:request error:&error];
         if (!users) {
             NSLog(@"Error loading user");
-            return false;
         }
         else {
             if (users.count == 1) {
                 NSLog(@"we have a user");
-                return true;
+                userFound = true;
             }
             else {
-                return false;
+                NSLog(@"Could not find any user");
             }
             //[self.document.managedObjectContext deleteObject:users[0]];
             //users = nil;
         }
     }
-    return false;
 }
 
 

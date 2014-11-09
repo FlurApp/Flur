@@ -10,6 +10,8 @@
 #import "FLCameraViewController.h"
 #import "PhotoViewController.h"
 #import "FLInitialMapViewController.h"
+#import "FLLoginViewController.h"
+#import "LocalStorage.h"
 
 @interface FLMasterNavigationController ()
 
@@ -24,7 +26,17 @@ static UINavigationController *navController;
 }
 
 + (void) init {
-    FLInitialMapViewController* control = [[FLInitialMapViewController alloc] init];
+    UIViewController *control;
+    
+    [LocalStorage openDocument];
+    
+    // if a user is found
+    //if (true) {
+    if([LocalStorage getUserFound]) {
+        control = [[FLInitialMapViewController alloc] init];
+    }
+    else
+        control = [[FLLoginViewController alloc] init];
     
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
@@ -32,6 +44,13 @@ static UINavigationController *navController;
 }
 
 + (void) switchToViewController:(NSString*)newControllerName fromViewController:(NSString*)oldControllerName withData:(NSMutableDictionary*) data {
+    
+    // Leaving login view
+    if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
+        FLInitialMapViewController *mapController = [[FLInitialMapViewController alloc] init];
+        [navController popViewControllerAnimated:YES];
+        [navController pushViewController:mapController animated:NO];
+    }
     
     // Leaving Map View
     if ([oldControllerName isEqualToString:@"FLInitialMapViewController"]) {

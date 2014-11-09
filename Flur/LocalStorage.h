@@ -10,4 +10,6 @@
 
 @interface LocalStorage : NSObject
 
++ (void) openDocument;
++ (BOOL) getUserFound;
 @end
