@@ -629,7 +629,7 @@
     NSString *prompt = [self.promptTextField text];
     NSLog(@"Creating flur with prompt: %@", prompt);
     [self.mapManager addFlur:prompt];
-    [self.blurEffectView removeFromSuperview];
+    [self.addPinBlurEffectView removeFromSuperview];
     
     //PUT CODE IN FOR REFRESHING THE VIEW///
     
