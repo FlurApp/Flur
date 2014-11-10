@@ -10,7 +10,7 @@
 @import CoreLocation;
 @import MapKit;
 
-@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextViewDelegate>
+@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate>
 
 - (void) removeBlur;
 

@@ -67,11 +67,13 @@ static UINavigationController *navController;
     FLInitialMapViewController * control_map = [FLInitialMapViewController new];
     UIViewController *control;
     
-    if([self documentIsReady]) {
-        control = control_map;
-    }
-    else
-        control = control_login;
+//    if([self documentIsReady]) {
+//        control = control_map;
+//    }
+//    else
+//        control = control_login;
+    
+    control = control_map;
 
 
     navController = [[UINavigationController alloc] initWithRootViewController: control];

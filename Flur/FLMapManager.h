@@ -28,7 +28,7 @@
 //- (BOOL) shouldCheckOpenablePins;
 - (double) currentLat;
 - (double) currentLng;
-- (void) addFlur;
+- (void) addFlur: (NSString *)prompt;
 - (void) updateCurrentLocation: (CLLocation *) newLocation andRefreshLocation: (BOOL) shouldRefresh;
 
 - (NSMutableArray*) getNewlyOpenablePins;

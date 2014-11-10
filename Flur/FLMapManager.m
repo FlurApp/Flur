@@ -80,16 +80,17 @@
     return false;
 }
 
-- (void) addFlur {
+- (void) addFlur: (NSString *)prompt {
     PFObject *flurPin = [PFObject objectWithClassName:@"FlurPin"];
     [flurPin setObject:self.currentLocation forKey:@"location"];
     [flurPin setObject:@"default" forKey:@"username"];
-    [flurPin setObject:@"Show me something cool! :)" forKey: @"prompt"];
+    [flurPin setObject:prompt forKey: @"prompt"];
     [flurPin setObject:@0 forKey:@"contentCount"];
     
     [flurPin saveEventually:^(BOOL succeeded, NSError *error) {
         if (succeeded) { }
     }];
+    
 }
 
 - (NSMutableArray*) getNewlyOpenablePins {
