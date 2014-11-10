@@ -8,6 +8,7 @@
 
 #import <Parse/Parse.h>
 #import "FLLoginViewController.h"
+#import "FLMasterNavigationController.h"
 
 #define MAXLENGTH 15
 
@@ -203,6 +204,7 @@
                                         if (user) {
                                             // Do stuff after successful login.
                                             NSLog(@"successful login");
+                                            [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLLoginViewController" withData:NULL];
                                         } else {
                                             // The login failed. Check error to see why.
                                             NSLog(@"login failed...");

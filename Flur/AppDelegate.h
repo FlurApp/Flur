@@ -17,12 +17,8 @@
 
 //- (void) switchController:(NSString*) controllerName;
 //- (void) switchController:(NSString *)controllerName withData:(NSMutableDictionary*)data;
-- (void) popMyself;
 
-+ (void) switchViewController:(NSString*)controllerName withData:(NSMutableDictionary*) data;
-+ (void) popPhotoVC;
-+ (void) popCameraVC;
-
+//+ (void) switchViewController:(NSString*)controllerName withData:(NSMutableDictionary*) data;
 
 @end
 

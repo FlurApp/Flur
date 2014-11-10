@@ -7,12 +7,14 @@
 //
 
 @import MapKit;
-#import "FLInitialMapViewController.h"
-#import "FLFlurAnnotation.h"
+
 #import <Parse/Parse.h>
+
+#import "FLInitialMapViewController.h"
+#import "FLMasterNavigationController.h"
+#import "FLFlurAnnotation.h"
 #import "FLMapManager.h"
 #import "FLPin.h"
-#import "AppDelegate.h"
 #import "FLButton.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
@@ -122,24 +124,29 @@
 }
 
 - (void) loadTopBar {
-    UIView *topBar = [[UIView alloc] initWithFrame:CGRectZero];
+    /*UIView *topBar = [[UIView alloc] initWithFrame:CGRectZero];
     topBar.translatesAutoresizingMaskIntoConstraints = NO;
     //topBar.backgroundColor = RGB(166, 219, 245);
     //topBar.backgroundColor = RGB(86, 165, 204);
     //topBar.backgroundColor = [self colorWithHexString:@"3f72f5 "];
     topBar.backgroundColor = RGB(106, 147, 217);
-   // topBar.backgroundColor = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"texture1.jpg"]];
+   // topBar.backgroundColor = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"texture1.jpg"]];*/
+    
+    UIImage *topBar = [UIImage imageNamed:@"topBar.png"];
+    UIImageView *topBarContainer = [[UIImageView alloc] initWithImage:topBar];
+    topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    [[self view] addSubview:topBarContainer];
 
 
-    [self.view addSubview:topBar];
+    [self.view addSubview:topBarContainer];
  
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:70]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:70]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
 
     // add flur button
@@ -150,9 +157,9 @@
     [self setAddFlurButton:addFlurButton];
     [self.view addSubview: self.addFlurButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1 constant:33]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1 constant:33]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
     
     // hamburger
    /* UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
@@ -169,20 +176,20 @@
     UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
     UIImageView *flurImageContainer = [[UIImageView alloc] initWithImage:flurImage];
     flurImageContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    [topBar addSubview:flurImageContainer];
+    [topBarContainer addSubview:flurImageContainer];
     
-    [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
     
-    [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
-    [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer
                                                           attribute:NSLayoutAttributeHeight
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
                                                            constant:30.0]];
-    [topBar addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
@@ -640,7 +647,9 @@
     FLButton *buttonClicked = (FLButton *)sender;
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:buttonClicked.pin forKey:@"FLPin"];
-    [AppDelegate switchViewController:@"FLCameraViewController" withData:data];
+    [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
+                                      fromViewController:@"FLInitialMapViewController"
+                                                withData:data];
 }
 
 - (void)didReceiveMemoryWarning {
