@@ -537,7 +537,7 @@
     
     //Label for Prompting User
     UILabel *label = [[UILabel alloc] init];
-    [label setText:@"Enter Prompt for Your New Flur"];
+    [label setText:@"What Do You Want To See?"]; //work on what the prompt for prompting should be
     [label setTextAlignment:NSTextAlignmentCenter];
     [label setNumberOfLines:0];
     [label setLineBreakMode:NSLineBreakByWordWrapping];
@@ -564,31 +564,27 @@
     [[vibrancyEffectView contentView] addSubview:self.promptTextField];
     
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:label attribute:NSLayoutAttributeBottom multiplier:1.0 constant:40]];
+    
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:30]];
+    
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-30]];
+    
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:35]];
     
     UIButton *submitButton = [[UIButton alloc] init];
-    [submitButton setTitle:@"Create Flur" forState:UIControlStateNormal];
-    [[submitButton titleLabel] setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:30]];
     [submitButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[submitButton layer] setCornerRadius:4.0];
-    [[submitButton layer] setBorderColor:[[UIColor whiteColor] CGColor]];
-    [[submitButton layer] setBorderWidth:2.0];
     [submitButton setEnabled:TRUE];
     [submitButton setCenter:[[vibrancyEffectView contentView] center]];
     [submitButton addTarget:self action:@selector(creatingFlur:) forControlEvents:UIControlEventTouchDown];
+    [submitButton setImage:[UIImage imageNamed:@"flur_120px.png"] forState:UIControlStateNormal];
     
     [[vibrancyEffectView contentView] addSubview:submitButton];
     
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:submitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:textField attribute:NSLayoutAttributeBottom multiplier:1.0 constant:30]];
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:submitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:textField attribute:NSLayoutAttributeBottom multiplier:1.0 constant:70]];
     
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:45]];
+    
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:submitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-45]];
-    
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:submitButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
-    
-    
     
     [[_addPinBlurEffectView contentView] addSubview:vibrancyEffectView];
     _addPinBlurEffectView.frame = self.view.bounds;
@@ -632,6 +628,7 @@
     [self.addPinBlurEffectView removeFromSuperview];
     
     //PUT CODE IN FOR REFRESHING THE VIEW///
+    [self updateOpenablePins];
     
 }
 
