@@ -40,6 +40,52 @@ static FLMasterNavigationController *navigationController;
                   clientKey:@"***REMOVED***"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
+//    
+//    // local user core data thing
+//    
+//    NSFileManager *fileManager = [NSFileManager defaultManager];
+//    NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
+//                                                     inDomains:NSUserDomainMask] firstObject];
+//    
+//    NSString* documentName = @"MyDocument";
+//    NSURL *url = [documentsDirectory URLByAppendingPathComponent:documentName];
+//    self.document = [[UIManagedDocument alloc] initWithFileURL:url];
+//    
+//    if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
+//        [self.document openWithCompletionHandler:^(BOOL success) {
+//            if (success) [self documentIsReady];
+//            if (!success) NSLog(@"couldn’t open document at %@", url);
+//        }]; } else {
+//            [self.document saveToURL:url forSaveOperation:UIDocumentSaveForCreating
+//                   completionHandler:^(BOOL success) {
+//                       if (success) [self documentIsReady];
+//                       if (!success) NSLog(@"couldn’t create document at %@", url);
+//                   }];
+//        }
+//
+//   
+//    /*PhotoViewController * control = [[PhotoViewController alloc] initWithData:
+//                                     [[NSMutableDictionary alloc]init] ];*/
+//    FLLoginViewController * control_login = [FLLoginViewController new];
+//    FLInitialMapViewController * control_map = [FLInitialMapViewController new];
+//    UIViewController *control;
+//    
+////    if([self documentIsReady]) {
+////        control = control_map;
+////    }
+////    else
+////        control = control_login;
+//    
+//    control = control_map;
+//
+//
+//    navController = [[UINavigationController alloc] initWithRootViewController: control];
+//    [navController setNavigationBarHidden:YES];
+//    navController.navigationBar.barStyle = UIBarStyleBlack;
+
+//    self.window.rootViewController = navController;
+//    self.window.backgroundColor = [UIColor blackColor];
+    
     // Create navigation controller
     [FLMasterNavigationController init];
     self.window.rootViewController = [FLMasterNavigationController getNavController];

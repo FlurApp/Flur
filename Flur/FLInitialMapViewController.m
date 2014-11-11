@@ -34,7 +34,7 @@
 @property (nonatomic, strong, readwrite) FLButton *contributeButton;
 @property (nonatomic, strong, readwrite) UIVisualEffectView *blurEffectView;
 @property (nonatomic, strong, readwrite) UIVisualEffectView *addPinBlurEffectView;
-@property (nonatomic, strong, readwrite) UITextView *promptTextView;
+@property (nonatomic, strong, readwrite) UITextField *promptTextField;
 
 
 @property (nonatomic, strong, readwrite) NSMutableDictionary *allAnnotations;
@@ -406,10 +406,6 @@
     [self.contributeButton setCenter: self.view.center];
     [self.contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
     self.contributeButton.font = [UIFont fontWithName:@"AppleSDGothicNeo-Light" size:33];
-
-
-    
-    
     
     [self setContributeButton:self.contributeButton];
     
@@ -531,15 +527,17 @@
     
     _addPinBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     _addPinBlurEffectView.alpha = 0;
+    [_addPinBlurEffectView setOpaque:1];
     
     //Vibrancy effect
     UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
     UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
     [vibrancyEffectView setFrame:self.view.bounds];
+    [vibrancyEffectView setOpaque:1];
     
     //Label for Prompting User
     UILabel *label = [[UILabel alloc] init];
-    [label setText:@"Enter Prompt for Your New Flur"];
+    [label setText:@"What Do You Want To See?"]; //work on what the prompt for prompting should be
     [label setTextAlignment:NSTextAlignmentCenter];
     [label setNumberOfLines:0];
     [label setLineBreakMode:NSLineBreakByWordWrapping];
@@ -554,21 +552,39 @@
     
     [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1 constant:-10]];
     
-//    UITextView *textView = [[UITextView alloc] init];
-//    [textView setUserInteractionEnabled:YES];
-//    [textView setTranslatesAutoresizingMaskIntoConstraints:NO];
-//    [[textView layer] setBorderColor:[[UIColor whiteColor] CGColor]];
-//    [[textView layer] setBorderWidth:2.0];
-//    
-//    [self setPromptTextView:textView];
-//    
-//    [[vibrancyEffectView contentView] addSubview:self.promptTextView];
-//    
-//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:label attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
-//    
-//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
-//    
-//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
+    UITextField *textField = [[UITextField alloc] init];
+    [textField setTextAlignment:NSTextAlignmentLeft];
+    [textField setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[textField layer] setBorderWidth:2.0];
+    [[textField layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+    [[textField layer] setCornerRadius:3.0];
+    [textField setDelegate:self];
+    [self setPromptTextField:textField];
+    
+    [[vibrancyEffectView contentView] addSubview:self.promptTextField];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:label attribute:NSLayoutAttributeBottom multiplier:1.0 constant:40]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:30]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-30]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:textField attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:35]];
+    
+    UIButton *submitButton = [[UIButton alloc] init];
+    [submitButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [submitButton setEnabled:TRUE];
+    [submitButton setCenter:[[vibrancyEffectView contentView] center]];
+    [submitButton addTarget:self action:@selector(creatingFlur:) forControlEvents:UIControlEventTouchDown];
+    [submitButton setImage:[UIImage imageNamed:@"flur_120px.png"] forState:UIControlStateNormal];
+    
+    [[vibrancyEffectView contentView] addSubview:submitButton];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:submitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:textField attribute:NSLayoutAttributeBottom multiplier:1.0 constant:70]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:45]];
+    
+    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:submitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-45]];
     
     [[_addPinBlurEffectView contentView] addSubview:vibrancyEffectView];
     _addPinBlurEffectView.frame = self.view.bounds;
@@ -587,11 +603,38 @@
     
 }
 
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+    [textField insertText:@" "];
+    [textField setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:20]];
+    [textField setTextColor:[UIColor whiteColor]];
+}
+
+
+-(void)textFieldDidEndEditing:(UITextField *)textField {
+    [textField setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:20]];
+    [textField setTextColor:[UIColor whiteColor]];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return NO;
+}
+
+- (IBAction)creatingFlur:(id)sender {
+    
+    NSString *prompt = [self.promptTextField text];
+    NSLog(@"Creating flur with prompt: %@", prompt);
+    [self.mapManager addFlur:prompt];
+    [self.addPinBlurEffectView removeFromSuperview];
+    
+    //PUT CODE IN FOR REFRESHING THE VIEW///
+    [self updateOpenablePins];
+    
+}
 
 - (IBAction)addingFlur:(id)sender {
     NSLog(@"adding flur");
-//    [self showAddPromptToNewFlurOverlay];
-    [self.mapManager addFlur];
+    [self showAddPromptToNewFlurOverlay];
 }
 
 
@@ -613,12 +656,17 @@
 }
 
 - (void)exitBlur:(UITapGestureRecognizer *)recognizer {
-    // CGPoint location = [recognizer locationInView:[recognizer.view superview]];
     [self.blurEffectView removeFromSuperview];
 }
 
 - (void)exitEnterPromptBlur:(UITapGestureRecognizer *)recognizer {
-    [self.addPinBlurEffectView removeFromSuperview];
+    
+    if ([self.promptTextField isFirstResponder]) {
+        [self.promptTextField resignFirstResponder];
+    }
+    else {
+        [self.addPinBlurEffectView removeFromSuperview];
+    }
 }
 
 - (void) removeBlur {
