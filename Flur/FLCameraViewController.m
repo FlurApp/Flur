@@ -338,6 +338,14 @@
         NSLog(@"YEEE");
         [self handOffToPhotoVC];
     }];
+    
+    PFObject *contributedFlurs = [PFObject objectWithClassName:@"ContributedFlurs"];
+    [contributedFlurs setObject:self.pin.pinId forKey:@"flurId"];
+    [contributedFlurs setObject:[[PFUser currentUser] username] forKey:@"username"];
+    
+    [contributedFlurs saveEventually:^(BOOL succeeded, NSError *error) {
+        if (succeeded) { }
+    }];
 }
 
 - (void) loadPhotos {

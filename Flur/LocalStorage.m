@@ -63,8 +63,8 @@ static bool userFound = false;
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [LocalStorage openDocumentWithCompletion:^ {
         if (documentLoaded) {
-            /*User* user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
-                                                 inManagedObjectContext:document.managedObjectContext];*/
+            User* user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
+                                                 inManagedObjectContext:document.managedObjectContext];
             [data setObject:user forKey:@"USER"];
             completion(data);
         }

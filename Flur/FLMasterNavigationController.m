@@ -44,13 +44,6 @@ static UINavigationController *navController;
 
 + (void) switchToViewController:(NSString*)newControllerName fromViewController:(NSString*)oldControllerName withData:(NSMutableDictionary*) data {
     
-    // Leaving login view
-    if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
-        FLInitialMapViewController *mapController = [[FLInitialMapViewController alloc] init];
-        [navController popViewControllerAnimated:YES];
-        [navController pushViewController:mapController animated:NO];
-    }
-    
     // Leaving Map View
     if ([oldControllerName isEqualToString:@"FLInitialMapViewController"]) {
         
@@ -107,6 +100,20 @@ static UINavigationController *navController;
             
         }
     }
+    
+    else if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
+        
+        // Re-entering Map View
+        if ([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
+            [navController pushViewController:[[FLInitialMapViewController alloc] init] animated:YES];
+            NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
+            [navArray removeObjectAtIndex:0];
+            
+            [navController setViewControllers:navArray animated:YES];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        }
+    }
+
     
     else {
         NSLog(@"Not a correct controllerName for switchController");

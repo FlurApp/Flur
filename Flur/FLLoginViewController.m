@@ -35,6 +35,8 @@
 
 @property (nonatomic, strong, readwrite) UIButton *signupButton;
 @property (nonatomic, strong, readwrite) UIButton *loginButton;
+@property (nonatomic, strong, readwrite) UIButton *logoutButton;
+
 @property (nonatomic, strong) FLTextField* usernameInput;
 @property (nonatomic, strong) FLTextField* passwordInput;
 @property (nonatomic, strong) UIManagedDocument * document;
@@ -133,7 +135,7 @@
     
     //setting the layout for the sign up button
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeTop relatedBy:
-                                NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-180]];
+                                NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-380]];
     
     /*[[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-140]]; */
     
@@ -148,8 +150,39 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:30]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-30]];
+    
+    
+    
+    
+    
+    
+    
+    self.logoutButton = [[UIButton alloc] init];
+    [self.logoutButton setTitle:@"Log out" forState:UIControlStateNormal];
+    [self.logoutButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [[self.logoutButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
+    [[self.logoutButton layer] setBorderWidth:1.0];
+    [[self.logoutButton layer] setCornerRadius:10];
+    [self.logoutButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.logoutButton setEnabled:TRUE];
+    [self.logoutButton setCenter: self.view.center];
+    [self.logoutButton addTarget:self action:@selector(logOut:) forControlEvents:UIControlEventTouchDown];
+    [[self view] addSubview:self.logoutButton];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeTop relatedBy:
+                                NSLayoutRelationEqual toItem:[self loginButton] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:30]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-30]];
+
 
 }
+
+- (IBAction)logOut:(id)sender {
+    [PFUser logOut];
+}
+
 
 - (IBAction)signUp:(id)sender {
     [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
