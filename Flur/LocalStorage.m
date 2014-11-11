@@ -18,14 +18,18 @@ static UIManagedDocument * document;
 static bool documentLoaded = false;
 static bool userFound = false;
 
-+ (BOOL) getUserFound {
-    return userFound;
++ (void) getUserFound:(void(^)(bool))completion {
+    [LocalStorage loadCurrentUser:^(NSMutableDictionary *data) {
+        completion(data.count == 1);
+    }];
 }
 
 
-+ (void) openDocument {
-    if (documentLoaded)
++ (void) openDocumentWithCompletion:(void(^)())completion {
+    if (documentLoaded) {
+        completion();
         return;
+    }
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
@@ -37,7 +41,10 @@ static bool userFound = false;
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
         [document openWithCompletionHandler:^(BOOL success) {
-            if (success)
+            if (success) {
+                documentLoaded = true;
+                completion();
+            }
                 
             if (!success) NSLog(@"couldn’t open document at %@", url);
         }]; } else {
@@ -45,17 +52,26 @@ static bool userFound = false;
                    completionHandler:^(BOOL success) {
                        if (success) {
                            documentLoaded = true;
-                           [self documentIsReady];
+                           completion();
                        }
                        if (!success) NSLog(@"couldn’t create document at %@", url);
                    }];
         }
 }
 
-+ (User*) loadCurrentUser {
-    User *user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
-                                                inManagedObjectContext:document.managedObjectContext];
-    return user;
++ (void) loadCurrentUser:(void(^)(NSMutableDictionary*)) completion {
+    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+    [LocalStorage openDocumentWithCompletion:^ {
+        if (documentLoaded) {
+            /*User* user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
+                                                 inManagedObjectContext:document.managedObjectContext];*/
+            [data setObject:user forKey:@"USER"];
+            completion(data);
+        }
+        else {
+            completion(data);
+        }
+    }];
 }
 
 + (void) saveCurrentUser {

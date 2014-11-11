@@ -15,6 +15,7 @@
 
 @interface FLMasterNavigationController ()
 
+
 @end
 
 @implementation FLMasterNavigationController
@@ -26,18 +27,16 @@ static UINavigationController *navController;
 }
 
 + (void) init {
-    UIViewController *control;
-    
-    [LocalStorage openDocument];
     
     // if a user is found
-    if (false) {
-    //if([LocalStorage getUserFound]) {
+    PFUser *currentUser = [PFUser currentUser];
+    UIViewController *control;
+
+    if (currentUser)
         control = [[FLInitialMapViewController alloc] init];
-    }
     else
         control = [[FLLoginViewController alloc] init];
-    
+
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
     navController.navigationBar.barStyle = UIBarStyleBlack;

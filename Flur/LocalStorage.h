@@ -7,9 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "User.h"
 
 @interface LocalStorage : NSObject
 
-+ (void) openDocument;
-+ (BOOL) getUserFound;
++ (void) openDocumentWithCompletion:(void(^)())completion;
++ (void) loadCurrentUser:(void(^)(NSMutableDictionary*)) completion;
++ (void) getUserFound:(void(^)(bool))completion;
+
 @end
