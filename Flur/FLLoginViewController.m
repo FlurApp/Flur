@@ -20,12 +20,12 @@
 @implementation FLTextField
 
 - (CGRect)textRectForBounds:(CGRect)bounds {
-    return CGRectInset( bounds , 10 , 10 );
+    return CGRectInset( bounds , 30 , 10 );
 }
 
 // text position
 - (CGRect)editingRectForBounds:(CGRect)bounds {
-    return CGRectInset( bounds , 10 , 10 );
+    return CGRectInset( bounds , 30 , 10 );
 }
 
 @end
@@ -75,25 +75,28 @@
     
     self.passwordInput = [[FLTextField alloc] init];
     self.passwordInput.delegate = self;
+
     
     self.passwordInput.placeholder = @"Password";
-    self.passwordInput.backgroundColor = [UIColor redColor];
+    //self.passwordInput.backgroundColor = [UIColor redColor];
     self.passwordInput.textColor = [UIColor blackColor];
-    self.passwordInput.layer.cornerRadius = 5;
-    self.passwordInput.layer.masksToBounds = YES;
+    //self.passwordInput.layer.cornerRadius = 5;
+    //self.passwordInput.layer.masksToBounds = YES;
     
     self.passwordInput.layer.borderColor=[[UIColor blackColor]CGColor];
     self.passwordInput.layer.borderWidth= 1.0f;
     
-    [self.passwordInput setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.passwordInput.background = [UIImage imageNamed:@"Passwordbg.png"];
     
+
+    [self.passwordInput setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:self.passwordInput];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.usernameInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    //[[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
     
@@ -115,11 +118,13 @@
     
     // build login button
     self.loginButton = [[UIButton alloc] init];
-    [self.loginButton setTitle:@"Login" forState:UIControlStateNormal];
-    [self.loginButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [[self.loginButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
-    [[self.loginButton layer] setBorderWidth:1.0];
-    [[self.loginButton layer] setCornerRadius:10];
+    [self.loginButton setBackgroundImage:[UIImage imageNamed:@"LogIn.png"] forState:UIControlStateNormal];
+
+    //[self.loginButton setTitle:@"Login" forState:UIControlStateNormal];
+    //[self.loginButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    //[[self.loginButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
+    //[[self.loginButton layer] setBorderWidth:1.0];
+    //[[self.loginButton layer] setCornerRadius:10];
     [self.loginButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.loginButton setEnabled:TRUE];
     [self.loginButton setCenter: self.view.center];

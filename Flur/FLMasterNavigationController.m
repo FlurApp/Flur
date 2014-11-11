@@ -31,7 +31,7 @@ static UINavigationController *navController;
     [LocalStorage openDocument];
     
     // if a user is found
-    if (true) {
+    if (false) {
     //if([LocalStorage getUserFound]) {
         control = [[FLInitialMapViewController alloc] init];
     }
