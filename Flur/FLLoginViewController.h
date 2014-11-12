@@ -12,4 +12,6 @@
 
 @interface FLLoginViewController : UIViewController
 
+- (id)initWithData:(NSMutableDictionary*) data;
+
 @end

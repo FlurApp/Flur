@@ -11,6 +11,7 @@
 #import "PhotoViewController.h"
 #import "FLInitialMapViewController.h"
 #import "FLLoginViewController.h"
+#import "FLSplashViewController.h"
 #import "LocalStorage.h"
 
 @interface FLMasterNavigationController ()
@@ -36,7 +37,7 @@ static UINavigationController *navController;
         control = [[FLInitialMapViewController alloc] init];
     }
     else
-        control = [[FLLoginViewController alloc] init];
+        control = [[FLSplashViewController alloc] init];
     
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
@@ -45,15 +46,22 @@ static UINavigationController *navController;
 
 + (void) switchToViewController:(NSString*)newControllerName fromViewController:(NSString*)oldControllerName withData:(NSMutableDictionary*) data {
     
+    // Leaving Splash view
+    if ([oldControllerName isEqualToString:@"FLSplashViewController"]) {
+        FLLoginViewController *loginController = [[FLLoginViewController alloc] initWithData:data];
+        [navController popViewControllerAnimated:YES];
+        [navController pushViewController:loginController animated:YES];
+    }
+    
     // Leaving login view
-    if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
+    else if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
         FLInitialMapViewController *mapController = [[FLInitialMapViewController alloc] init];
         [navController popViewControllerAnimated:YES];
         [navController pushViewController:mapController animated:NO];
     }
     
     // Leaving Map View
-    if ([oldControllerName isEqualToString:@"FLInitialMapViewController"]) {
+    else if ([oldControllerName isEqualToString:@"FLInitialMapViewController"]) {
         
         // Entering Camera View
         if ([newControllerName isEqualToString:@"FLCameraViewController"]) {

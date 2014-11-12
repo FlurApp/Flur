@@ -20,12 +20,12 @@
 @implementation FLTextField
 
 - (CGRect)textRectForBounds:(CGRect)bounds {
-    return CGRectInset( bounds , 30 , 10 );
+    return CGRectInset( bounds , 20 , 10 );
 }
 
 // text position
 - (CGRect)editingRectForBounds:(CGRect)bounds {
-    return CGRectInset( bounds , 30 , 10 );
+    return CGRectInset( bounds , 20 , 10 );
 }
 
 @end
@@ -33,8 +33,8 @@
 
 @interface FLLoginViewController ()
 
-@property (nonatomic, strong, readwrite) UIButton *signupButton;
-@property (nonatomic, strong, readwrite) UIButton *loginButton;
+@property (nonatomic, strong, readwrite) NSString *mode;
+@property (nonatomic, strong, readwrite) UIButton *submitButton;
 @property (nonatomic, strong) FLTextField* usernameInput;
 @property (nonatomic, strong) FLTextField* passwordInput;
 @property (nonatomic, strong) UIManagedDocument * document;
@@ -44,20 +44,33 @@
 
 @implementation FLLoginViewController
 
+- (id)initWithData:(NSMutableDictionary *)data {
+    NSString *mode = [data objectForKey:@"mode"];
+    self.mode = mode;
+    NSLog(@"Entering login view controller with mode: %@",mode);
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // background
+    UIImageView *backSplash = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"flurSplashyBlank"]];
+    backSplash.frame = self.view.bounds;
+    
+    backSplash.contentMode = UIViewContentModeScaleToFill;
+    [self.view addSubview:backSplash];
     self.usernameInput = [[FLTextField alloc] init];
     self.usernameInput.delegate = self;
     
     self.usernameInput.placeholder = @"Username";
-    self.usernameInput.backgroundColor = [UIColor redColor];
-    self.usernameInput.textColor = [UIColor blackColor];
-    self.usernameInput.layer.cornerRadius = 5;
+    self.usernameInput.backgroundColor = [UIColor whiteColor];
+    self.usernameInput.textColor = [UIColor grayColor];
+    self.usernameInput.layer.cornerRadius = 2;
     self.usernameInput.layer.masksToBounds = YES;
     
-    self.usernameInput.layer.borderColor=[[UIColor blackColor]CGColor];
-    self.usernameInput.layer.borderWidth= 1.0f;
+    //self.usernameInput.layer.borderColor=[[UIColor whiteColor]CGColor];
+    //self.usernameInput.layer.borderWidth= 1.0f;
     
     [self.usernameInput setTranslatesAutoresizingMaskIntoConstraints:NO];
     
@@ -65,9 +78,9 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
     
@@ -78,85 +91,62 @@
 
     
     self.passwordInput.placeholder = @"Password";
-    //self.passwordInput.backgroundColor = [UIColor redColor];
-    self.passwordInput.textColor = [UIColor blackColor];
-    //self.passwordInput.layer.cornerRadius = 5;
+    self.passwordInput.backgroundColor = [UIColor whiteColor];
+    self.passwordInput.textColor = [UIColor grayColor];
+    self.passwordInput.layer.cornerRadius = 2;
     //self.passwordInput.layer.masksToBounds = YES;
     
-    self.passwordInput.layer.borderColor=[[UIColor blackColor]CGColor];
-    self.passwordInput.layer.borderWidth= 1.0f;
+    //self.passwordInput.layer.borderColor=[[UIColor grayColor]CGColor];
+    //self.passwordInput.layer.borderWidth= 1.0f;
     
-    self.passwordInput.background = [UIImage imageNamed:@"Passwordbg.png"];
+    //self.passwordInput.background = [UIImage imageNamed:@"Passwordbg.png"];
     
 
     [self.passwordInput setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:self.passwordInput];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.usernameInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.usernameInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:1]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
     
-    //[[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
     
+    // button
+    self.submitButton = [[UIButton alloc] init];
+    if ([self.mode isEqualToString: @"signup"]) {
+        [self.submitButton setTitle:@"Sign up" forState:UIControlStateNormal];
+    }
+    else if ([self.mode isEqualToString: @"login"]) {
+        [self.submitButton setTitle:@"Log in" forState:UIControlStateNormal];
+    }
+    [self.submitButton setTitleColor:[UIColor colorWithRed:0.33 green:0.76 blue:0.88 alpha:0.8] forState:UIControlStateNormal];
+    //[[self.signupButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
+    //[[self.signupButton layer] setBorderWidth:1.0];
+    [self.submitButton setBackgroundColor:[UIColor whiteColor]];
+    [[self.submitButton layer] setCornerRadius:2];
+    [self.submitButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.submitButton setEnabled:TRUE];
+    [self.submitButton setCenter: self.view.center];
+    [self.submitButton addTarget:self action:@selector(submit:) forControlEvents:UIControlEventTouchDown];
+    [[self view] addSubview:self.submitButton];
     
-    // Do any additional setup after loading the view.
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTop relatedBy:
+                                NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-140]];
     
-    // build button for signup
-    self.signupButton = [[UIButton alloc] init];
-    [self.signupButton setTitle:@"Sign up" forState:UIControlStateNormal];
-    [self.signupButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [[self.signupButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
-    [[self.signupButton layer] setBorderWidth:1.0];
-    [[self.signupButton layer] setCornerRadius:10];
-    [self.signupButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.signupButton setEnabled:TRUE];
-    [self.signupButton setCenter: self.view.center];
-    [self.signupButton addTarget:self action:@selector(signUp:) forControlEvents:UIControlEventTouchDown];
-    [[self view] addSubview:self.signupButton];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
     
-    // build login button
-    self.loginButton = [[UIButton alloc] init];
-    [self.loginButton setBackgroundImage:[UIImage imageNamed:@"LogIn.png"] forState:UIControlStateNormal];
-
-    //[self.loginButton setTitle:@"Login" forState:UIControlStateNormal];
-    //[self.loginButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    //[[self.loginButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
-    //[[self.loginButton layer] setBorderWidth:1.0];
-    //[[self.loginButton layer] setCornerRadius:10];
-    [self.loginButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.loginButton setEnabled:TRUE];
-    [self.loginButton setCenter: self.view.center];
-    [self.loginButton addTarget:self action:@selector(loginToFlur:) forControlEvents:UIControlEventTouchDown];
-    [[self view] addSubview:self.loginButton];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
     
-    //setting the layout for the sign up button
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeTop relatedBy:
-                                NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-180]];
     
-    /*[[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-140]]; */
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:30]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-30]];
-    
-    // set layout of login button
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeTop relatedBy:
-                                NSLayoutRelationEqual toItem:[self signupButton] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:30]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-30]];
-
 }
 
-- (IBAction)signUp:(id)sender {
-    [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
-}
-
-- (IBAction)loginToFlur:(id)sender {
-    [self loginWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
+- (IBAction)submit:(id)sender {
+    if ([self.mode isEqualToString: @"signup"])
+        [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
+    else if([self.mode isEqualToString:@"login"])
+        [self loginWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
 }
 
 - (BOOL)textField:(UITextField *) textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
