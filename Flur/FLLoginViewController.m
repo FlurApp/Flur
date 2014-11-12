@@ -20,7 +20,7 @@
 @implementation FLTextField
 
 - (CGRect)textRectForBounds:(CGRect)bounds {
-    return CGRectInset( bounds , 20 , 10 );
+    return CGRectInset( bounds , 21 , 10 );
 }
 
 // text position
@@ -33,11 +33,12 @@
 
 @interface FLLoginViewController ()
 
-@property (nonatomic, strong, readwrite) NSString *mode;
-@property (nonatomic, strong, readwrite) UIButton *submitButton;
+@property (nonatomic, strong) NSString *mode;
+@property (nonatomic, strong) UIButton *submitButton;
 @property (nonatomic, strong) FLTextField* usernameInput;
 @property (nonatomic, strong) FLTextField* passwordInput;
 @property (nonatomic, strong) UIManagedDocument * document;
+@property (nonatomic) CGRect keyboard;
 
 
 @end
@@ -60,6 +61,26 @@
     
     backSplash.contentMode = UIViewContentModeScaleToFill;
     [self.view addSubview:backSplash];
+    
+    UILabel *title = [[UILabel alloc] init];
+    
+    if ([self.mode isEqualToString: @"signup"]) {
+        title.text = @"Sign up";
+    }
+    else if ([self.mode isEqualToString: @"login"]) {
+        title.text = @"Log in";
+    }
+    title.textColor = [UIColor whiteColor];
+    title.font = [UIFont fontWithName:@"HelveticaNeue" size:20];
+    
+    [title setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.view addSubview:title];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:title attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:title attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.view attribute:NSLayoutAttributeCenterX
+     multiplier:1.0 constant:0]];
+    
+    
     self.usernameInput = [[FLTextField alloc] init];
     self.usernameInput.delegate = self;
     
@@ -69,6 +90,10 @@
     self.usernameInput.layer.cornerRadius = 2;
     self.usernameInput.layer.masksToBounds = YES;
     
+    [self.usernameInput addTarget:self
+                  action:@selector(textFieldDidChange:)
+        forControlEvents:UIControlEventEditingChanged];
+    
     //self.usernameInput.layer.borderColor=[[UIColor whiteColor]CGColor];
     //self.usernameInput.layer.borderWidth= 1.0f;
     
@@ -76,7 +101,7 @@
     
     [self.view addSubview:self.usernameInput];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:60]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
     
@@ -101,7 +126,9 @@
     
     //self.passwordInput.background = [UIImage imageNamed:@"Passwordbg.png"];
     
-
+    [self.passwordInput addTarget:self
+                           action:@selector(textFieldDidChange:)
+                 forControlEvents:UIControlEventEditingChanged];
     [self.passwordInput setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:self.passwordInput];
     
@@ -121,7 +148,7 @@
     else if ([self.mode isEqualToString: @"login"]) {
         [self.submitButton setTitle:@"Log in" forState:UIControlStateNormal];
     }
-    [self.submitButton setTitleColor:[UIColor colorWithRed:0.33 green:0.76 blue:0.88 alpha:0.8] forState:UIControlStateNormal];
+    [self.submitButton setTitleColor:[UIColor colorWithRed:0.33 green:0.76 blue:0.88 alpha:1.0] forState:UIControlStateNormal];
     //[[self.signupButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
     //[[self.signupButton layer] setBorderWidth:1.0];
     [self.submitButton setBackgroundColor:[UIColor whiteColor]];
@@ -130,16 +157,21 @@
     [self.submitButton setEnabled:TRUE];
     [self.submitButton setCenter: self.view.center];
     [self.submitButton addTarget:self action:@selector(submit:) forControlEvents:UIControlEventTouchDown];
-    [[self view] addSubview:self.submitButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTop relatedBy:
-                                NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-140]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(keyboardDidShow:)
+                   name:UIKeyboardDidShowNotification object:nil];
     
     
+}
+
+- (void)keyboardDidShow:(NSNotification *)notification
+{
+    // keyboard frame is in window coordinates
+    NSDictionary *userInfo = [notification userInfo];
+    self.keyboard = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    NSLog(@"keyboard showed");
+    return;
 }
 
 - (IBAction)submit:(id)sender {
@@ -147,6 +179,24 @@
         [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
     else if([self.mode isEqualToString:@"login"])
         [self loginWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
+}
+
+- (IBAction)textFieldDidChange: (id)sender {
+    if (self.usernameInput.text.length > 0 && self.passwordInput.text.length > 0) {
+        NSLog(@"BINGO!");
+        
+        [[self view] addSubview:self.submitButton];
+        
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeBottom relatedBy:
+                                    NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:(-1*self.keyboard.size.height)]];
+        
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTop relatedBy:
+                                    NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:(-1*self.keyboard.size.height)-40]];
+        
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+        
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    }
 }
 
 - (BOOL)textField:(UITextField *) textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
