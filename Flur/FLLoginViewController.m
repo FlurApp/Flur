@@ -186,16 +186,26 @@
         NSLog(@"BINGO!");
         
         [[self view] addSubview:self.submitButton];
-        
         [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeBottom relatedBy:
                                     NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:(-1*self.keyboard.size.height)]];
         
         [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTop relatedBy:
                                     NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:(-1*self.keyboard.size.height)-40]];
         
-        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+        NSLayoutConstraint *c = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-1*self.view.frame.size.width];
+        [[self view] addConstraint:c];
         
-        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+        NSLayoutConstraint *d = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-1*self.view.frame.size.width];
+        [[self view] addConstraint:d];
+        
+        
+        [self.view layoutIfNeeded];
+      
+        [UIView animateWithDuration:0.5 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                c.constant = 0;
+                d.constant = 0;
+                [self.view layoutIfNeeded];
+        } completion:nil];
     }
 }
 
