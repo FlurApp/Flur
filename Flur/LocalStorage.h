@@ -8,11 +8,16 @@
 
 #import <Foundation/Foundation.h>
 #import "User.h"
+#import "Flur.h"
 
 @interface LocalStorage : NSObject
 
 + (void) openDocumentWithCompletion:(void(^)())completion;
 + (void) loadCurrentUser:(void(^)(NSMutableDictionary*)) completion;
 + (void) getUserFound:(void(^)(bool))completion;
+
++ (void) getFlurs:(void(^)(NSMutableDictionary*)) completion;
++ (void) addFlur:(Flur *)flurToAdd;
+
 
 @end

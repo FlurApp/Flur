@@ -61,6 +61,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     //[PFUser logOut];
+    
 
     
     [self setNeedsStatusBarAppearanceUpdate];
@@ -577,7 +578,7 @@
     [submitButton setEnabled:TRUE];
     [submitButton setCenter:[[vibrancyEffectView contentView] center]];
     [submitButton addTarget:self action:@selector(creatingFlur:) forControlEvents:UIControlEventTouchDown];
-    [submitButton setImage:[UIImage imageNamed:@"flur_120px.png"] forState:UIControlStateNormal];
+    [submitButton setImage:[UIImage imageNamed:@"white-120px.png"] forState:UIControlStateNormal];
     
     [[vibrancyEffectView contentView] addSubview:submitButton];
     

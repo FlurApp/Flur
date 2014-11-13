@@ -10,6 +10,7 @@
 
 #import "LocalStorage.h"
 #import "User.h"
+#import "Flur.h"
 
 
 @implementation LocalStorage
@@ -71,6 +72,46 @@ static bool userFound = false;
         else {
             completion(data);
         }
+    }];
+}
+
++ (void) getFlurs:(void(^)(NSMutableDictionary*)) completion {
+    NSManagedObjectContext *context = document.managedObjectContext;
+    
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Flur"];
+    //request.fetchBatchSize = 1;
+    //request.fetchLimit = 1;
+    
+    NSError *error;
+    NSArray *allFlurs = [context executeFetchRequest:request error:&error];
+    if (!allFlurs) {
+        NSLog(@"Error loading flurs");
+    }
+    else {
+        NSMutableDictionary* data = [[NSMutableDictionary alloc ] init];
+        [data setObject:allFlurs forKey:@"allFlurs"];
+        completion(data);
+    }
+
+}
+
++ (void) addFlur:(Flur *)flurToAdd {
+    
+    [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
+        for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
+            if (flur.objectID == flurToAdd.objectID)
+                return;
+        }
+        
+        NSLog(@"Adding flur to DB");
+        Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
+                                                   inManagedObjectContext:document.managedObjectContext];
+        flur.prompt = flurToAdd.prompt;
+        flur.lng = flurToAdd.lng;
+        flur.lat = flurToAdd.lat;
+        flur.numContributions = flurToAdd.numContributions;
+        flur.objectId = flurToAdd.objectId;
     }];
 }
 
