@@ -212,7 +212,6 @@
 
 - (IBAction)textFieldDidChange: (id)sender {
     if (self.usernameInput.text.length > 0 && self.passwordInput.text.length > 0) {
-        NSLog(@"BINGO!");
         
         // button top to keyboard bottom
         self.a.constant = -1*self.keyboard.size.height;

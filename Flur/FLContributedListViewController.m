@@ -6,9 +6,14 @@
 //  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
 //
 
+
 #import "FLContributedListViewController.h"
+//#import <Parse/Parse.h>
 
 @interface FLContributedListViewController ()
+
+@property (nonatomic, strong) UITableView *tableView;
+//@property (nonatomic, strong) PFQueryTableViewController *pfqTable;
 
 @end
 
@@ -17,6 +22,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    //
+    /*UILabel *tableLabel = [[UILabel alloc] init];
+    tableLabel.text = @"Past Flurs";
+    [tableLabel setFrame: CGRectMake(0,0,300,50)];*/
+    
+    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds];
+    //[self.tableView setTableHeaderView: tableLabel];
+    [self.view addSubview:self.tableView];
+    
+    
+    //self.pfqTable = [[PFQueryTableViewController alloc] initWithClassName:@"FlurPin"];
+    //[self.view addSubview:self.pfqTable.view];
+    
+
 }
 
 - (void)didReceiveMemoryWarning {

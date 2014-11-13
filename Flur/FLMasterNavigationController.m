@@ -12,6 +12,7 @@
 #import "FLInitialMapViewController.h"
 #import "FLLoginViewController.h"
 #import "FLSplashViewController.h"
+#import "FLContributedListViewController.h"
 #import "LocalStorage.h"
 
 @interface FLMasterNavigationController ()
@@ -33,8 +34,10 @@ static UINavigationController *navController;
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
 
-    if (currentUser)
-        control = [[FLInitialMapViewController alloc] init];
+    if (true)
+    //if (currentUser)
+       // control = [[FLInitialMapViewController alloc] init];
+        control = [[FLContributedListViewController alloc] init];
     else
         control = [[FLSplashViewController alloc] init];
     
