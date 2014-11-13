@@ -26,12 +26,20 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    // get contributed pins
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+
     self.pinsArray = [[NSMutableArray alloc] init];
+    
+     //get contributed pins
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         self.pinsArray = allFlurs[@"allFlurs"];
+        
+        NSLog(@"first: %@", [self.pinsArray[0] prompt]);
         NSLog(@"count: %lu", (unsigned long)self.pinsArray.count);
+        [self.tableView reloadData];
     }];
+    //self.pinsArray = [NSMutableArray arrayWithObjects:@"Brave new world",@"Call of the Wild",nil];
+
     
     
 }
@@ -57,8 +65,10 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
+
+    NSLog(@"WTF");
     
+    static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
                                             CellIdentifier forIndexPath:indexPath];
     
@@ -66,8 +76,10 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    
-    cell.textLabel.text = [self.pinsArray objectAtIndex:indexPath.row];
+    NSLog(@"Ayooooo");
+    //cell.textLabel.text = [self.pinsArray objectAtIndex:indexPath.row];
+
+    cell.textLabel.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
 
     
     return cell;

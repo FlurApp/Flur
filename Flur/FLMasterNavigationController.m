@@ -36,7 +36,7 @@ static UINavigationController *navController;
     UIViewController *control;
 
     if (currentUser)
-        control = [[FLInitialMapViewController alloc] init];
+        control = [[FLTableViewController alloc] init];
     else
         control = [[FLSplashViewController alloc] init];
         
