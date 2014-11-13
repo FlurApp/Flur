@@ -141,6 +141,7 @@
     self.usernameInput.layer.cornerRadius = 2;
     self.usernameInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     [self.usernameInput becomeFirstResponder];
+    self.usernameInput.returnKeyType = UIReturnKeyNext;
     //self.usernameInput.layer.masksToBounds = YES;
     
     [self.usernameInput addTarget:self
@@ -173,6 +174,8 @@
     self.passwordInput.textColor = [UIColor grayColor];
     self.passwordInput.layer.cornerRadius = 2;
     self.passwordInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.passwordInput.returnKeyType = UIReturnKeyDone;
+    [self.passwordInput setEnablesReturnKeyAutomatically: YES];
     //self.passwordInput.layer.masksToBounds = YES;
     
     //self.passwordInput.layer.borderColor=[[UIColor grayColor]CGColor];
@@ -219,7 +222,7 @@
     self.a = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-1*self.view.frame.size.height];
     [[self view] addConstraint:self.a];
     
-    self.b = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:(-1*self.view.frame.size.height)-50];
+    self.b = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:(-1*self.view.frame.size.height)-60];
     [[self view] addConstraint:self.b];
     
     self.c = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-1*self.view.frame.size.width];
@@ -248,7 +251,6 @@
 
 - (IBAction)submit:(id)sender {
     if ([self.mode isEqualToString: @"signup"]) {
-        NSLog(@"ya?");
         [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
     }
     else if([self.mode isEqualToString:@"login"])
