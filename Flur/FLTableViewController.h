@@ -1,5 +1,5 @@
 //
-//  FLContributedListViewController.h
+//  FLTableViewController.h
 //  Flur
 //
 //  Created by David Lee on 11/12/14.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FLContributedListViewController : UITableViewController
+@interface FLTableViewController : UITableViewController
 
 @end

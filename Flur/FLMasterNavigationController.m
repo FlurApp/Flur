@@ -12,8 +12,9 @@
 #import "FLInitialMapViewController.h"
 #import "FLLoginViewController.h"
 #import "FLSplashViewController.h"
-#import "LocalStorage.h"
 #import "FLContributedListViewController.h"
+#import "LocalStorage.h"
+#import "FLTableViewController.h"
 
 @interface FLMasterNavigationController ()
 
@@ -38,9 +39,7 @@ static UINavigationController *navController;
         control = [[FLInitialMapViewController alloc] init];
     else
         control = [[FLSplashViewController alloc] init];
-    
-    //control = [[FLContributedListViewController alloc] init];
-    
+        
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
     navController.navigationBar.barStyle = UIBarStyleBlack;

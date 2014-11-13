@@ -247,15 +247,16 @@
 
 
 - (IBAction)submit:(id)sender {
-    if ([self.mode isEqualToString: @"signup"])
+    if ([self.mode isEqualToString: @"signup"]) {
+        NSLog(@"ya?");
         [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
+    }
     else if([self.mode isEqualToString:@"login"])
         [self loginWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
 }
 
 - (IBAction)textFieldDidChange: (id)sender {
     if (self.usernameInput.text.length > 0 && self.passwordInput.text.length > 0) {
-        NSLog(@"BINGO!");
         
         // button top to keyboard bottom
         self.a.constant = -1*self.keyboard.size.height;
@@ -324,7 +325,7 @@
             return;
         }
         else {
-            
+             [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLLoginViewController" withData:NULL];
         }
     }];
 }

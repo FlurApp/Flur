@@ -6,10 +6,13 @@
 //  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
 //
 
+
 #import "FLContributedListViewController.h"
 #import "LocalStorage.h"
 
 @interface FLContributedListViewController ()
+
+@property (nonatomic, strong) UITableView *tableView;
 
 @end
 
@@ -34,7 +37,7 @@
         NSLog(@"count: %lu", arr.count
               );
     }];
-    // Do any additional setup after loading the view.
+
 }
 
 - (void)didReceiveMemoryWarning {
