@@ -20,12 +20,12 @@
 @implementation FLTextField
 
 - (CGRect)textRectForBounds:(CGRect)bounds {
-    return CGRectInset( bounds , 21 , 10 );
+    return CGRectInset( bounds , 10 , 10 );
 }
 
 // text position
 - (CGRect)editingRectForBounds:(CGRect)bounds {
-    return CGRectInset( bounds , 20 , 10 );
+    return CGRectInset( bounds , 10 , 10 );
 }
 
 @end
@@ -39,6 +39,11 @@
 @property (nonatomic, strong) FLTextField* passwordInput;
 @property (nonatomic, strong) UIManagedDocument * document;
 @property (nonatomic) CGRect keyboard;
+@property (nonatomic, strong) NSLayoutConstraint *a;
+@property (nonatomic, strong) NSLayoutConstraint *b;
+@property (nonatomic, strong) NSLayoutConstraint *c;
+@property (nonatomic, strong) NSLayoutConstraint *d;
+
 
 
 @end
@@ -80,6 +85,8 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:title attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.view attribute:NSLayoutAttributeCenterX
      multiplier:1.0 constant:0]];
     
+    // changes the color of the cursor when typing in the text field
+    [[FLTextField appearance] setTintColor:[UIColor colorWithRed:0.33 green:0.76 blue:0.88 alpha:1.0]];
     
     self.usernameInput = [[FLTextField alloc] init];
     self.usernameInput.delegate = self;
@@ -88,7 +95,9 @@
     self.usernameInput.backgroundColor = [UIColor whiteColor];
     self.usernameInput.textColor = [UIColor grayColor];
     self.usernameInput.layer.cornerRadius = 2;
-    self.usernameInput.layer.masksToBounds = YES;
+    self.usernameInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    [self.usernameInput becomeFirstResponder];
+    //self.usernameInput.layer.masksToBounds = YES;
     
     [self.usernameInput addTarget:self
                   action:@selector(textFieldDidChange:)
@@ -119,6 +128,7 @@
     self.passwordInput.backgroundColor = [UIColor whiteColor];
     self.passwordInput.textColor = [UIColor grayColor];
     self.passwordInput.layer.cornerRadius = 2;
+    self.passwordInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     //self.passwordInput.layer.masksToBounds = YES;
     
     //self.passwordInput.layer.borderColor=[[UIColor grayColor]CGColor];
@@ -158,6 +168,22 @@
     [self.submitButton setCenter: self.view.center];
     [self.submitButton addTarget:self action:@selector(submit:) forControlEvents:UIControlEventTouchDown];
     
+    [[self view] addSubview:self.submitButton];
+    
+    // start with submit button off screen
+    self.a = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-1*self.view.frame.size.height];
+    [[self view] addConstraint:self.a];
+    
+    self.b = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:(-1*self.view.frame.size.height)-50];
+    [[self view] addConstraint:self.b];
+    
+    self.c = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-1*self.view.frame.size.width];
+    [[self view] addConstraint:self.c];
+    
+    self.d = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-1*self.view.frame.size.width];
+    [[self view] addConstraint:self.d];
+    
+    // used later on to grab on to keyboard to place button
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
     [center addObserver:self selector:@selector(keyboardDidShow:)
                    name:UIKeyboardDidShowNotification object:nil];
@@ -185,27 +211,31 @@
     if (self.usernameInput.text.length > 0 && self.passwordInput.text.length > 0) {
         NSLog(@"BINGO!");
         
-        [[self view] addSubview:self.submitButton];
-        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeBottom relatedBy:
-                                    NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:(-1*self.keyboard.size.height)]];
+        // button top to keyboard bottom
+        self.a.constant = -1*self.keyboard.size.height;
         
-        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTop relatedBy:
-                                    NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:(-1*self.keyboard.size.height)-40]];
-        
-        NSLayoutConstraint *c = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-1*self.view.frame.size.width];
-        [[self view] addConstraint:c];
-        
-        NSLayoutConstraint *d = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-1*self.view.frame.size.width];
-        [[self view] addConstraint:d];
-        
+        // button bottom to keyboard bottom
+        self.b.constant = (-1*self.keyboard.size.height)-50;
         
         [self.view layoutIfNeeded];
       
-        [UIView animateWithDuration:0.5 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                c.constant = 0;
-                d.constant = 0;
+        [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            
+                self.c.constant = 0;
+                self.d.constant = 0;
                 [self.view layoutIfNeeded];
         } completion:nil];
+    }
+    else if (self.usernameInput.text.length == 0 || self.passwordInput.text.length == 0) {
+        
+        [self.view layoutIfNeeded];
+        
+        [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.c.constant = -1*self.view.frame.size.width;
+            self.d.constant = -1*self.view.frame.size.width;
+            [self.view layoutIfNeeded];
+        } completion:nil];
+
     }
 }
 

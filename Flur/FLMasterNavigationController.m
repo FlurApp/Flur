@@ -56,7 +56,7 @@ static UINavigationController *navController;
     // Leaving login view
     else if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
         FLInitialMapViewController *mapController = [[FLInitialMapViewController alloc] init];
-        [navController popViewControllerAnimated:YES];
+        [navController popViewControllerAnimated:NO];
         [navController pushViewController:mapController animated:NO];
     }
     
