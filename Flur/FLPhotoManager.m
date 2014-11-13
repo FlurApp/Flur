@@ -47,12 +47,13 @@
                      }];
                      
                      // Add this flur to LOCAL copy of flurs I have contributed to
-                     Flur* flur = [[Flur alloc]init];
-                     flur.prompt = pin.prompt;
-                     flur.lat = [NSNumber numberWithDouble:pin.coordinate.latitude];
-                     flur.lng = [NSNumber numberWithDouble:pin.coordinate.longitude];
-                     flur.objectId = pin.pinId;
-                     flur.numContributions = [NSNumber numberWithInt:pin.contentCount];
+                     
+                     NSMutableDictionary* flur = [[NSMutableDictionary alloc]init];
+                     flur[@"prompt"] = pin.prompt;
+                     flur[@"lat"] = [NSNumber numberWithDouble:pin.coordinate.latitude];
+                     flur[@"lng"] = [NSNumber numberWithDouble:pin.coordinate.longitude];
+                     flur[@"objectId"] = pin.pinId;
+                     flur[@"numContributions"] = [NSNumber numberWithInt:pin.contentCount];
                      
                      [LocalStorage addFlur:flur];
      
