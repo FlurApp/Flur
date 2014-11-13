@@ -76,43 +76,93 @@ static bool userFound = false;
 }
 
 + (void) getFlurs:(void(^)(NSMutableDictionary*)) completion {
-    NSManagedObjectContext *context = document.managedObjectContext;
-    
-    
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Flur"];
-    //request.fetchBatchSize = 1;
-    //request.fetchLimit = 1;
-    
-    NSError *error;
-    NSArray *allFlurs = [context executeFetchRequest:request error:&error];
-    if (!allFlurs) {
-        NSLog(@"Error loading flurs");
-    }
-    else {
-        NSMutableDictionary* data = [[NSMutableDictionary alloc ] init];
-        [data setObject:allFlurs forKey:@"allFlurs"];
-        completion(data);
-    }
-
+    [LocalStorage openDocumentWithCompletion:^ {
+        if (documentLoaded) {
+            NSManagedObjectContext *context = document.managedObjectContext;
+            
+            
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Flur"];
+            //request.fetchBatchSize = 1;
+            //request.fetchLimit = 1;
+            
+            NSError *error;
+            NSArray *allFlurs = [context executeFetchRequest:request error:&error];
+            if (!allFlurs) {
+                NSLog(@"Error loading flurs");
+            }
+            else {
+                NSLog(@"Size %lu", allFlurs.count);
+               // for (Flur* obj in allFlurs)
+               // [document.managedObjectContext deleteObject:obj];
+                
+                NSMutableDictionary* data = [[NSMutableDictionary alloc ] init];
+                [data setObject:allFlurs forKey:@"allFlurs"];
+                completion(data);
+            }
+        }
+        else {
+        }
+    }];
 }
 
-+ (void) addFlur:(Flur *)flurToAdd {
-    
++ (void) addFlur:(NSMutableDictionary*)flurToAdd {
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
-            if (flur.objectID == flurToAdd.objectID)
+            if ([flur.objectId isEqualToString:flurToAdd[@"objectId"]]) {
+                NSLog(@"Flur with this object ID already exists, not adding");
                 return;
+            }
         }
         
         NSLog(@"Adding flur to DB");
         Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
                                                    inManagedObjectContext:document.managedObjectContext];
-        flur.prompt = flurToAdd.prompt;
-        flur.lng = flurToAdd.lng;
-        flur.lat = flurToAdd.lat;
-        flur.numContributions = flurToAdd.numContributions;
-        flur.objectId = flurToAdd.objectId;
+        flur.prompt = flurToAdd[@"prompt"];
+        flur.lng = flurToAdd[@"lng"];
+        flur.lat = flurToAdd[@"lat"];
+        flur.numContributions = flurToAdd[@"numContributions"];
+        flur.objectId = flurToAdd[@"objectId"];
+        
+        [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
+            NSLog(@"saved");
+        }];
     }];
+}
+
++ (void) deleteAllFlurs {
+   /* [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
+        for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
+            NSLog(@"Deleting object");
+            [document.managedObjectContext deleteObject:flur];
+        }
+    }];*/
+    
+        [LocalStorage openDocumentWithCompletion:^ {
+            if (documentLoaded) {
+                NSManagedObjectContext *context = document.managedObjectContext;
+                
+                
+                NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Flur"];
+                //request.fetchBatchSize = 1;
+                //request.fetchLimit = 1;
+                
+                NSError *error;
+                NSArray *allFlurs = [context executeFetchRequest:request error:&error];
+                if (!allFlurs) {
+                    NSLog(@"Error loading flurs");
+                }
+                else {
+                    NSLog(@"Size %lu", allFlurs.count);
+                     for (Flur* obj in allFlurs)
+                     [document.managedObjectContext deleteObject:obj];
+                    
+                    //NSMutableDictionary* data = [[NSMutableDictionary alloc ] init];
+                   // [data setObject:allFlurs forKey:@"allFlurs"];
+                }
+            }
+            else {
+            }
+        }];
 }
 
 + (void) saveCurrentUser {

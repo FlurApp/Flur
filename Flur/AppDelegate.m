@@ -15,6 +15,7 @@
 #import "FLMasterNavigationController.h"
 #import "FLPin.h"
 #import "PhotoViewController.h"
+#import "FLContributedListViewController.h"
 
 @interface AppDelegate ()
 

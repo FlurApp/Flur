@@ -44,7 +44,6 @@
 		CBB025A13EE44B9545EDE939 /* BFTaskCompletionSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 144A9356DEA5DD704B40F21A /* BFTaskCompletionSource.h */; };
 		D88CFAC9BEC8984C2AFD1FB0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A00309E43FD75697342BCCD4 /* CoreGraphics.framework */; };
 		DAB9786EEB4998025E310063 /* BFMeasurementEvent_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 56A6E505FFBFF388402F1DFD /* BFMeasurementEvent_Internal.h */; };
-		DB938A771A14380C00837BFD /* Flur.m in Sources */ = {isa = PBXBuildFile; fileRef = DB938A761A14380C00837BFD /* Flur.m */; };
 		E2655DFABFB96A5F4CAFAA68 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A11B509E4CC3F21C322239BC /* QuartzCore.framework */; };
 		E7C3507043CB61F78C005EBF /* BFAppLinkReturnToRefererController.h in Headers */ = {isa = PBXBuildFile; fileRef = AC82A624580DDE49B0944F08 /* BFAppLinkReturnToRefererController.h */; };
 		E862CF0C925A001E7BD7C3A0 /* Pods-Bolts-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = BCCDBBF1F161C9C0E0BEED82 /* Pods-Bolts-dummy.m */; };
@@ -138,8 +137,6 @@
 		D57249138D232BF518AA63D9 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		D7BBB65C7A04B57DD0B9C34C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = DEVELOPER_DIR; };
 		DABA7C5C6207619C18CD9D73 /* BFAppLinkReturnToRefererView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = BFAppLinkReturnToRefererView.m; path = Bolts/iOS/BFAppLinkReturnToRefererView.m; sourceTree = "<group>"; };
-		DB938A751A14380C00837BFD /* Flur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Flur.h; path = ../Flur/Flur.h; sourceTree = "<group>"; };
-		DB938A761A14380C00837BFD /* Flur.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Flur.m; path = ../Flur/Flur.m; sourceTree = "<group>"; };
 		E20D4EE64316D17218393F96 /* BFAppLinkReturnToRefererView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = BFAppLinkReturnToRefererView.h; path = Bolts/iOS/BFAppLinkReturnToRefererView.h; sourceTree = "<group>"; };
 		F74053A31D73E8F17C77F2B9 /* BFAppLinkTarget.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = BFAppLinkTarget.m; path = Bolts/iOS/BFAppLinkTarget.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -243,8 +240,6 @@
 		998B11841E80A7F7728277AA = {
 			isa = PBXGroup;
 			children = (
-				DB938A751A14380C00837BFD /* Flur.h */,
-				DB938A761A14380C00837BFD /* Flur.m */,
 				778861355230DE904B725A52 /* Podfile */,
 				A9CEFF46A2AC41CDB2C50473 /* Frameworks */,
 				64680A7FC92795EEFFC4DCEC /* Pods */,
@@ -455,7 +450,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB938A771A14380C00837BFD /* Flur.m in Sources */,
 				96FE7D0D49025C49D52C2114 /* Pods-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
