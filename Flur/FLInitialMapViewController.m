@@ -60,8 +60,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     //[PFUser logOut];
-    
+
 
     
     [self setNeedsStatusBarAppearanceUpdate];
@@ -126,18 +127,12 @@
 }
 
 - (void) loadTopBar {
-    /*UIView *topBar = [[UIView alloc] initWithFrame:CGRectZero];
-    topBar.translatesAutoresizingMaskIntoConstraints = NO;
-    //topBar.backgroundColor = RGB(166, 219, 245);
-    //topBar.backgroundColor = RGB(86, 165, 204);
-    //topBar.backgroundColor = [self colorWithHexString:@"3f72f5 "];
-    topBar.backgroundColor = RGB(106, 147, 217);
-   // topBar.backgroundColor = [[UIColor alloc] initWithPatternImage:[UIImage imageNamed:@"texture1.jpg"]];*/
-    
-    UIImage *topBar = [UIImage imageNamed:@"topBar.png"];
-    UIImageView *topBarContainer = [[UIImageView alloc] initWithImage:topBar];
+    UIView *topBarContainer = [[UIView alloc] initWithFrame:CGRectZero];
     topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    [[self view] addSubview:topBarContainer];
+    topBarContainer.backgroundColor = [UIColor redColor];
+    
+    
+    //[[self view] addSubview:topBarContainer];
 
 
     [self.view addSubview:topBarContainer];
@@ -149,7 +144,13 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    [self.view setNeedsLayout]; [self.view layoutIfNeeded];
     
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = topBarContainer.bounds;
+    gradient.colors = [NSArray arrayWithObjects:(id)[RGB(186,108,224) CGColor], (id)[RGB(179, 88, 224) CGColor], nil];
+    NSLog(@"Frame: %@", NSStringFromCGRect(topBarContainer.bounds));
+    [topBarContainer.layer insertSublayer:gradient atIndex:0];
 
     // add flur button
     UIButton* addFlurButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
@@ -164,7 +165,7 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
     
     // hamburger
-   /* UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
+    /*UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
     UIImageView *hamburgerContainer = [[UIImageView alloc] initWithImage:hamburger];
     [hamburgerContainer setTranslatesAutoresizingMaskIntoConstraints:NO];
     

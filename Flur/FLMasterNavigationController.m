@@ -39,7 +39,7 @@ static UINavigationController *navController;
     else
         control = [[FLSplashViewController alloc] init];
     
-    control = [[FLContributedListViewController alloc] init];
+    //control = [[FLContributedListViewController alloc] init];
     
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];

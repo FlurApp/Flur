@@ -12,6 +12,9 @@
 
 #define MAXLENGTH 15
 
+#define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
+#define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
+
 
 @interface FLTextField : UITextField<UITextFieldDelegate>
 
@@ -62,11 +65,10 @@
     [super viewDidLoad];
     
     // background
-    UIImageView *backSplash = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"flurSplashyBlank"]];
-    backSplash.frame = self.view.bounds;
-    
-    backSplash.contentMode = UIViewContentModeScaleToFill;
-    [self.view addSubview:backSplash];
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = self.view.bounds;
+    gradient.colors = [NSArray arrayWithObjects:(id)[RGB(186,108,224) CGColor], (id)[RGB(179, 88, 224) CGColor], nil];
+    [self.view.layer insertSublayer:gradient atIndex:0];
     
     UILabel *title = [[UILabel alloc] init];
     
@@ -74,20 +76,61 @@
         title.text = @"Sign up";
     }
     else if ([self.mode isEqualToString: @"login"]) {
-        title.text = @"Log in";
+        title.text = @"Login";
     }
+    [title setFont:[UIFont fontWithName:@"Avenir-Light" size:30]];
+
     title.textColor = [UIColor whiteColor];
-    title.font = [UIFont fontWithName:@"HelveticaNeue" size:20];
+    
+    
+
+
+    
     
     [title setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:title];
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:title attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:title attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:title attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.view attribute:NSLayoutAttributeCenterX
      multiplier:1.0 constant:0]];
     
+    
+    
+    // PUT THE LINE UNDER THE TITLE
+    
+    UIView* littleLine = [[UIView alloc]init];
+    littleLine.backgroundColor = RGBA(255,255,255,.5);
+    [littleLine setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    [self.view addSubview:littleLine];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1]];
+    
+    UIView* boldLine = [[UIView alloc]init];
+    boldLine.backgroundColor = RGBA(255,255,255,1);
+    [boldLine setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    [self.view addSubview:boldLine];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
+    
+
+     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1]];
+    
+     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
+    
+    
+    
+    
     // changes the color of the cursor when typing in the text field
-    [[FLTextField appearance] setTintColor:[UIColor colorWithRed:0.33 green:0.76 blue:0.88 alpha:1.0]];
+    [[FLTextField appearance] setTintColor:RGB(152,0,194)];
     
     self.usernameInput = [[FLTextField alloc] init];
     self.usernameInput.delegate = self;
@@ -111,13 +154,13 @@
     
     [self.view addSubview:self.usernameInput];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:60]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
     
     
     
@@ -143,13 +186,13 @@
     [self.passwordInput setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:self.passwordInput];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.usernameInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:1]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.usernameInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:3]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
     
     // button
     self.submitButton = [[UIButton alloc] init];
@@ -159,7 +202,7 @@
     else if ([self.mode isEqualToString: @"login"]) {
         [self.submitButton setTitle:@"Log in" forState:UIControlStateNormal];
     }
-    [self.submitButton setTitleColor:[UIColor colorWithRed:0.33 green:0.76 blue:0.88 alpha:1.0] forState:UIControlStateNormal];
+    [self.submitButton setTitleColor:RGB(152,0,194) forState:UIControlStateNormal];
     //[[self.signupButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
     //[[self.signupButton layer] setBorderWidth:1.0];
     [self.submitButton setBackgroundColor:[UIColor whiteColor]];

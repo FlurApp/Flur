@@ -9,6 +9,8 @@
 #import "FLSplashViewController.h"
 #import "FLMasterNavigationController.h"
 
+#define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
+
 @interface FLSplashViewController ()
 
 @property (nonatomic, strong, readwrite) UIButton *signupButton;
@@ -22,62 +24,103 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    UIImageView *backSplash = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"flurSplashyWithPin-iphone6"]];
+    /*UIImageView *backSplash = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"flurSplashyWithPin-iphone6"]];
     backSplash.frame = self.view.bounds;
     
     backSplash.contentMode = UIViewContentModeScaleToFill;
-    [self.view addSubview:backSplash];
+    [self.view addSubview:backSplash];*/
     
+    UIImageView *image = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"white-120px.png"]];
+    [image setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.view addSubview:image];
+    
+    
+
+    
+   
+
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:image attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:image attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:-100]];
+
+    UIColor *buttonBackgroundColor = RGB(255,255,255);
+    UIColor *buttonTextColor = RGB(152,0,194);
+
     // build button for signup
     self.signupButton = [[UIButton alloc] init];
-    [self.signupButton setTitle:@"Sign up" forState:UIControlStateNormal];
-    [self.signupButton setTitleColor:[UIColor colorWithRed:0.33 green:0.76 blue:0.88 alpha:1.0] forState:UIControlStateNormal];
+    [self.signupButton setTitle:@"Sign Up" forState:UIControlStateNormal];
+    [self.signupButton setTitleColor:buttonTextColor forState:UIControlStateNormal];
     //[[self.signupButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
     //[[self.signupButton layer] setBorderWidth:1.0];
-    [self.signupButton setBackgroundColor:[UIColor whiteColor]];
-    [[self.signupButton layer] setCornerRadius:2];
+    [self.signupButton setBackgroundColor:buttonBackgroundColor];
+    [[self.signupButton layer] setCornerRadius:4];
     [self.signupButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.signupButton setEnabled:TRUE];
     [self.signupButton setCenter: self.view.center];
     [self.signupButton addTarget:self action:@selector(signUp:) forControlEvents:UIControlEventTouchDown];
+    self.signupButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    self.signupButton.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 40);
+    [self.signupButton setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
+
     [[self view] addSubview:self.signupButton];
     
     // build login button
     self.loginButton = [[UIButton alloc] init];
     //[self.loginButton setBackgroundImage:[UIImage imageNamed:@"LogIn.png"] forState:UIControlStateNormal];
     
-    [self.loginButton setTitle:@"Log in" forState:UIControlStateNormal];
-    [self.loginButton setTitleColor:[UIColor colorWithRed:0.33 green:0.76 blue:0.88 alpha:1.0] forState:UIControlStateNormal];
-    //[[self.loginButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
-    //[[self.loginButton layer] setBorderWidth:1.0];
-    [self.loginButton setBackgroundColor:[UIColor whiteColor]];
-    [[self.loginButton layer] setCornerRadius:2];
+    [self.loginButton setTitle:@"Login" forState:UIControlStateNormal];
+    [self.loginButton setTitleColor:buttonTextColor forState:UIControlStateNormal];
+    
+    //[[self.loginButton layer] setBorderWidth:.8];
+    [[self.loginButton layer] setCornerRadius:4];
+    //self.loginButton.layer.borderColor = RGB(100,100,100).CGColor;
+
+    [self.loginButton setBackgroundColor:buttonBackgroundColor];
+    
     [self.loginButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.loginButton setEnabled:TRUE];
     [self.loginButton setCenter: self.view.center];
     [self.loginButton addTarget:self action:@selector(loginToFlur:) forControlEvents:UIControlEventTouchDown];
+    //[self.loginButton setFont:[UIFont systemFontOfSize:20]];
+    [self.loginButton setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
+
+
+
+    
+    self.loginButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    self.loginButton.contentEdgeInsets = UIEdgeInsetsMake(0, 40, 0, 0);
+    
     [[self view] addSubview:self.loginButton];
     
-    //setting the layout for the sign up button
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeTop relatedBy:
-                                NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-140]];
+    //setting the layout for the sign up buttony
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeCenterY relatedBy:
+                                NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:100]];
     
     /*[[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-140]]; */
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-40]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-80]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
     
     // set layout of login button
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeTop relatedBy:
-                                NSLayoutRelationEqual toItem:[self signupButton] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:1]];
+                                NSLayoutRelationEqual toItem:[self signupButton] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:80]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:40]];
 
     
+      [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
     
+    
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.frame = self.view.bounds;
+    gradient.colors = [NSArray arrayWithObjects:(id)[RGB(186,108,224) CGColor], (id)[RGB(179, 88, 224) CGColor], nil];
+    [self.view.layer insertSublayer:gradient atIndex:0];
 }
 
 - (void)didReceiveMemoryWarning {
