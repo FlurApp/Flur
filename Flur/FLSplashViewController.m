@@ -15,6 +15,10 @@
 
 @property (nonatomic, strong, readwrite) UIButton *signupButton;
 @property (nonatomic, strong, readwrite) UIButton *loginButton;
+@property (nonatomic, strong, readwrite) NSLayoutConstraint *loginButtonContraint;
+@property (nonatomic, strong, readwrite) NSLayoutConstraint *signupButtonContraint;
+
+
 
 @end
 
@@ -51,8 +55,7 @@
     self.signupButton = [[UIButton alloc] init];
     [self.signupButton setTitle:@"Sign Up" forState:UIControlStateNormal];
     [self.signupButton setTitleColor:buttonTextColor forState:UIControlStateNormal];
-    //[[self.signupButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
-    //[[self.signupButton layer] setBorderWidth:1.0];
+
     [self.signupButton setBackgroundColor:buttonBackgroundColor];
     [[self.signupButton layer] setCornerRadius:4];
     [self.signupButton setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -86,22 +89,24 @@
     [self.loginButton setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
 
 
-
-    
-    self.loginButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+       self.loginButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     self.loginButton.contentEdgeInsets = UIEdgeInsetsMake(0, 40, 0, 0);
     
     [[self view] addSubview:self.loginButton];
+    
+    self.signupButtonContraint = [NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-self.view.frame.size.width];
+    self.loginButtonContraint = [NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:self.view.frame.size.width];
+    
+
     
     //setting the layout for the sign up buttony
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeCenterY relatedBy:
                                 NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:100]];
     
-    /*[[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-140]]; */
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-40]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-80]];
+    [[self view] addConstraint:self.signupButtonContraint];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.signupButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
     
@@ -109,9 +114,9 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeTop relatedBy:
                                 NSLayoutRelationEqual toItem:[self signupButton] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:80]];
+    [[self view] addConstraint:self.loginButtonContraint];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:40]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
 
     
       [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
@@ -121,6 +126,17 @@
     gradient.frame = self.view.bounds;
     gradient.colors = [NSArray arrayWithObjects:(id)[RGB(186,108,224) CGColor], (id)[RGB(179, 88, 224) CGColor], nil];
     [self.view.layer insertSublayer:gradient atIndex:0];
+    
+    [self.view layoutIfNeeded];
+    
+    
+    [UIView animateWithDuration:0.4 delay:0.5 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        
+        self.loginButtonContraint.constant = 80;
+        self.signupButtonContraint.constant = -80;
+        [self.view layoutIfNeeded];
+    } completion:nil];
+    
 }
 
 - (void)didReceiveMemoryWarning {

@@ -73,7 +73,7 @@
     UILabel *title = [[UILabel alloc] init];
     
     if ([self.mode isEqualToString: @"signup"]) {
-        title.text = @"Sign up";
+        title.text = @"Sign Up";
     }
     else if ([self.mode isEqualToString: @"login"]) {
         title.text = @"Login";
@@ -137,8 +137,8 @@
     
     self.usernameInput.placeholder = @"Username";
     self.usernameInput.backgroundColor = [UIColor whiteColor];
-    self.usernameInput.textColor = [UIColor grayColor];
-    self.usernameInput.layer.cornerRadius = 2;
+    self.usernameInput.textColor = RGB(110,110,110);
+    self.usernameInput.layer.cornerRadius = 4;
     self.usernameInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     [self.usernameInput becomeFirstResponder];
     //self.usernameInput.layer.masksToBounds = YES;
@@ -170,8 +170,8 @@
     
     self.passwordInput.placeholder = @"Password";
     self.passwordInput.backgroundColor = [UIColor whiteColor];
-    self.passwordInput.textColor = [UIColor grayColor];
-    self.passwordInput.layer.cornerRadius = 2;
+    self.passwordInput.textColor = RGB(110,110,110);
+    self.passwordInput.layer.cornerRadius = 4;
     self.passwordInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     //self.passwordInput.layer.masksToBounds = YES;
     
@@ -197,12 +197,12 @@
     // button
     self.submitButton = [[UIButton alloc] init];
     if ([self.mode isEqualToString: @"signup"]) {
-        [self.submitButton setTitle:@"Sign up" forState:UIControlStateNormal];
+        [self.submitButton setTitle:@"Sign Up" forState:UIControlStateNormal];
     }
     else if ([self.mode isEqualToString: @"login"]) {
         [self.submitButton setTitle:@"Log in" forState:UIControlStateNormal];
     }
-    [self.submitButton setTitleColor:RGB(152,0,194) forState:UIControlStateNormal];
+    [self.submitButton setTitleColor:RGB(179, 88, 224) forState:UIControlStateNormal];
     //[[self.signupButton layer] setBorderColor:[[UIColor blackColor] CGColor]];
     //[[self.signupButton layer] setBorderWidth:1.0];
     [self.submitButton setBackgroundColor:[UIColor whiteColor]];
