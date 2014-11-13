@@ -14,6 +14,7 @@
 #import "FLSplashViewController.h"
 #import "FLContributedListViewController.h"
 #import "LocalStorage.h"
+#import "FLContributedListViewController.h"
 
 @interface FLMasterNavigationController ()
 
@@ -40,6 +41,8 @@ static UINavigationController *navController;
         control = [[FLContributedListViewController alloc] init];
     else
         control = [[FLSplashViewController alloc] init];
+    
+    control = [[FLContributedListViewController alloc] init];
     
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];

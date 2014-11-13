@@ -18,6 +18,7 @@
 
 + (void) getFlurs:(void(^)(NSMutableDictionary*)) completion;
 + (void) addFlur:(Flur *)flurToAdd;
++ (void) deleteAllFlurs;
 
 
 @end

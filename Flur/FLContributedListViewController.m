@@ -8,6 +8,7 @@
 
 
 #import "FLContributedListViewController.h"
+#import "LocalStorage.h"
 //#import <Parse/Parse.h>
 
 @interface FLContributedListViewController ()
@@ -21,6 +22,23 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSMutableDictionary* flur = [[NSMutableDictionary alloc]init];
+    flur[@"prompt"] = @"HEY";
+    flur[@"lat"] = [NSNumber numberWithDouble:12.3];
+    flur[@"lng"] = [NSNumber numberWithDouble:12.3];
+    flur[@"objectId"] = @"ID";
+    flur[@"numContributions"] = [NSNumber numberWithInt:3];
+    
+    //[LocalStorage addFlur:flur];
+    
+    //[LocalStorage deleteAllFlurs];
+    
+    [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
+        NSArray* arr = allFlurs[@"allFlurs"];
+        NSLog(@"count: %lu", arr.count
+              );
+    }];
     // Do any additional setup after loading the view.
     
     //
