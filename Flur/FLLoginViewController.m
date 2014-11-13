@@ -204,8 +204,10 @@
 
 
 - (IBAction)submit:(id)sender {
-    if ([self.mode isEqualToString: @"signup"])
+    if ([self.mode isEqualToString: @"signup"]) {
+        NSLog(@"ya?");
         [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
+    }
     else if([self.mode isEqualToString:@"login"])
         [self loginWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
 }
@@ -280,7 +282,7 @@
             return;
         }
         else {
-            
+             [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLLoginViewController" withData:NULL];
         }
     }];
 }

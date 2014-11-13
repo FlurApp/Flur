@@ -60,7 +60,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [PFUser logOut];
+    //[PFUser logOut];
     
 
     

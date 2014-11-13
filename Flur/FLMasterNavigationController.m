@@ -14,7 +14,7 @@
 #import "FLSplashViewController.h"
 #import "FLContributedListViewController.h"
 #import "LocalStorage.h"
-#import "FLContributedListViewController.h"
+#import "FLTableViewController.h"
 
 @interface FLMasterNavigationController ()
 
@@ -35,14 +35,10 @@ static UINavigationController *navController;
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
 
-    if (true)
-    //if (currentUser)
-       // control = [[FLInitialMapViewController alloc] init];
-        control = [[FLContributedListViewController alloc] init];
+    if (currentUser)
+        control = [[FLInitialMapViewController alloc] init];
     else
         control = [[FLSplashViewController alloc] init];
-    
-    control = [[FLContributedListViewController alloc] init];
     
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];

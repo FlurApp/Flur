@@ -17,7 +17,7 @@
 + (void) getUserFound:(void(^)(bool))completion;
 
 + (void) getFlurs:(void(^)(NSMutableDictionary*)) completion;
-+ (void) addFlur:(Flur *)flurToAdd;
++ (void) addFlur:(NSMutableDictionary*)flurToAdd;
 + (void) deleteAllFlurs;
 
 
