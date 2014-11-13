@@ -180,6 +180,7 @@
     self.passwordInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.passwordInput.returnKeyType = UIReturnKeyDone;
     [self.passwordInput setEnablesReturnKeyAutomatically: YES];
+    self.passwordInput.secureTextEntry = YES; 
     //self.passwordInput.layer.masksToBounds = YES;
     
     //self.passwordInput.layer.borderColor=[[UIColor grayColor]CGColor];
