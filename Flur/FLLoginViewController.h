@@ -10,7 +10,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "User.h"
 
-@interface FLLoginViewController : UIViewController
+@interface FLLoginViewController : UIViewController <UITextFieldDelegate>
 
 - (id)initWithData:(NSMutableDictionary*) data;
 

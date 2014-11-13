@@ -64,6 +64,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // necessary to later capture return key events
+    self.usernameInput.delegate = self;
+    self.passwordInput.delegate = self;
+    
     // background
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = self.view.bounds;
@@ -304,6 +308,15 @@
     return newLength <= MAXLENGTH || returnKey;
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    NSLog(@"yo return");
+    if (textField == self.usernameInput)
+       [self.passwordInput becomeFirstResponder];
+    else if (textField == self.passwordInput) {
+        [self submit:self.submitButton];
+    }
+    return NO;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
