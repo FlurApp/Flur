@@ -35,6 +35,7 @@
 
 @property (nonatomic, strong) NSString *mode;
 @property (nonatomic, strong) UIButton *submitButton;
+
 @property (nonatomic, strong) FLTextField* usernameInput;
 @property (nonatomic, strong) FLTextField* passwordInput;
 @property (nonatomic, strong) UIManagedDocument * document;
@@ -170,6 +171,7 @@
     
     [[self view] addSubview:self.submitButton];
     
+
     // start with submit button off screen
     self.a = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-1*self.view.frame.size.height];
     [[self view] addConstraint:self.a];
@@ -199,6 +201,7 @@
     NSLog(@"keyboard showed");
     return;
 }
+
 
 - (IBAction)submit:(id)sender {
     if ([self.mode isEqualToString: @"signup"])

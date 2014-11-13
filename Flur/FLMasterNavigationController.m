@@ -16,6 +16,7 @@
 
 @interface FLMasterNavigationController ()
 
+
 @end
 
 @implementation FLMasterNavigationController
@@ -27,15 +28,13 @@ static UINavigationController *navController;
 }
 
 + (void) init {
-    UIViewController *control;
-    
-    [LocalStorage openDocument];
     
     // if a user is found
-    if (false) {
-    //if([LocalStorage getUserFound]) {
+    PFUser *currentUser = [PFUser currentUser];
+    UIViewController *control;
+
+    if (currentUser)
         control = [[FLInitialMapViewController alloc] init];
-    }
     else
         control = [[FLSplashViewController alloc] init];
     
@@ -48,17 +47,15 @@ static UINavigationController *navController;
     
     // Leaving Splash view
     if ([oldControllerName isEqualToString:@"FLSplashViewController"]) {
-        FLLoginViewController *loginController = [[FLLoginViewController alloc] initWithData:data];
-        [navController popViewControllerAnimated:YES];
-        [navController pushViewController:loginController animated:YES];
+        
+        // Entering Login View
+        if ([newControllerName isEqualToString:@"FLLoginViewController"]) {
+            FLLoginViewController *loginController = [[FLLoginViewController alloc] initWithData:data];
+            [navController popViewControllerAnimated:YES];
+            [navController pushViewController:loginController animated:YES];
+        }
     }
     
-    // Leaving login view
-    else if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
-        FLInitialMapViewController *mapController = [[FLInitialMapViewController alloc] init];
-        [navController popViewControllerAnimated:NO];
-        [navController pushViewController:mapController animated:NO];
-    }
     
     // Leaving Map View
     else if ([oldControllerName isEqualToString:@"FLInitialMapViewController"]) {
@@ -116,6 +113,20 @@ static UINavigationController *navController;
             
         }
     }
+    
+    else if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
+        
+        // Re-entering Map View
+        if ([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
+            [navController pushViewController:[[FLInitialMapViewController alloc] init] animated:YES];
+            NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
+            [navArray removeObjectAtIndex:0];
+            
+            [navController setViewControllers:navArray animated:YES];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        }
+    }
+
     
     else {
         NSLog(@"Not a correct controllerName for switchController");

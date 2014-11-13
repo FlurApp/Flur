@@ -40,51 +40,21 @@ static FLMasterNavigationController *navigationController;
                   clientKey:@"***REMOVED***"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-//    
-//    // local user core data thing
-//    
-//    NSFileManager *fileManager = [NSFileManager defaultManager];
-//    NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
-//                                                     inDomains:NSUserDomainMask] firstObject];
-//    
-//    NSString* documentName = @"MyDocument";
-//    NSURL *url = [documentsDirectory URLByAppendingPathComponent:documentName];
-//    self.document = [[UIManagedDocument alloc] initWithFileURL:url];
-//    
-//    if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
-//        [self.document openWithCompletionHandler:^(BOOL success) {
-//            if (success) [self documentIsReady];
-//            if (!success) NSLog(@"couldn’t open document at %@", url);
-//        }]; } else {
-//            [self.document saveToURL:url forSaveOperation:UIDocumentSaveForCreating
-//                   completionHandler:^(BOOL success) {
-//                       if (success) [self documentIsReady];
-//                       if (!success) NSLog(@"couldn’t create document at %@", url);
-//                   }];
-//        }
-//
-//   
-//    /*PhotoViewController * control = [[PhotoViewController alloc] initWithData:
-//                                     [[NSMutableDictionary alloc]init] ];*/
-//    FLLoginViewController * control_login = [FLLoginViewController new];
-//    FLInitialMapViewController * control_map = [FLInitialMapViewController new];
-//    UIViewController *control;
-//    
-////    if([self documentIsReady]) {
-////        control = control_map;
-////    }
-////    else
-////        control = control_login;
-//    
-//    control = control_map;
-//
-//
-//    navController = [[UINavigationController alloc] initWithRootViewController: control];
-//    [navController setNavigationBarHidden:YES];
-//    navController.navigationBar.barStyle = UIBarStyleBlack;
+    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
+                                                        UIUserNotificationTypeBadge |
+                                                        UIUserNotificationTypeSound);
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes
+                                                                                 categories:nil];
+        [application registerUserNotificationSettings:settings];
+        [application registerForRemoteNotifications];
+    } else {
+        // Register for Push Notifications before iOS 8
+        [application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                                         UIRemoteNotificationTypeAlert |
+                                                         UIRemoteNotificationTypeSound)];
+    }
 
-//    self.window.rootViewController = navController;
-//    self.window.backgroundColor = [UIColor blackColor];
     
     // Create navigation controller
     [FLMasterNavigationController init];
@@ -94,6 +64,18 @@ static FLMasterNavigationController *navigationController;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    // Store the deviceToken in the current installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    currentInstallation.channels = @[ @"global" ];
+    [currentInstallation saveInBackground];
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [PFPush handlePush:userInfo];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

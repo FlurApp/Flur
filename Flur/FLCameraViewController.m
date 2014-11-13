@@ -12,6 +12,8 @@
 #import "FLCameraViewController.h"
 #import "FLButton.h"
 #import "FLPhotoManager.h"
+#import "LocalStorage.h"
+#import "Flur.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 
@@ -325,19 +327,17 @@
 
 - (IBAction)uploadImageButtonClick:(id)sender {
     [self loadSpinner];
-    NSLog(@"fuck you");
+    
     [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray *allPhotos) {
-        NSLog(@"Yrrrr");
-
         self.allPhotos = allPhotos;
-        NSLog(@"Count: %lu", self.allPhotos.count);
         [self handOffToPhotoVC];
     }];
     
     [self.photoManager uploadPhotoWithData:self.imageData withPin:self.pin withCompletion:^{
-        NSLog(@"YEEE");
         [self handOffToPhotoVC];
     }];
+    
+ 
 }
 
 - (void) loadPhotos {

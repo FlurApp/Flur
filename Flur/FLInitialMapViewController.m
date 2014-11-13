@@ -60,7 +60,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    //[PFUser logOut];
     
+
     
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];

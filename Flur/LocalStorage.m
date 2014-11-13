@@ -10,6 +10,7 @@
 
 #import "LocalStorage.h"
 #import "User.h"
+#import "Flur.h"
 
 
 @implementation LocalStorage
@@ -18,14 +19,18 @@ static UIManagedDocument * document;
 static bool documentLoaded = false;
 static bool userFound = false;
 
-+ (BOOL) getUserFound {
-    return userFound;
++ (void) getUserFound:(void(^)(bool))completion {
+    [LocalStorage loadCurrentUser:^(NSMutableDictionary *data) {
+        completion(data.count == 1);
+    }];
 }
 
 
-+ (void) openDocument {
-    if (documentLoaded)
++ (void) openDocumentWithCompletion:(void(^)())completion {
+    if (documentLoaded) {
+        completion();
         return;
+    }
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
@@ -37,7 +42,10 @@ static bool userFound = false;
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
         [document openWithCompletionHandler:^(BOOL success) {
-            if (success)
+            if (success) {
+                documentLoaded = true;
+                completion();
+            }
                 
             if (!success) NSLog(@"couldn’t open document at %@", url);
         }]; } else {
@@ -45,17 +53,66 @@ static bool userFound = false;
                    completionHandler:^(BOOL success) {
                        if (success) {
                            documentLoaded = true;
-                           [self documentIsReady];
+                           completion();
                        }
                        if (!success) NSLog(@"couldn’t create document at %@", url);
                    }];
         }
 }
 
-+ (User*) loadCurrentUser {
-    User *user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
-                                                inManagedObjectContext:document.managedObjectContext];
-    return user;
++ (void) loadCurrentUser:(void(^)(NSMutableDictionary*)) completion {
+    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+    [LocalStorage openDocumentWithCompletion:^ {
+        if (documentLoaded) {
+            User* user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
+                                                 inManagedObjectContext:document.managedObjectContext];
+            [data setObject:user forKey:@"USER"];
+            completion(data);
+        }
+        else {
+            completion(data);
+        }
+    }];
+}
+
++ (void) getFlurs:(void(^)(NSMutableDictionary*)) completion {
+    NSManagedObjectContext *context = document.managedObjectContext;
+    
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Flur"];
+    //request.fetchBatchSize = 1;
+    //request.fetchLimit = 1;
+    
+    NSError *error;
+    NSArray *allFlurs = [context executeFetchRequest:request error:&error];
+    if (!allFlurs) {
+        NSLog(@"Error loading flurs");
+    }
+    else {
+        NSMutableDictionary* data = [[NSMutableDictionary alloc ] init];
+        [data setObject:allFlurs forKey:@"allFlurs"];
+        completion(data);
+    }
+
+}
+
++ (void) addFlur:(Flur *)flurToAdd {
+    
+    [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
+        for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
+            if (flur.objectID == flurToAdd.objectID)
+                return;
+        }
+        
+        NSLog(@"Adding flur to DB");
+        Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
+                                                   inManagedObjectContext:document.managedObjectContext];
+        flur.prompt = flurToAdd.prompt;
+        flur.lng = flurToAdd.lng;
+        flur.lat = flurToAdd.lat;
+        flur.numContributions = flurToAdd.numContributions;
+        flur.objectId = flurToAdd.objectId;
+    }];
 }
 
 + (void) saveCurrentUser {
