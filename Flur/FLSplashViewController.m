@@ -35,6 +35,8 @@
     [self.view addSubview:backSplash];*/
     
     UIImageView *image = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"white-120px.png"]];
+    //image.layer.edgeAntialiasingMask = kCALayerLeftEdge | kCALayerRightEdge | kCALayerBottomEdge | kCALayerTopEdge;
+
     [image setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:image];
     
