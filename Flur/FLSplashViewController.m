@@ -146,7 +146,7 @@
 
 - (IBAction)signUp:(id)sender {
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-    [data setObject:@"signup" forKey:@"mode"];
+    [data setObject:@"Sign Up" forKey:@"mode"];
     [FLMasterNavigationController switchToViewController:@"FLLoginViewController"
                                       fromViewController:@"FLSplashViewController"
                                                 withData:data];
@@ -155,7 +155,7 @@
 
 - (IBAction)loginToFlur:(id)sender {
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-    [data setObject:@"login" forKey:@"mode"];
+    [data setObject:@"Login" forKey:@"mode"];
     [FLMasterNavigationController switchToViewController:@"FLLoginViewController"
                                       fromViewController:@"FLSplashViewController"
                                                 withData:data];

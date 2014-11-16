@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
 //
 
+#import <Parse/Parse.h>
 #import "FLTableViewController.h"
 #import "LocalStorage.h"
 
@@ -19,6 +20,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [PFUser logOut];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
