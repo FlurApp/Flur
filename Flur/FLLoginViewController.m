@@ -348,6 +348,7 @@
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationCurveEaseOut animations:^{
         self.pageTitle.alpha = 0;
     } completion:^(BOOL finished) {
+        
          [UIView animateWithDuration:.5 delay:0 options:UIViewAnimationCurveEaseOut animations:^{
              self.pageTitle.text = self.otherMode;
              self.pageTitle.alpha = 1;
@@ -355,12 +356,29 @@
          }];
     }];
     
+    // Animate a fade out of the page title and a fade in of the new page title
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationCurveEaseOut animations:^{
+        self.orDoOpposite.alpha = 0;
+    } completion:^(BOOL finished) {
+        
+        [UIView animateWithDuration:.5 delay:0 options:UIViewAnimationCurveEaseOut animations:^{
+            [self.orDoOpposite setTitle:[NSString stringWithFormat:@"or %@",self.mode] forState:UIControlStateNormal];
+            self.orDoOpposite.alpha = 1;
+        } completion:^(BOOL finished) {
+            NSString* temp = self.mode;
+            self.mode = self.otherMode;
+            self.otherMode = temp;
+            
+        }];
+    }];
+    
     self.usernameInput.text = @"";
     self.passwordInput.text = @"";
     
-    [self hideSubmitButton];
+    [self hideSubmitButtonWithNewText:self.otherMode];
     [self hideErrorMessage];
     
+  
     
 }
 
@@ -399,6 +417,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     NSLog(@"yo return");
+    
     if (textField == self.usernameInput)
        [self.passwordInput becomeFirstResponder];
     else if (textField == self.passwordInput) {
@@ -449,7 +468,7 @@
                                             [self showErrorMessage];
                                             [self hideSubmitButton];
                                             [self.passwordInput becomeFirstResponder];
-                                                                          
+                                            
                                             // check reasons...and display
                                         }
                                     }];
@@ -481,20 +500,26 @@
 }
 
 - (void) hideSubmitButton {
+    [self hideSubmitButtonWithNewText:@""];
+}
+
+- (void) hideSubmitButtonWithNewText:(NSString *) newButtonText {
     
     [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.submitLeading.constant = -1*self.view.frame.size.width;
         self.submitTrailing.constant = -1*self.view.frame.size.width;
         
         [self.view layoutIfNeeded];
-    } completion:nil];
+    } completion:^(bool done){
+        [UIView animateWithDuration:0.01 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.submitButton.alpha = 0;
+            if (![newButtonText isEqualToString:@""])
+                [self.submitButton setTitle:newButtonText forState:UIControlStateNormal];
+            
+            [self.view layoutIfNeeded];
+        } completion:nil];
+    }];
     
-    
-    [UIView animateWithDuration:0.01 delay:0.4 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.submitButton.alpha = 0;
-        [self.view layoutIfNeeded];
-    } completion:nil];
-
 }
 
 - (void) hideErrorMessage {
