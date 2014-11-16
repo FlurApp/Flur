@@ -294,7 +294,6 @@
     
     
     
-    
     // Changes the color of the cursor when typing in the text field
     [[FLTextField appearance] setTintColor:RGB(152,0,194)];
     

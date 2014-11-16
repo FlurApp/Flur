@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FLTableViewController : UITableViewController
+@interface FLTableViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 
 @end
