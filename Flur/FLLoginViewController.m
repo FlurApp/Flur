@@ -15,6 +15,11 @@
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 #define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 
+#define submitButtonColor RGB(54, 195, 200)
+#define backgroundGradientDark RGB(124, 59, 102)
+#define backgroundGradientLight RGB(124, 59, 102)
+
+
 
 @interface FLTextField : UITextField<UITextFieldDelegate>
 
@@ -34,6 +39,7 @@
 @end
 
 
+
 @interface FLLoginViewController ()
 
 @property (nonatomic, strong) NSString *mode;
@@ -45,6 +51,7 @@
 @property (nonatomic, strong) UIButton *orDoOpposite;
 @property (nonatomic, strong) UIButton *submitButton;
 @property (nonatomic, strong) UILabel* errorMessage;
+@property (nonatomic, strong) UILabel *pageTitle;
 
 // All constraints for the submit button, used for animating
 @property (nonatomic, strong) NSLayoutConstraint *submitLeading;
@@ -79,7 +86,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     // Necessary to later capture return key events
     self.usernameInput.delegate = self;
     self.passwordInput.delegate = self;
@@ -87,24 +94,30 @@
     // Set background color for view
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = self.view.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[RGB(186,108,224) CGColor], (id)[RGB(179, 88, 224) CGColor], nil];
+    //gradient.colors = [NSArray arrayWithObjects:(id)[RGB(186,108,224) CGColor], (id)[RGB(179, 88, 224) CGColor], nil];
+    gradient.colors = [NSArray arrayWithObjects:(id)[backgroundGradientLight CGColor], (id)[backgroundGradientDark CGColor], nil];
+
     [self.view.layer insertSublayer:gradient atIndex:0];
     
     // Create page title, either 'Sign Up' or 'Login'
-    UILabel *title = [[UILabel alloc] init];
-    [title setTranslatesAutoresizingMaskIntoConstraints:NO];
+    NSLog(@"FUCCCK");
+
+    self.pageTitle = [[UILabel alloc] init];
+    NSLog(@"HEY");
+
+    [self.pageTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
+
+    self.pageTitle.text = self.mode;
+    [self.pageTitle setFont:[UIFont fontWithName:@"Avenir-Light" size:30]];
+    self.pageTitle.textColor = [UIColor whiteColor];
     
-    title.text = self.mode;
-    [title setFont:[UIFont fontWithName:@"Avenir-Light" size:30]];
-    title.textColor = [UIColor whiteColor];
+    [self.view addSubview:self.pageTitle];
     
-    [self.view addSubview:title];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:title attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:title attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
-    
-    
+
     
     // Put a long line under the page title that is somewhat transparent
     UIView* littleLine = [[UIView alloc]init];
@@ -114,7 +127,7 @@
     
     [self.view addSubview:littleLine];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.pageTitle attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
     
@@ -130,10 +143,10 @@
     
     [self.view addSubview:boldLine];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.pageTitle attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
     
 
-     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.pageTitle attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1]];
     
@@ -161,7 +174,7 @@
     
     [self.view addSubview:self.usernameInput];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:title attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.pageTitle attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
     
@@ -200,7 +213,6 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
     
-    
     // Create the button to change from Sign Up screen to Login and vice versa
     self.orDoOpposite = [[UIButton alloc]init];
     [self.orDoOpposite setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -209,6 +221,8 @@
     [self.orDoOpposite setTitle:orDoOppositeText forState:UIControlStateNormal];
     [self.orDoOpposite setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.orDoOpposite.backgroundColor = [UIColor clearColor];
+    
+    [self.orDoOpposite addTarget:self action:@selector(switchScreen:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.orDoOpposite];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
@@ -217,17 +231,16 @@
     
     
     
-    
-
-    
     // Creat the submit button for the login/signup info
     self.submitButton = [[UIButton alloc] init];
     [self.submitButton setTranslatesAutoresizingMaskIntoConstraints:NO];
 
     [self.submitButton setTitle:self.mode forState:UIControlStateNormal];
 
-    [self.submitButton setTitleColor:RGB(179, 88, 224) forState:UIControlStateNormal];
-    [self.submitButton setBackgroundColor:[UIColor whiteColor]];
+    //[self.submitButton setTitleColor:RGB(179, 88, 224) forState:UIControlStateNormal];
+    [self.submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+
+    [self.submitButton setBackgroundColor:submitButtonColor];
     [[self.submitButton layer] setCornerRadius:2];
     [self.submitButton setEnabled:TRUE];
     [self.submitButton setCenter: self.view.center];
@@ -313,7 +326,7 @@
 }
 
 - (IBAction)unSubmit:(id)sender {
-    self.submitButton.backgroundColor = [UIColor whiteColor];
+    self.submitButton.backgroundColor = submitButtonColor;
     if ([self.mode isEqualToString: @"Sign Up"]) {
         [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
     }
@@ -326,49 +339,43 @@
     self.submitButton.backgroundColor = RGB(220,220,220);
    
 }
+     
+- (IBAction)switchScreen:(id)sender {
+
+    // Animate a fade out of the page title and a fade in of the new page title
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationCurveEaseOut animations:^{
+        self.pageTitle.alpha = 0;
+    } completion:^(BOOL finished) {
+         [UIView animateWithDuration:.5 delay:0 options:UIViewAnimationCurveEaseOut animations:^{
+             self.pageTitle.text = self.otherMode;
+             self.pageTitle.alpha = 1;
+         } completion:^(BOOL finished) {
+         }];
+    }];
+    
+    self.usernameInput.text = @"";
+    self.passwordInput.text = @"";
+    
+    [self hideSubmitButton];
+    [self hideErrorMessage];
+    
+    
+}
 
 - (IBAction)textFieldDidChange: (id)sender {
     // If the error message is visible, animate it off screen
     if (self.errorMessageTrailing.constant == 0) {
-        [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            self.errorMessageLeading.constant = self.view.frame.size.width;
-            self.errorMessageTrailing.constant = self.view.frame.size.width;
-            
-            [self.view layoutIfNeeded];
-        } completion:nil];
+        [self hideErrorMessage];
     }
     
     // If both fields have some contents, animate the login button onto the screen
     if (self.usernameInput.text.length > 0 && self.passwordInput.text.length > 0) {
-        self.submitButton.alpha = 1;
-
-            [self.view layoutIfNeeded];
-      
-        [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            
-                self.submitLeading.constant = 0;
-                self.submitTrailing.constant = 0;
-                [self.view layoutIfNeeded];
-        } completion:nil];
+        [self showSubmitButton];
     }
     
     // If one of the inputs does not have some contents, animate the login button off the screen
     else if (self.usernameInput.text.length == 0 || self.passwordInput.text.length == 0) {
-
-        [self.view layoutIfNeeded];
-        
-        [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            self.submitLeading.constant = -1*self.view.frame.size.width;
-            self.submitTrailing.constant = -1*self.view.frame.size.width;
-
-            [self.view layoutIfNeeded];
-        } completion:nil];
-        
-        
-        [UIView animateWithDuration:0.01 delay:0.4 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            self.submitButton.alpha = 0;
-            [self.view layoutIfNeeded];
-        } completion:nil];
+        [self hideSubmitButton];
     }
 }
 
@@ -436,24 +443,66 @@
                                             // The login failed. Check error to see why.
                                             NSLog(@"login failed...");
                                             
-                                            self.errorMessage.alpha = 1;
-                                            [self.view layoutIfNeeded];
-
-
-                                            [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-                                                self.errorMessageLeading.constant = 0;
-                                                self.errorMessageTrailing.constant = 0;
-                                                self.submitLeading.constant = -self.view.frame.size.width;
-                                                self.submitTrailing.constant = -self.view.frame.size.width;
-
-                                                [self.view layoutIfNeeded];
-                                            } completion:nil];
-
+                                            [self showErrorMessage];
+                                            [self hideSubmitButton];
                                             
                                             // check reasons...and display
                                         }
                                     }];
 }
+
+
+- (void) showSubmitButton {
+    self.submitButton.alpha = 1;
+    [self.view layoutIfNeeded];
+    
+    [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        
+        self.submitLeading.constant = 0;
+        self.submitTrailing.constant = 0;
+        [self.view layoutIfNeeded];
+    } completion:nil];
+}
+
+- (void) showErrorMessage {
+    self.errorMessage.alpha = 1;
+    [self.view layoutIfNeeded];
+    
+    [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.errorMessageLeading.constant = 0;
+        self.errorMessageTrailing.constant = 0;
+        
+        [self.view layoutIfNeeded];
+    } completion:nil];
+}
+
+- (void) hideSubmitButton {
+    
+    [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.submitLeading.constant = -1*self.view.frame.size.width;
+        self.submitTrailing.constant = -1*self.view.frame.size.width;
+        
+        [self.view layoutIfNeeded];
+    } completion:nil];
+    
+    
+    [UIView animateWithDuration:0.01 delay:0.4 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.submitButton.alpha = 0;
+        [self.view layoutIfNeeded];
+    } completion:nil];
+
+}
+
+- (void) hideErrorMessage {
+    [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.errorMessageLeading.constant = self.view.frame.size.width;
+        self.errorMessageTrailing.constant = self.view.frame.size.width;
+        
+        [self.view layoutIfNeeded];
+    } completion:nil];
+
+}
+
 
 
 /*
