@@ -34,9 +34,9 @@ static UINavigationController *navController;
     // if a user is found
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
-
-    if (currentUser)
-        control = [[FLTableViewController alloc] init];
+    if(false)
+    //if (currentUser)
+        control = [[FLInitialMapViewController alloc] init];
     else
         control = [[FLSplashViewController alloc] init];
         

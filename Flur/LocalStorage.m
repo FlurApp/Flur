@@ -91,7 +91,7 @@ static bool userFound = false;
                 NSLog(@"Error loading flurs");
             }
             else {
-                NSLog(@"Size %lu", allFlurs.count);
+                //NSLog(@"Size %lu", allFlurs.count);
                // for (Flur* obj in allFlurs)
                // [document.managedObjectContext deleteObject:obj];
                 

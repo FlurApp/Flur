@@ -314,6 +314,8 @@
 
 - (IBAction)unSubmit:(id)sender {
     self.submitButton.backgroundColor = [UIColor whiteColor];
+    [self.passwordInput resignFirstResponder];
+    
     if ([self.mode isEqualToString: @"Sign Up"]) {
         [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
     }
@@ -394,6 +396,7 @@
        [self.passwordInput becomeFirstResponder];
     else if (textField == self.passwordInput) {
         [self submit:self.submitButton];
+        [self unSubmit:self.submitButton];
     }
     return NO;
 }
@@ -435,7 +438,7 @@
                                         } else {
                                             // The login failed. Check error to see why.
                                             NSLog(@"login failed...");
-                                            
+                                            [self.passwordInput becomeFirstResponder];
                                             self.errorMessage.alpha = 1;
                                             [self.view layoutIfNeeded];
 

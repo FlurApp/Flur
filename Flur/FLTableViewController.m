@@ -16,6 +16,8 @@
 
 @end
 
+#define RGB(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a/1]
+
 @implementation FLTableViewController
 
 - (void)viewDidLoad {
@@ -29,21 +31,31 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
+    [self.tableView setBackgroundColor:RGB(186,108,224,.7)];
 
     self.pinsArray = [[NSMutableArray alloc] init];
     
-     //get contributed pins
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = RGB(186,108,224,0);
+    //self.refreshControl.tintColor = [UIColor whiteColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(getFlurs)
+                  forControlEvents:UIControlEventValueChanged];
+  
+    // get flurs
+    [self getFlurs];
+}
+
+- (void) getFlurs {
+    // get contributed pins
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         self.pinsArray = allFlurs[@"allFlurs"];
         
         NSLog(@"first: %@", [self.pinsArray[0] prompt]);
         NSLog(@"count: %lu", (unsigned long)self.pinsArray.count);
-        [self.tableView reloadData];
+        [self reloadData];
+        
     }];
-    //self.pinsArray = [NSMutableArray arrayWithObjects:@"Brave new world",@"Call of the Wild",nil];
-
-    
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -67,8 +79,6 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    NSLog(@"WTF");
     
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
@@ -78,13 +88,32 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    NSLog(@"Ayooooo");
-    //cell.textLabel.text = [self.pinsArray objectAtIndex:indexPath.row];
-
-    cell.textLabel.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
-
     
+    // set the cell text
+    cell.textLabel.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
+    cell.backgroundColor = RGB(186,108,224,0);
+    cell.textLabel.textColor = [UIColor whiteColor];
+
     return cell;
+}
+
+- (void)reloadData {
+    // Reload table data
+    [self.tableView reloadData];
+    
+    // End the refreshing
+    if (self.refreshControl) {
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm a"];
+        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor whiteColor]
+                                                                    forKey:NSForegroundColorAttributeName];
+        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        self.refreshControl.attributedTitle = attributedTitle;
+        
+        [self.refreshControl endRefreshing];
+    }
 }
 
 /*
