@@ -82,13 +82,12 @@ static UINavigationController *navController;
         if ([newControllerName isEqualToString:@"FLCameraViewController"]) {
             
             FLCameraViewController *camController = [[FLCameraViewController alloc] initWithData:data];
-//            [UIView animateWithDuration:0.75
-//                             animations:^{
-//                                 [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-//                                 [navController pushViewController:camController animated:NO];
-//                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
-//                             }];
-            [navController pushViewController:camController animated:NO];
+            [UIView animateWithDuration:0.75
+                             animations:^{
+                                 [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+                                 [navController pushViewController:camController animated:NO];
+                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
+                             }];
         }
         // returning to map view
         else if([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
