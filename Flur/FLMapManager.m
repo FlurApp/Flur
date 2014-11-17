@@ -41,6 +41,7 @@
     [self.openablePins removeAllObjects];
     
     PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
+    [query includeKey:@"createdBy"];
     [query setLimit:10];
     [query whereKey: @"location"
        nearGeoPoint: [PFGeoPoint geoPointWithLatitude: [self currentLat]
@@ -83,7 +84,7 @@
 - (void) addFlur: (NSString *)prompt {
     PFObject *flurPin = [PFObject objectWithClassName:@"FlurPin"];
     [flurPin setObject:self.currentLocation forKey:@"location"];
-    [flurPin setObject:@"default" forKey:@"username"];
+    [flurPin setObject: [PFUser currentUser]forKey:@"createdBy"];
     [flurPin setObject:prompt forKey: @"prompt"];
     [flurPin setObject:@0 forKey:@"contentCount"];
     

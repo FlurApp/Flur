@@ -327,7 +327,6 @@
 
 - (IBAction)unSubmit:(id)sender {
     self.submitButton.backgroundColor = submitButtonColor;
-    [self.passwordInput resignFirstResponder];
     
     if ([self.mode isEqualToString: @"Sign Up"]) {
         [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
@@ -449,6 +448,7 @@
             return;
         }
         else {
+             [self dropSubmitButton];
              [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLLoginViewController" withData:NULL];
         }
     }];
@@ -460,6 +460,8 @@
                                         if (user) {
                                             // Do stuff after successful login.
                                             NSLog(@"successful login");
+                                            
+                                            [self dropSubmitButton];
                                             [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLLoginViewController" withData:NULL];
                                         } else {
                                             // The login failed. Check error to see why.
@@ -472,6 +474,17 @@
                                             // check reasons...and display
                                         }
                                     }];
+}
+
+- (void) dropSubmitButton {
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        [self.passwordInput resignFirstResponder];
+        self.submitBottom.constant = 0;
+        self.submitTop.constant = -50;
+
+        [self.view layoutIfNeeded];
+    } completion:nil];
 }
 
 
@@ -510,7 +523,7 @@
         self.submitTrailing.constant = -1*self.view.frame.size.width;
         
         [self.view layoutIfNeeded];
-    } completion:^(bool done){
+    } completion:^(BOOL done){
         [UIView animateWithDuration:0.01 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.submitButton.alpha = 0;
             if (![newButtonText isEqualToString:@""])

@@ -15,17 +15,18 @@
     
     if (self) {
         self.coordinate = object[@"location"];
-        self.username = object[@"username"];
+        self.createdBy = object[@"createdBy"];
+        self.username = [object[@"createdBy"] username];
         self.pinId = [object objectId];
+        NSLog(@"%@",self.pinId);
         self.prompt = object[@"prompt"];
-        self.contentCount = (int) object[@"contentCount"];
+        self.contentCount = [object[@"contentCount"] integerValue];
+        
+        self.dateCreated = [object createdAt];
+        NSLog(@"date: %@ ", self.dateCreated.description);
     }
     
     return self;
-}
-
-- (NSString *)returnPrompt {
-    return self.prompt;
 }
 
 - (NSString *)description {
