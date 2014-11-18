@@ -39,7 +39,7 @@
                      
                      // Add this flur to SERVER copy of flurs I have contributed to
                      PFObject *contributedFlurs = [PFObject objectWithClassName:@"ContributedFlurs"];
-                     [contributedFlurs setObject:pin.pinId forKey:@"flurObjectId"];
+                     [contributedFlurs setObject:pin.pinId forKey:@"flurObjectID"];
                      NSLog(@"current user%@:",[PFUser currentUser] );
                      [contributedFlurs setObject:[[PFUser currentUser] username] forKey:@"username"];
                      

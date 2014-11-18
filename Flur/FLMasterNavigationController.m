@@ -35,8 +35,8 @@ static UINavigationController *navController;
     // if a user is found
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
-    //if (false)
-    if (currentUser)
+    if (false)
+    //if (currentUser)
         control = [[FLInitialMapViewController alloc] init];
     else
         control = [[FLSplashViewController alloc] init];
@@ -70,7 +70,7 @@ static UINavigationController *navController;
                                  [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
                                  [navController pushViewController:contributeController animated:NO];
  
-                                 [UIView setAnimationTransition:UIViewAnimationTransitionCurlDown forView:navController.view cache:NO];
+                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
                              }];
         }
     }
@@ -95,7 +95,7 @@ static UINavigationController *navController;
                              animations:^{
                                  [UIView setAnimationCurve:UIViewAnimationCurveLinear];
                                  [navController popViewControllerAnimated:NO];
-                                 [UIView setAnimationTransition:UIViewAnimationTransitionCurlUp forView:navController.view cache:NO];
+                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:navController.view cache:NO];
                              }];
             //[navController popViewControllerAnimated:YES];
             [[UIApplication sharedApplication] setStatusBarHidden:NO];
