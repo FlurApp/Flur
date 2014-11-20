@@ -9,6 +9,7 @@
 #import "FLContributeViewController.h"
 #import "FLPin.h"
 #import "FLMasterNavigationController.h"
+#import "TransparentView.h"
 
 @interface FLContributeViewController ()
 
@@ -31,19 +32,29 @@
     if (self) {
         FLPin *pin = [data objectForKey:@"FLPin"];
         self.pin = pin;
+        self.view.opaque = NO;
     }
     
     return self;
 }
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
     //self.view.tintColor = purp;
-    [self.view setBackgroundColor: [UIColor whiteColor]];
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    
+    [self setModalPresentationStyle:UIModalPresentationOverCurrentContext];
+    self.view.backgroundColor = RGBA(255,255,255,.7);
+    
+    // white overlay box
+    CGRect whiteBoxRect = [[UIScreen mainScreen] bounds];
+    whiteBoxRect.size.height /=2;
+    UIView *whiteBox = [[UIView alloc] initWithFrame:whiteBoxRect];
+    whiteBox.backgroundColor = [UIColor whiteColor];
     
     // pin prompt
     
@@ -95,14 +106,18 @@
 
 
     // add subviews
-    
-    [self.view addSubview:promptLabel];
-    [self.view addSubview:dateLabel];
-    [self.view addSubview:contentCountLabel];
+    [self.view addSubview:whiteBox];
+    [whiteBox addSubview:promptLabel];
+    [whiteBox addSubview:dateLabel];
+    [whiteBox addSubview:contentCountLabel];
+    [whiteBox addSubview:lineView];
     [self.view addSubview:contributeButton];
-    [self.view addSubview:lineView];
+
     
     // do layout
+    
+        // white box top, view top
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:whiteBox attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     
         // date top, view top
         [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:dateLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:30]];
@@ -159,7 +174,7 @@
     theAnimation.fromValue=[NSNumber numberWithFloat:1.0];
     theAnimation.toValue=[NSNumber numberWithFloat:0.8];
     [contributeButton.layer addAnimation:theAnimation forKey:@"animateOpacity"];
-    
+
 }
 
 - (IBAction)contributingToFlur:(id)sender {
@@ -167,12 +182,14 @@
     
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:self.pin forKey:@"FLPin"];
+    [self dismissViewControllerAnimated:YES completion:nil];
     [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
                                       fromViewController:@"FLContributeViewController"
                                                 withData:data];
 }
 
 - (void)exitContribute:(UITapGestureRecognizer *)recognizer {
+    [self dismissViewControllerAnimated:YES completion:nil];
     [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController"
                                       fromViewController:@"FLContributeViewController"
                                                 withData:nil];

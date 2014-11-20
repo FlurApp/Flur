@@ -35,8 +35,8 @@ static UINavigationController *navController;
     // if a user is found
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
-    if (false)
-    //if (currentUser)
+    //if (false)
+    if (currentUser)
         control = [[FLInitialMapViewController alloc] init];
     else
         control = [[FLSplashViewController alloc] init];
@@ -65,13 +65,16 @@ static UINavigationController *navController;
         if ([newControllerName isEqualToString:@"FLContributeViewController"]) {
             
             FLContributeViewController *contributeController = [[FLContributeViewController alloc] initWithData:data];
-            [UIView animateWithDuration:0.75
-                             animations:^{
-                                 [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                                 [navController pushViewController:contributeController animated:NO];
- 
-                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
-                             }];
+            [navController presentModalViewController:contributeController animated:YES];
+
+            //[navController pushViewController:contributeController animated:NO];
+
+//            [UIView animateWithDuration:0.75
+//                             animations:^{
+//                                 [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+// 
+//                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
+//                             }];
         }
     }
     
@@ -91,13 +94,6 @@ static UINavigationController *navController;
         }
         // returning to map view
         else if([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
-            [UIView animateWithDuration:0.75
-                             animations:^{
-                                 [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-                                 [navController popViewControllerAnimated:NO];
-                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:navController.view cache:NO];
-                             }];
-            //[navController popViewControllerAnimated:YES];
             [[UIApplication sharedApplication] setStatusBarHidden:NO];
         }
     }
@@ -119,12 +115,6 @@ static UINavigationController *navController;
         
         // Re-entering Map View
         else if ([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
-            //[(FLInitialMapViewController*)navController.viewControllers[0] removeBlur];
-            
-            NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
-            int position = (navController.viewControllers.count - 1);
-            [navArray removeObjectAtIndex:position-1];
-            [navController setViewControllers:navArray animated:YES];
             [navController popViewControllerAnimated:YES];
             [[UIApplication sharedApplication] setStatusBarHidden:NO];
         }
@@ -139,9 +129,7 @@ static UINavigationController *navController;
             NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
             int position = (navController.viewControllers.count - 1);
             [navArray removeObjectAtIndex:position-1];
-            [navArray removeObjectAtIndex:position-2];
             
-            //[(FLInitialMapViewController*)[navArray objectAtIndex:0] removeBlur];
             
             [navController setViewControllers:navArray animated:YES];
             [navController popViewControllerAnimated:YES];

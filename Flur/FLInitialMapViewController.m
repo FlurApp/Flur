@@ -670,7 +670,7 @@
     [self.blurEffectView removeFromSuperview];
 }
 
-/*- (void)exitEnterPromptBlur:(UITapGestureRecognizer *)recognizer {
+- (void)exitEnterPromptBlur:(UITapGestureRecognizer *)recognizer {
     
     if ([self.promptTextField isFirstResponder]) {
         [self.promptTextField resignFirstResponder];
@@ -682,7 +682,7 @@
 
 - (void) removeBlur {
     [self.blurEffectView removeFromSuperview];
-}*/
+}
 
 - (UIColor*) colorWithHexString:(NSString*)hex {
     NSString *cString = [[hex stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
