@@ -9,7 +9,6 @@
 #import "FLContributeViewController.h"
 #import "FLPin.h"
 #import "FLMasterNavigationController.h"
-#import "TransparentView.h"
 
 @interface FLContributeViewController ()
 
