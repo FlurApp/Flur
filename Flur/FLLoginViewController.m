@@ -10,7 +10,7 @@
 #import "FLLoginViewController.h"
 #import "FLMasterNavigationController.h"
 
-#define MAXLENGTH 15
+#define MAXLENGTH 30
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 #define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
@@ -166,6 +166,8 @@
     self.usernameInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     [self.usernameInput becomeFirstResponder];
     self.usernameInput.returnKeyType = UIReturnKeyNext;
+    self.usernameInput.keyboardAppearance = UIKeyboardAppearanceDark;
+    self.usernameInput.keyboardType = UIKeyboardTypeEmailAddress;
     
     [self.usernameInput addTarget:self
                   action:@selector(textFieldDidChange:)
@@ -195,7 +197,8 @@
     self.passwordInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.passwordInput.returnKeyType = UIReturnKeyDone;
     [self.passwordInput setEnablesReturnKeyAutomatically: YES];
-    self.passwordInput.secureTextEntry = YES; 
+    self.passwordInput.secureTextEntry = YES;
+    self.passwordInput.keyboardAppearance = UIKeyboardAppearanceDark;
 
     
     [self.passwordInput addTarget:self
@@ -315,6 +318,7 @@
                             range:(NSRange){0, [attributeString length]}];
     
     [self.forgotPassword setAttributedTitle:[attributeString copy] forState:UIControlStateNormal];
+    [self.forgotPassword addTarget:self action:@selector(doForgotPassword:) forControlEvents:UIControlEventTouchDown];
     [self.forgotPassword setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:self.forgotPassword];
     
@@ -446,7 +450,6 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    NSLog(@"yo return");
     
     if (textField == self.usernameInput)
        [self.passwordInput becomeFirstResponder];
@@ -506,6 +509,29 @@
                                         }
                                     }];
 }
+
+- (IBAction)doForgotPassword:(id)sender {
+    
+     [PFUser requestPasswordResetForEmailInBackground:self.usernameInput.text
+                                                block:^(BOOL succeeded,NSError *error) {
+        
+        if (!error) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Password Reset" message:[NSString stringWithFormat: @"A link to reset your password has been sent to your email"] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            return;
+            
+        }
+        else
+        {
+            NSString *errorString = [error userInfo][@"error"];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:[NSString stringWithFormat: @"Password reset failed: %@ Please re-enter your email address.",errorString] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+    }];
+        
+}
+
 
 - (void) dropSubmitButton {
     [self.view layoutIfNeeded];
