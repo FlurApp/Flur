@@ -10,7 +10,7 @@
 #import "FLLoginViewController.h"
 #import "FLMasterNavigationController.h"
 
-#define MAXLENGTH 15
+#define MAXLENGTH 30
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 #define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
@@ -52,6 +52,8 @@
 @property (nonatomic, strong) UIButton *submitButton;
 @property (nonatomic, strong) UILabel* errorMessage;
 @property (nonatomic, strong) UILabel *pageTitle;
+@property (nonatomic, strong) UIButton *forgotPassword;
+
 
 // All constraints for the submit button, used for animating
 @property (nonatomic, strong) NSLayoutConstraint *submitLeading;
@@ -66,8 +68,6 @@
 @property (nonatomic, strong) NSLayoutConstraint *errorMessageBottom;
 
 @property (nonatomic, strong) NSString *otherMode;
-
-
 
 
 @end
@@ -100,10 +100,8 @@
     [self.view.layer insertSublayer:gradient atIndex:0];
     
     // Create page title, either 'Sign Up' or 'Login'
-    NSLog(@"FUCCCK");
 
     self.pageTitle = [[UILabel alloc] init];
-    NSLog(@"HEY");
 
     [self.pageTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
 
@@ -113,7 +111,7 @@
     
     [self.view addSubview:self.pageTitle];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:60]];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
@@ -159,13 +157,15 @@
     [self.usernameInput setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.usernameInput.delegate = self;
     
-    self.usernameInput.placeholder = @"Username";
+    self.usernameInput.placeholder = @"Email";
     self.usernameInput.backgroundColor = [UIColor whiteColor];
     self.usernameInput.textColor = RGB(110,110,110);
     self.usernameInput.layer.cornerRadius = 4;
     self.usernameInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     [self.usernameInput becomeFirstResponder];
     self.usernameInput.returnKeyType = UIReturnKeyNext;
+    self.usernameInput.keyboardAppearance = UIKeyboardAppearanceDark;
+    self.usernameInput.keyboardType = UIKeyboardTypeEmailAddress;
     
     [self.usernameInput addTarget:self
                   action:@selector(textFieldDidChange:)
@@ -180,7 +180,7 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
     
     
     // Create the password input field
@@ -195,7 +195,8 @@
     self.passwordInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.passwordInput.returnKeyType = UIReturnKeyDone;
     [self.passwordInput setEnablesReturnKeyAutomatically: YES];
-    self.passwordInput.secureTextEntry = YES; 
+    self.passwordInput.secureTextEntry = YES;
+    self.passwordInput.keyboardAppearance = UIKeyboardAppearanceDark;
 
     
     [self.passwordInput addTarget:self
@@ -211,7 +212,7 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
     
     // Create the button to change from Sign Up screen to Login and vice versa
     self.orDoOpposite = [[UIButton alloc]init];
@@ -219,15 +220,16 @@
     
     NSString* orDoOppositeText = [NSString stringWithFormat:@"or %@", self.otherMode];
     [self.orDoOpposite setTitle:orDoOppositeText forState:UIControlStateNormal];
-    [self.orDoOpposite setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.orDoOpposite setTitleColor:submitButtonColor forState:UIControlStateNormal];
     self.orDoOpposite.backgroundColor = [UIColor clearColor];
+    [self.orDoOpposite setFont:[UIFont fontWithName:@"Avenir-Light" size:16]];
     
     [self.orDoOpposite addTarget:self action:@selector(switchScreen:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.orDoOpposite];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:2]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
     
     
@@ -292,7 +294,38 @@
     [[self view] addConstraint:self.errorMessageTop];
     [[self view] addConstraint:self.errorMessageBottom];
     
+    // forgot password
     
+    self.forgotPassword = [[UIButton alloc] init];
+    self.forgotPassword.backgroundColor = [UIColor clearColor];
+    [self.forgotPassword setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
+    // i know it looks crazy but thats how u underline shit
+    NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:@"Forgot password?"];
+    [attributeString addAttribute:NSUnderlineStyleAttributeName
+                            value:[NSNumber numberWithInt:1]
+                            range:(NSRange){0,[attributeString length]}];
+    
+    [attributeString addAttribute:NSForegroundColorAttributeName
+                            value:[UIColor whiteColor]
+                            range:(NSRange){0, [attributeString length]}];
+    
+    UIFont *font = [UIFont fontWithName:@"Avenir-Light" size:12];
+    [attributeString addAttribute:NSFontAttributeName
+                            value:font
+                            range:(NSRange){0, [attributeString length]}];
+    
+    [self.forgotPassword setAttributedTitle:[attributeString copy] forState:UIControlStateNormal];
+    [self.forgotPassword addTarget:self action:@selector(doForgotPassword:) forControlEvents:UIControlEventTouchDown];
+    [self.forgotPassword setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.view addSubview:self.forgotPassword];
+    
+    // constraints for ForgotPasswordLabel
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.forgotPassword attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:2]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.forgotPassword attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+
     
     // Changes the color of the cursor when typing in the text field
     [[FLTextField appearance] setTintColor:RGB(152,0,194)];
@@ -326,7 +359,6 @@
 
 - (IBAction)unSubmit:(id)sender {
     self.submitButton.backgroundColor = submitButtonColor;
-    [self.passwordInput resignFirstResponder];
     
     if ([self.mode isEqualToString: @"Sign Up"]) {
         [self signupWithUsername:self.usernameInput.text withPassword:self.passwordInput.text];
@@ -415,7 +447,6 @@
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    NSLog(@"yo return");
     
     if (textField == self.usernameInput)
        [self.passwordInput becomeFirstResponder];
@@ -431,10 +462,40 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (BOOL)validateEmail: (NSString *) candidate {
+    
+    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex]; //  return 0;
+    return [emailTest evaluateWithObject:candidate];
+}
+
 - (void) signupWithUsername:(NSString*)username withPassword:(NSString*)password {
     PFUser *user = [PFUser user];
     user.username = username;
     user.password = password;
+    
+    // if invalid email address
+    if (![self validateEmail:username]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid email"
+                                                        message:[NSString stringWithFormat: @"Please enter a valid email address."]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
+    // if password is too short
+    else if (password.length < 8) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid password"
+                                                        message:[NSString stringWithFormat: @"Your password must contain at least 8 characters."]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
     [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (error) {
             // Display an alert view to show the error message
@@ -448,6 +509,7 @@
             return;
         }
         else {
+             [self dropSubmitButton];
              [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLLoginViewController" withData:NULL];
         }
     }];
@@ -459,6 +521,8 @@
                                         if (user) {
                                             // Do stuff after successful login.
                                             NSLog(@"successful login");
+                                            
+                                            [self dropSubmitButton];
                                             [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLLoginViewController" withData:NULL];
                                         } else {
                                             // The login failed. Check error to see why.
@@ -471,6 +535,44 @@
                                             // check reasons...and display
                                         }
                                     }];
+}
+
+- (IBAction)doForgotPassword:(id)sender {
+    
+     [PFUser requestPasswordResetForEmailInBackground:self.usernameInput.text
+                                                block:^(BOOL succeeded,NSError *error) {
+        
+        if (!error) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Password Reset"
+                                                            message:[NSString stringWithFormat: @"A link to reset your password has been sent to your email"]
+                                                           delegate:nil
+                                                    cancelButtonTitle:@"OK"
+                                                    otherButtonTitles:nil];
+            [alert show];
+            return;
+            
+        }
+        else
+        {
+            NSString *errorString = [error userInfo][@"error"];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:[NSString stringWithFormat: @"Password reset failed: %@ Please re-enter your email address.",errorString] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+    }];
+        
+}
+
+
+- (void) dropSubmitButton {
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        [self.passwordInput resignFirstResponder];
+        self.submitBottom.constant = 0;
+        self.submitTop.constant = -50;
+
+        [self.view layoutIfNeeded];
+    } completion:nil];
 }
 
 
@@ -509,7 +611,7 @@
         self.submitTrailing.constant = -1*self.view.frame.size.width;
         
         [self.view layoutIfNeeded];
-    } completion:^(bool done){
+    } completion:^(BOOL done){
         [UIView animateWithDuration:0.01 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.submitButton.alpha = 0;
             if (![newButtonText isEqualToString:@""])

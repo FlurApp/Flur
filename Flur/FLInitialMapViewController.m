@@ -57,14 +57,11 @@
 
 @implementation FLInitialMapViewController
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     //[PFUser logOut];
 
-
-    
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     
@@ -92,6 +89,10 @@
     [self loadTopBar];
     
     [self setNeedsStatusBarAppearanceUpdate];
+}
+
+-(BOOL)prefersStatusBarHidden{
+    return NO;
 }
 
 -(UIStatusBarStyle)preferredStatusBarStyle{
@@ -129,11 +130,7 @@
 - (void) loadTopBar {
     UIView *topBarContainer = [[UIView alloc] initWithFrame:CGRectZero];
     topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    topBarContainer.backgroundColor = [UIColor redColor];
-    
-    
-    //[[self view] addSubview:topBarContainer];
-
+    //topBarContainer.backgroundColor = [UIColor redColor];
 
     [self.view addSubview:topBarContainer];
  
@@ -351,6 +348,7 @@
 {
     id<MKAnnotation> annotation = view.annotation;
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        view.selected = NO;
         return;
         // this is where you can find the annotation type is whether it is userlocation or not...
     }
@@ -359,110 +357,118 @@
         NSString* id = fa.pinId;
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
         if(p) {
-            [self showOverlay:p];
+            //[self showOverlay:p];
+            NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+            [data setObject:p forKey:@"FLPin"];
+            [FLMasterNavigationController switchToViewController:@"FLContributeViewController"
+                            fromViewController:@"FLInitialMapViewController"
+                                                        withData:data];
+            
             [self.mapView deselectAnnotation:view.annotation animated:false];
         }
     }
     return;
 }
 
-- (void) showOverlay:(FLPin*) pin {
-    
-     UIBlurEffect *blurEffect;
-     blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    
-     self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-     self.blurEffectView.alpha = 0;
-    
-    // Vibrancy effect
-    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
-    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-    [vibrancyEffectView setFrame:self.view.bounds];
-    
-    // Label for vibrant text
-    UILabel *vibrantLabel = [[UILabel alloc] init];
-    [vibrantLabel setText:[pin returnPrompt]];
-
-    [vibrantLabel setTextAlignment:NSTextAlignmentCenter];
-    [vibrantLabel setNumberOfLines:0];
-    [vibrantLabel setLineBreakMode:NSLineBreakByWordWrapping];
-    [vibrantLabel setFont:[UIFont systemFontOfSize:35.0f]];
-//    [[vibrantLabel layer] setBorderWidth:2.0];
-    [[vibrantLabel layer] setBorderColor:[[UIColor whiteColor] CGColor]];
-    [vibrantLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [vibrantLabel setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:33]];
-    vibrantLabel.numberOfLines = 0;
-    vibrantLabel.lineBreakMode = NSLineBreakByWordWrapping;
-  
+//- (void) showOverlay:(FLPin*) pin {
+//    
+//     UIBlurEffect *blurEffect;
+//     blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+//    
+//     self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+//     self.blurEffectView.alpha = 0;
+//    
+//    // Vibrancy effect
+//    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
+//    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+//    [vibrancyEffectView setFrame:self.view.bounds];
+//    
+//    // Label for vibrant text
+//    UILabel *vibrantLabel = [[UILabel alloc] init];
+//    [vibrantLabel setText:[pin prompt]];
+//
+//    [vibrantLabel setTextAlignment:NSTextAlignmentCenter];
+//    [vibrantLabel setNumberOfLines:0];
+//    [vibrantLabel setLineBreakMode:NSLineBreakByWordWrapping];
+//    [vibrantLabel setFont:[UIFont systemFontOfSize:35.0f]];
+////    [[vibrantLabel layer] setBorderWidth:2.0];
+//    [[vibrantLabel layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+//    [vibrantLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+//    [vibrantLabel setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:33]];
+//    vibrantLabel.numberOfLines = 0;
+//    vibrantLabel.lineBreakMode = NSLineBreakByWordWrapping;
+//  
+////    [vibrantLabel sizeToFit];
+//    
+//    
+//    // build button for contributing
+//    self.contributeButton = [[FLButton alloc] initWithPin:pin];
+//    [self.contributeButton setTitle:@"Contribute" forState:UIControlStateNormal];
+//    [[self.contributeButton titleLabel] setFont:[UIFont systemFontOfSize:30.0]];
+//    [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+//    [[self.contributeButton layer] setCornerRadius:10];
+//    [[self.contributeButton layer] setBorderColor:[[UIColor whiteColor] CGColor]];
+//    [[self.contributeButton layer] setBorderWidth:2.0];
+//    [self.contributeButton setEnabled:TRUE];
+//    [self.contributeButton setCenter: self.view.center];
+//    [self.contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
+//    self.contributeButton.font = [UIFont fontWithName:@"AppleSDGothicNeo-Light" size:33];
+//    
+//    [self setContributeButton:self.contributeButton];
+//    
 //    [vibrantLabel sizeToFit];
-    
-    
-    // build button for contributing
-    self.contributeButton = [[FLButton alloc] initWithPin:pin];
-    [self.contributeButton setTitle:@"Contribute" forState:UIControlStateNormal];
-    [[self.contributeButton titleLabel] setFont:[UIFont systemFontOfSize:30.0]];
-    [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[self.contributeButton layer] setCornerRadius:10];
-    [[self.contributeButton layer] setBorderColor:[[UIColor whiteColor] CGColor]];
-    [[self.contributeButton layer] setBorderWidth:2.0];
-    [self.contributeButton setEnabled:TRUE];
-    [self.contributeButton setCenter: self.view.center];
-    [self.contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
-    self.contributeButton.font = [UIFont fontWithName:@"AppleSDGothicNeo-Light" size:33];
-    
-    [self setContributeButton:self.contributeButton];
-    
-    [vibrantLabel sizeToFit];
-    
-    // add contribute button to vibrancy view
-    [[vibrancyEffectView contentView] addSubview:self.contributeButton];
-    
-    //setting the layout for the contribute button
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-200]];
-    
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-130]];
-    
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
-    
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
-    
-    
-    // Add label to the vibrancy view
-    [[vibrancyEffectView contentView] addSubview:vibrantLabel];
-
-    
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contributeButton attribute:NSLayoutAttributeTop multiplier:1 constant:-50]];
-    
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1 constant:20]];
-    
-    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1 constant:-20]];
-    
-    
-    // Add the vibrancy view to the blur view
-    [[self.blurEffectView contentView] addSubview:vibrancyEffectView];
-    
-    // add blur view to view
-    self.blurEffectView.frame = self.view.bounds;
-    [self.view addSubview:self.blurEffectView];
-    
-    UITapGestureRecognizer *singleFingerTap =
-    [[UITapGestureRecognizer alloc] initWithTarget:self
-                                            action:@selector(exitBlur:)];
-    [self.blurEffectView addGestureRecognizer:singleFingerTap];
-
-    
-    [UIView beginAnimations:@"fade in" context:nil];
-    [UIView setAnimationDuration:.2];
-    self.blurEffectView.alpha = 1;
-    [UIView commitAnimations];
-    
-}
+//    
+//    // add contribute button to vibrancy view
+//    [[vibrancyEffectView contentView] addSubview:self.contributeButton];
+//    
+//    //setting the layout for the contribute button
+//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-200]];
+//    
+//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-130]];
+//    
+//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+//    
+//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+//    
+//    
+//    // Add label to the vibrancy view
+//    [[vibrancyEffectView contentView] addSubview:vibrantLabel];
+//
+//    
+//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contributeButton attribute:NSLayoutAttributeTop multiplier:1 constant:-50]];
+//    
+//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeLeading multiplier:1 constant:20]];
+//    
+//    [[vibrancyEffectView contentView] addConstraint:[NSLayoutConstraint constraintWithItem:vibrantLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[vibrancyEffectView contentView] attribute:NSLayoutAttributeTrailing multiplier:1 constant:-20]];
+//    
+//    
+//    // Add the vibrancy view to the blur view
+//    [[self.blurEffectView contentView] addSubview:vibrancyEffectView];
+//    
+//    // add blur view to view
+//    self.blurEffectView.frame = self.view.bounds;
+//    [self.view addSubview:self.blurEffectView];
+//    
+//    UITapGestureRecognizer *singleFingerTap =
+//    [[UITapGestureRecognizer alloc] initWithTarget:self
+//                                            action:@selector(exitBlur:)];
+//    [self.blurEffectView addGestureRecognizer:singleFingerTap];
+//
+//    
+//    [UIView beginAnimations:@"fade in" context:nil];
+//    [UIView setAnimationDuration:.2];
+//    self.blurEffectView.alpha = 1;
+//    [UIView commitAnimations];
+//    
+//}
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
     if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
-        
+        if (annotation == mapView.userLocation) {
+            myLocation.annotationView.enabled = false;
+        }
         if (annotationView == nil) {
             annotationView = myLocation.annotationView;
         }
@@ -476,53 +482,54 @@
         return nil;
 }
 
-- (void) createDisplayForPin: (MKAnnotationView *) annotationView isAnimated:(BOOL) isAnimated {
-    if (isAnimated) {
-        UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-        animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                             [UIImage imageNamed:@"14.png"],
-                                             [UIImage imageNamed:@"14.png"],
-                                             [UIImage imageNamed:@"14.png"],
-                                             [UIImage imageNamed:@"14.png"],
-                                             [UIImage imageNamed:@"14.png"],
-                                             [UIImage imageNamed:@"13.png"],
-                                             [UIImage imageNamed:@"12.png"],
-                                             [UIImage imageNamed:@"11.png"],
-                                             [UIImage imageNamed:@"10.png"],
-                                             [UIImage imageNamed:@"9.png"],
-                                             [UIImage imageNamed:@"8.png"],
-                                             [UIImage imageNamed:@"7.png"],
-                                             [UIImage imageNamed:@"6.png"],
-                                             [UIImage imageNamed:@"5.png"],
-                                             [UIImage imageNamed:@"4.png"],
-                                             [UIImage imageNamed:@"3.png"],
-                                             [UIImage imageNamed:@"2.png"],
-                                             [UIImage imageNamed:@"1.png"],
-                                             [UIImage imageNamed:@"0.png"],
-                                             [UIImage imageNamed:@"0.png"],
-                                             [UIImage imageNamed:@"0.png"],
-                                             [UIImage imageNamed:@"0.png"],
-                                             [UIImage imageNamed:@"0.png"],
-                                             [UIImage imageNamed:@"1.png"],
-                                             [UIImage imageNamed:@"2.png"],
-                                             [UIImage imageNamed:@"3.png"],
-                                             [UIImage imageNamed:@"4.png"],
-                                             [UIImage imageNamed:@"5.png"],
-                                             [UIImage imageNamed:@"6.png"],
-                                             [UIImage imageNamed:@"7.png"],
-                                             [UIImage imageNamed:@"8.png"],
-                                             [UIImage imageNamed:@"9.png"],
-                                             [UIImage imageNamed:@"10.png"],
-                                             [UIImage imageNamed:@"11.png"],
-                                             [UIImage imageNamed:@"12.png"],
-                                             [UIImage imageNamed:@"13.png"], nil];
-        animatedImageView.animationDuration = 1.0f;
-        animatedImageView.animationRepeatCount = 0;
-        [animatedImageView startAnimating];
-        [animatedImageView setFrame: CGRectMake(0,0,25,25)];
-        [annotationView addSubview:animatedImageView];
-    }
-}
+//- (void) createDisplayForPin: (MKAnnotationView *) annotationView isAnimated:(BOOL) isAnimated {
+//    if (isAnimated) {
+//        UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+//        animatedImageView.animationImages = [NSArray arrayWithObjects:
+//                                             [UIImage imageNamed:@"14.png"],
+//                                             [UIImage imageNamed:@"14.png"],
+//                                             [UIImage imageNamed:@"14.png"],
+//                                             [UIImage imageNamed:@"14.png"],
+//                                             [UIImage imageNamed:@"14.png"],
+//                                             [UIImage imageNamed:@"13.png"],
+//                                             [UIImage imageNamed:@"12.png"],
+//                                             [UIImage imageNamed:@"11.png"],
+//                                             [UIImage imageNamed:@"10.png"],
+//                                             [UIImage imageNamed:@"9.png"],
+//                                             [UIImage imageNamed:@"8.png"],
+//                                             [UIImage imageNamed:@"7.png"],
+//                                             [UIImage imageNamed:@"6.png"],
+//                                             [UIImage imageNamed:@"5.png"],
+//                                             [UIImage imageNamed:@"4.png"],
+//                                             [UIImage imageNamed:@"3.png"],
+//                                             [UIImage imageNamed:@"2.png"],
+//                                             [UIImage imageNamed:@"1.png"],
+//                                             [UIImage imageNamed:@"0.png"],
+//                                             [UIImage imageNamed:@"0.png"],
+//                                             [UIImage imageNamed:@"0.png"],
+//                                             [UIImage imageNamed:@"0.png"],
+//                                             [UIImage imageNamed:@"0.png"],
+//                                             [UIImage imageNamed:@"1.png"],
+//                                             [UIImage imageNamed:@"2.png"],
+//                                             [UIImage imageNamed:@"3.png"],
+//                                             [UIImage imageNamed:@"4.png"],
+//                                             [UIImage imageNamed:@"5.png"],
+//                                             [UIImage imageNamed:@"6.png"],
+//                                             [UIImage imageNamed:@"7.png"],
+//                                             [UIImage imageNamed:@"8.png"],
+//                                             [UIImage imageNamed:@"9.png"],
+//                                             [UIImage imageNamed:@"10.png"],
+//                                             [UIImage imageNamed:@"11.png"],
+//                                             [UIImage imageNamed:@"12.png"],
+//                                             [UIImage imageNamed:@"13.png"], nil];
+//        animatedImageView.animationDuration = 1.0f;
+//        animatedImageView.animationRepeatCount = 0;
+//        [animatedImageView startAnimating];
+//        [animatedImageView setFrame: CGRectMake(0,0,25,25)];
+//        animatedImageView.backgroundColor = [UIColor blackColor];
+//        [annotationView addSubview:animatedImageView];
+//    }
+//}
 
 - (void)showAddPromptToNewFlurOverlay {
     UIBlurEffect *blurEffect;
@@ -709,6 +716,12 @@
                            green:((float) g / 255.0f)
                             blue:((float) b / 255.0f)
                            alpha:1.0f];
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    NSLog(@"hit test map");
+    return nil;
 }
 
 @end

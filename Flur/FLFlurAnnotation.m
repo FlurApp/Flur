@@ -11,7 +11,7 @@
 @interface FLFlurAnnotation ()
 
 @property (nonatomic, strong) PFObject *object;
-
+@property (nonatomic, copy) NSString *title;
 
 @end
 
@@ -42,7 +42,6 @@
 }
 
 
-
 - (MKAnnotationView*) annotationView {
     MKAnnotationView *annotationView = [[MKAnnotationView alloc] initWithAnnotation:self
                                                                     reuseIdentifier:@"MyCustomAnnotation"];
@@ -66,8 +65,5 @@
 -(NSString *) description {
     return [NSString stringWithFormat:@"lat: %f   lng: %f    isAnimated: %@", self.coordinate.latitude, self.coordinate.longitude, self.isAnimated  ? @"Yes" : @"No"];
 }
-
-
-
 
 @end

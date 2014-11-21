@@ -13,12 +13,13 @@
 
 @property (nonatomic, strong) PFGeoPoint* coordinate;
 @property (nonatomic, strong) NSString* username;
+@property (nonatomic, strong)  PFUser* createdBy;
 @property (nonatomic, strong) NSString* pinId;
 @property (nonatomic, strong) NSString* prompt;
 @property (nonatomic) NSInteger contentCount;
+@property (nonatomic, strong) NSDate* dateCreated;
 
 - (instancetype) initWith: (PFObject *) object;
 - (NSString *)description;
-- (NSString *)returnPrompt;
 
 @end

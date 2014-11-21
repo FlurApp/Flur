@@ -15,6 +15,7 @@
 #import "FLContributedListViewController.h"
 #import "LocalStorage.h"
 #import "FLTableViewController.h"
+#import "FLContributeViewController.h"
 
 @interface FLMasterNavigationController ()
 
@@ -34,7 +35,7 @@ static UINavigationController *navController;
     // if a user is found
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
-    if(false)
+    if (false)
     //if (currentUser)
         control = [[FLInitialMapViewController alloc] init];
     else
@@ -59,10 +60,28 @@ static UINavigationController *navController;
             [navController pushViewController:loginController animated:YES];
         }
     }
-    
-    
     // Leaving Map View
     else if ([oldControllerName isEqualToString:@"FLInitialMapViewController"]) {
+        
+        // Entering Contribute View
+        if ([newControllerName isEqualToString:@"FLContributeViewController"]) {
+            
+            FLContributeViewController *contributeController = [[FLContributeViewController alloc] initWithData:data];
+            [navController presentModalViewController:contributeController animated:YES];
+
+            //[navController pushViewController:contributeController animated:NO];
+
+//            [UIView animateWithDuration:0.75
+//                             animations:^{
+//                                 [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+// 
+//                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
+//                             }];
+        }
+    }
+    
+    // Leaving Contribute View
+    else if ([oldControllerName isEqualToString:@"FLContributeViewController"]) {
         
         // Entering Camera View
         if ([newControllerName isEqualToString:@"FLCameraViewController"]) {
@@ -75,6 +94,10 @@ static UINavigationController *navController;
                                  [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
                              }];
         }
+        // returning to map view
+        else if([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        }
     }
         
     // Leaving Camera View
@@ -82,7 +105,7 @@ static UINavigationController *navController;
         
         // Entering Photo View
         if ([newControllerName isEqualToString:@"PhotoViewController"]) {
-            NSLog(@"told you");
+            
             PhotoViewController *photoController = [[PhotoViewController alloc] initWithData:data];
             [UIView animateWithDuration:0.75
                              animations:^{
@@ -94,8 +117,8 @@ static UINavigationController *navController;
         
         // Re-entering Map View
         else if ([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
-            [(FLInitialMapViewController*)navController.viewControllers[0] removeBlur];
             [navController popViewControllerAnimated:YES];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
         }
     }
         
@@ -109,7 +132,6 @@ static UINavigationController *navController;
             int position = (navController.viewControllers.count - 1);
             [navArray removeObjectAtIndex:position-1];
             
-            [(FLInitialMapViewController*)[navArray objectAtIndex:0] removeBlur];
             
             [navController setViewControllers:navArray animated:YES];
             [navController popViewControllerAnimated:YES];
@@ -120,7 +142,7 @@ static UINavigationController *navController;
     
     else if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
         
-        // Re-entering Map View
+        // entering Map View
         if ([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
             [navController pushViewController:[[FLInitialMapViewController alloc] init] animated:YES];
             NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
