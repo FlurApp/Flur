@@ -52,6 +52,8 @@
 @property (nonatomic, strong) UIButton *submitButton;
 @property (nonatomic, strong) UILabel* errorMessage;
 @property (nonatomic, strong) UILabel *pageTitle;
+@property (nonatomic, strong) UIButton *forgotPassword;
+
 
 // All constraints for the submit button, used for animating
 @property (nonatomic, strong) NSLayoutConstraint *submitLeading;
@@ -100,10 +102,8 @@
     [self.view.layer insertSublayer:gradient atIndex:0];
     
     // Create page title, either 'Sign Up' or 'Login'
-    NSLog(@"FUCCCK");
 
     self.pageTitle = [[UILabel alloc] init];
-    NSLog(@"HEY");
 
     [self.pageTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
 
@@ -113,7 +113,7 @@
     
     [self.view addSubview:self.pageTitle];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:60]];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
@@ -159,7 +159,7 @@
     [self.usernameInput setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.usernameInput.delegate = self;
     
-    self.usernameInput.placeholder = @"Username";
+    self.usernameInput.placeholder = @"Email";
     self.usernameInput.backgroundColor = [UIColor whiteColor];
     self.usernameInput.textColor = RGB(110,110,110);
     self.usernameInput.layer.cornerRadius = 4;
@@ -180,7 +180,7 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
     
     
     // Create the password input field
@@ -211,7 +211,7 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
     
     // Create the button to change from Sign Up screen to Login and vice versa
     self.orDoOpposite = [[UIButton alloc]init];
@@ -219,15 +219,16 @@
     
     NSString* orDoOppositeText = [NSString stringWithFormat:@"or %@", self.otherMode];
     [self.orDoOpposite setTitle:orDoOppositeText forState:UIControlStateNormal];
-    [self.orDoOpposite setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.orDoOpposite setTitleColor:submitButtonColor forState:UIControlStateNormal];
     self.orDoOpposite.backgroundColor = [UIColor clearColor];
+    [self.orDoOpposite setFont:[UIFont fontWithName:@"Avenir-Light" size:16]];
     
     [self.orDoOpposite addTarget:self action:@selector(switchScreen:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.orDoOpposite];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:2]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
     
     
@@ -292,7 +293,37 @@
     [[self view] addConstraint:self.errorMessageTop];
     [[self view] addConstraint:self.errorMessageBottom];
     
+    // forgot password
     
+    self.forgotPassword = [[UIButton alloc] init];
+    self.forgotPassword.backgroundColor = [UIColor clearColor];
+    [self.forgotPassword setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
+    // i know it looks crazy but thats how u underline shit
+    NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:@"Forgot password?"];
+    [attributeString addAttribute:NSUnderlineStyleAttributeName
+                            value:[NSNumber numberWithInt:1]
+                            range:(NSRange){0,[attributeString length]}];
+    
+    [attributeString addAttribute:NSForegroundColorAttributeName
+                            value:[UIColor whiteColor]
+                            range:(NSRange){0, [attributeString length]}];
+    
+    UIFont *font = [UIFont fontWithName:@"Avenir-Light" size:12];
+    [attributeString addAttribute:NSFontAttributeName
+                            value:font
+                            range:(NSRange){0, [attributeString length]}];
+    
+    [self.forgotPassword setAttributedTitle:[attributeString copy] forState:UIControlStateNormal];
+    [self.forgotPassword setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.view addSubview:self.forgotPassword];
+    
+    // constraints for ForgotPasswordLabel
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.forgotPassword attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:2]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.forgotPassword attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+
     
     
     // Changes the color of the cursor when typing in the text field

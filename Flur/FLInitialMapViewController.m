@@ -57,7 +57,6 @@
 
 @implementation FLInitialMapViewController
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -131,11 +130,7 @@
 - (void) loadTopBar {
     UIView *topBarContainer = [[UIView alloc] initWithFrame:CGRectZero];
     topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    topBarContainer.backgroundColor = [UIColor redColor];
-    
-    
-    //[[self view] addSubview:topBarContainer];
-
+    //topBarContainer.backgroundColor = [UIColor redColor];
 
     [self.view addSubview:topBarContainer];
  
@@ -353,6 +348,7 @@
 {
     id<MKAnnotation> annotation = view.annotation;
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        view.selected = NO;
         return;
         // this is where you can find the annotation type is whether it is userlocation or not...
     }
@@ -470,7 +466,9 @@
     if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
-        
+        if (annotation == mapView.userLocation) {
+            myLocation.annotationView.enabled = false;
+        }
         if (annotationView == nil) {
             annotationView = myLocation.annotationView;
         }
@@ -484,53 +482,54 @@
         return nil;
 }
 
-- (void) createDisplayForPin: (MKAnnotationView *) annotationView isAnimated:(BOOL) isAnimated {
-    if (isAnimated) {
-        UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-        animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                             [UIImage imageNamed:@"14.png"],
-                                             [UIImage imageNamed:@"14.png"],
-                                             [UIImage imageNamed:@"14.png"],
-                                             [UIImage imageNamed:@"14.png"],
-                                             [UIImage imageNamed:@"14.png"],
-                                             [UIImage imageNamed:@"13.png"],
-                                             [UIImage imageNamed:@"12.png"],
-                                             [UIImage imageNamed:@"11.png"],
-                                             [UIImage imageNamed:@"10.png"],
-                                             [UIImage imageNamed:@"9.png"],
-                                             [UIImage imageNamed:@"8.png"],
-                                             [UIImage imageNamed:@"7.png"],
-                                             [UIImage imageNamed:@"6.png"],
-                                             [UIImage imageNamed:@"5.png"],
-                                             [UIImage imageNamed:@"4.png"],
-                                             [UIImage imageNamed:@"3.png"],
-                                             [UIImage imageNamed:@"2.png"],
-                                             [UIImage imageNamed:@"1.png"],
-                                             [UIImage imageNamed:@"0.png"],
-                                             [UIImage imageNamed:@"0.png"],
-                                             [UIImage imageNamed:@"0.png"],
-                                             [UIImage imageNamed:@"0.png"],
-                                             [UIImage imageNamed:@"0.png"],
-                                             [UIImage imageNamed:@"1.png"],
-                                             [UIImage imageNamed:@"2.png"],
-                                             [UIImage imageNamed:@"3.png"],
-                                             [UIImage imageNamed:@"4.png"],
-                                             [UIImage imageNamed:@"5.png"],
-                                             [UIImage imageNamed:@"6.png"],
-                                             [UIImage imageNamed:@"7.png"],
-                                             [UIImage imageNamed:@"8.png"],
-                                             [UIImage imageNamed:@"9.png"],
-                                             [UIImage imageNamed:@"10.png"],
-                                             [UIImage imageNamed:@"11.png"],
-                                             [UIImage imageNamed:@"12.png"],
-                                             [UIImage imageNamed:@"13.png"], nil];
-        animatedImageView.animationDuration = 1.0f;
-        animatedImageView.animationRepeatCount = 0;
-        [animatedImageView startAnimating];
-        [animatedImageView setFrame: CGRectMake(0,0,25,25)];
-        [annotationView addSubview:animatedImageView];
-    }
-}
+//- (void) createDisplayForPin: (MKAnnotationView *) annotationView isAnimated:(BOOL) isAnimated {
+//    if (isAnimated) {
+//        UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+//        animatedImageView.animationImages = [NSArray arrayWithObjects:
+//                                             [UIImage imageNamed:@"14.png"],
+//                                             [UIImage imageNamed:@"14.png"],
+//                                             [UIImage imageNamed:@"14.png"],
+//                                             [UIImage imageNamed:@"14.png"],
+//                                             [UIImage imageNamed:@"14.png"],
+//                                             [UIImage imageNamed:@"13.png"],
+//                                             [UIImage imageNamed:@"12.png"],
+//                                             [UIImage imageNamed:@"11.png"],
+//                                             [UIImage imageNamed:@"10.png"],
+//                                             [UIImage imageNamed:@"9.png"],
+//                                             [UIImage imageNamed:@"8.png"],
+//                                             [UIImage imageNamed:@"7.png"],
+//                                             [UIImage imageNamed:@"6.png"],
+//                                             [UIImage imageNamed:@"5.png"],
+//                                             [UIImage imageNamed:@"4.png"],
+//                                             [UIImage imageNamed:@"3.png"],
+//                                             [UIImage imageNamed:@"2.png"],
+//                                             [UIImage imageNamed:@"1.png"],
+//                                             [UIImage imageNamed:@"0.png"],
+//                                             [UIImage imageNamed:@"0.png"],
+//                                             [UIImage imageNamed:@"0.png"],
+//                                             [UIImage imageNamed:@"0.png"],
+//                                             [UIImage imageNamed:@"0.png"],
+//                                             [UIImage imageNamed:@"1.png"],
+//                                             [UIImage imageNamed:@"2.png"],
+//                                             [UIImage imageNamed:@"3.png"],
+//                                             [UIImage imageNamed:@"4.png"],
+//                                             [UIImage imageNamed:@"5.png"],
+//                                             [UIImage imageNamed:@"6.png"],
+//                                             [UIImage imageNamed:@"7.png"],
+//                                             [UIImage imageNamed:@"8.png"],
+//                                             [UIImage imageNamed:@"9.png"],
+//                                             [UIImage imageNamed:@"10.png"],
+//                                             [UIImage imageNamed:@"11.png"],
+//                                             [UIImage imageNamed:@"12.png"],
+//                                             [UIImage imageNamed:@"13.png"], nil];
+//        animatedImageView.animationDuration = 1.0f;
+//        animatedImageView.animationRepeatCount = 0;
+//        [animatedImageView startAnimating];
+//        [animatedImageView setFrame: CGRectMake(0,0,25,25)];
+//        animatedImageView.backgroundColor = [UIColor blackColor];
+//        [annotationView addSubview:animatedImageView];
+//    }
+//}
 
 - (void)showAddPromptToNewFlurOverlay {
     UIBlurEffect *blurEffect;
@@ -717,6 +716,12 @@
                            green:((float) g / 255.0f)
                             blue:((float) b / 255.0f)
                            alpha:1.0f];
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    NSLog(@"hit test map");
+    return nil;
 }
 
 @end

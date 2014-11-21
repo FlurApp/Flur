@@ -9,11 +9,14 @@
 #import "FLContributeViewController.h"
 #import "FLPin.h"
 #import "FLMasterNavigationController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface FLContributeViewController ()
 
 
+
 @property (nonatomic, readwrite) FLPin* pin;
+@property (nonatomic, strong) UIButton *contributeButton;
 
 @end
 
@@ -85,19 +88,25 @@
     [contentCountLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:20]];
     [contentCountLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     
+    // contribute button underlay
+    UIView *contributeUnderlay = [[UIView alloc] initWithFrame:CGRectZero];
+    contributeUnderlay.backgroundColor = [UIColor whiteColor];
+    [contributeUnderlay setTranslatesAutoresizingMaskIntoConstraints:NO];
+
+    
     // contribute button
     
-    UIButton *contributeButton = [[UIButton alloc] init];
-    [contributeButton setTitle:@"Contribute" forState:UIControlStateNormal];
-    [contributeButton setTitleColor: [UIColor whiteColor] forState:UIControlStateNormal];
-    [contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[contributeButton layer] setCornerRadius:2];
-    contributeButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
+    self.contributeButton = [[UIButton alloc] init];
+    [self.contributeButton setTitle:@"Contribute" forState:UIControlStateNormal];
+    [self.contributeButton setTitleColor: [UIColor whiteColor] forState:UIControlStateNormal];
+    [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    //[[contributeButton layer] setCornerRadius:2];
+    self.contributeButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
     //[[contributeButton layer] setBorderColor:[purp CGColor]];
     //[[contributeButton layer] setBorderWidth:2.0];
-    [[contributeButton layer] setBackgroundColor: [purp CGColor]];
-    [contributeButton setCenter: self.view.center];
-    [contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
+    [[self.contributeButton layer] setBackgroundColor: [purp CGColor]];
+    [self.contributeButton setCenter: self.view.center];
+    [self.contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
     
     // separator
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 70, self.view.bounds.size.width, 1)];
@@ -110,9 +119,9 @@
     [whiteBox addSubview:dateLabel];
     [whiteBox addSubview:contentCountLabel];
     [whiteBox addSubview:lineView];
-    [self.view addSubview:contributeButton];
+    [self.view addSubview:contributeUnderlay];
+    [contributeUnderlay addSubview:self.contributeButton];
 
-    
     // do layout
     
         // white box top, view top
@@ -145,35 +154,36 @@
         [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:promptLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
     
         // contribute button bottom, view bottom
-        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:contributeUnderlay attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
         // contribute button top, view bottom
-        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-70]];
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:contributeUnderlay attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-70]];
     
         // contribute button leading view leading
-        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:contributeUnderlay attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
         // contribute button trailing view trailing
-        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:contributeUnderlay attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+        // contribute button contribute underlay
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:contributeUnderlay attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    
+        // contribute button contribute underlay
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:contributeUnderlay attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+        
+        // contribute button contribute underlay
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:contributeUnderlay attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+        // contribute button contribute underlay
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contributeUnderlay attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+
+
+    
     
     // click anyhwere to exit back to map
     UITapGestureRecognizer *singleFingerTap =
     [[UITapGestureRecognizer alloc] initWithTarget:self
                                             action:@selector(exitContribute:)];
     [self.view addGestureRecognizer:singleFingerTap];
-    
-    
-    // tryina animate the button
-    CABasicAnimation *theAnimation;
-    
-    theAnimation=[CABasicAnimation animationWithKeyPath:@"opacity"];
-    theAnimation.duration=0.7;
-    theAnimation.repeatCount=HUGE_VALF;
-    theAnimation.autoreverses=YES;
-    theAnimation.fromValue=[NSNumber numberWithFloat:1.0];
-    theAnimation.toValue=[NSNumber numberWithFloat:0.8];
-    [contributeButton.layer addAnimation:theAnimation forKey:@"animateOpacity"];
-
 }
 
 - (IBAction)contributingToFlur:(id)sender {
@@ -181,7 +191,9 @@
     
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:self.pin forKey:@"FLPin"];
+    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [self dismissViewControllerAnimated:YES completion:nil];
+    
     [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
                                       fromViewController:@"FLContributeViewController"
                                                 withData:data];
