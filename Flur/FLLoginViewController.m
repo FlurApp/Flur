@@ -70,8 +70,6 @@
 @property (nonatomic, strong) NSString *otherMode;
 
 
-
-
 @end
 
 @implementation FLLoginViewController
@@ -465,10 +463,40 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (BOOL)validateEmail: (NSString *) candidate {
+    
+    NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
+    NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex]; //  return 0;
+    return [emailTest evaluateWithObject:candidate];
+}
+
 - (void) signupWithUsername:(NSString*)username withPassword:(NSString*)password {
     PFUser *user = [PFUser user];
     user.username = username;
     user.password = password;
+    
+    // if invalid email address
+    if (![self validateEmail:username]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid email"
+                                                        message:[NSString stringWithFormat: @"Please enter a valid email address."]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
+    // if password is too short
+    else if (password.length < 8) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid password"
+                                                        message:[NSString stringWithFormat: @"Your password must contain at least 8 characters."]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
     [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (error) {
             // Display an alert view to show the error message
@@ -516,7 +544,11 @@
                                                 block:^(BOOL succeeded,NSError *error) {
         
         if (!error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Password Reset" message:[NSString stringWithFormat: @"A link to reset your password has been sent to your email"] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Password Reset"
+                                                            message:[NSString stringWithFormat: @"A link to reset your password has been sent to your email"]
+                                                           delegate:nil
+                                                    cancelButtonTitle:@"OK"
+                                                    otherButtonTitles:nil];
             [alert show];
             return;
             
