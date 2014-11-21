@@ -122,7 +122,8 @@ static bool userFound = false;
         flur.lat = flurToAdd[@"lat"];
         flur.numContributions = flurToAdd[@"numContributions"];
         flur.objectId = flurToAdd[@"objectId"];
-        
+       // flur.dateAdded = flurToAdd[@"dateAdded"];
+
         [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
             NSLog(@"saved");
         }];

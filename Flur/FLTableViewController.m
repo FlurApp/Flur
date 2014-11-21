@@ -9,6 +9,7 @@
 #import <Parse/Parse.h>
 #import "FLTableViewController.h"
 #import "LocalStorage.h"
+#import <SWTableViewCell/SWTableViewCell.h>
 
 @interface FLTableViewController ()
 
@@ -72,6 +73,9 @@
     self.tableView.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    self.tableView.estimatedRowHeight = 100;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+
     [self.tableView reloadData];
     
     [self.view addSubview: self.tableView];
@@ -87,15 +91,12 @@
     // get flurs
     [self getFlurs];
     
-
-    
-    
-    
-    
 }
 
 - (void) getFlurs {
     // get contributed pins
+    //[LocalStorage deleteAllFlurs];
+    
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         self.pinsArray = allFlurs[@"allFlurs"];
         
@@ -136,52 +137,142 @@
     // Configure the cell...
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        /*cell.leftUtilityButtons = [self leftButtons];
+        cell.rightUtilityButtons = [self rightButtons];
+        cell.delegate = self;*/
     }
     
-    // set the cell text
-    NSLog(@"PRompt: %@",[[self.pinsArray objectAtIndex:indexPath.row] prompt] );
-    /*cell.textLabel.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
-    cell.backgroundColor = RGBA(186,108,224,0);
-    cell.textLabel.textColor = [UIColor blackColor];*/
     
+    //cell.textLabel.text = @"SAF sadf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asd";
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    // set the cell text
     cell.backgroundView = [[UIView alloc] init];
     UILabel *cellText = [[UILabel alloc] init];
     [cellText setTranslatesAutoresizingMaskIntoConstraints:NO];
 
-    cellText.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
-    [cellText setTextColor:RGB(50,50,50)];
+    cellText.text = @"Hi this is a test of the app and how it handles long prompts";//[[self.pinsArray objectAtIndex:indexPath.row] prompt];
+    [cellText setFont:[UIFont fontWithName:@"Avenir-Light" size:19]];
+    [cellText setTextColor:RGB(50,50,50) ];
+    cellText.numberOfLines = 0;
+    cellText.lineBreakMode = NSLineBreakByWordWrapping;
+
     [cell.backgroundView addSubview:cellText];
     
     [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellText attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
     
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellText attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-15]];
     
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellText attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellText attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
     
+       [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellText attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
     
     
     UILabel *cellDate = [[UILabel alloc] init];
-    cellDate.text =[[self.pinsArray objectAtIndex:indexPath.row] ]
+    //cellDate.text =[[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
     [cellDate setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    cellDate.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
-    [cellDate setTextColor:RGB(50,50,50)];
+    cellDate.text = @"Aug 1, 2014";
+    [cellDate setTextColor:RGB(179, 88, 224) ];
+    [cellDate setFont:[UIFont fontWithName:@"Avenir-Light" size:14]];
+
     [cell.backgroundView addSubview:cellDate];
     
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cellText attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cellText attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
     
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-15]];
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-10]];
     
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
     
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:10]];
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
 
     
+    UILabel *cellContentCount = [[UILabel alloc] init];
+    //cellDate.text =[[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
+    [cellContentCount setTranslatesAutoresizingMaskIntoConstraints:NO];
     
+    cellContentCount.text = @"7 Contributors";
+    [cellContentCount setTextColor:RGB(150,150,150) ];
+    [cellContentCount setFont:[UIFont fontWithName:@"Avenir-Light" size:14]];
+
+    [cell.backgroundView addSubview:cellContentCount];
     
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellContentCount attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cellText attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
     
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellContentCount attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-10]];
+    
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellContentCount attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeLeading multiplier:1.0 constant:120]];
+    
+    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellContentCount attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:10]];
+
 
     return cell;
+}
+
+- (NSArray *)rightButtons
+{
+    NSMutableArray *rightUtilityButtons = [NSMutableArray new];
+    [rightUtilityButtons sw_addUtilityButtonWithColor:
+     [UIColor colorWithRed:0.78f green:0.78f blue:0.8f alpha:1.0]
+                                                title:@"More"];
+    [rightUtilityButtons sw_addUtilityButtonWithColor:
+     [UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f]
+                                                title:@"Delete"];
+    
+    return rightUtilityButtons;
+}
+
+- (NSArray *)leftButtons
+{
+    NSMutableArray *leftUtilityButtons = [NSMutableArray new];
+    
+    [leftUtilityButtons sw_addUtilityButtonWithColor:
+     [UIColor colorWithRed:0.07 green:0.75f blue:0.16f alpha:1.0]
+                                                icon:[UIImage imageNamed:@"check.png"]];
+    [leftUtilityButtons sw_addUtilityButtonWithColor:
+     [UIColor colorWithRed:1.0f green:1.0f blue:0.35f alpha:1.0]
+                                                icon:[UIImage imageNamed:@"clock.png"]];
+    [leftUtilityButtons sw_addUtilityButtonWithColor:
+     [UIColor colorWithRed:1.0f green:0.231f blue:0.188f alpha:1.0]
+                                                icon:[UIImage imageNamed:@"cross.png"]];
+    [leftUtilityButtons sw_addUtilityButtonWithColor:
+     [UIColor colorWithRed:0.55f green:0.27f blue:0.07f alpha:1.0]
+                                                icon:[UIImage imageNamed:@"list.png"]];
+    
+    return leftUtilityButtons;
+}
+
+
+/*- (NSUInteger) supportedInterfaceOrientations {
+    return UIInterfaceOrientationPortrait;
+   
+}*/
+
+- (void) tableView: (UITableView *) tableView didSelectRowAtIndexPath: (NSIndexPath *) indexPath {
+
+    //newCell.backgroundColor = [UIColor whiteColor];
+
+}
+
+- (void) tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
+    newCell.backgroundView.backgroundColor = RGB(230,230,230);
+}
+
+- (void) tableView:(UITableView *)tableView didUnhighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *newCell = [tableView cellForRowAtIndexPath:indexPath];
+    newCell.backgroundView.backgroundColor = RGB(255,255,255);
+}
+
+/*- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        //[_objects removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    } else {
+        NSLog(@"Unhandled editing style! %d", editingStyle);
+    }
+}*/
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
 }
 
 - (void)reloadData {
