@@ -10,6 +10,7 @@
 #import "FLTableViewController.h"
 #import "LocalStorage.h"
 #import <SWTableViewCell/SWTableViewCell.h>
+#import "FLCustomCellTableViewCell.h"
 
 @interface FLTableViewController ()
 
@@ -131,78 +132,21 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
+    FLCustomCellTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
                                             CellIdentifier];
     
     // Configure the cell...
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[FLCustomCellTableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier];
         /*cell.leftUtilityButtons = [self leftButtons];
         cell.rightUtilityButtons = [self rightButtons];
         cell.delegate = self;*/
     }
-    
-    
-    //cell.textLabel.text = @"SAF sadf asdf asdf asdf asdf asdf asdf asdf asdf sadf asdf asd";
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    // set the cell text
-    cell.backgroundView = [[UIView alloc] init];
-    UILabel *cellText = [[UILabel alloc] init];
-    [cellText setTranslatesAutoresizingMaskIntoConstraints:NO];
-
-    cellText.text = @"Hi this is a test of the app and how it handles long prompts";//[[self.pinsArray objectAtIndex:indexPath.row] prompt];
-    [cellText setFont:[UIFont fontWithName:@"Avenir-Light" size:19]];
-    [cellText setTextColor:RGB(50,50,50) ];
-    cellText.numberOfLines = 0;
-    cellText.lineBreakMode = NSLineBreakByWordWrapping;
-
-    [cell.backgroundView addSubview:cellText];
     
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellText attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
-    
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellText attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
-    
-       [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellText attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
-    
-    
-    UILabel *cellDate = [[UILabel alloc] init];
-    //cellDate.text =[[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
-    [cellDate setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    cellDate.text = @"Aug 1, 2014";
-    [cellDate setTextColor:RGB(179, 88, 224) ];
-    [cellDate setFont:[UIFont fontWithName:@"Avenir-Light" size:14]];
-
-    [cell.backgroundView addSubview:cellDate];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cellText attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-10]];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellDate attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
-
-    
-    UILabel *cellContentCount = [[UILabel alloc] init];
-    //cellDate.text =[[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
-    [cellContentCount setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    cellContentCount.text = @"7 Contributors";
-    [cellContentCount setTextColor:RGB(150,150,150) ];
-    [cellContentCount setFont:[UIFont fontWithName:@"Avenir-Light" size:14]];
-
-    [cell.backgroundView addSubview:cellContentCount];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellContentCount attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:cellText attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellContentCount attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-10]];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellContentCount attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeLeading multiplier:1.0 constant:120]];
-    
-    [cell addConstraint:[NSLayoutConstraint constraintWithItem:cellContentCount attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:10]];
-
+    cell.cellPrompt =[[self.pinsArray objectAtIndex:indexPath.row] prompt];
+    cell.cellDate = @"Aug 1, 2014";
+    cell.cellContentCount = @"7 Contributors";
 
     return cell;
 }
