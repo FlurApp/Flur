@@ -56,6 +56,13 @@
                      flur[@"objectId"] = pin.pinId;
                      flur[@"numContributions"] = [NSNumber numberWithInt:pin.contentCount];
                      
+                     NSDate *date = [NSDate date];
+                     NSDateFormatter *dateFormat = [[NSDateFormatter alloc]init];
+                     [dateFormat setDateFormat:@"MMM dd, yyyy"];
+                     NSString *dateString = [dateFormat stringFromDate:date];
+                     
+                     flur[@"dateAdded"] = dateString;
+                     
                      [LocalStorage addFlur:flur];
      
                      completion();

@@ -327,7 +327,6 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.forgotPassword attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
 
     
-    
     // Changes the color of the cursor when typing in the text field
     [[FLTextField appearance] setTintColor:RGB(152,0,194)];
     

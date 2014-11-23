@@ -2,7 +2,7 @@
 //  Flur.h
 //  Flur
 //
-//  Created by Netanel Rubin on 11/12/14.
+//  Created by Netanel Rubin on 11/16/14.
 //  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
 //
 
@@ -11,8 +11,6 @@
 
 
 @interface Flur : NSManagedObject
-
-- (instancetype) init;
 
 @property (nonatomic, retain) NSNumber * lat;
 @property (nonatomic, retain) NSNumber * lng;
