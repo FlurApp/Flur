@@ -1,0 +1,131 @@
+//
+//  MainViewController.m
+//  Flur
+//
+//  Created by David Lee on 11/23/14.
+//  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
+//
+
+#import "MainViewController.h"
+
+@interface MainViewController ()
+
+@end
+
+@implementation MainViewController
+
+
+#pragma mark -
+#pragma mark View Did Load/Unload
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    [self setupView];
+}
+
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
+}
+
+#pragma mark -
+#pragma mark View Will/Did Appear
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
+#pragma mark -
+#pragma mark View Will/Did Disappear
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+}
+
+#pragma mark -
+#pragma mark Setup View
+
+- (void)setupView
+{
+    // setup map view (center view)
+    self.mapViewController = [[FLInitialMapViewController alloc] init];
+    self.mapViewController.view.tag = CENTER_TAG;
+    self.mapViewController.delegate = self;
+    
+    [self.view addSubview:self.mapViewController.view];
+    [self addChildViewController:self.mapViewController];
+    
+    [self.mapViewController didMoveToParentViewController:self];
+}
+
+- (void)showCenterViewWithShadow:(BOOL)value withOffset:(double)offset
+{
+}
+
+- (void)resetMainView
+{
+}
+
+- (UIView *)getLeftView
+{
+    UIView *view = nil;
+    return view;
+}
+
+- (UIView *)getRightView
+{
+    UIView *view = nil;
+    return view;
+}
+
+#pragma mark -
+#pragma mark Swipe Gesture Setup/Actions
+
+#pragma mark - setup
+
+- (void)setupGestures
+{
+}
+
+-(void)movePanel:(id)sender
+{
+}
+
+#pragma mark -
+#pragma mark Delegate Actions
+
+- (void)movePanelLeft // to show right panel
+{
+}
+
+- (void)movePanelRight // to show left panel
+{
+}
+
+- (void)movePanelToOriginalPosition
+{
+}
+
+#pragma mark -
+#pragma mark Default System Code
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+@end

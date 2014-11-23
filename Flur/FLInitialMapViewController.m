@@ -16,6 +16,7 @@
 #import "FLMapManager.h"
 #import "FLPin.h"
 #import "FLButton.h"
+#import "LocalStorage.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 
@@ -49,7 +50,7 @@
 
 @property (nonatomic, strong) FLMapManager* mapManager;
 
-
+@property (nonatomic, strong) NSMutableArray *myContrPins;
 
 
 @end
@@ -162,15 +163,25 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
     
     // hamburger
-    /*UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
-    UIImageView *hamburgerContainer = [[UIImageView alloc] initWithImage:hamburger];
+    UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
+    CGRect rect = CGRectMake(0,0,28,24);
+    UIGraphicsBeginImageContext( rect.size );
+    [hamburger drawInRect:rect];
+    UIImage *hamburgerResized = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    NSData *imageData = UIImagePNGRepresentation(hamburgerResized);
+    UIImage *menuImg=[UIImage imageWithData:imageData];
+    
+    
+    UIImageView *hamburgerContainer = [[UIImageView alloc] initWithImage:menuImg];
     [hamburgerContainer setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     [[self view] addSubview:hamburgerContainer];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hamburgerContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:33]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hamburgerContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:33]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hamburgerContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:17]];*/
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hamburgerContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:17]];
     
     
     UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
@@ -264,6 +275,23 @@
     for (NSString* pinId in indexes) {
         FLFlurAnnotation* f = [self.allAnnotations objectForKey:pinId];
         
+//        // get contributed pins
+//        [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
+//            self.myContrPins = allFlurs[@"allFlurs"];
+//            for (FLPin* pin in self.myContrPins) {
+//                if ([[pin pinId] isEqualToString: pinId]) {
+//                    UIImageView* animatedImageView = [[UIImageView alloc] init];
+//                    animatedImageView.tag = 10;
+//                    [animatedImageView setImage:[UIImage imageNamed:@"contrPin.png"]];
+//                    [animatedImageView setFrame: CGRectMake(-15,-15,30,30)];
+//                    [[self.mapView viewForAnnotation:f] addSubview:animatedImageView];
+//                    return;
+//                }
+//                    
+//            }
+//            
+//        }];
+
         if (isNowOpenable) {
             f.isAnimated = true;
             for (UIView *subView in [[self.mapView viewForAnnotation:f] subviews]) {

@@ -10,6 +10,21 @@
 @import CoreLocation;
 @import MapKit;
 
+@protocol FLInitialMapViewControllerDelegate <NSObject>
+
+@optional
+- (void)movePanelLeft;
+- (void)movePanelRight;
+
+@required
+- (void)movePanelToOriginalPosition;
+
+@end
 @interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate>
+
+@property (nonatomic, assign) id<FLInitialMapViewControllerDelegate> delegate;
+
+@property (nonatomic, weak) IBOutlet UIButton *leftButton;
+@property (nonatomic, weak) IBOutlet UIButton *rightButton;
 
 @end

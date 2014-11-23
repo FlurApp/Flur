@@ -97,7 +97,7 @@
     // contribute button
     
     self.contributeButton = [[UIButton alloc] init];
-    [self.contributeButton setTitle:@"Contribute" forState:UIControlStateNormal];
+    [self.contributeButton setTitle:@"Go!" forState:UIControlStateNormal];
     [self.contributeButton setTitleColor: [UIColor whiteColor] forState:UIControlStateNormal];
     [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     //[[contributeButton layer] setCornerRadius:2];
@@ -175,9 +175,18 @@
         [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:contributeUnderlay attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
         // contribute button contribute underlay
         [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:contributeUnderlay attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-
-
     
+    
+    // fade in contribute button
+    contributeUnderlay.opaque = NO;
+    CABasicAnimation *fadeInAndOut = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    fadeInAndOut.duration = 0.5;
+    fadeInAndOut.autoreverses = YES;
+    fadeInAndOut.fromValue = [NSNumber numberWithFloat:1.0];
+    fadeInAndOut.toValue = [NSNumber numberWithFloat:0.0];
+    fadeInAndOut.repeatCount = HUGE_VALF;
+    fadeInAndOut.fillMode = kCAFillModeBoth;
+    [contributeUnderlay.layer addAnimation:fadeInAndOut forKey:@"myanimation"];
     
     // click anyhwere to exit back to map
     UITapGestureRecognizer *singleFingerTap =
