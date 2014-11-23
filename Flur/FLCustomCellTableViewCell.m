@@ -219,6 +219,11 @@ static FLCustomCellTableViewCell* currentOpenCell;
             CGPoint currentPoint = [recognizer translationInView:self.myContentView];
             CGFloat deltaX = currentPoint.x + self.startPoint;
             
+            // If another cell is open, close it
+            if (currentOpenCell != nil && currentOpenCell != self) {
+                [currentOpenCell closeRight];
+                currentOpenCell = nil;
+            }
             if (deltaX > 0 && self.contentViewRightConstraint.constant >= 0)
                 break;
             //NSLog(@"Pan Moved %f", currentPoint.x);
@@ -253,6 +258,13 @@ static FLCustomCellTableViewCell* currentOpenCell;
     self.rightButtonsColorLayer.backgroundColor = self.rightButtonBackgroundColor;
     self.isOpen = true;
     
+    // If another cell is open, close it
+    if (currentOpenCell != nil && currentOpenCell != self) {
+        [currentOpenCell closeRight];
+    }
+    
+    currentOpenCell = self;
+    
     if (self.contentViewRightConstraint.constant < self.rightButtonsLeading) {
         [UIView animateWithDuration:.2 delay:0 options: UIViewAnimationOptionCurveEaseOut animations:^{
             self.contentViewLeftConstraint.constant = self.rightButtonsLeading;
@@ -262,7 +274,6 @@ static FLCustomCellTableViewCell* currentOpenCell;
         
         return;
     }
-    NSLog(@"WHAAT");
     [UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.contentViewLeftConstraint.constant = self.rightButtonsLeading-10;
         self.contentViewRightConstraint.constant = self.rightButtonsLeading-10;
@@ -275,15 +286,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
         } completion:nil];
     }];
     
-    if (currentOpenCell != nil && currentOpenCell != self) {
-        NSLog(@"FUCKKK");
-        [currentOpenCell closeRight];
-        /*NSIndexPath* pathOfTheCell = [self. indexPathForCell:self];
-        NSInteger rowOfTheCell = [pathOfTheCell row];
-        NSLog(@"%@", self.ind)*/
-
-    }
-    currentOpenCell = self;
+ 
 }
 
 - (void) closeRight {

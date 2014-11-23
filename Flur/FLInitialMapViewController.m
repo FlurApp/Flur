@@ -17,6 +17,7 @@
 #import "FLPin.h"
 #import "FLButton.h"
 
+#define RGBA(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 
 @interface FLInitialMapViewController () {
@@ -117,7 +118,7 @@
     
     [self.view addSubview:self.mapViewContainer];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
      
@@ -131,6 +132,7 @@
     UIView *topBarContainer = [[UIView alloc] initWithFrame:CGRectZero];
     topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
     //topBarContainer.backgroundColor = [UIColor redColor];
+    topBarContainer.backgroundColor = [UIColor clearColor];
 
     [self.view addSubview:topBarContainer];
  
@@ -145,8 +147,12 @@
     
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = topBarContainer.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[RGB(186,108,224) CGColor], (id)[RGB(179, 88, 224) CGColor], nil];
-    NSLog(@"Frame: %@", NSStringFromCGRect(topBarContainer.bounds));
+    gradient.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, .98) CGColor], (id)[RGBA(179, 88, 224, .98) CGColor], nil];
+    
+    [gradient setShadowOffset:CGSizeMake(1, 1)];
+    [gradient setShadowColor:[[UIColor blackColor] CGColor]];
+    [gradient setShadowOpacity:0.5];
+    
     [topBarContainer.layer insertSublayer:gradient atIndex:0];
 
     // add flur button

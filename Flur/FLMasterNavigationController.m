@@ -41,7 +41,9 @@ static UINavigationController *navController;
     else
         control = [[FLSplashViewController alloc] init];
     
-    control = [[FLTableViewController alloc] init];
+    control = [[FLInitialMapViewController alloc] init];
+
+   // control = [[FLTableViewController alloc] init];
         
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
