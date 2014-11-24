@@ -17,6 +17,7 @@
 #import "FLTableViewController.h"
 #import "FLContributeViewController.h"
 #import "FLSettingsViewController.h"
+#import "FLFlurInfoViewController.h"
 
 @interface FLMasterNavigationController ()
 
@@ -47,6 +48,7 @@ static UINavigationController *navController;
     //control = [[FLTableViewController alloc] init];
     
     control = [[FLSettingsViewController alloc] init];
+    control = [[FLFlurInfoViewController alloc] init];
         
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
