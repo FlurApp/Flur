@@ -20,6 +20,7 @@
 
 #define RGBA(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
+#define annotationTargetSize 60
 
 @interface FLInitialMapViewController () {
     CLLocation *currentLocation;
@@ -789,20 +790,34 @@
         long dist;
         long minDist = HUGE_VALF;
         
+        // If we are in the hamburger/side view - any touch on map panel moves us back
         if (self.menuButton.tag == 0) {
             [self btnMovePanelRight:self.menuButton];
         }
         else {
             
+            // flur annotation
             FLFlurAnnotation * fa;
+            
+            // closest annotation holder
             FLFlurAnnotation * ca = nil;
+            
+            // tp = touch point, fp = flur point, cap = closest annotation point
             CGPoint tp, fp, cap;
             
+            // for every openable pin
             for (NSString* pin in self.mapManager.openablePins) {
+                
+                // get the pin's annotation
                 fa = [self.allAnnotations objectForKey:pin];
+                
+                // get the touch location
                 tp = [touch locationInView:self.view];
+                
+                // convert coordinates to screen point b.c. getting frame/bounds doesnt work
                 fp = [self.mapView convertCoordinate:fa.coordinate toPointToView:self.mapView];
                 
+                // calculate distance between
                 long xDist = tp.x - fp.x;
                 long yDist = tp.y - fp.y;
                 dist = sqrt(xDist*xDist + yDist*yDist);
@@ -814,13 +829,20 @@
                 }
             }
             
-            CGRect fap = CGRectMake(cap.x-30,cap.y-30,60,60);
-            
-            if (CGRectContainsPoint(fap, tp)) {
-                NSLog(@"correcting and selecting...");
-                [self.mapView selectAnnotation:ca animated:FALSE];
+            // if we got atleast one openable pin to check
+            if (ca) {
+                // draw rect around the closest annotation to the touch
+                CGRect fap = CGRectMake(cap.x- (annotationTargetSize/2),
+                                        cap.y- (annotationTargetSize/2),
+                                        annotationTargetSize,
+                                        annotationTargetSize);
+                
+                // if the closest target area contains our touch point
+                // then select associated annotation
+                if (CGRectContainsPoint(fap, tp)) {
+                    [self.mapView selectAnnotation:ca animated:FALSE];
+                }
             }
-            dist = HUGE_VALF;
         }
     }
 }
