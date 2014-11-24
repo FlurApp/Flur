@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol FLSettingsViewControllerDelegate <NSObject>
+@end
+
 @interface FLSettingsViewController : UIViewController
+
+@property (nonatomic, assign) id<FLSettingsViewControllerDelegate> delegate;
 
 @end

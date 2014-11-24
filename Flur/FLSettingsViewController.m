@@ -18,7 +18,7 @@
 #define buttonHeight 70
 
 #define personalInfoLeading 20
-#define PANEL_WIDTH 100
+#define PANEL_WIDTH 60
 
 #define personalInfoColor RGB(120,120,120)
 #define personalInfoFont [UIFont fontWithName:@"Avenir-Light" size:18]

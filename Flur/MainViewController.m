@@ -10,7 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 #define CORNER_RADIUS 4
 #define SLIDE_TIMING .25
-#define PANEL_WIDTH 45
+#define PANEL_WIDTH 60
 
 
 @interface MainViewController ()
@@ -83,7 +83,7 @@
     {
         [_centerViewController.view.layer setCornerRadius:CORNER_RADIUS];
         [_centerViewController.view.layer setShadowColor:[UIColor blackColor].CGColor];
-        [_centerViewController.view.layer setShadowOpacity:0.4];
+        [_centerViewController.view.layer setShadowOpacity:0.0];
         [_centerViewController.view.layer setShadowOffset:CGSizeMake(offset, offset)];
         
     }
@@ -116,7 +116,7 @@
     if (_leftPanelViewController == nil)
     {
         // this is where you define the view for the left panel
-        self.leftPanelViewController = [[FLTableViewController alloc] init];
+        self.leftPanelViewController = [[FLSettingsViewController alloc] init];
         self.leftPanelViewController.view.tag = LEFT_PANEL_TAG;
         self.leftPanelViewController.delegate = _centerViewController;
         
