@@ -16,6 +16,7 @@
 #import "LocalStorage.h"
 #import "FLTableViewController.h"
 #import "FLContributeViewController.h"
+#import "MainViewController.h"
 #import "FLSettingsViewController.h"
 #import "FLFlurInfoViewController.h"
 
@@ -37,19 +38,21 @@ static UINavigationController *navController;
     // if a user is found
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
-    if (false)
-    //if (currentUser)
-        control = [[FLInitialMapViewController alloc] init];
+    
+    // if (false)
+    if (currentUser)
+        control = [[MainViewController alloc] init];
     else
         control = [[FLSplashViewController alloc] init];
     
-    control = [[FLInitialMapViewController alloc] init];
+    //control = [[FLInitialMapViewController alloc] init];
 
     //control = [[FLTableViewController alloc] init];
     
-    control = [[FLSettingsViewController alloc] init];
-    control = [[FLFlurInfoViewController alloc] init];
-        
+    //control = [[FLSettingsViewController alloc] init];
+   // control = [[FLFlurInfoViewController alloc] init];
+    //control = [[FLSettingsViewController alloc] init];
+
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
     navController.navigationBar.barStyle = UIBarStyleBlack;

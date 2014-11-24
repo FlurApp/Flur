@@ -473,6 +473,7 @@
     PFUser *user = [PFUser user];
     user.username = username;
     user.password = password;
+    user.email = username;
     
     // if invalid email address
     if (![self validateEmail:username]) {

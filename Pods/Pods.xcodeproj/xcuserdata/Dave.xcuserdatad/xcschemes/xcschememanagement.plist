@@ -14,6 +14,11 @@
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
+		<key>Pods-SWTableViewCell.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
 		<key>Pods.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -22,7 +27,27 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>0A56D84690630754360307BB</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>0E2BD8D2FAE8D693DB629A62</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>0FC1A06633C4CF0352FBEA4F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5E86FEB52832F291D5169675</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>659DECA1E1CE3151AAE15BC1</key>
 		<dict>
 			<key>primary</key>
 			<true/>

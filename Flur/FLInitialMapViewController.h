@@ -10,6 +10,24 @@
 @import CoreLocation;
 @import MapKit;
 
-@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate>
+#import "FLTableViewController.h"
+
+@protocol FLInitialMapViewControllerDelegate <NSObject>
+
+@optional
+- (void)movePanelLeft;
+- (void)movePanelRight;
+
+@required
+- (void)movePanelToOriginalPosition;
+
+@end
+@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate, FLTableViewControllerDelegate>
+
+@property (nonatomic, assign) id<FLInitialMapViewControllerDelegate> delegate;
+
+@property (nonatomic, strong) UIButton *menuButton;
+@property (nonatomic, strong) UIButton *tableListButton;
+
 
 @end

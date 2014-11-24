@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol FLTableViewControllerDelegate <NSObject>
+@end
+
 @interface FLTableViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
+
+@property (nonatomic, assign) id<FLTableViewControllerDelegate> delegate;
 
 @end

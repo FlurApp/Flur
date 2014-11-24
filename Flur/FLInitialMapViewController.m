@@ -16,6 +16,7 @@
 #import "FLMapManager.h"
 #import "FLPin.h"
 #import "FLButton.h"
+#import "LocalStorage.h"
 
 #define RGBA(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
@@ -31,7 +32,6 @@
 
 @property (nonatomic, strong, readwrite) UIPopoverController *contributePopover;
 
-@property (nonatomic, strong, readwrite) UIButton *addFlurButton;
 @property (nonatomic, strong, readwrite) FLButton *contributeButton;
 @property (nonatomic, strong, readwrite) UIVisualEffectView *blurEffectView;
 @property (nonatomic, strong, readwrite) UIVisualEffectView *addPinBlurEffectView;
@@ -50,8 +50,7 @@
 
 @property (nonatomic, strong) FLMapManager* mapManager;
 
-
-
+@property (nonatomic, strong) NSMutableArray *myContrPins;
 
 @end
 
@@ -156,27 +155,50 @@
     [topBarContainer.layer insertSublayer:gradient atIndex:0];
 
     // add flur button
-    UIButton* addFlurButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
-    [addFlurButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [addFlurButton addTarget:self action:@selector(addingFlur:) forControlEvents:UIControlEventTouchDown];
+    self.tableListButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    [self.tableListButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    [self setAddFlurButton:addFlurButton];
-    [self.view addSubview: self.addFlurButton];
+    self.tableListButton.tag = 1;
+    [self.tableListButton addTarget:self action:@selector(btnMovePanelLeft:)
+              forControlEvents:UIControlEventTouchUpInside];
+    //[self.tableListButton addTarget:self action:@selector(addingFlur:) forControlEvents:UIControlEventTouchDown];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1 constant:33]];
+    [self.view addSubview: self.tableListButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1 constant:33]];
     
-    // hamburger
-    /*UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
-    UIImageView *hamburgerContainer = [[UIImageView alloc] initWithImage:hamburger];
-    [hamburgerContainer setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
     
-    [[self view] addSubview:hamburgerContainer];
+    // make menu button
+    self.menuButton = [UIButton buttonWithType:(UIButtonTypeCustom)];
+    self.menuButton = [[UIButton alloc] init];
+    self.menuButton.tag = 1;
+    [self.menuButton addTarget:self action:@selector(btnMovePanelRight:)
+                                    forControlEvents:UIControlEventTouchUpInside];
+    self.menuButton.backgroundColor = [UIColor clearColor];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hamburgerContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:33]];
+    // create image for menu button
+    UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
+    CGRect rect = CGRectMake(0,0,75,75);
+    UIGraphicsBeginImageContext(rect.size);
+    [hamburger drawInRect:rect];
+    UIImage *hamburgerResized = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    NSData *imageData = UIImagePNGRepresentation(hamburgerResized);
+    UIImage *menuImg = [UIImage imageWithData:imageData];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hamburgerContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:17]];*/
+    // set image for menu button
+    [self.menuButton setImage:menuImg forState:UIControlStateNormal];
+    [self.menuButton setContentMode:UIViewContentModeCenter];
+    [self.menuButton setImageEdgeInsets:UIEdgeInsetsMake(25,25,25,25)];
+    
+    // add menu button to view
+    [self.menuButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[self view] addSubview:self.menuButton];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:8]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-8]];
     
     
     UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
@@ -270,6 +292,23 @@
     for (NSString* pinId in indexes) {
         FLFlurAnnotation* f = [self.allAnnotations objectForKey:pinId];
         
+//        // get contributed pins
+//        [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
+//            self.myContrPins = allFlurs[@"allFlurs"];
+//            for (FLPin* pin in self.myContrPins) {
+//                if ([[pin pinId] isEqualToString: pinId]) {
+//                    UIImageView* animatedImageView = [[UIImageView alloc] init];
+//                    animatedImageView.tag = 10;
+//                    [animatedImageView setImage:[UIImage imageNamed:@"contrPin.png"]];
+//                    [animatedImageView setFrame: CGRectMake(-15,-15,30,30)];
+//                    [[self.mapView viewForAnnotation:f] addSubview:animatedImageView];
+//                    return;
+//                }
+//                    
+//            }
+//            
+//        }];
+
         if (isNowOpenable) {
             f.isAnimated = true;
             for (UIView *subView in [[self.mapView viewForAnnotation:f] subviews]) {
@@ -726,10 +765,50 @@
                            alpha:1.0f];
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+- (IBAction)btnMovePanelRight:(id)sender
 {
-    NSLog(@"hit test map");
-    return nil;
+    
+    UIButton *button = sender;
+    switch (button.tag) {
+        case 0: {
+            [_delegate movePanelToOriginalPosition];
+            break;
+        }
+            
+        case 1: {
+            [_delegate movePanelRight];
+            break;
+        }
+            
+        default:
+            break;
+    }
+}
+
+- (IBAction)btnMovePanelLeft:(id)sender
+{
+    
+    UIButton *button = sender;
+    switch (button.tag) {
+        case 0: {
+            [_delegate movePanelToOriginalPosition];
+            break;
+        }
+            
+        case 1: {
+            [_delegate movePanelLeft];
+            break;
+        }
+            
+        default:
+            break;
+    }
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.menuButton.tag == 0) {
+        [self btnMovePanelRight:self.menuButton];
+    }
 }
 
 @end
