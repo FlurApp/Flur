@@ -10,6 +10,7 @@
 #import "FLPin.h"
 #import "FLMasterNavigationController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "FLConstants.h"
 
 @interface FLContributeViewController ()
 
@@ -22,11 +23,6 @@
 
 @end
 
-
-#define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
-#define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
-
-#define purp RGB(186,108,224)
 
 @implementation FLContributeViewController
 

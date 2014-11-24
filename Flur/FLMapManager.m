@@ -8,6 +8,7 @@
 
 #import "FLMapManager.h"
 #import "FLPin.h"
+#import "FLConstants.h"
 
 @implementation FLMapManager
 
