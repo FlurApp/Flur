@@ -19,6 +19,7 @@
 + (void) getFlurs:(void(^)(NSMutableDictionary*)) completion;
 + (void) addFlur:(NSMutableDictionary*)flurToAdd;
 + (void) deleteAllFlurs;
-
++ (void) destroyLocalStorage;
++ (void) createTestData;
 
 @end

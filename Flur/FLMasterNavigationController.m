@@ -162,6 +162,31 @@ static UINavigationController *navController;
             [[UIApplication sharedApplication] setStatusBarHidden:NO];
         }
     }
+    
+    else if ([oldControllerName isEqualToString:@"FLTableViewController"]) {
+        
+        // entering Map View
+        if ([newControllerName isEqualToString:@"FLFlurInfoViewController"]) {
+            FLFlurInfoViewController *flurInfoController = [[FLFlurInfoViewController alloc] initWithData:data];
+            [UIView animateWithDuration:0.75
+                             animations:^{
+                                 [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+                                 [navController pushViewController:flurInfoController animated:NO];
+                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
+                             }];
+
+        }
+    }
+    
+    else if ([oldControllerName isEqualToString:@"FLFlurInfoViewController"]) {
+        
+        // entering Map View
+        if ([newControllerName isEqualToString:@"FLTableViewController"]) {
+            [navController popViewControllerAnimated:YES];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        }
+    }
+
 
     
     else {

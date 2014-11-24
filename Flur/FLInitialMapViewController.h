@@ -22,6 +22,8 @@
 - (void)movePanelToOriginalPosition;
 
 @end
+
+
 @interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate, FLTableViewControllerDelegate>
 
 @property (nonatomic, assign) id<FLInitialMapViewControllerDelegate> delegate;

@@ -11,4 +11,6 @@
 
 @interface FLFlurInfoViewController : UIViewController <MKMapViewDelegate>
 
+- (instancetype) initWithData:(NSMutableDictionary *)data;
+
 @end

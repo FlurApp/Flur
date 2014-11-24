@@ -15,7 +15,7 @@
 #define LEFT_PANEL_TAG 2
 #define RIGHT_PANEL_TAG 3
 
-@interface MainViewController : UIViewController <FLInitialMapViewControllerDelegate>
+@interface MainViewController : UIViewController <FLInitialMapViewControllerDelegate, FLTableViewControllerDelegate>
 
 @property (nonatomic, strong) FLInitialMapViewController *centerViewController;
 @property (nonatomic, strong) FLSettingsViewController *leftPanelViewController;

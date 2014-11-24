@@ -9,10 +9,19 @@
 #import <UIKit/UIKit.h>
 
 @protocol FLTableViewControllerDelegate <NSObject>
+
+@optional
+- (void)movePanelLeft;
+- (void)movePanelRight;
+
+@required
+- (void)movePanelToOriginalPosition;
+
 @end
 
 @interface FLTableViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, assign) id<FLTableViewControllerDelegate> delegate;
+
 
 @end

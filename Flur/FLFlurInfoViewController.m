@@ -9,7 +9,8 @@
 #import "FLFlurInfoViewController.h"
 #import "UILabel+MultiColor.h"
 #import "FLFlurAnnotation.h"
-#import "FLPin.h"
+#import "flur.h"
+#import "FLMasterNavigationController.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 #define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
@@ -27,6 +28,9 @@
 @property (nonatomic, strong) UILabel *yourContribution;
 @property (nonatomic, strong) UILabel *totalContributions;
 
+@property (nonatomic, strong) UIButton *backButton;
+
+
 
 
 @property (nonatomic) NSInteger topBarHeight;
@@ -34,7 +38,7 @@
 @property (nonatomic) NSInteger mapHeight;
 @property (nonatomic) NSInteger buttonHeight;
 
-@property (nonatomic, strong) FLPin *pin;
+@property (nonatomic, strong) Flur *flur;
 
 
 
@@ -47,7 +51,7 @@
 - (instancetype) initWithData:(NSMutableDictionary *) data {
     self = [super init];
     if (self) {
-        self.pin = [data objectForKey:@"pin"];
+        self.flur = [data objectForKey:@"flur"];
     }
     return self;
 }
@@ -61,12 +65,88 @@
     
     NSLog(@"Height %lu", self.flurInfoHeight);
     
+    UIView *topBarContainer = [[UIView alloc] init];
+    topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    topBarContainer.backgroundColor = [UIColor redColor];
+
+
+
+    
+    [self.view addSubview:topBarContainer];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    [self.view setNeedsLayout];
+    [self.view layoutIfNeeded];
+    
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+
+    gradient.frame = topBarContainer.bounds;
+    gradient.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, 1) CGColor], (id)[RGBA(179, 88, 224, 1) CGColor], nil];
+    
+    //    [gradient setShadowOffset:CGSizeMake(1, 1)];
+    //    [gradient setShadowColor:[[UIColor blackColor] CGColor]];
+    //    [gradient setShadowOpacity:0.5];
+    
+    
+    [topBarContainer.layer insertSublayer:gradient atIndex:0];
+    
+    UILabel *pageTitle = [[UILabel alloc] init];
+    [pageTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    pageTitle.text = @"Flur Info";
+    [pageTitle setTextColor:[UIColor whiteColor]];
+    pageTitle.font = [UIFont fontWithName:@"Avenir-Light" size:27];
+    pageTitle.textAlignment = NSTextAlignmentCenter;
+    
+    [topBarContainer addSubview:pageTitle];
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:pageTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
+    
+        [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:pageTitle attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+ 
+    
+    
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:pageTitle attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:pageTitle attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    self.backButton = [[UIButton alloc] init];
+    [self.backButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.backButton addTarget:self action:@selector(returnToTableList:) forControlEvents:UIControlEventTouchDown];
+    [self.backButton setImage:[UIImage imageNamed:@"leaveCamera.png"] forState:UIControlStateNormal];
+    
+    [topBarContainer addSubview:self.backButton];
+    
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
+    
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton
+                                                            attribute:NSLayoutAttributeHeight
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:nil
+                                                            attribute:NSLayoutAttributeNotAnAttribute
+                                                           multiplier:1.0
+                                                             constant:40.0]];
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton
+                                                            attribute:NSLayoutAttributeWidth
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:nil
+                                                            attribute:NSLayoutAttributeNotAnAttribute
+                                                           multiplier:1.0
+                                                             constant:40.0]];
+    
     self.flurInfoContainer = [[UIView alloc] init];
     self.flurInfoContainer.translatesAutoresizingMaskIntoConstraints = NO;
     self.flurInfoContainer.backgroundColor = RGB(253, 253, 253);
     [self.view addSubview:self.flurInfoContainer];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:self.topBarHeight]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
 //    
 //    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.flurInfoHeight]];
     
@@ -80,12 +160,12 @@
     
     self.flurCreated = [[UILabel alloc] init];
     [self.flurCreated setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.flurCreated.text = @"@davmlee created this flur on Aug 3, 2014.";
+    self.flurCreated.text = [NSString stringWithFormat:@"@%@ created this flur on Aug 3, 2014.", self.flur.creatorUsername];
     self.flurCreated.font = [UIFont fontWithName:@"Avenir-Light" size:19];
 
     [self.flurCreated setNumberOfLines:0];
 
-    [self.flurCreated setTextColor:RGB(13, 191, 255) range:NSMakeRange(0, 8)];
+    [self.flurCreated setTextColor:RGB(13, 191, 255) range:NSMakeRange(0, self.flur.creatorUsername.length+1)];
     [self.flurInfoContainer addSubview:self.flurCreated];
     
     
@@ -162,9 +242,9 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
     
-    FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:self.pin
-                                                              isAnimated:false];
-    [self.mapView addAnnotation:annotation];
+    //FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:self.pin
+                                                             // isAnimated:false];
+    //[self.mapView addAnnotation:annotation];
 
     
     self.viewAlbum = [[UIButton alloc] init];
@@ -217,6 +297,11 @@
 {
     MKAnnotationView *ulv = [mapView viewForAnnotation:mapView.userLocation];
     ulv.hidden = YES;
+}
+
+- (IBAction)returnToTableList:(id)sender {
+    NSMutableDictionary *data;
+    [FLMasterNavigationController switchToViewController:@"FLTableViewController" fromViewController:@"FLFlurInfoViewController" withData:data];
 }
 
 /*

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Flur.h"
 
 @interface FLCustomCellTableViewCell : UITableViewCell
 
@@ -19,4 +20,10 @@
 @property (nonatomic, strong) UILabel *cellPrompt;
 @property (nonatomic, strong) UILabel *cellContentCount;
 @property (nonatomic, strong) UILabel *cellDate;
+
+@property (nonatomic, strong) Flur *flur;
+
++ (void) closeCurrentlyOpenCell;
+
+
 @end

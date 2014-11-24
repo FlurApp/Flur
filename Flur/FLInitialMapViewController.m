@@ -128,31 +128,40 @@
 }
 
 - (void) loadTopBar {
-    UIView *topBarContainer = [[UIView alloc] initWithFrame:CGRectZero];
+    UIView *topBarContainer = [[UIView alloc] init];
     topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    //topBarContainer.backgroundColor = [UIColor redColor];
-    topBarContainer.backgroundColor = [UIColor clearColor];
+    topBarContainer.backgroundColor = [UIColor redColor];
 
     [self.view addSubview:topBarContainer];
  
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:70]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    [self.view setNeedsLayout]; [self.view layoutIfNeeded];
+    [self.view setNeedsLayout];
+    [self.view layoutIfNeeded];
     
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = topBarContainer.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, .98) CGColor], (id)[RGBA(179, 88, 224, .98) CGColor], nil];
+    gradient.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, 1) CGColor], (id)[RGBA(179, 88, 224, 1) CGColor], nil];
     
-    [gradient setShadowOffset:CGSizeMake(1, 1)];
-    [gradient setShadowColor:[[UIColor blackColor] CGColor]];
-    [gradient setShadowOpacity:0.5];
+//    [gradient setShadowOffset:CGSizeMake(1, 1)];
+//    [gradient setShadowColor:[[UIColor blackColor] CGColor]];
+//    [gradient setShadowOpacity:0.5];
+
     
     [topBarContainer.layer insertSublayer:gradient atIndex:0];
+    
+    CAGradientLayer *shadow = [CAGradientLayer layer];
+    shadow.frame = CGRectMake(0, topBarContainer.frame.origin.y + topBarContainer.frame.size.height, self.view.frame.size.width, 3);
+    shadow.colors = [NSArray arrayWithObjects:(id)[RGBA(100,100,100,.9) CGColor], (id)[RGBA(255,255,255,0) CGColor], nil];
+    [topBarContainer.layer insertSublayer:shadow atIndex:1];
+
+
+    
 
     // add flur button
     self.tableListButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
