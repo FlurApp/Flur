@@ -366,9 +366,11 @@
             //[self showOverlay:p];
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:p forKey:@"FLPin"];
-            [FLMasterNavigationController switchToViewController:@"FLContributeViewController"
+            /*[FLMasterNavigationController switchToViewController:@"FLContributeViewController"
                             fromViewController:@"FLInitialMapViewController"
-                                                        withData:data];
+                                                        withData:data];*/
+            
+            
             
             [self.mapView deselectAnnotation:view.annotation animated:false];
         }

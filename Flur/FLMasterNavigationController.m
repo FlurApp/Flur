@@ -16,6 +16,7 @@
 #import "LocalStorage.h"
 #import "FLTableViewController.h"
 #import "FLContributeViewController.h"
+#import "FLSettingsViewController.h"
 
 @interface FLMasterNavigationController ()
 
@@ -43,7 +44,9 @@ static UINavigationController *navController;
     
     control = [[FLInitialMapViewController alloc] init];
 
-   // control = [[FLTableViewController alloc] init];
+    //control = [[FLTableViewController alloc] init];
+    
+    control = [[FLSettingsViewController alloc] init];
         
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];

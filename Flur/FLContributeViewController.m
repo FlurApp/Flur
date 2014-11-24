@@ -17,6 +17,8 @@
 
 @property (nonatomic, readwrite) FLPin* pin;
 @property (nonatomic, strong) UIButton *contributeButton;
+@property (nonatomic, strong) NSLayoutConstraint *contributeButtonLeading;
+@property (nonatomic, strong) NSLayoutConstraint *contributeButtonTrailing;
 
 @end
 
