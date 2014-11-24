@@ -316,6 +316,7 @@
             }
             
             UIImageView* animatedImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+            animatedImageView.userInteractionEnabled = YES;
             animatedImageView.tag = 10;
             animatedImageView.animationImages = [NSArray arrayWithObjects:
                                                  [UIImage imageNamed:@"14.png"],
@@ -358,8 +359,7 @@
             animatedImageView.animationRepeatCount = 0;
             [animatedImageView startAnimating];
             [animatedImageView setFrame: CGRectMake(-15,-15,30,30)];
-            
-            
+
             [[self.mapView viewForAnnotation:f] addSubview:animatedImageView];
 
         }
@@ -403,9 +403,9 @@
             //[self showOverlay:p];
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:p forKey:@"FLPin"];
-            /*[FLMasterNavigationController switchToViewController:@"FLContributeViewController"
+            [FLMasterNavigationController switchToViewController:@"FLContributeViewController"
                             fromViewController:@"FLInitialMapViewController"
-                                                        withData:data];*/
+                                                        withData:data];
             
             
             
@@ -784,8 +784,44 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (self.menuButton.tag == 0) {
-        [self btnMovePanelRight:self.menuButton];
+    for (UITouch *touch in touches) {
+        
+        long dist;
+        long minDist = HUGE_VALF;
+        
+        if (self.menuButton.tag == 0) {
+            [self btnMovePanelRight:self.menuButton];
+        }
+        else {
+            
+            FLFlurAnnotation * fa;
+            FLFlurAnnotation * ca = nil;
+            CGPoint tp, fp, cap;
+            
+            for (NSString* pin in self.mapManager.openablePins) {
+                fa = [self.allAnnotations objectForKey:pin];
+                tp = [touch locationInView:self.view];
+                fp = [self.mapView convertCoordinate:fa.coordinate toPointToView:self.mapView];
+                
+                long xDist = tp.x - fp.x;
+                long yDist = tp.y - fp.y;
+                dist = sqrt(xDist*xDist + yDist*yDist);
+                
+                if (dist < minDist) {
+                    minDist = dist;
+                    ca = fa;
+                    cap = fp;
+                }
+            }
+            
+            CGRect fap = CGRectMake(cap.x-30,cap.y-30,60,60);
+            
+            if (CGRectContainsPoint(fap, tp)) {
+                NSLog(@"correcting and selecting...");
+                [self.mapView selectAnnotation:ca animated:FALSE];
+            }
+            dist = HUGE_VALF;
+        }
     }
 }
 

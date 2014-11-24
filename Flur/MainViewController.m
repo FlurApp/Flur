@@ -9,7 +9,7 @@
 #import "MainViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #define CORNER_RADIUS 4
-#define SLIDE_TIMING .25
+#define SLIDE_TIMING .20
 #define PANEL_WIDTH 60
 
 
