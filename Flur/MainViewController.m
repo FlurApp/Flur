@@ -7,6 +7,11 @@
 //
 
 #import "MainViewController.h"
+#import <QuartzCore/QuartzCore.h>
+#define CORNER_RADIUS 4
+#define SLIDE_TIMING .25
+#define PANEL_WIDTH 45
+
 
 @interface MainViewController ()
 
@@ -62,27 +67,73 @@
 - (void)setupView
 {
     // setup map view (center view)
-    self.mapViewController = [[FLInitialMapViewController alloc] init];
-    self.mapViewController.view.tag = CENTER_TAG;
-    self.mapViewController.delegate = self;
+    self.centerViewController = [[FLInitialMapViewController alloc] init];
+    self.centerViewController.view.tag = CENTER_TAG;
+    self.centerViewController.delegate = self;
     
-    [self.view addSubview:self.mapViewController.view];
-    [self addChildViewController:self.mapViewController];
+    [self.view addSubview:self.centerViewController.view];
+    [self addChildViewController:self.centerViewController];
     
-    [self.mapViewController didMoveToParentViewController:self];
+    [self.centerViewController didMoveToParentViewController:self];
 }
 
 - (void)showCenterViewWithShadow:(BOOL)value withOffset:(double)offset
 {
+    if (value)
+    {
+        [_centerViewController.view.layer setCornerRadius:CORNER_RADIUS];
+        [_centerViewController.view.layer setShadowColor:[UIColor blackColor].CGColor];
+        [_centerViewController.view.layer setShadowOpacity:0.4];
+        [_centerViewController.view.layer setShadowOffset:CGSizeMake(offset, offset)];
+        
+    }
+    else
+    {
+        [_centerViewController.view.layer setCornerRadius:0.0f];
+        [_centerViewController.view.layer setShadowOffset:CGSizeMake(offset, offset)];
+    }
 }
 
 - (void)resetMainView
 {
+    // remove left view and reset variables, if needed
+    if (_leftPanelViewController != nil)
+    {
+        [self.leftPanelViewController.view removeFromSuperview];
+        self.leftPanelViewController = nil;
+        
+        _centerViewController.menuButton.tag = 1;
+        self.showingLeftPanel = NO;
+    }
+    
+    // remove view shadows
+    [self showCenterViewWithShadow:NO withOffset:0];
 }
 
 - (UIView *)getLeftView
 {
-    UIView *view = nil;
+    // init view if it doesn't already exist
+    if (_leftPanelViewController == nil)
+    {
+        // this is where you define the view for the left panel
+        self.leftPanelViewController = [[FLTableViewController alloc] init];
+        self.leftPanelViewController.view.tag = LEFT_PANEL_TAG;
+        self.leftPanelViewController.delegate = _centerViewController;
+        
+        [self.view addSubview:self.leftPanelViewController.view];
+        
+        [self addChildViewController:_leftPanelViewController];
+        [_leftPanelViewController didMoveToParentViewController:self];
+        
+        _leftPanelViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    }
+    
+    self.showingLeftPanel = YES;
+    
+    // set up view shadows
+    [self showCenterViewWithShadow:YES withOffset:-2];
+    
+    UIView *view = self.leftPanelViewController.view;
     return view;
 }
 
@@ -114,10 +165,34 @@
 
 - (void)movePanelRight // to show left panel
 {
+    
+    UIView *childView = [self getLeftView];
+    [self.view sendSubviewToBack:childView];
+    
+    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState
+                     animations:^{
+                         _centerViewController.view.frame = CGRectMake(self.view.frame.size.width - PANEL_WIDTH, 0, self.view.frame.size.width, self.view.frame.size.height);
+                     }
+                     completion:^(BOOL finished) {
+                         if (finished) {
+                             
+                             _centerViewController.menuButton.tag = 0;
+                         }
+                     }];
 }
 
 - (void)movePanelToOriginalPosition
 {
+    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState
+                     animations:^{
+                         _centerViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+                     }
+                     completion:^(BOOL finished) {
+                         if (finished) {
+                             
+                             [self resetMainView];
+                         }
+                     }];
 }
 
 #pragma mark -

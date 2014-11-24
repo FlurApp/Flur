@@ -52,7 +52,6 @@
 
 @property (nonatomic, strong) NSMutableArray *myContrPins;
 
-
 @end
 
 
@@ -162,26 +161,36 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:addFlurButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
     
-    // hamburger
+    // make menu button
+    self.menuButton = [UIButton buttonWithType:(UIButtonTypeCustom)];
+    self.menuButton = [[UIButton alloc] init];
+    self.menuButton.tag = 1;
+    [self.menuButton addTarget:self action:@selector(btnMovePanelRight:)
+                                    forControlEvents:UIControlEventTouchUpInside];
+    self.menuButton.backgroundColor = [UIColor clearColor];
+    
+    // create image for menu button
     UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
-    CGRect rect = CGRectMake(0,0,28,24);
-    UIGraphicsBeginImageContext( rect.size );
+    CGRect rect = CGRectMake(0,0,75,75);
+    UIGraphicsBeginImageContext(rect.size);
     [hamburger drawInRect:rect];
     UIImage *hamburgerResized = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
     NSData *imageData = UIImagePNGRepresentation(hamburgerResized);
-    UIImage *menuImg=[UIImage imageWithData:imageData];
+    UIImage *menuImg = [UIImage imageWithData:imageData];
     
+    // set image for menu button
+    [self.menuButton setImage:menuImg forState:UIControlStateNormal];
+    [self.menuButton setContentMode:UIViewContentModeCenter];
+    [self.menuButton setImageEdgeInsets:UIEdgeInsetsMake(25,25,25,25)];
     
-    UIImageView *hamburgerContainer = [[UIImageView alloc] initWithImage:menuImg];
-    [hamburgerContainer setTranslatesAutoresizingMaskIntoConstraints:NO];
+    // add menu button to view
+    [self.menuButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[self view] addSubview:self.menuButton];
     
-    [[self view] addSubview:hamburgerContainer];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:8]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hamburgerContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:33]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:hamburgerContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:17]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-8]];
     
     
     UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
@@ -746,10 +755,30 @@
                            alpha:1.0f];
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+- (IBAction)btnMovePanelRight:(id)sender
 {
-    NSLog(@"hit test map");
-    return nil;
+    
+    UIButton *button = sender;
+    switch (button.tag) {
+        case 0: {
+            [_delegate movePanelToOriginalPosition];
+            break;
+        }
+            
+        case 1: {
+            [_delegate movePanelRight];
+            break;
+        }
+            
+        default:
+            break;
+    }
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.menuButton.tag == 0) {
+        [self btnMovePanelRight:self.menuButton];
+    }
 }
 
 @end
