@@ -19,7 +19,7 @@
 
 // FLContributeVieController
 #define contributeColor RGB(186,108,224)
-
+#define darkContributeColor RGB(186/2,108/2,224/2);
 
 // FLLoginViewController
 #define MAXLENGTH 30

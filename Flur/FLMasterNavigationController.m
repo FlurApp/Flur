@@ -89,9 +89,9 @@ static UINavigationController *navController;
             FLCameraViewController *camController = [[FLCameraViewController alloc] initWithData:data];
             [UIView animateWithDuration:0.75
                              animations:^{
-                                 [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                                 [navController pushViewController:camController animated:NO];
-                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
+                                 [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+                                 [navController pushViewController:camController animated:UIViewAnimationTransitionFlipFromRight];
+                                 [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:navController.view cache:NO];
                              }];
         }
         // returning to map view
@@ -111,7 +111,7 @@ static UINavigationController *navController;
                              animations:^{
                                  [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
                                  [navController pushViewController:photoController animated:NO];
-                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
+                                 [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:navController.view cache:NO];
                              }];
         }
         

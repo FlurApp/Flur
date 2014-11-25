@@ -18,6 +18,8 @@
 @property (nonatomic, strong) UIButton *contributeButton;
 @property (nonatomic, strong) NSLayoutConstraint *contributeButtonLeading;
 @property (nonatomic, strong) NSLayoutConstraint *contributeButtonTrailing;
+@property (nonatomic, strong) CABasicAnimation *contributeButtonAnimation;
+
 
 @end
 
@@ -183,7 +185,8 @@
     fadeInAndOut.toValue = [NSNumber numberWithFloat:0.7];
     fadeInAndOut.repeatCount = HUGE_VALF;
     fadeInAndOut.fillMode = kCAFillModeBoth;
-    [contributeUnderlay.layer addAnimation:fadeInAndOut forKey:@"myanimation"];
+    self.contributeButtonAnimation = fadeInAndOut;
+    [self.contributeButton.layer addAnimation:self.contributeButtonAnimation forKey:@"myanimation"];
     
     // click anyhwere to exit back to map
     UITapGestureRecognizer *singleFingerTap =
@@ -197,8 +200,6 @@
     
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:self.pin forKey:@"FLPin"];
-    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self dismissViewControllerAnimated:YES completion:nil];
     
     [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
                                       fromViewController:@"FLContributeViewController"
@@ -206,11 +207,13 @@
 }
 
 - (IBAction)contributingTouchDown:(id)sender {
-    self.contributeButton.backgroundColor = RGB(220,220,220);
+    self.contributeButton.backgroundColor = darkContributeColor;
+    [self.contributeButton.layer removeAllAnimations];
 }
 
 - (IBAction)contributingTouchUpOutside:(id)sender {
     self.contributeButton.backgroundColor = contributeColor;
+    [self.contributeButton.layer addAnimation:self.contributeButtonAnimation forKey:@"myanimation"];
 }
 
 - (void)exitContribute:(UITapGestureRecognizer *)recognizer {

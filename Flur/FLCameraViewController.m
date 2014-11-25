@@ -105,9 +105,6 @@
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
-
-
-    
     self.session = [[AVCaptureSession alloc] init];
     
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
@@ -167,7 +164,10 @@
 - (void) loadToggleCamButton {
     
     UIButton *button = [[UIButton alloc] init];
+    
     [button addTarget:self action:@selector(toggleCamera:) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(growButtonAnimation:) forControlEvents:UIControlEventTouchDown];
+    
     [button setImage:[UIImage imageNamed:@"switchCam.png"] forState:UIControlStateNormal];
     
     [button setImageEdgeInsets:UIEdgeInsetsMake(10,10,10,10)];
@@ -196,39 +196,46 @@
 }
 
 - (IBAction)toggleCamera:(id)sender {
-    // [self.session stopRunning];
-    [self.session beginConfiguration];
-
-    AVCaptureDeviceInput *input;
-    // if i have the back camera show the front
-    if (self.frontBack) {
-        
-        NSError *error;
-        input = [AVCaptureDeviceInput deviceInputWithDevice:self.frontDevice error:&error];
-        if (!input) {
-            NSLog(@"bad");
-            // Handle the error appropriately.
-        }
-    }
     
-    // else i have the front camera show the back
-    else {
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationCurveEaseInOut animations:^{
+        self.toggleCamButton.transform = CGAffineTransformMakeScale(1,1);
         
-        NSError *error;
-        input = [AVCaptureDeviceInput deviceInputWithDevice:self.backDevice error:&error];
-        if (!input) {
-            NSLog(@"bad");
-            // Handle the error appropriately.
-        }
-    }
-    
-    [self.session removeInput:self.captureInput];
-    self.captureInput = input;
-    [self.session addInput:input];
+    } completion:^(BOOL finished) {
 
-    // commit the configuration and toggle the frontback bool
-    [self.session commitConfiguration];
-    self.frontBack = !self.frontBack;
+        [self.session beginConfiguration];
+
+        AVCaptureDeviceInput *input;
+        // if i have the back camera show the front
+        if (self.frontBack) {
+            
+            NSError *error;
+            input = [AVCaptureDeviceInput deviceInputWithDevice:self.frontDevice error:&error];
+            if (!input) {
+                NSLog(@"bad");
+                // Handle the error appropriately.
+            }
+        }
+        
+        // else i have the front camera show the back
+        else {
+            
+            NSError *error;
+            input = [AVCaptureDeviceInput deviceInputWithDevice:self.backDevice error:&error];
+            if (!input) {
+                NSLog(@"bad");
+                // Handle the error appropriately.
+            }
+        }
+        
+        [self.session removeInput:self.captureInput];
+        self.captureInput = input;
+        [self.session addInput:input];
+
+        // commit the configuration and toggle the frontback bool
+        [self.session commitConfiguration];
+        self.frontBack = !self.frontBack;
+    
+    }];
 }
 
 - (void)loadCameraButton {
@@ -237,6 +244,7 @@
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
 
     [button addTarget:self action:@selector(takePicture:) forControlEvents:UIControlEventTouchUpInside];
+    //[button addTarget:self action:@selector(growButtonAnimation:) forControlEvents:UIControlEventTouchDown];
     
     [self setCameraButton:button];
     [self.cameraButton setImage:[UIImage imageNamed:@"camera-100plus.png"] forState:UIControlStateNormal];
@@ -267,13 +275,18 @@
 - (void)loadBackButton {
     
     UIButton *button = [[UIButton alloc] init];
-    [button setTranslatesAutoresizingMaskIntoConstraints:NO];
+
+    
     [button addTarget:self action:@selector(returnToMap:) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(growButtonAnimation:) forControlEvents:UIControlEventTouchDown];
+
+    
     [button setImage:[UIImage imageNamed:@"less_then-100.png"] forState:UIControlStateNormal];
     [button setImageEdgeInsets:UIEdgeInsetsMake(4,4,4,4)];
 
     [self setBackButton:button];
     
+    [button setTranslatesAutoresizingMaskIntoConstraints:NO];
     [[self view] addSubview:self.backButton];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:16]];
@@ -296,10 +309,24 @@
                                                            constant:40.0]];
 }
 
+- (void) growButtonAnimation: (UIButton*) button {
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationCurveEaseInOut animations:^{
+        button.transform = CGAffineTransformMakeScale(1.5,1.5);
+
+    } completion:^(BOOL finished) {
+    
+        return;
+    }];
+}
+
+
 - (IBAction)returnToMap:(id)sender {
-    
-    [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLCameraViewController" withData:self.dataToPass];
-    
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationCurveEaseInOut animations:^{
+        self.backButton.transform = CGAffineTransformMakeScale(1,1);
+        
+    } completion:^(BOOL finished) {
+        [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLCameraViewController" withData:self.dataToPass];
+    }];
 }
 
 - (IBAction)takePicture:(id)sender {
