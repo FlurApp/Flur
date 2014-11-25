@@ -118,6 +118,16 @@ static bool userFound = false;
     }];
 }
 
++ (void) getFlursInDict:(void(^)(NSMutableDictionary*)) completion {
+    [LocalStorage getFlurs:^(NSMutableDictionary *data)  {
+        NSArray* allFlurs = [data objectForKey:@"allFlurs"];
+        NSMutableDictionary* allFlursHashed = [[NSMutableDictionary alloc] init];
+        for (int i=0; i<allFlurs.count; i++)
+            allFlursHashed[((Flur*)allFlurs[i]).objectId] = allFlurs[i];
+        completion(allFlursHashed);
+    }];
+}
+
 + (void) addFlur:(NSMutableDictionary*)flurToAdd {
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
@@ -127,7 +137,6 @@ static bool userFound = false;
             }
         }
         
-        NSLog(@"Adding flur to DB");
         Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
                                                    inManagedObjectContext:document.managedObjectContext];
         flur.prompt = flurToAdd[@"prompt"];
@@ -169,7 +178,6 @@ static bool userFound = false;
                     NSLog(@"Error loading flurs");
                 }
                 else {
-                    NSLog(@"Size %lu", allFlurs.count);
                      for (Flur* obj in allFlurs)
                      [document.managedObjectContext deleteObject:obj];
                     
@@ -188,7 +196,6 @@ static bool userFound = false;
 
 
 + (void) documentIsReady {
-    NSLog(@"HELOOOO");
     if (document.documentState == UIDocumentStateNormal) { // start using document
         
         NSManagedObjectContext *context = document.managedObjectContext;
@@ -261,7 +268,9 @@ static bool userFound = false;
     
     NSMutableDictionary *flur3 = [[NSMutableDictionary alloc] init];
     [flur3 setObject:@"What's the weirdest thing you've seen at the UGLI today?" forKey:@"prompt"];
-    [flur3 setObject:@"P94Sa0RpoS" forKey:@"objectId"];
+    //[flur3 setObject:@"P94Sa0RpoS" forKey:@"objectId"];
+    [flur3 setObject:@"c8kzGmjHaU" forKey:@"objectId"];
+
     [flur3 setObject:[NSNumber numberWithDouble:42.275403] forKey:@"lat"];
     [flur3 setObject:[NSNumber numberWithDouble:-83.737254] forKey:@"lng"];
     [flur3 setObject:[NSNumber numberWithInt:16] forKey:@"numContributions"];

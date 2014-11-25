@@ -11,6 +11,7 @@
 @import MapKit;
 
 #import "FLTableViewController.h"
+#import "FLSettingsViewController.h"
 
 @protocol FLInitialMapViewControllerDelegate <NSObject>
 
@@ -24,7 +25,8 @@
 @end
 
 
-@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate, FLTableViewControllerDelegate>
+
+@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate, FLTableViewControllerDelegate, FLSettingsViewControllerDelegate>
 
 @property (nonatomic, assign) id<FLInitialMapViewControllerDelegate> delegate;
 

@@ -11,6 +11,7 @@
 #import "LocalStorage.h"
 #import <SWTableViewCell/SWTableViewCell.h>
 #import "FLCustomCellTableViewCell.h"
+#import "FLConstants.h"
 
 @interface FLTableViewController ()
 
@@ -22,12 +23,7 @@
 @property (nonatomic, strong) NSArray *months;
 
 
-
-
 @end
-
-#define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
-#define RGBA(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a/1]
 
 @implementation FLTableViewController
 
@@ -35,7 +31,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     //[LocalStorage destroyLocalStorage];
-    [LocalStorage createTestData];
+    // [LocalStorage createTestData];
     
     self.months = [[NSArray alloc] initWithObjects:@"Jan", @"Feb", @"Mar", @"Apr", @"Jun", @"Jul", @"Aug", @"Sep", @"Oct", @"Nov", @"Dec", nil];
     //[PFUser logOut];
@@ -206,7 +202,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 #warning Incomplete method implementation.
     // Return the number of rows in the section.
-    NSLog(@"pin count: %lu", self.pinsArray.count);
     return self.pinsArray.count;
 }
 

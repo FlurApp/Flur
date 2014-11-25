@@ -9,11 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
-#define viewablePinRadius 10
-#define refreshRadius 1
-#define closeToPinDistance .02 //how close we are to open a pin
-
-
 @interface FLMapManager : NSObject
 
 @property (nonatomic, strong) PFGeoPoint *currentLocation;

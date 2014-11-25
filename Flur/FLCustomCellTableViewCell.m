@@ -8,9 +8,7 @@
 
 #import "FLCustomCellTableViewCell.h"
 #import "FLMasterNavigationController.h"
-
-#define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
-#define RGBA(r, g, b, a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a/1]
+#import "FLConstants.h"
 
 @interface FLCustomCellTableViewCell() <UIGestureRecognizerDelegate> {}
 
@@ -214,7 +212,6 @@ static FLCustomCellTableViewCell* currentOpenCell;
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan:
             self.startPoint = self.contentViewRightConstraint.constant;
-            NSLog(@"Pan Began at %f", (self.startPoint));
             break;
         case UIGestureRecognizerStateChanged: {
             CGPoint currentPoint = [recognizer translationInView:self.myContentView];
@@ -227,7 +224,6 @@ static FLCustomCellTableViewCell* currentOpenCell;
             }
             if (deltaX > 0 && self.contentViewRightConstraint.constant >= 0)
                 break;
-            //NSLog(@"Pan Moved %f", currentPoint.x);
             self.contentViewLeftConstraint.constant = deltaX;
             self.contentViewRightConstraint.constant = deltaX;
             
@@ -236,19 +232,16 @@ static FLCustomCellTableViewCell* currentOpenCell;
             else
                 self.rightButtonsColorLayer.backgroundColor = self.rightButtonBackgroundColor;
             
-           // NSLog(@"Constant: %f", self.contentViewRightConstraint.constant);
             [self layoutIfNeeded];
         }
             break;
         case UIGestureRecognizerStateEnded:
-            NSLog(@"Pan Ended");
             if (self.contentViewRightConstraint.constant < -80)
                 [self openRight];
             else
                 [self closeRight];
             break;
         case UIGestureRecognizerStateCancelled:
-            NSLog(@"Pan Cancelled");
             break;
         default:
             break;
@@ -335,28 +328,6 @@ static FLCustomCellTableViewCell* currentOpenCell;
     [FLMasterNavigationController switchToViewController:@"FLFlurInfoViewController" fromViewController:@"FLTableViewController" withData:data];
 }
 
-- (void)panThisCell:(UIPanGestureRecognizer *)recognizer {
-    switch (recognizer.state) {
-        case UIGestureRecognizerStateBegan:
-            self.panStartPoint = [recognizer translationInView:self.myContentView];
-            self.startingRightLayoutConstraintConstant = self.contentViewRightConstraint.constant;
-            break;
-  
-        case UIGestureRecognizerStateChanged: {
-            CGPoint currentPoint = [recognizer translationInView:self.myContentView];
-            CGFloat deltaX = currentPoint.x - self.panStartPoint.x;
-            NSLog(@"Pan Moved %f", deltaX);
-        }
-            break;
-        case UIGestureRecognizerStateEnded:
-            NSLog(@"Pan Ended");
-            break;
-        case UIGestureRecognizerStateCancelled:
-            NSLog(@"Pan Cancelled");
-            break;
-        default:
-            break;
-    }
-}
+
 
 @end

@@ -18,12 +18,11 @@
         self.createdBy = object[@"createdBy"];
         self.username = [object[@"createdBy"] username];
         self.pinId = [object objectId];
-        //NSLog(@"%@",self.pinId);
         self.prompt = object[@"prompt"];
         self.contentCount = [object[@"contentCount"] integerValue];
+        self.haveContributedTo = false;
         
         self.dateCreated = [object createdAt];
-        //NSLog(@"date: %@ ", self.dateCreated.description);
     }
     
     return self;

@@ -9,19 +9,7 @@
 #import <Parse/Parse.h>
 
 #import "FLSettingsViewController.h"
-
-#define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
-#define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
-
-#define profilePictureSize 120
-#define profilePictureBorderSize 126
-#define buttonHeight 70
-
-#define personalInfoLeading 20
-#define PANEL_WIDTH 60
-
-#define personalInfoColor RGB(120,120,120)
-#define personalInfoFont [UIFont fontWithName:@"Avenir-Light" size:18]
+#import "FLConstants.h"
 
 @interface FLSettingsViewController ()
 

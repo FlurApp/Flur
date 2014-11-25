@@ -8,6 +8,16 @@
 
 #import "FLMapManager.h"
 #import "FLPin.h"
+#import "FLConstants.h"
+#import "LocalStorage.h"
+
+@interface FLMapManager() {}
+
+@property (nonatomic, strong) NSMutableDictionary *allFlursContributedTo;
+@property (nonatomic) NSInteger synchInt;
+
+
+@end
 
 @implementation FLMapManager
 
@@ -20,6 +30,8 @@
         self.nonOpenablePins = [[NSMutableDictionary alloc] init];
         self.openablePins = [[NSMutableDictionary alloc] init];
         self.firstPinGrab = true;
+        self.synchInt = 0;
+        self.allFlursContributedTo = nil;
     }
     
     return self;
@@ -37,8 +49,17 @@
 
 - (void) getViewablePins:(void (^) (NSMutableDictionary* allNonOpenablePins)) completion {
     
+    // Clear any data that we have stored thus far.
     [self.nonOpenablePins removeAllObjects];
     [self.openablePins removeAllObjects];
+    
+    // If we haven't loaded the local copy of flurs we have contributed to, load it.
+    if (self.allFlursContributedTo == nil) {
+        [LocalStorage getFlursInDict:^(NSMutableDictionary *data) {
+            self.allFlursContributedTo = data;
+            [self sendPinsToVC:completion];
+        }];
+    }
     
     PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
     [query includeKey:@"createdBy"];
@@ -54,11 +75,25 @@
                 FLPin* pin = [[FLPin alloc] initWith: objects[i]];
                     [self.nonOpenablePins setObject:pin forKey: pin.pinId];
             }
-            completion(self.nonOpenablePins);
+            [self sendPinsToVC:completion];
+            // completion(self.nonOpenablePins);
         }
         else
             NSLog(@"fuck");
     }];
+}
+
+- (void) sendPinsToVC:(void (^) (NSMutableDictionary* allNonOpenablePins)) completion {
+    self.synchInt++;
+    if (self.synchInt == 2) {
+        for (id key in self.nonOpenablePins) {
+            if ([self.allFlursContributedTo objectForKey:key] != nil) {
+                ((FLPin *)[self.nonOpenablePins objectForKey:key]).haveContributedTo = true;
+                NSLog(@"Have seen");
+            }
+        }
+        completion(self.nonOpenablePins);
+    }
 }
 
 - (double) currentLat {
