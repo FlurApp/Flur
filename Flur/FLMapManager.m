@@ -9,6 +9,17 @@
 #import "FLMapManager.h"
 #import "FLPin.h"
 #import "FLConstants.h"
+#import "LocalStorage.h"
+
+@interface FLMapManager() {}
+
+@property (nonatomic, strong) NSMutableDictionary *allFlursContributedTo;
+@property (nonatomic, strong) NSMutableDictionary *allFlursFromServer;
+
+@property (nonatomic) NSInteger synchInt;
+
+
+@end
 
 @implementation FLMapManager
 
@@ -18,9 +29,14 @@
     if (self) {
         self.currentLocation = [[PFGeoPoint alloc] init];
         self.refreshLocation = [[PFGeoPoint alloc] init];
+        
         self.nonOpenablePins = [[NSMutableDictionary alloc] init];
         self.openablePins = [[NSMutableDictionary alloc] init];
+        self.allFlursFromServer = [[NSMutableDictionary alloc] init];
+
         self.firstPinGrab = true;
+        self.synchInt = 0;
+        self.allFlursContributedTo = nil;
     }
     
     return self;
@@ -38,8 +54,17 @@
 
 - (void) getViewablePins:(void (^) (NSMutableDictionary* allNonOpenablePins)) completion {
     
+    // Clear any data that we have stored thus far.
     [self.nonOpenablePins removeAllObjects];
     [self.openablePins removeAllObjects];
+    
+    // If we haven't loaded the local copy of flurs we have contributed to, load it.
+    if (self.allFlursContributedTo == nil) {
+        [LocalStorage getFlursInDict:^(NSMutableDictionary *data) {
+            self.allFlursContributedTo = data;
+            [self sendPinsToVC:completion];
+        }];
+    }
     
     PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
     [query includeKey:@"createdBy"];
@@ -53,13 +78,34 @@
         if (!error) {
             for (int i=0; i<objects.count; i++) {
                 FLPin* pin = [[FLPin alloc] initWith: objects[i]];
+                
+                [self.allFlursFromServer setObject:pin forKey:pin.pinId];
+                
+                if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance)
+                    [self.openablePins setObject:pin forKey: pin.pinId];
+                else
                     [self.nonOpenablePins setObject:pin forKey: pin.pinId];
             }
-            completion(self.nonOpenablePins);
+            
+            [self sendPinsToVC:completion];
+            // completion(self.nonOpenablePins);
         }
         else
             NSLog(@"fuck");
     }];
+}
+
+- (void) sendPinsToVC:(void (^) (NSMutableDictionary* allNonOpenablePins)) completion {
+    self.synchInt++;
+    
+    if (self.synchInt == 2) {
+        for (id key in self.allFlursFromServer) {
+            if ([self.allFlursContributedTo objectForKey:key] != nil) {
+                ((FLPin *)[self.allFlursFromServer objectForKey:key]).haveContributedTo = true;
+            }
+        }
+        completion(self.allFlursFromServer);
+    }
 }
 
 - (double) currentLat {

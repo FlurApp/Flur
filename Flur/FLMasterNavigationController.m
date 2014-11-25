@@ -12,12 +12,12 @@
 #import "FLInitialMapViewController.h"
 #import "FLLoginViewController.h"
 #import "FLSplashViewController.h"
-#import "FLContributedListViewController.h"
 #import "LocalStorage.h"
 #import "FLTableViewController.h"
 #import "FLContributeViewController.h"
 #import "MainViewController.h"
 #import "FLSettingsViewController.h"
+#import "FLFlurInfoViewController.h"
 
 @interface FLMasterNavigationController ()
 
@@ -34,6 +34,8 @@ static UINavigationController *navController;
 
 + (void) init {
     
+    // [LocalStorage createTestData];
+    
     // if a user is found
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
@@ -49,7 +51,9 @@ static UINavigationController *navController;
     //control = [[FLTableViewController alloc] init];
     
     //control = [[FLSettingsViewController alloc] init];
-        
+   // control = [[FLFlurInfoViewController alloc] init];
+    //control = [[FLSettingsViewController alloc] init];
+
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
     navController.navigationBar.barStyle = UIBarStyleBlack;
@@ -159,6 +163,31 @@ static UINavigationController *navController;
             [[UIApplication sharedApplication] setStatusBarHidden:NO];
         }
     }
+    
+    else if ([oldControllerName isEqualToString:@"FLTableViewController"]) {
+        
+        // entering Map View
+        if ([newControllerName isEqualToString:@"FLFlurInfoViewController"]) {
+            FLFlurInfoViewController *flurInfoController = [[FLFlurInfoViewController alloc] initWithData:data];
+            [UIView animateWithDuration:0.75
+                             animations:^{
+                                 [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+                                 [navController pushViewController:flurInfoController animated:NO];
+                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
+                             }];
+
+        }
+    }
+    
+    else if ([oldControllerName isEqualToString:@"FLFlurInfoViewController"]) {
+        
+        // entering Map View
+        if ([newControllerName isEqualToString:@"FLTableViewController"]) {
+            [navController popViewControllerAnimated:YES];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        }
+    }
+
 
     
     else {

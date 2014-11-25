@@ -23,10 +23,15 @@
 - (void)movePanelToOriginalPosition;
 
 @end
+
+
+
 @interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate, FLTableViewControllerDelegate, FLSettingsViewControllerDelegate>
 
 @property (nonatomic, assign) id<FLInitialMapViewControllerDelegate> delegate;
 
 @property (nonatomic, strong) UIButton *menuButton;
+@property (nonatomic, strong) UIButton *tableListButton;
+
 
 @end

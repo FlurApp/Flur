@@ -8,6 +8,7 @@
 
 #import "MainViewController.h"
 #import <QuartzCore/QuartzCore.h>
+
 #import "FLConstants.h"
 
 @interface MainViewController ()
@@ -70,8 +71,36 @@
     
     [self.view addSubview:self.centerViewController.view];
     [self addChildViewController:self.centerViewController];
-    
     [self.centerViewController didMoveToParentViewController:self];
+    
+    
+    
+    // setup settings view (left view)
+    self.leftPanelViewController = [[FLSettingsViewController alloc] init];
+    self.leftPanelViewController.view.tag = LEFT_PANEL_TAG;
+   
+    
+    [self.view addSubview:self.leftPanelViewController.view];
+    [self addChildViewController:_leftPanelViewController];
+    // [_leftPanelViewController didMoveToParentViewController:self];
+    
+    _leftPanelViewController.view.frame = CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+    
+    
+    // Setup settings view (right view)
+    // this is where you define the view for the left panel
+    self.rightPanelViewController = [[FLTableViewController alloc] init];
+    self.rightPanelViewController.view.tag = RIGHT_PANEL_TAG;
+    self.rightPanelViewController.delegate = self;
+    
+    [self.view addSubview:self.rightPanelViewController.view];
+    
+    [self addChildViewController:_rightPanelViewController];
+    //[_rightPanelViewController didMoveToParentViewController:self];
+    
+    _rightPanelViewController.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+    
+
 }
 
 - (void)showCenterViewWithShadow:(BOOL)value withOffset:(double)offset
@@ -93,15 +122,15 @@
 
 - (void)resetMainView
 {
-    // remove left view and reset variables, if needed
-    if (_leftPanelViewController != nil)
-    {
-        [self.leftPanelViewController.view removeFromSuperview];
-        self.leftPanelViewController = nil;
+
         
-        _centerViewController.menuButton.tag = 1;
-        self.showingLeftPanel = NO;
-    }
+    _centerViewController.menuButton.tag = 1;
+    self.showingLeftPanel = NO;
+    _centerViewController.tableListButton.tag = 1;
+    self.showingRightPanel = NO;
+    
+    [_centerViewController didMoveToParentViewController:self];
+
     
     // remove view shadows
     [self showCenterViewWithShadow:NO withOffset:0];
@@ -109,21 +138,9 @@
 
 - (UIView *)getLeftView
 {
-    // init view if it doesn't already exist
-    if (_leftPanelViewController == nil)
-    {
-        // this is where you define the view for the left panel
-        self.leftPanelViewController = [[FLSettingsViewController alloc] init];
-        self.leftPanelViewController.view.tag = LEFT_PANEL_TAG;
-        self.leftPanelViewController.delegate = _centerViewController;
-        
-        [self.view addSubview:self.leftPanelViewController.view];
-        
-        [self addChildViewController:_leftPanelViewController];
-        [_leftPanelViewController didMoveToParentViewController:self];
-        
-        _leftPanelViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    }
+ 
+    [_leftPanelViewController didMoveToParentViewController:self];
+
     
     self.showingLeftPanel = YES;
     
@@ -134,9 +151,19 @@
     return view;
 }
 
+
+
 - (UIView *)getRightView
 {
-    UIView *view = nil;
+
+    [_rightPanelViewController didMoveToParentViewController:self];
+
+    self.showingRightPanel = YES;
+    
+    // set up view shadows
+    [self showCenterViewWithShadow:YES withOffset:-2];
+    
+    UIView *view = self.rightPanelViewController.view;
     return view;
 }
 
@@ -158,6 +185,21 @@
 
 - (void)movePanelLeft // to show right panel
 {
+    UIView *childView = [self getRightView];
+    [self.view sendSubviewToBack:childView];
+    
+    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         _centerViewController.view.frame = CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+                         _rightPanelViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+                     }
+                     completion:^(BOOL finished) {
+                         if (finished) {
+                             
+                             _centerViewController.menuButton.tag = 0;
+                         }
+                     }];
+
 }
 
 - (void)movePanelRight // to show left panel
@@ -166,9 +208,10 @@
     UIView *childView = [self getLeftView];
     [self.view sendSubviewToBack:childView];
     
-    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState
+    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          _centerViewController.view.frame = CGRectMake(self.view.frame.size.width - PANEL_WIDTH, 0, self.view.frame.size.width, self.view.frame.size.height);
+                         _leftPanelViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
                      }
                      completion:^(BOOL finished) {
                          if (finished) {
@@ -180,9 +223,15 @@
 
 - (void)movePanelToOriginalPosition
 {
-    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState
+    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          _centerViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+                         
+                         if (self.showingLeftPanel)
+                             _leftPanelViewController.view.frame = CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+                         else
+                             _rightPanelViewController.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+                             
                      }
                      completion:^(BOOL finished) {
                          if (finished) {

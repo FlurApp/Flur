@@ -25,6 +25,19 @@ static bool userFound = false;
     }];
 }
 
++ (void) destroyLocalStorage {
+    NSError *error;
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
+                                                     inDomains:NSUserDomainMask] firstObject];
+    
+    NSString* documentName = @"MyDocument";
+    NSURL *url = [documentsDirectory URLByAppendingPathComponent:documentName];
+
+    [[NSFileManager defaultManager] removeItemAtPath:url.path error:&error];
+    NSLog(@"error : %@", error);
+}
 
 + (void) openDocumentWithCompletion:(void(^)())completion {
     if (documentLoaded) {
@@ -105,6 +118,16 @@ static bool userFound = false;
     }];
 }
 
++ (void) getFlursInDict:(void(^)(NSMutableDictionary*)) completion {
+    [LocalStorage getFlurs:^(NSMutableDictionary *data)  {
+        NSArray* allFlurs = [data objectForKey:@"allFlurs"];
+        NSMutableDictionary* allFlursHashed = [[NSMutableDictionary alloc] init];
+        for (int i=0; i<allFlurs.count; i++)
+            allFlursHashed[((Flur*)allFlurs[i]).objectId] = allFlurs[i];
+        completion(allFlursHashed);
+    }];
+}
+
 + (void) addFlur:(NSMutableDictionary*)flurToAdd {
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
@@ -114,7 +137,6 @@ static bool userFound = false;
             }
         }
         
-        NSLog(@"Adding flur to DB");
         Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
                                                    inManagedObjectContext:document.managedObjectContext];
         flur.prompt = flurToAdd[@"prompt"];
@@ -122,7 +144,10 @@ static bool userFound = false;
         flur.lat = flurToAdd[@"lat"];
         flur.numContributions = flurToAdd[@"numContributions"];
         flur.objectId = flurToAdd[@"objectId"];
-       // flur.dateAdded = flurToAdd[@"dateAdded"];
+        flur.creatorUsername = flurToAdd[@"creatorUsername"];
+        flur.dateAdded = flurToAdd[@"dateAdded"];
+        flur.dateCreated = flurToAdd[@"dateCreated"];
+
 
         [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
             NSLog(@"saved");
@@ -153,7 +178,6 @@ static bool userFound = false;
                     NSLog(@"Error loading flurs");
                 }
                 else {
-                    NSLog(@"Size %lu", allFlurs.count);
                      for (Flur* obj in allFlurs)
                      [document.managedObjectContext deleteObject:obj];
                     
@@ -172,7 +196,6 @@ static bool userFound = false;
 
 
 + (void) documentIsReady {
-    NSLog(@"HELOOOO");
     if (document.documentState == UIDocumentStateNormal) { // start using document
         
         NSManagedObjectContext *context = document.managedObjectContext;
@@ -201,6 +224,67 @@ static bool userFound = false;
     }
 }
 
++ (void) createTestData {
+    NSMutableDictionary *flur1 = [[NSMutableDictionary alloc] init];
+    [flur1 setObject:@"Nikki is awesome" forKey:@"prompt"];
+    [flur1 setObject:@"9hCC7XSqj1" forKey:@"objectId"];
+    [flur1 setObject:[NSNumber numberWithDouble:42.27855013634855] forKey:@"lat"];
+    [flur1 setObject:[NSNumber numberWithDouble:-83.74086164719826] forKey:@"lng"];
+    [flur1 setObject:[NSNumber numberWithInt:9] forKey:@"numContributions"];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
+    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"ja_JP"]];
+    
+    NSDate *dateCreated1 = [dateFormatter dateFromString: @"2012-09-16 23:59:59 JST"];
+    [flur1 setObject:dateCreated1 forKey:@"dateAdded"];
+    
+    NSDate *dateAdded1 = [dateFormatter dateFromString: @"2012-09-20 23:59:59 JST"];
+    [flur1 setObject:dateAdded1 forKey:@"dateCreated"];
+    [flur1 setObject:@"petebes" forKey:@"creatorUsername"];
+
+    
+    [self addFlur:flur1];
+    
+    
+    NSMutableDictionary *flur2 = [[NSMutableDictionary alloc] init];
+    [flur2 setObject:@"Take a picture of your inspiration!" forKey:@"prompt"];
+    [flur2 setObject:@"yh1ej5UCQ4" forKey:@"objectId"];
+    [flur2 setObject:[NSNumber numberWithDouble:42.28902135362213] forKey:@"lat"];
+    [flur2 setObject:[NSNumber numberWithDouble:-83.71347471014678] forKey:@"lng"];
+    [flur2 setObject:[NSNumber numberWithInt:11] forKey:@"numContributions"];
+    
+    dateCreated1 = [dateFormatter dateFromString: @"2012-11-3 23:59:59 JST"];
+    [flur2 setObject:dateCreated1 forKey:@"dateAdded"];
+    
+    dateAdded1 = [dateFormatter dateFromString: @"2012-11-16 23:59:59 JST"];
+    [flur2 setObject:dateAdded1 forKey:@"dateCreated"];
+
+    [flur2 setObject:@"joly" forKey:@"creatorUsername"];
+
+    
+    [self addFlur:flur2];
+    
+    
+    NSMutableDictionary *flur3 = [[NSMutableDictionary alloc] init];
+    [flur3 setObject:@"What's the weirdest thing you've seen at the UGLI today?" forKey:@"prompt"];
+    //[flur3 setObject:@"P94Sa0RpoS" forKey:@"objectId"];
+    [flur3 setObject:@"c8kzGmjHaU" forKey:@"objectId"];
+
+    [flur3 setObject:[NSNumber numberWithDouble:42.275403] forKey:@"lat"];
+    [flur3 setObject:[NSNumber numberWithDouble:-83.737254] forKey:@"lng"];
+    [flur3 setObject:[NSNumber numberWithInt:16] forKey:@"numContributions"];
+    
+    dateCreated1 = [dateFormatter dateFromString: @"2013-3-22 23:59:59 JST"];
+    [flur3 setObject:dateCreated1 forKey:@"dateAdded"];
+    
+    dateAdded1 = [dateFormatter dateFromString: @"2013-3-29 23:59:59 JST"];
+    [flur3 setObject:dateCreated1 forKey:@"dateCreated"];
+    
+    [flur3 setObject:@"davmlee" forKey:@"creatorUsername"];
+    
+    [self addFlur:flur3];
+}
 
 
 @end

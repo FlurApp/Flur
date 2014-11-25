@@ -7,6 +7,7 @@
 //
 
 #import "FLCustomCellTableViewCell.h"
+#import "FLMasterNavigationController.h"
 #import "FLConstants.h"
 
 @interface FLCustomCellTableViewCell() <UIGestureRecognizerDelegate> {}
@@ -38,7 +39,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
         
-        self.rightButtonBackgroundColor = [UIColor greenColor];
+        self.rightButtonBackgroundColor = RGB(232, 72, 49);
         self.rightButtonsColorLayer = [[UIView alloc] init];
         self.rightButtonsColorLayer.backgroundColor = self.rightButtonBackgroundColor;
         [self.rightButtonsColorLayer setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -54,10 +55,9 @@ static FLCustomCellTableViewCell* currentOpenCell;
         [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.rightButtonsColorLayer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
         
         self.button1 = [[UIButton alloc] init];
-        self.button1.backgroundColor = [UIColor redColor];
-        [self.button1 setTitle:@"Hi" forState:UIControlStateNormal];
+        self.button1.backgroundColor =  RGB(13, 191, 255);
+        [self.button1 setTitle:@"Photos" forState:UIControlStateNormal];
         [self.button1 setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [self.button1 setImage:[UIImage imageNamed:@"mapIcon.png"] forState:UIControlStateNormal];
         
         
         [self.contentView addSubview:self.button1];
@@ -66,14 +66,17 @@ static FLCustomCellTableViewCell* currentOpenCell;
         
          [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button1 attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
         
-         [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button1 attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-50]];
+         [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button1 attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-80]];
         
         [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button1 attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
         
         self.button2 = [[UIButton alloc] init];
-        self.button2.backgroundColor = [UIColor greenColor];
-        [self.button2 setTitle:@"Hi" forState:UIControlStateNormal];
+        self.button2.backgroundColor = RGB(232, 72, 49);
+        [self.button2 setTitle:@"Map" forState:UIControlStateNormal];
         [self.button2 setTranslatesAutoresizingMaskIntoConstraints:NO];
+        
+        [self.button2 addTarget:self action:@selector(changeMapButtonColor:) forControlEvents:UIControlEventTouchDown];
+        [self.button2 addTarget:self action:@selector(switchToFlurInfoVC:) forControlEvents:UIControlEventTouchUpInside];
         
         
         [self.contentView addSubview:self.button2];
@@ -82,11 +85,11 @@ static FLCustomCellTableViewCell* currentOpenCell;
         
         [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button2 attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
         
-        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button2 attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.button1 attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-50]];
+        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button2 attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.button1 attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-80]];
         
         [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button2 attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.button1 attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
         
-        self.rightButtonsLeading = -100;
+        self.rightButtonsLeading = -160;
         
         
    
@@ -176,9 +179,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
         self.swipeRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(cellSwipe:)];
         self.swipeRecognizer.delegate = self;
         [self.myContentView addGestureRecognizer:self.swipeRecognizer];
-
-        
-        
+        [self layoutIfNeeded];
         
         
         self.isOpen = false;
@@ -211,7 +212,6 @@ static FLCustomCellTableViewCell* currentOpenCell;
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan:
             self.startPoint = self.contentViewRightConstraint.constant;
-            NSLog(@"Pan Began at %f", (self.startPoint));
             break;
         case UIGestureRecognizerStateChanged: {
             CGPoint currentPoint = [recognizer translationInView:self.myContentView];
@@ -224,7 +224,6 @@ static FLCustomCellTableViewCell* currentOpenCell;
             }
             if (deltaX > 0 && self.contentViewRightConstraint.constant >= 0)
                 break;
-            //NSLog(@"Pan Moved %f", currentPoint.x);
             self.contentViewLeftConstraint.constant = deltaX;
             self.contentViewRightConstraint.constant = deltaX;
             
@@ -233,19 +232,16 @@ static FLCustomCellTableViewCell* currentOpenCell;
             else
                 self.rightButtonsColorLayer.backgroundColor = self.rightButtonBackgroundColor;
             
-           // NSLog(@"Constant: %f", self.contentViewRightConstraint.constant);
             [self layoutIfNeeded];
         }
             break;
         case UIGestureRecognizerStateEnded:
-            NSLog(@"Pan Ended");
-            if (self.contentViewRightConstraint.constant < -50)
+            if (self.contentViewRightConstraint.constant < -80)
                 [self openRight];
             else
                 [self closeRight];
             break;
         case UIGestureRecognizerStateCancelled:
-            NSLog(@"Pan Cancelled");
             break;
         default:
             break;
@@ -287,6 +283,11 @@ static FLCustomCellTableViewCell* currentOpenCell;
  
 }
 
++ (void) closeCurrentlyOpenCell {
+    if (currentOpenCell != nil)
+        [currentOpenCell closeRight];
+}
+
 - (void) closeRight {
     self.rightButtonsColorLayer.backgroundColor = [UIColor whiteColor];
 
@@ -312,28 +313,21 @@ static FLCustomCellTableViewCell* currentOpenCell;
     //TODO: Build
 }
 
-- (void)panThisCell:(UIPanGestureRecognizer *)recognizer {
-    switch (recognizer.state) {
-        case UIGestureRecognizerStateBegan:
-            self.panStartPoint = [recognizer translationInView:self.myContentView];
-            self.startingRightLayoutConstraintConstant = self.contentViewRightConstraint.constant;
-            break;
-  
-        case UIGestureRecognizerStateChanged: {
-            CGPoint currentPoint = [recognizer translationInView:self.myContentView];
-            CGFloat deltaX = currentPoint.x - self.panStartPoint.x;
-            NSLog(@"Pan Moved %f", deltaX);
-        }
-            break;
-        case UIGestureRecognizerStateEnded:
-            NSLog(@"Pan Ended");
-            break;
-        case UIGestureRecognizerStateCancelled:
-            NSLog(@"Pan Cancelled");
-            break;
-        default:
-            break;
-    }
+- (IBAction)changeMapButtonColor:(id)sender {
+    UIButton* button = (UIButton*) sender;
+    button.backgroundColor = RGB(232, 102, 67);
 }
+
+- (IBAction)switchToFlurInfoVC:(id)sender {
+    UIButton* button = (UIButton*) sender;
+    button.backgroundColor = RGB(232, 72, 49);
+    NSMutableDictionary *data = [[NSMutableDictionary alloc ] init];
+    [data setObject:self.flur forKey:@"flur"];
+    [FLCustomCellTableViewCell closeCurrentlyOpenCell];
+
+    [FLMasterNavigationController switchToViewController:@"FLFlurInfoViewController" fromViewController:@"FLTableViewController" withData:data];
+}
+
+
 
 @end
