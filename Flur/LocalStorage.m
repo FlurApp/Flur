@@ -240,7 +240,6 @@ static bool userFound = false;
             }
         }
         
-        return;
         
         Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
                                                    inManagedObjectContext:document.managedObjectContext];

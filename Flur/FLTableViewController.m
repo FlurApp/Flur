@@ -236,7 +236,9 @@
 
     
     cell.cellDate.text = [NSString stringWithFormat:@"%@ %@, %@", self.months[curMonth], curDay, curYear];
-    cell.cellContentCount.text = @"7 Contributors";
+    
+    NSNumber *numContributions = [[self.pinsArray objectAtIndex:indexPath.row] numContributions];
+    cell.cellContentCount.text = [NSString stringWithFormat:@"%@ Contributors", numContributions];
     
     cell.flur = [self.pinsArray objectAtIndex:indexPath.row];
 
