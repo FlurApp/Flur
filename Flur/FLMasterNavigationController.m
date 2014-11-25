@@ -38,7 +38,7 @@ static UINavigationController *navController;
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
     
-    // if (false)
+    //if (false)
     if (currentUser)
         control = [[MainViewController alloc] init];
     else

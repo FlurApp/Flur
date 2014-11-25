@@ -16,15 +16,19 @@
 #import "Flur.h"
 #import "FLConstants.h"
 
+#define back TRUE
+#define front FALSE
 
 @interface FLCameraViewController ()
 
 @property (nonatomic, readwrite) FLPin* pin;
 
-@property (nonatomic) AVCaptureDevice* device;
+@property (nonatomic) AVCaptureDevice* frontDevice;
+@property (nonatomic) AVCaptureDevice* backDevice;
 @property (nonatomic) AVCaptureSession* session;
 @property (nonatomic, readwrite) AVCaptureOutput* captureOutput;
 @property (nonatomic, readwrite) AVCaptureStillImageOutput *stillImageOutput;
+@property (nonatomic) AVCaptureDeviceInput *captureInput;
 
 @property (nonatomic, readwrite) UIButton* cameraButton;
 @property (nonatomic, readwrite) UIButton* retakeButton;
@@ -40,9 +44,11 @@
 
 @property (nonatomic, strong) FLPhotoManager *photoManager;
 
+@property (nonatomic) BOOL frontBack;
+@property (nonatomic, strong) UIButton *toggleCamButton;
 
 
-
+// used for determining when both completion handlers finished
 @property (nonatomic) int count;
 
 
@@ -108,18 +114,21 @@
     
     for (AVCaptureDevice *device in devices) {
         if ([device position] == AVCaptureDevicePositionBack) {
-            self.device = device;
+            self.backDevice = device;
+        }
+        else if ([device position] == AVCaptureDevicePositionFront) {
+            self.frontDevice = device;
         }
     }
     
     self.session.sessionPreset = AVCaptureSessionPresetPhoto;
     
     NSError *error;
-    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:self.device error:&error];
-    if (!input) {
+    self.captureInput = [AVCaptureDeviceInput deviceInputWithDevice:self.backDevice error:&error];
+    if (!self.captureInput) {
         // Handle the error appropriately.
     }
-    [self.session addInput:input];
+    [self.session addInput:self.captureInput];
     
     NSDictionary *outputSettings = @{ AVVideoCodecKey : AVVideoCodecJPEG };
     AVCaptureStillImageOutput *newStillImageOutput = [[AVCaptureStillImageOutput alloc] init];
@@ -147,18 +156,88 @@
     retake = false;
     [self loadCameraButton];
     [self loadBackButton];
+    [self loadToggleCamButton];
     
+    // used later to toggle front and back cameras
+    [self setFrontBack:back];
     
     return;
 }
 
+- (void) loadToggleCamButton {
+    
+    UIButton *button = [[UIButton alloc] init];
+    [button addTarget:self action:@selector(toggleCamera:) forControlEvents:UIControlEventTouchUpInside];
+    [button setImage:[UIImage imageNamed:@"toggleCamera.png"] forState:UIControlStateNormal];
+    
+    [button setImageEdgeInsets:UIEdgeInsetsMake(10,10,10,10)];
+    [self setToggleCamButton:button];
+    [button setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[self view] addSubview:self.toggleCamButton];
+    
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.toggleCamButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.toggleCamButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.toggleCamButton
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:55.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.toggleCamButton
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:55.0]];
+}
+
+- (IBAction)toggleCamera:(id)sender {
+    // [self.session stopRunning];
+    [self.session beginConfiguration];
+
+    AVCaptureDeviceInput *input;
+    // if i have the back camera show the front
+    if (self.frontBack) {
+        
+        NSError *error;
+        input = [AVCaptureDeviceInput deviceInputWithDevice:self.frontDevice error:&error];
+        if (!input) {
+            NSLog(@"bad");
+            // Handle the error appropriately.
+        }
+    }
+    
+    // else i have the front camera show the back
+    else {
+        
+        NSError *error;
+        input = [AVCaptureDeviceInput deviceInputWithDevice:self.backDevice error:&error];
+        if (!input) {
+            NSLog(@"bad");
+            // Handle the error appropriately.
+        }
+    }
+    
+    [self.session removeInput:self.captureInput];
+    self.captureInput = input;
+    [self.session addInput:input];
+
+    // commit the configuration and toggle the frontback bool
+    [self.session commitConfiguration];
+    self.frontBack = !self.frontBack;
+
+}
 
 - (void)loadCameraButton {
 
     UIButton *button = [[UIButton alloc]init];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
 
-    [button addTarget:self action:@selector(takePicture:) forControlEvents:UIControlEventTouchDown];
+    [button addTarget:self action:@selector(takePicture:) forControlEvents:UIControlEventTouchUpInside];
 
 
     
@@ -193,15 +272,17 @@
     
     UIButton *button = [[UIButton alloc] init];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [button addTarget:self action:@selector(returnToMap:) forControlEvents:UIControlEventTouchDown];
-    [button setImage:[UIImage imageNamed:@"leaveCamera.png"] forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(returnToMap:) forControlEvents:UIControlEventTouchUpInside];
+    [button setImage:[UIImage imageNamed:@"less_then-100.png"] forState:UIControlStateNormal];
+    [button setImageEdgeInsets:UIEdgeInsetsMake(4,4,4,4)];
 
     [self setBackButton:button];
     
     [[self view] addSubview:self.backButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:16]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton
                                                           attribute:NSLayoutAttributeHeight
@@ -259,7 +340,7 @@
     _retakeButton = [[UIButton alloc] init];
     [_retakeButton setEnabled:TRUE];
     [_retakeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_retakeButton addTarget:self action:@selector(retakePicture:) forControlEvents:UIControlEventTouchDown];
+    [_retakeButton addTarget:self action:@selector(retakePicture:) forControlEvents:UIControlEventTouchUpInside];
     [_retakeButton setImage:[UIImage imageNamed:@"retake.png"] forState:UIControlStateNormal];
     _retakeButton.alpha = 0;
 
@@ -288,7 +369,7 @@
     _useButton = [[UIButton alloc] init];
     [_useButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_useButton setEnabled:TRUE];
-    [_useButton addTarget:self action:@selector(uploadImageButtonClick:) forControlEvents:UIControlEventTouchDown];
+    [_useButton addTarget:self action:@selector(uploadImageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [_useButton setImage:[UIImage imageNamed:@"uploadPhoto.png"] forState:UIControlStateNormal];
     _useButton.alpha = 0;
     
@@ -314,8 +395,9 @@
                                                          multiplier:1.0
                                                            constant:30.0]];
     
-    [_cameraButton setHidden:YES];
-    [_backButton setHidden:YES];
+    [self.cameraButton setHidden:YES];
+    [self.backButton setHidden:YES];
+    [self.toggleCamButton setHidden:YES];
     
     [UIView beginAnimations:@"fade in" context:nil];
     [UIView setAnimationDuration:.4];
@@ -376,11 +458,13 @@
 -(IBAction)retakePicture:(id)sender {
     
     NSLog(@"retake picture");
-    [_retakeButton removeFromSuperview];
-    [_useButton removeFromSuperview];
-    [_imageTaken removeFromSuperview];
-    [_cameraButton setHidden:NO];
-    [_backButton setHidden:NO];
+    [self.retakeButton removeFromSuperview];
+    [self.useButton removeFromSuperview];
+    [self.imageTaken removeFromSuperview];
+    [self.cameraButton setHidden:NO];
+    [self.backButton setHidden:NO];
+    [self.toggleCamButton setHidden:NO];
+
 }
 
 - (void)didReceiveMemoryWarning {

@@ -156,7 +156,7 @@
     // add flur button
     UIButton* addFlurButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
     [addFlurButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [addFlurButton addTarget:self action:@selector(addingFlur:) forControlEvents:UIControlEventTouchDown];
+    [addFlurButton addTarget:self action:@selector(addingFlur:) forControlEvents:UIControlEventTouchUpInside];
     
     [self setAddFlurButton:addFlurButton];
     [self.view addSubview: self.addFlurButton];

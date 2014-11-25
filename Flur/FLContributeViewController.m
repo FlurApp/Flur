@@ -43,7 +43,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    //self.view.tintColor = purp;
+    //self.view.tintColor = contributeColor;
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
@@ -60,7 +60,7 @@
     
     UILabel *promptLabel = [[UILabel alloc] init];
     [promptLabel setText:[self.pin prompt]];
-    [promptLabel setTextColor:purp];
+    [promptLabel setTextColor:contributeColor];
     [promptLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:30]];
     [promptLabel setLineBreakMode:NSLineBreakByWordWrapping];
     [promptLabel setNumberOfLines: 0];
@@ -74,7 +74,7 @@
     NSString *dateText = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:[self.pin dateCreated]]];
     [dateLabel setText: dateText];
     [dateLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:20]];
-    [dateLabel setTextColor:purp];
+    [dateLabel setTextColor:contributeColor];
     [dateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
 
     // pin contentCount
@@ -82,7 +82,7 @@
     NSNumber *n = [NSNumber numberWithInt:[self.pin contentCount]];
     UILabel *contentCountLabel = [[UILabel alloc] init];
     [contentCountLabel setText: [NSString stringWithFormat:@"Count: %@",n]];
-    [contentCountLabel setTextColor:purp];
+    [contentCountLabel setTextColor:contributeColor];
     [contentCountLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:20]];
     [contentCountLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     
@@ -100,15 +100,17 @@
     [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     //[[contributeButton layer] setCornerRadius:2];
     self.contributeButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
-    //[[contributeButton layer] setBorderColor:[purp CGColor]];
+    //[[contributeButton layer] setBorderColor:[contributeColor CGColor]];
     //[[contributeButton layer] setBorderWidth:2.0];
-    [[self.contributeButton layer] setBackgroundColor: [purp CGColor]];
+    [[self.contributeButton layer] setBackgroundColor: [contributeColor CGColor]];
     [self.contributeButton setCenter: self.view.center];
-    [self.contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchDown];
+    [self.contributeButton addTarget:self action:@selector(contributingToFlur:) forControlEvents:UIControlEventTouchUpInside];
+    [self.contributeButton addTarget:self action:@selector(contributingTouchDown:) forControlEvents:UIControlEventTouchDown];
+    [self.contributeButton addTarget:self action:@selector(contributingTouchUpOutside:) forControlEvents:UIControlEventTouchUpOutside];
     
     // separator
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 70, self.view.bounds.size.width, 1)];
-    lineView.backgroundColor = purp;
+    lineView.backgroundColor = contributeColor;
 
 
     // add subviews
@@ -194,7 +196,7 @@
 }
 
 - (IBAction)contributingToFlur:(id)sender {
-    NSLog(@"clicked contribute");
+    [self.contributeButton setBackgroundColor:contributeColor];
     
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:self.pin forKey:@"FLPin"];
@@ -204,6 +206,14 @@
     [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
                                       fromViewController:@"FLContributeViewController"
                                                 withData:data];
+}
+
+- (IBAction)contributingTouchDown:(id)sender {
+    self.contributeButton.backgroundColor = RGB(220,220,220);
+}
+
+- (IBAction)contributingTouchUpOutside:(id)sender {
+    self.contributeButton.backgroundColor = contributeColor;
 }
 
 - (void)exitContribute:(UITapGestureRecognizer *)recognizer {
