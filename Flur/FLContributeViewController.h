@@ -8,8 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol FLContributeViewControllerDelegate <NSObject>
+@end
+
 @interface FLContributeViewController : UIViewController
 - (id)initWithData:(NSMutableDictionary *)data;
+
+@property (nonatomic, assign) id<FLContributeViewControllerDelegate> delegate;
 
 
 @end

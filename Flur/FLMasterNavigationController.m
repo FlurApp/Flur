@@ -76,18 +76,7 @@ static UINavigationController *navController;
         
         // Entering Contribute View
         if ([newControllerName isEqualToString:@"FLContributeViewController"]) {
-            
-            FLContributeViewController *contributeController = [[FLContributeViewController alloc] initWithData:data];
-            [navController presentModalViewController:contributeController animated:YES];
-
-            //[navController pushViewController:contributeController animated:NO];
-
-//            [UIView animateWithDuration:0.75
-//                             animations:^{
-//                                 [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-// 
-//                                 [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:navController.view cache:NO];
-//                             }];
+            // currently not used
         }
     }
     
@@ -107,7 +96,7 @@ static UINavigationController *navController;
         }
         // returning to map view
         else if([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
-            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+            // currently not used
         }
     }
         

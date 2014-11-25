@@ -14,8 +14,6 @@
 
 @interface FLContributeViewController ()
 
-
-
 @property (nonatomic, readwrite) FLPin* pin;
 @property (nonatomic, strong) UIButton *contributeButton;
 @property (nonatomic, strong) NSLayoutConstraint *contributeButtonLeading;
@@ -33,6 +31,7 @@
         FLPin *pin = [data objectForKey:@"FLPin"];
         self.pin = pin;
         self.view.opaque = NO;
+        self.view.backgroundColor = RGBA(256,256,256,.4);
     }
     
     return self;
@@ -47,14 +46,12 @@
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
-    [self setModalPresentationStyle:UIModalPresentationOverCurrentContext];
-    self.view.backgroundColor = RGBA(255,255,255,.7);
-    
     // white overlay box
     CGRect whiteBoxRect = [[UIScreen mainScreen] bounds];
     whiteBoxRect.size.height /=2;
     UIView *whiteBox = [[UIView alloc] initWithFrame:whiteBoxRect];
     whiteBox.backgroundColor = [UIColor whiteColor];
+    whiteBox.alpha = 1;
     
     // pin prompt
     
@@ -180,10 +177,10 @@
     // fade in contribute button
     contributeUnderlay.opaque = NO;
     CABasicAnimation *fadeInAndOut = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    fadeInAndOut.duration = 0.5;
+    fadeInAndOut.duration = 0.8;
     fadeInAndOut.autoreverses = YES;
     fadeInAndOut.fromValue = [NSNumber numberWithFloat:1.0];
-    fadeInAndOut.toValue = [NSNumber numberWithFloat:0.0];
+    fadeInAndOut.toValue = [NSNumber numberWithFloat:0.7];
     fadeInAndOut.repeatCount = HUGE_VALF;
     fadeInAndOut.fillMode = kCAFillModeBoth;
     [contributeUnderlay.layer addAnimation:fadeInAndOut forKey:@"myanimation"];
@@ -217,10 +214,9 @@
 }
 
 - (void)exitContribute:(UITapGestureRecognizer *)recognizer {
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController"
-                                      fromViewController:@"FLContributeViewController"
-                                                withData:nil];
+    [self.view removeFromSuperview];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+
 }
 
 - (void)didReceiveMemoryWarning {

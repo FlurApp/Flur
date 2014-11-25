@@ -50,8 +50,9 @@
 
 @property (nonatomic, strong) NSMutableArray *myContrPins;
 
-@end
+@property (nonatomic, strong) FLContributeViewController *contributeController;
 
+@end
 
 @implementation FLInitialMapViewController
 
@@ -304,7 +305,7 @@
     }
 }
 
-- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
+- (void) didSelectAnnotationView_custom:(MKAnnotationView *)view
 {
     id<MKAnnotation> annotation = view.annotation;
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
@@ -322,13 +323,13 @@
             NSLog(@"hello");
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:p forKey:@"FLPin"];
-            [FLMasterNavigationController switchToViewController:@"FLContributeViewController"
-                            fromViewController:@"FLInitialMapViewController"
-                                                        withData:data];
-            
+
+            // add contribute view (it handles the status bar too)
+            self.contributeController = [[FLContributeViewController alloc] initWithData:data];
+            UIView *contrView = self.contributeController.view;
+            [self.view addSubview: contrView];
             
             NSLog(@"finally");
-            [self.mapView deselectAnnotation:view.annotation animated:false];
         }
     }
     return;
@@ -389,16 +390,16 @@
 }
 
 
-- (IBAction)contributingToFlur:(id)sender {
-    NSLog(@"clicked contribute");
-    
-    FLButton *buttonClicked = (FLButton *)sender;
-    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-    [data setObject:buttonClicked.pin forKey:@"FLPin"];
-    [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
-                                      fromViewController:@"FLInitialMapViewController"
-                                                withData:data];
-}
+//- (IBAction)contributingToFlur:(id)sender {
+//    NSLog(@"clicked contribute");
+//    
+//    FLButton *buttonClicked = (FLButton *)sender;
+//    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+//    [data setObject:buttonClicked.pin forKey:@"FLPin"];
+//    [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
+//                                      fromViewController:@"FLInitialMapViewController"
+//                                                withData:data];
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -555,7 +556,7 @@
                 // if the closest target area contains our touch point
                 // then select associated annotation
                 if (CGRectContainsPoint(fap, tp)) {
-                    [self.mapView selectAnnotation:ca animated:FALSE];
+                    [self didSelectAnnotationView_custom:ca.annotationView];
                 }
             }
         }

@@ -140,7 +140,7 @@
     }
     
     AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
-    [captureVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
+    [captureVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     
     captureVideoPreviewLayer.frame = self.view.bounds;
     [self.view.layer addSublayer:captureVideoPreviewLayer];
@@ -168,7 +168,7 @@
     
     UIButton *button = [[UIButton alloc] init];
     [button addTarget:self action:@selector(toggleCamera:) forControlEvents:UIControlEventTouchUpInside];
-    [button setImage:[UIImage imageNamed:@"toggleCamera.png"] forState:UIControlStateNormal];
+    [button setImage:[UIImage imageNamed:@"switchCam.png"] forState:UIControlStateNormal];
     
     [button setImageEdgeInsets:UIEdgeInsetsMake(10,10,10,10)];
     [self setToggleCamButton:button];
@@ -242,14 +242,15 @@
 
     
     [self setCameraButton:button];
-    [self.cameraButton setImage:[UIImage imageNamed:@"takePhoto.png"] forState:UIControlStateNormal];
+    [self.cameraButton setImage:[UIImage imageNamed:@"camera-100plus.png"] forState:UIControlStateNormal];
+    [button setImageEdgeInsets:UIEdgeInsetsMake(4,4,4,4)];
 
     
     [[self view] addSubview:self.cameraButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-55]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.cameraButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-64]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:_cameraButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.cameraButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.cameraButton
                                                           attribute:NSLayoutAttributeHeight
@@ -257,14 +258,14 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:40.0]];
+                                                           constant:54.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.cameraButton
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:40.0]];
+                                                           constant:54.0]];
 
 }
 
@@ -334,7 +335,7 @@
 - (void)configureImageView {
     
     [[self view] addSubview:[self imageTaken]];
-    _imageTaken.contentMode = UIViewContentModeScaleAspectFit;
+    _imageTaken.contentMode = UIViewContentModeScaleAspectFill;
     [_imageTaken setFrame:self.view.frame];
     
     _retakeButton = [[UIButton alloc] init];
