@@ -18,6 +18,7 @@
 #import "FLButton.h"
 #import "LocalStorage.h"
 #import "FLConstants.h"
+#import "FLContributeViewController.h"
 
 @interface FLInitialMapViewController () {
     CLLocation *currentLocation;

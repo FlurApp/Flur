@@ -229,7 +229,6 @@
     // commit the configuration and toggle the frontback bool
     [self.session commitConfiguration];
     self.frontBack = !self.frontBack;
-
 }
 
 - (void)loadCameraButton {
@@ -238,13 +237,10 @@
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
 
     [button addTarget:self action:@selector(takePicture:) forControlEvents:UIControlEventTouchUpInside];
-
-
     
     [self setCameraButton:button];
     [self.cameraButton setImage:[UIImage imageNamed:@"camera-100plus.png"] forState:UIControlStateNormal];
     [button setImageEdgeInsets:UIEdgeInsetsMake(4,4,4,4)];
-
     
     [[self view] addSubview:self.cameraButton];
     
@@ -266,7 +262,6 @@
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
                                                            constant:54.0]];
-
 }
 
 - (void)loadBackButton {
@@ -329,7 +324,6 @@
             [self configureImageView];
         }
     }];
-    
 }
 
 - (void)configureImageView {
@@ -419,22 +413,15 @@
     [self.photoManager uploadPhotoWithData:self.imageData withPin:self.pin withCompletion:^{
         [self handOffToPhotoVC];
     }];
-    
- 
 }
 
 - (void) loadPhotos {
     [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray* allPhotos) {
-        
     }];
-
-    
 }
     
 - (void) handOffToPhotoVC {
-    
 
-    
     self.count++;
     if (self.count == 2) {
         NSLog(@"handOffToPhotoVC Running");
@@ -445,15 +432,10 @@
         NSLog(@"out");
         [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
         NSLog(@"out2");
-
-
         
-        // Check that there are no duplicates and that the uploaded image is there
-        // [AppDelegate switchViewController:@"PhotoViewController" withData:self.dataToPass];
         [FLMasterNavigationController switchToViewController:@"PhotoViewController" fromViewController:@"FLCameraViewController" withData:self.dataToPass];
 
     }
- 
 }
 
 -(IBAction)retakePicture:(id)sender {
@@ -515,9 +497,6 @@
     self.spinner.animationRepeatCount = 0;
     [self.spinner startAnimating];
     [self.view addSubview:self.spinner];
-    
-    
-    
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
                                                           attribute:NSLayoutAttributeCenterY
