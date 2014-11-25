@@ -12,7 +12,6 @@
 #import "FLInitialMapViewController.h"
 #import "FLLoginViewController.h"
 #import "FLSplashViewController.h"
-#import "FLContributedListViewController.h"
 #import "LocalStorage.h"
 #import "FLTableViewController.h"
 #import "FLContributeViewController.h"

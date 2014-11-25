@@ -18,11 +18,12 @@
 + (void) loadCurrentUser:(void(^)(NSMutableDictionary*)) completion;
 + (void) getUserFound:(void(^)(bool))completion;
 
-
 + (void) getFlurs:(void(^)(NSMutableDictionary*)) completion;
 + (void) getFlursInDict:(void(^)(NSMutableDictionary*)) completion;
 + (void) addFlur:(NSMutableDictionary*)flurToAdd;
 + (void) deleteAllFlurs;
+
++ (void) syncWithServer;
 
 + (void) createTestData;
 

@@ -55,11 +55,23 @@
 
 @implementation FLInitialMapViewController
 
+- (instancetype) initWithData:(NSMutableDictionary *)data {
+    self = [super init];
+    
+    if (self) {
+        if ([data objectForKey:@"sync"] != nil) {
+            [LocalStorage syncWithServer];
+        }
+    }
+    
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    //[PFUser logOut];
-
+    [LocalStorage syncWithServer];
+    
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     

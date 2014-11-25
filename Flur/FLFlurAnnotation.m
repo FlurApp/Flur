@@ -110,7 +110,6 @@
     annotationView.enabled = YES;
     annotationView.canShowCallout = NO;
 
-    NSLog(self.pin.haveContributedTo ? @"Have contributed": @"have not contributed");
     if (self.pin.haveContributedTo)
         [self showAnnotationAsOpenable:annotationView];
     else

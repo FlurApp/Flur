@@ -7,6 +7,7 @@
 //
 #import <CoreData/CoreData.h>
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
 
 #import "LocalStorage.h"
 #import "User.h"
@@ -37,6 +38,72 @@ static bool userFound = false;
 
     [[NSFileManager defaultManager] removeItemAtPath:url.path error:&error];
     NSLog(@"error : %@", error);
+}
+
++ (void) syncWithServer {
+    
+    PFUser* curUser = [PFUser currentUser];
+    if (!curUser) {
+        NSLog(@"Error: Trying to sync with server in LocalStorage.m but not logged.");
+        return;
+    }
+    
+    PFQuery *innerQuery = [PFQuery queryWithClassName:@"_User"];
+    [innerQuery whereKey:@"username" equalTo:curUser.username];
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Images"];
+    [query whereKey:@"createdBy" matchesQuery:innerQuery];
+    [query includeKey:@"flurPin"];
+
+    [query findObjectsInBackgroundWithBlock:^(NSArray *imagesContributed, NSError *error) {
+        if (!error) {
+            NSMutableArray *flurObjectIds = [[NSMutableArray alloc] init];
+            for (id image in imagesContributed) {
+                PFObject *flurContributedTo = image[@"flurPin"];
+                [flurObjectIds addObject:[flurContributedTo objectId]];
+            }
+            
+            PFQuery *query2 = [PFQuery queryWithClassName:@"FlurPin"];
+            [query2 whereKey:@"objectId" containedIn:[NSArray arrayWithArray:flurObjectIds]];
+            [query2 includeKey:@"createdBy"];
+            [query2 findObjectsInBackgroundWithBlock:^(NSArray *users, NSError *error) {
+                NSLog(@"Length: %lu", users.count);
+            }];
+
+                
+                //[LocalStorage openDocumentWithCompletion:^{
+                    /*Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
+                                                               inManagedObjectContext:document.managedObjectContext];
+                    flur.prompt = flurContributedTo[@"prompt"];
+                    
+                    PFGeoPoint *location =((PFGeoPoint *)flurContributedTo[@"location"]);
+
+                    flur.lng = [NSNumber numberWithDouble:location.longitude];
+                    flur.lat = [NSNumber numberWithDouble:location.latitude];
+                    
+                    flur.numContributions = flurContributedTo[@"contentCount"];
+                    flur.objectId = flurContributedTo[@"objectId"];
+                    
+                    flur.creatorUsername = flurContributedTo[@"creatorUsername"];
+                    flur.dateAdded = flurContributedTo[@"dateAdded"];
+                    flur.dateCreated = flurContributedTo[@"dateCreated"];
+                    
+                    
+                    [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
+                        NSLog(@"saved");
+                    }];
+                    
+                    NSLog(@"lat: %@", flurContributedTo[@"location"]);
+                    NSLog(@"asdf: %f", f.latitude);
+                    NSLog(@"lat: %@", ((PFGeoPoint *)flurContributedTo[@"location"]).latitude);*/
+                    
+                
+                
+                //}];
+        }
+    }];
+    
+    
 }
 
 + (void) openDocumentWithCompletion:(void(^)())completion {

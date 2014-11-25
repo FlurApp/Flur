@@ -33,5 +33,7 @@
 @property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) UIButton *tableListButton;
 
+- (instancetype) initWithData:(NSMutableDictionary *)data;
+
 
 @end
