@@ -10,6 +10,7 @@
 
 #import "FLSettingsViewController.h"
 #import "FLConstants.h"
+#import "FLMasterNavigationController.h"
 
 @interface FLSettingsViewController ()
 
@@ -133,7 +134,8 @@
     
     self.logoutButton = [[UIButton alloc] init];
     [self.logoutButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-
+    [self.logoutButton addTarget:self action:@selector(logOut:) forControlEvents:UIControlEventTouchUpInside];
+    
     [self.logoutButton setTitle:@"Logout" forState:UIControlStateNormal];
     self.logoutButton.backgroundColor = RGB(232,72,49);
     self.logoutButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
@@ -199,6 +201,11 @@
     
     
     // Do any additional setup after loading the view.
+}
+
+- (IBAction)logOut:(id)sender {
+    [PFUser logOut];
+    [FLMasterNavigationController switchToViewController:@"FLSplashViewController" fromViewController:@"FLSettingsViewController" withData:nil];
 }
 
 - (void)didReceiveMemoryWarning {

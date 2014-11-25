@@ -34,7 +34,7 @@ static UINavigationController *navController;
 
 + (void) init {
     
-    // [LocalStorage createTestData];
+     [LocalStorage createTestData];
     
     // if a user is found
     PFUser *currentUser = [PFUser currentUser];
@@ -177,7 +177,18 @@ static UINavigationController *navController;
         }
     }
 
-
+    // logOut
+    else if ([oldControllerName isEqualToString:@"FLSettingsViewController"]) {
+        [navController popViewControllerAnimated:YES];
+        FLSplashViewController *splashController = [[FLSplashViewController alloc] init];
+        [UIView animateWithDuration:0.75
+                         animations:^{
+                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+                             [navController pushViewController:splashController animated:YES];
+                             [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:navController.view cache:NO];
+                         }];
+        
+    }
     
     else {
         NSLog(@"Not a correct controllerName for switchController");
