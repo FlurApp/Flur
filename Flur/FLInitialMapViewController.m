@@ -283,11 +283,8 @@
         [self.mapManager updateCurrentLocation:newLocation
                             andRefreshLocation:false];
         
-        NSMutableArray *indexes1 = [self.mapManager getNewlyOpenablePins];
-        [self updateAnnotations:indexes1 isNowOpenable:true];
-        
-        NSMutableArray *indexes2 = [self.mapManager getNewlyNonOpenablePins];
-        [self updateAnnotations:indexes2 isNowOpenable:false];
+        [self updateAnnotations:[self.mapManager getNewlyOpenablePins] isNowOpenable:true];
+        [self updateAnnotations:[self.mapManager getNewlyNonOpenablePins] isNowOpenable:false];
     }
     
     
@@ -316,22 +313,24 @@
         // this is where you can find the annotation type is whether it is userlocation or not...
     }
     FLFlurAnnotation* fa = view.annotation;
-//    if(fa.pinId) {
-//        NSString* id = fa.pinId;
-//        FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
-//        if(p) {
-//            //[self showOverlay:p];
-//            NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-//            [data setObject:p forKey:@"FLPin"];
-//            [FLMasterNavigationController switchToViewController:@"FLContributeViewController"
-//                            fromViewController:@"FLInitialMapViewController"
-//                                                        withData:data];
-//            
-//            
-//            
-//            [self.mapView deselectAnnotation:view.annotation animated:false];
-//        }
-//    }
+    NSLog(@"Clicked: %@", fa.pin.pinId);
+    if(fa.pin.pinId) {
+        NSString* id = fa.pin.pinId;
+        FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
+        NSLog(@"now");
+        if(p) {
+            NSLog(@"hello");
+            NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+            [data setObject:p forKey:@"FLPin"];
+            [FLMasterNavigationController switchToViewController:@"FLContributeViewController"
+                            fromViewController:@"FLInitialMapViewController"
+                                                        withData:data];
+            
+            
+            NSLog(@"finally");
+            [self.mapView deselectAnnotation:view.annotation animated:false];
+        }
+    }
     return;
 }
 

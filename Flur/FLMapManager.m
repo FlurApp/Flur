@@ -14,6 +14,8 @@
 @interface FLMapManager() {}
 
 @property (nonatomic, strong) NSMutableDictionary *allFlursContributedTo;
+@property (nonatomic, strong) NSMutableDictionary *allFlursFromServer;
+
 @property (nonatomic) NSInteger synchInt;
 
 
@@ -27,8 +29,11 @@
     if (self) {
         self.currentLocation = [[PFGeoPoint alloc] init];
         self.refreshLocation = [[PFGeoPoint alloc] init];
+        
         self.nonOpenablePins = [[NSMutableDictionary alloc] init];
         self.openablePins = [[NSMutableDictionary alloc] init];
+        self.allFlursFromServer = [[NSMutableDictionary alloc] init];
+
         self.firstPinGrab = true;
         self.synchInt = 0;
         self.allFlursContributedTo = nil;
@@ -73,8 +78,15 @@
         if (!error) {
             for (int i=0; i<objects.count; i++) {
                 FLPin* pin = [[FLPin alloc] initWith: objects[i]];
+                
+                [self.allFlursFromServer setObject:pin forKey:pin.pinId];
+                
+                if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance)
+                    [self.openablePins setObject:pin forKey: pin.pinId];
+                else
                     [self.nonOpenablePins setObject:pin forKey: pin.pinId];
             }
+            
             [self sendPinsToVC:completion];
             // completion(self.nonOpenablePins);
         }
@@ -85,14 +97,14 @@
 
 - (void) sendPinsToVC:(void (^) (NSMutableDictionary* allNonOpenablePins)) completion {
     self.synchInt++;
+    
     if (self.synchInt == 2) {
-        for (id key in self.nonOpenablePins) {
+        for (id key in self.allFlursFromServer) {
             if ([self.allFlursContributedTo objectForKey:key] != nil) {
-                ((FLPin *)[self.nonOpenablePins objectForKey:key]).haveContributedTo = true;
-                NSLog(@"Have seen");
+                ((FLPin *)[self.allFlursFromServer objectForKey:key]).haveContributedTo = true;
             }
         }
-        completion(self.nonOpenablePins);
+        completion(self.allFlursFromServer);
     }
 }
 
