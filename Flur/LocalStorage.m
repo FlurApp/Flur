@@ -48,29 +48,65 @@ static bool userFound = false;
         return;
     }
     
+    // Set up inner query so that the User pointer points to the local users account
     PFQuery *innerQuery = [PFQuery queryWithClassName:@"_User"];
     [innerQuery whereKey:@"username" equalTo:curUser.username];
     
+    // Find all images that have been added by the local user
     PFQuery *query = [PFQuery queryWithClassName:@"Images"];
     [query whereKey:@"createdBy" matchesQuery:innerQuery];
     [query includeKey:@"flurPin"];
 
     [query findObjectsInBackgroundWithBlock:^(NSArray *imagesContributed, NSError *error) {
         if (!error) {
+            NSMutableDictionary *localStorageFlurData = [[NSMutableDictionary alloc] init];
             NSMutableArray *flurObjectIds = [[NSMutableArray alloc] init];
+
             for (id image in imagesContributed) {
                 PFObject *flurContributedTo = image[@"flurPin"];
-                [flurObjectIds addObject:[flurContributedTo objectId]];
+
+                if ([localStorageFlurData objectForKey:flurContributedTo[@"objectId"]] == nil) {
+                    NSMutableDictionary *flurToAdd = [[NSMutableDictionary alloc] init];
+                    
+                    flurToAdd[@"objectId"] = [flurContributedTo objectId];
+                    flurToAdd[@"prompt"] = flurContributedTo[@"prompt"];
+                    
+                    PFGeoPoint *location =((PFGeoPoint *)flurContributedTo[@"location"]);
+                    flurToAdd[@"lat"] = [NSNumber numberWithDouble:location.latitude];
+                    flurToAdd[@"lng"] = [NSNumber numberWithDouble:location.longitude];
+                    
+                    flurToAdd[@"numContributions"] = flurContributedTo[@"contentCount"];
+
+                    flurToAdd[@"dateCreated"] = [flurContributedTo createdAt];
+                    flurToAdd[@"dateAdded"] = [image createdAt];
+
+                    [localStorageFlurData setObject:flurToAdd forKey:[flurContributedTo objectId]];
+                    [flurObjectIds addObject:[flurContributedTo objectId]];
+                }
             }
             
             PFQuery *query2 = [PFQuery queryWithClassName:@"FlurPin"];
             [query2 whereKey:@"objectId" containedIn:[NSArray arrayWithArray:flurObjectIds]];
             [query2 includeKey:@"createdBy"];
-            [query2 findObjectsInBackgroundWithBlock:^(NSArray *users, NSError *error) {
-                NSLog(@"Length: %lu", users.count);
-            }];
+            [query2 selectKeys:@[@"createdBy", @"objectId"]];
+                                                                                                                                                                                                                                        
 
+            [query2 findObjectsInBackgroundWithBlock:^(NSArray *users, NSError *error) {
+                for (id user in users) {
+                    NSMutableDictionary *flurToAdd = [localStorageFlurData objectForKey:[user objectId]];
+                    NSString *creatorUsername = user[@"createdBy"][@"username"];
+                    flurToAdd[@"creatorUsername"] = creatorUsername;
+                }
                 
+                for (id key in localStorageFlurData) {
+                    [LocalStorage addFlur:[localStorageFlurData objectForKey:key]];
+                }
+                
+            }];
+            //flurToAdd[@"creatorUsername"] = flurContributedTo[@"creatorUsername"];
+
+
+            
                 //[LocalStorage openDocumentWithCompletion:^{
                     /*Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
                                                                inManagedObjectContext:document.managedObjectContext];
@@ -203,6 +239,8 @@ static bool userFound = false;
                 return;
             }
         }
+        
+        return;
         
         Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
                                                    inManagedObjectContext:document.managedObjectContext];
