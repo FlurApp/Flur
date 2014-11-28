@@ -194,12 +194,6 @@
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.inviteFriends attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:buttonHeight]];
     
-    
-    
-    
-
-    
-    
     // Do any additional setup after loading the view.
 }
 

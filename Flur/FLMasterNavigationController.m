@@ -34,7 +34,7 @@ static UINavigationController *navController;
 
 + (void) init {
     
-     [LocalStorage createTestData];
+    //[LocalStorage createTestData];
     
     // if a user is found
     PFUser *currentUser = [PFUser currentUser];
@@ -131,7 +131,8 @@ static UINavigationController *navController;
             NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
             int position = (navController.viewControllers.count - 1);
             [navArray removeObjectAtIndex:position-1];
-            
+            MainViewController *main = [navArray objectAtIndex:0];
+            [main.centerViewController.contributeController.view removeFromSuperview];
             
             [navController setViewControllers:navArray animated:YES];
             [navController popViewControllerAnimated:YES];
@@ -179,15 +180,12 @@ static UINavigationController *navController;
 
     // logOut
     else if ([oldControllerName isEqualToString:@"FLSettingsViewController"]) {
-        [navController popViewControllerAnimated:YES];
         FLSplashViewController *splashController = [[FLSplashViewController alloc] init];
-        [UIView animateWithDuration:0.75
-                         animations:^{
-                             [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-                             [navController pushViewController:splashController animated:YES];
-                             [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:navController.view cache:NO];
-                         }];
-        
+        [navController pushViewController:splashController animated:YES];
+
+        NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
+        [navArray removeObjectAtIndex:0];
+        [navController setViewControllers:navArray animated:YES];
     }
     
     else {

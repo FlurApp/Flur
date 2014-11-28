@@ -18,7 +18,6 @@
 #import "FLButton.h"
 #import "LocalStorage.h"
 #import "FLConstants.h"
-#import "FLContributeViewController.h"
 
 @interface FLInitialMapViewController () {
     CLLocation *currentLocation;
@@ -51,16 +50,12 @@
 
 @property (nonatomic, strong) NSMutableArray *myContrPins;
 
-@property (nonatomic, strong) FLContributeViewController *contributeController;
-
 @end
 
 @implementation FLInitialMapViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    //[PFUser logOut];
 
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
@@ -306,22 +301,25 @@
     }
 }
 
-- (void) didSelectAnnotationView_custom:(MKAnnotationView *)view
-{
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     id<MKAnnotation> annotation = view.annotation;
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
         view.selected = NO;
         return;
-        // this is where you can find the annotation type is whether it is userlocation or not...
     }
+}
+
+- (void) didSelectAnnotationView_custom:(MKAnnotationView *)view
+{
+
     FLFlurAnnotation* fa = view.annotation;
     NSLog(@"Clicked: %@", fa.pin.pinId);
     if(fa.pin.pinId) {
         NSString* id = fa.pin.pinId;
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
-        NSLog(@"now");
+       //  NSLog(@"now");
         if(p) {
-            NSLog(@"hello");
+            // NSLog(@"hello");
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:p forKey:@"FLPin"];
 
@@ -330,7 +328,7 @@
             UIView *contrView = self.contributeController.view;
             [self.view addSubview: contrView];
             
-            NSLog(@"finally");
+           // NSLog(@"finally");
         }
     }
     return;
@@ -390,18 +388,6 @@
     // [self showAddPromptToNewFlurOverlay];
 }
 
-
-//- (IBAction)contributingToFlur:(id)sender {
-//    NSLog(@"clicked contribute");
-//    
-//    FLButton *buttonClicked = (FLButton *)sender;
-//    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-//    [data setObject:buttonClicked.pin forKey:@"FLPin"];
-//    [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
-//                                      fromViewController:@"FLInitialMapViewController"
-//                                                withData:data];
-//}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
@@ -424,41 +410,6 @@
 
 - (void) removeBlur {
     [self.blurEffectView removeFromSuperview];
-}
-
-- (UIColor*) colorWithHexString:(NSString*)hex {
-    NSString *cString = [[hex stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
-    
-    // String should be 6 or 8 characters
-    if ([cString length] < 6) return [UIColor grayColor];
-    
-    // strip 0X if it appears
-    if ([cString hasPrefix:@"0X"]) cString = [cString substringFromIndex:2];
-    
-    if ([cString length] != 6) return  [UIColor grayColor];
-    
-    // Separate into r, g, b substrings
-    NSRange range;
-    range.location = 0;
-    range.length = 2;
-    NSString *rString = [cString substringWithRange:range];
-    
-    range.location = 2;
-    NSString *gString = [cString substringWithRange:range];
-    
-    range.location = 4;
-    NSString *bString = [cString substringWithRange:range];
-    
-    // Scan values
-    unsigned int r, g, b;
-    [[NSScanner scannerWithString:rString] scanHexInt:&r];
-    [[NSScanner scannerWithString:gString] scanHexInt:&g];
-    [[NSScanner scannerWithString:bString] scanHexInt:&b];
-    
-    return [UIColor colorWithRed:((float) r / 255.0f)
-                           green:((float) g / 255.0f)
-                            blue:((float) b / 255.0f)
-                           alpha:1.0f];
 }
 
 - (IBAction)btnMovePanelRight:(id)sender

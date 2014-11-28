@@ -34,7 +34,6 @@
     // [LocalStorage createTestData];
     
     self.months = [[NSArray alloc] initWithObjects:@"Jan", @"Feb", @"Mar", @"Apr", @"Jun", @"Jul", @"Aug", @"Sep", @"Oct", @"Nov", @"Dec", nil];
-    //[PFUser logOut];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -223,22 +222,22 @@
     
     cell.cellPrompt.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
     
-    NSDate *date = [[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"MM"];
-    NSInteger curMonth = [[dateFormatter stringFromDate:date] integerValue] - 1;
-    
-    [dateFormatter setDateFormat:@"dd"];
-    NSString *curDay = [NSString stringWithFormat:@"%ld", [[dateFormatter stringFromDate:date] integerValue]];
-    
-    [dateFormatter setDateFormat:@"YYYY"];
-    NSString *curYear = [dateFormatter stringFromDate:date];
-
-    
-    cell.cellDate.text = [NSString stringWithFormat:@"%@ %@, %@", self.months[curMonth], curDay, curYear];
-    cell.cellContentCount.text = @"7 Contributors";
-    
-    cell.flur = [self.pinsArray objectAtIndex:indexPath.row];
+//    NSDate *date = [[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
+//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+//    [dateFormatter setDateFormat:@"MM"];
+//    NSInteger curMonth = [[dateFormatter stringFromDate:date] integerValue] - 1;
+//    
+//    [dateFormatter setDateFormat:@"dd"];
+//    NSString *curDay = [NSString stringWithFormat:@"%ld", [[dateFormatter stringFromDate:date] integerValue]];
+//    
+//    [dateFormatter setDateFormat:@"YYYY"];
+//    NSString *curYear = [dateFormatter stringFromDate:date];
+//
+//    
+//    cell.cellDate.text = [NSString stringWithFormat:@"%@ %@, %@", self.months[curMonth], curDay, curYear];
+//    cell.cellContentCount.text = @"7 Contributors";
+//    
+//    cell.flur = [self.pinsArray objectAtIndex:indexPath.row];
 
     return cell;
 }

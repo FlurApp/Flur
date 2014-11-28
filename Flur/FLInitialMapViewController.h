@@ -12,6 +12,7 @@
 
 #import "FLTableViewController.h"
 #import "FLSettingsViewController.h"
+#import "FLContributeViewController.h"
 
 @protocol FLInitialMapViewControllerDelegate <NSObject>
 
@@ -32,6 +33,6 @@
 
 @property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) UIButton *tableListButton;
-
+@property (nonatomic, strong) FLContributeViewController *contributeController;
 
 @end

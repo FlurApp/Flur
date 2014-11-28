@@ -90,8 +90,12 @@
             [self sendPinsToVC:completion];
             // completion(self.nonOpenablePins);
         }
-        else
+        else {
             NSLog(@"fuck");
+            UIAlertView *errorAlert = [[UIAlertView alloc]
+                                       initWithTitle:@"Cannot Connect" message:(@"No Internet Connection") delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [errorAlert show];
+        }
     }];
 }
 
