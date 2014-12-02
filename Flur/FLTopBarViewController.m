@@ -15,6 +15,10 @@
 @property (nonatomic, strong) UILabel *pageTitle;
 @property (nonatomic, strong) UIButton *backButton;
 
+@property (nonatomic) BOOL tableViewMode;
+@property (nonatomic) BOOL infoViewMode;
+
+
 
 @end
 
@@ -22,6 +26,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.infoViewMode = false;
+    self.tableViewMode = false;
     
     /* ---------------------------------------
                 Setup Top Bar
@@ -147,31 +154,65 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
     
     
+    
+    /* ----------------------------------------------------------
+                Add Back Button  to Top Bar
+     -----------------------------------------------------------*/
     self.backButton = [[UIButton alloc] init];
     [self.backButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.backButton addTarget:self action:@selector(returnToMap:)
+    [self.backButton addTarget:self action:@selector(backButtonPress:)
               forControlEvents:UIControlEventTouchDown];
-    [self.backButton setImage:[UIImage imageNamed:@"less_then-"] forState:UIControlStateNormal];
-    
+    [self.backButton setImage:[UIImage imageNamed:@"less_then-100.png"] forState:UIControlStateNormal];
+    self.backButton.alpha = 0;
     [self.view addSubview:self.backButton];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
     
-   [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:20]];
+   [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30]];
     
-   [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:20]];
+   [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30]];
     
 
 }
 
-- (IBAction)returnToMap:(id)sender {
+- (IBAction)backButtonPress:(id)sender {
+    if (self.tableViewMode) {
+        [self.delegate hideTablePage];
+        self.tableViewMode = false;
+        
+        [UIView animateWithDuration:.2 animations:^{
+            self.pageTitle.alpha = 0;
+            self.backButton.alpha = 0;
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:.2 animations:^{
+                self.menuButton.alpha = 1;
+                self.tableListButton.alpha = 1;
+                self.flurImageContainer.alpha = 1;
+            }];
+        }];
+    }
+    else if (self.infoViewMode) {
+        self.infoViewMode = false;
+        self.tableViewMode = true;
+        [self.delegate hideInfoPage];
+        [UIView animateWithDuration:.2 animations:^{
+            self.pageTitle.alpha = 0;
+        } completion:^(BOOL finished) {
+            self.pageTitle.text = @"Past Contributions";
+            [UIView animateWithDuration:.2 animations:^{
+                self.pageTitle.alpha = 1;
+            }];
+        }];
+        
+    }
     
 }
 
 - (IBAction)showTableView:(id)sender {
-    [self.delegate tableButtonPress];
+    [self.delegate showTablePage];
+    self.tableViewMode = true;
     
     [UIView animateWithDuration:.2 animations:^{
         self.menuButton.alpha = 0;
@@ -181,6 +222,7 @@
         self.pageTitle.text = @"Past Contributions";
         [UIView animateWithDuration:.2 animations:^{
             self.pageTitle.alpha = 1;
+            self.backButton.alpha = 1;
         }];
     }];
 }
@@ -188,6 +230,22 @@
 
 - (IBAction)showSettingsPage:(id)sender {
     [self.delegate settingButtonPress];
+}
+
+- (void) showInfoPageBar {
+    self.tableViewMode = false;
+    self.infoViewMode = true;
+
+    
+    [UIView animateWithDuration:.2 animations:^{
+        self.pageTitle.alpha = 0;
+    } completion:^(BOOL finished) {
+        self.pageTitle.text = @"Flur Info";
+        [UIView animateWithDuration:.2 animations:^{
+            self.pageTitle.alpha = 1;
+        }];
+    }];
+ 
 }
 
 - (void)didReceiveMemoryWarning {

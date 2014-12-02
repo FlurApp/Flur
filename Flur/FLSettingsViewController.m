@@ -199,7 +199,7 @@
 }
 
 - (IBAction)logOut:(id)sender {
-    [PFUser logOut];
+    // [PFUser logOut];
     [FLMasterNavigationController switchToViewController:@"FLSplashViewController" fromViewController:@"FLSettingsViewController" withData:nil];
 }
 

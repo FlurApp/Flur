@@ -35,8 +35,8 @@
 #define closeToPinDistance .02 //how close we are to open a pin
 
 // FLSettingsViewController
-#define profilePictureSize 120
-#define profilePictureBorderSize 126
+#define profilePictureSize 180
+#define profilePictureBorderSize 186
 #define buttonHeight 70
 
 #define personalInfoLeading 20

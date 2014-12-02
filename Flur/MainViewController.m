@@ -11,6 +11,7 @@
 
 #import "FLConstants.h"
 #import "LocalStorage.h"
+#import "FLCustomCellTableViewCell.h"
 
 @interface MainViewController ()
 
@@ -83,7 +84,7 @@
 
 - (void)setupView {
 
-
+    NSLog(@"wadup");
     
     
     /* -------------------------------------------
@@ -96,7 +97,7 @@
     [self.view addSubview:self.settingsView.view];
     [self addChildViewController:self.settingsView];
     
-    self.settingsView.view.frame = CGRectMake(0, 0,
+    self.settingsView.view.frame = CGRectMake(-self.view.frame.size.width, 0,
                                               self.view.frame.size.width,
                                               self.view.frame.size.height);
     
@@ -141,22 +142,23 @@
     
     [self addChildViewController:self.tableView];
     
-    self.tableView.view.frame = CGRectMake(self.view.frame.size.width, TOP_BAR_HEIGHT,
-                                           self.view.frame.size.width, self.view.frame.size.height);
+    self.tableView.view.frame = CGRectMake(-self.view.frame.size.width, TOP_BAR_HEIGHT,
+                                           self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
     
     
     
     /* -------------------------------------------
                 Setup Flur INfo View.
      -----------------------------------------------*/
-    self.flurInfoView = [[FLFlurInfoViewController alloc] init];
+    self.flurInfoView = [[FLFlurInfoViewController alloc] initWithData:nil];
     self.flurInfoView.delegate = self;
     
     [self.view addSubview:self.flurInfoView.view];
     
     [self addChildViewController:self.flurInfoView];
     
-    self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
+    self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
+                                              self.view.frame.size.height - TOP_BAR_HEIGHT);
     
     
 
@@ -188,6 +190,10 @@
     self.settingsVisible = true;
     [self.mapView showWhiteLayer];
     [self.settingsView didMoveToParentViewController:self];
+    
+    self.settingsView.view.frame =  CGRectMake(0, 0,
+                                               self.view.frame.size.width,
+                                               self.view.frame.size.height);
 
     [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
                          
@@ -215,29 +221,27 @@
              self.topBarView.view.frame =  CGRectMake(0, 0, self.topBarView.view.frame.size.width,
                                                       self.topBarView.view.frame.size.height);
              
-    } completion:^(BOOL finished) { }];
-}
-
-- (void) tableButtonPress {
-    if (self.tableVisible)
-        [self hideTablePage];
-    else
-        [self showTablePage];
-
+    } completion:^(BOOL finished) {
+        self.settingsView.view.frame =  CGRectMake(-self.view.frame.size.width, 0,
+                                                   self.view.frame.size.width,
+                                                   self.view.frame.size.height);
+    }];
 }
 
 - (void) showTablePage {
     self.tableVisible = true;
     [self.tableView didMoveToParentViewController:self];
+    
+    self.tableView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
+                                           self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
+
+    [self.view sendSubviewToBack:self.tableView.view];
 
     [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         
         self.mapView.view.frame = CGRectMake(-self.view.frame.size.width, 0,
                                              self.view.frame.size.width,
                                              self.view.frame.size.height);
-        
-        self.tableView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT, self.view.frame.size.width,
-                                               self.view.frame.size.height);
         
     } completion:^(BOOL finished) { }];
     
@@ -246,52 +250,43 @@
 - (void) hideTablePage {
     self.tableVisible = false;
     [self.mapView didMoveToParentViewController:self];
+    [FLCustomCellTableViewCell closeCurrentlyOpenCell];
     
     [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         
         self.mapView.view.frame = CGRectMake(0, 0,
                                              self.view.frame.size.width,
                                              self.view.frame.size.height);
+
         
-        self.tableView.view.frame = CGRectMake(self.view.frame.size.width, TOP_BAR_HEIGHT, self.view.frame.size.width,
-                                               self.view.frame.size.height);
-        
+    } completion:^(BOOL finished) {
+        self.tableView.view.frame = CGRectMake(-self.view.frame.size.width, TOP_BAR_HEIGHT,
+                                               self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
+    }];
+}
+
+- (void) showInfoPage:(NSMutableDictionary *)data {
+    [self.topBarView showInfoPageBar];
+    [self.flurInfoView setData:data];
+    self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                              self.flurInfoView.view.frame.size.width,
+                                              self.flurInfoView.view.frame.size.height);
+    
+    [UIView animateWithDuration:.3 delay:.2 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.flurInfoView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
+                                                    self.flurInfoView.view.frame.size.width,
+                                                    self.flurInfoView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+    
+}
+
+- (void) hideInfoPage {
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                                  self.flurInfoView.view.frame.size.width,
+                                                  self.flurInfoView.view.frame.size.height);
     } completion:^(BOOL finished) { }];
 }
-
-
-- (void)showCenterViewWithShadow:(BOOL)value withOffset:(double)offset
-{
-    /*if (value)
-    {
-        [_centerViewController.view.layer setCornerRadius:CORNER_RADIUS];
-        [_centerViewController.view.layer setShadowColor:[UIColor blackColor].CGColor];
-        [_centerViewController.view.layer setShadowOpacity:0.0];
-        [_centerViewController.view.layer setShadowOffset:CGSizeMake(offset, offset)];
-        
-    }
-    else
-    {
-        [_centerViewController.view.layer setCornerRadius:0.0f];
-        [_centerViewController.view.layer setShadowOffset:CGSizeMake(offset, offset)];
-    }*/
-}
-
-/*- (void)resetMainView
-{
-
-        
-    _centerViewController.menuButton.tag = 1;
-    self.showingLeftPanel = NO;
-    _centerViewController.tableListButton.tag = 1;
-    self.showingRightPanel = NO;
-    
-    [_centerViewController didMoveToParentViewController:self];
-
-    
-    // remove view shadows
-    [self showCenterViewWithShadow:NO withOffset:0];
-}*/
 
 - (UIView *) getMapView {
     [self.mapView didMoveToParentViewController:self];

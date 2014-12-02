@@ -18,13 +18,15 @@
 //+ (MKAnnotationView *)createViewAnnotationForMapView:(MKMapView *)mapView annotation:(id <MKAnnotation>)annotation;
 
 - (id)initWithPin:(FLPin*) pin;
+- (id) initWithLat:(double) lat initWithLng:(double) lng;
+- (id) init;
 - (MKAnnotationView*) annotationView;
 - (NSString *) description;
 
 - (void) showAnnotationAsOpenable:(MKAnnotationView *) annotationViewFromMap;
 - (void) showAnnotationAsNonOpenable:(MKAnnotationView *) annotationViewFromMap;
 
-@property (nonatomic, readonly) CLLocationCoordinate2D coordinate;
+@property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, readonly, copy) NSString *title;
 @property (nonatomic, readonly, copy) NSString *subtitle;
 @property (nonatomic, strong) FLPin* pin;

@@ -6,6 +6,9 @@
 //  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
 //
 
+@import MapKit;
+
+
 #import "FLFlurInfoViewController.h"
 #import "UILabel+MultiColor.h"
 #import "FLFlurAnnotation.h"
@@ -18,7 +21,9 @@
 
 @interface FLFlurInfoViewController ()
 
-@property (nonatomic, strong) UIButton *viewAlbum;
+@property (nonatomic, strong) UIButton *viewAlbumButton;
+@property (nonatomic, strong) UIButton *contributeButton;
+
 @property (nonatomic, strong) UIView *flurInfoContainer;
 
 @property (nonatomic, strong) UIView *mapViewContainer;
@@ -29,17 +34,15 @@
 @property (nonatomic, strong) UILabel *totalContributions;
 
 @property (nonatomic, strong) UIButton *backButton;
-
-
-
-
-@property (nonatomic) NSInteger topBarHeight;
-@property (nonatomic) NSInteger flurInfoHeight;
-@property (nonatomic) NSInteger mapHeight;
+@property (nonatomic) CLLocationCoordinate2D coord;
 @property (nonatomic) NSInteger buttonHeight;
 
 @property (nonatomic, strong) Flur *flur;
+@property (nonatomic, strong) NSArray *months;
+@property (nonatomic, strong) FLFlurAnnotation *annotation;
 
+@property (nonatomic, strong, readwrite) CLLocationManager *locationManager;
+@property (nonatomic) BOOL contributeView;
 
 
 
@@ -52,110 +55,99 @@
     self = [super init];
     if (self) {
         self.flur = [data objectForKey:@"flur"];
+        self.months = [[NSArray alloc] initWithObjects:@"Jan", @"Feb", @"Mar", @"Apr", @"Jun", @"Jul", @"Aug", @"Sep", @"Oct", @"Nov", @"Dec", nil];
+        self.annotation = nil;
     }
     return self;
 }
 
+- (void) setData:(NSMutableDictionary *) data {
+    
+    if ([data objectForKey:@"contributeView"]) {
+        self.contributeView = true;
+        [self.mapView removeFromSuperview];
+    }
+    else {
+        self.contributeView = false;
+        [self.mapViewContainer addSubview:self.mapView];
+    }
+    
+    self.flur = [data objectForKey:@"flur"];
+   // NSLog(@"FLur: %@", self.flur);
+    
+    self.flurCreated.text = [NSString stringWithFormat:@"@%@ created this flur on %@", self.flur.creatorUsername, [self stringFromDate:self.flur.dateCreated]];
+    [self.flurCreated setTextColor:RGB(13, 191, 255)
+                             range:NSMakeRange(0, self.flur.creatorUsername.length+1)];
+    
+    int num = self.flur.totalContentCount.intValue;
+    int digits = 1;
+
+    while ((num = num/10) > 0.0) {
+        digits++;
+    }
+    
+    self.totalContributions.text = [NSString stringWithFormat:@"%@ other people have contributed to this flur.", self.flur.totalContentCount];
+    [self.totalContributions setTextColor:RGB(238, 0, 255)
+                                    range:NSMakeRange(0, digits)];
+    
+    /*if (self.annotation == nil) {
+        self.annotation = [[FLFlurAnnotation alloc] init];
+
+    }*/
+    self.annotation = nil;
+    self.annotation = [[FLFlurAnnotation alloc] initWithLat:self.flur.lat.doubleValue initWithLng:self.flur.lng.doubleValue];
+    [self.mapView addAnnotation:self.annotation];
+    
+    //[self.mapView removeAnnotation:self.annotation];
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(self.flur.lat.doubleValue,
+                                                              self.flur.lng.doubleValue);
+    
+    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+    point.coordinate = self.coord;
+    point.title = @"Where am I?";
+    point.subtitle = @"I'm here!!!";
+    
+    NSLog(@"coord1: %f %f", self.coord.latitude, self.coord.longitude);
+    [self.mapView addAnnotation:point];
+
+    self.coord = CLLocationCoordinate2DMake(coord.latitude, coord.longitude);
+    NSLog(@"coord2: %f %f", self.coord.latitude, self.coord.longitude);
+    [self.mapView addAnnotation:point];
+
+
+    
+
+    
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    //----Setting up the Location Manager-----//
+    _locationManager = [[CLLocationManager alloc] init];
+    _locationManager.delegate = self;
     
-    self.topBarHeight = 80;
+    if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+        [self.locationManager requestAlwaysAuthorization];
+    }
+    
+    _locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+    _locationManager.distanceFilter = 3;
+    [_locationManager startUpdatingLocation];
+
     self.buttonHeight = 80;
-    self.flurInfoHeight = self.mapHeight = (self.view.frame.size.height - self.topBarHeight - self.buttonHeight)/2;
-    
-    NSLog(@"Height %lu", self.flurInfoHeight);
-    
-    /*UIView *topBarContainer = [[UIView alloc] init];
-    topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    topBarContainer.backgroundColor = [UIColor clearColor];
-
-
-
-    
-    [self.view addSubview:topBarContainer];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    [self.view setNeedsLayout];
-    [self.view layoutIfNeeded];
-    [self.view sendSubviewToBack:topBarContainer];
-    
-    /*CAGradientLayer *gradient = [CAGradientLayer layer];
-
-    gradient.frame = topBarContainer.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, 1) CGColor], (id)[RGBA(179, 88, 224, 1) CGColor], nil];
-    
-    //    [gradient setShadowOffset:CGSizeMake(1, 1)];
-    //    [gradient setShadowColor:[[UIColor blackColor] CGColor]];
-    //    [gradient setShadowOpacity:0.5];
-    
-    
-    [topBarContainer.layer insertSublayer:gradient atIndex:0];
-    
-    UILabel *pageTitle = [[UILabel alloc] init];
-    [pageTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    pageTitle.text = @"Flur Info";
-    [pageTitle setTextColor:[UIColor whiteColor]];
-    pageTitle.font = [UIFont fontWithName:@"Avenir-Light" size:27];
-    pageTitle.textAlignment = NSTextAlignmentCenter;
-    
-    [topBarContainer addSubview:pageTitle];
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:pageTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:20]];
-    
-        [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:pageTitle attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
- 
-    
-    
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:pageTitle attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:pageTitle attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
-    self.backButton = [[UIButton alloc] init];
-    [self.backButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.backButton addTarget:self action:@selector(returnToTableList:) forControlEvents:UIControlEventTouchDown];
-    [self.backButton setImage:[UIImage imageNamed:@"leaveCamera.png"] forState:UIControlStateNormal];
-    
-    [topBarContainer addSubview:self.backButton];
-    
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
-    
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
-    
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton
-                                                            attribute:NSLayoutAttributeHeight
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:nil
-                                                            attribute:NSLayoutAttributeNotAnAttribute
-                                                           multiplier:1.0
-                                                             constant:40.0]];
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton
-                                                            attribute:NSLayoutAttributeWidth
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:nil
-                                                            attribute:NSLayoutAttributeNotAnAttribute
-                                                           multiplier:1.0
-                                                             constant:40.0]];*/
     
     self.flurInfoContainer = [[UIView alloc] init];
     self.flurInfoContainer.translatesAutoresizingMaskIntoConstraints = NO;
     self.flurInfoContainer.backgroundColor = RGB(253, 253, 253);
     [self.view addSubview:self.flurInfoContainer];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
-//    
-//    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.flurInfoHeight]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
     
     
     
@@ -170,7 +162,7 @@
     [self.flurInfoContainer addSubview:self.flurCreated];
     
     
-      [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
     
     [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
     
@@ -220,6 +212,7 @@
     
     self.mapViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
     self.mapViewContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    self.mapViewContainer.backgroundColor = RGBA(255, 255, 255, .4);
     
     self.mapView = [[MKMapView alloc] initWithFrame:self.mapViewContainer.frame];
     self.mapView.delegate = self;
@@ -230,7 +223,7 @@
     [self.mapView setUserTrackingMode:MKUserTrackingModeFollowWithHeading];
     
     
-    [self.mapViewContainer addSubview:self.mapView];
+    // [self.mapViewContainer addSubview:self.mapView];
     
     [self.view addSubview:self.mapViewContainer];
     
@@ -243,28 +236,43 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
     
-    //FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:self.pin
-                                                             // isAnimated:false];
-    //[self.mapView addAnnotation:annotation];
-
+    self.viewAlbumButton = [[UIButton alloc] init];
+    [self.viewAlbumButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    self.viewAlbum = [[UIButton alloc] init];
-    [self.viewAlbum setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.viewAlbumButton.backgroundColor = RGB(100,100,100);
+    self.viewAlbumButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
+    [self.viewAlbumButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.viewAlbumButton setTitle:@"View Album" forState:UIControlStateNormal];
     
-    self.viewAlbum.backgroundColor = RGB(100,100,100);
-    self.viewAlbum.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
-    [self.viewAlbum setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.viewAlbum setTitle:@"View Album" forState:UIControlStateNormal];
+    [self.view addSubview:self.viewAlbumButton];
     
-    [self.view addSubview:self.viewAlbum];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:80]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbum attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:80]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbum attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbum attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbum attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    /*self.contributeButton = [[UIButton alloc] init];
+    [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    self.contributeButton.backgroundColor = RGB(100,100,100);
+    self.contributeButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
+    [self.contributeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.contributeButton setTitle:@"Add Photo" forState:UIControlStateNormal];
+    
+    [self.view addSubview:self.contributeButton];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:80]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];*/
+    
     
     // Do any additional setup after loading the view.
 }
@@ -274,8 +282,40 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+-(void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
+{
+   // MKAnnotationView *ulv = [mapView viewForAnnotation:mapView.userLocation];
+   // ulv.hidden = YES;
+}
+
+- (IBAction)returnToTableList:(id)sender {
+    NSMutableDictionary *data;
+    [FLMasterNavigationController switchToViewController:@"FLTableViewController" fromViewController:@"FLFlurInfoViewController" withData:data];
+}
+
+- (NSString *) stringFromDate:(NSDate *)dateAdded {
+    
+    NSDate *date = dateAdded;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MM"];
+    NSInteger curMonth = [[dateFormatter stringFromDate:date] integerValue] - 1;
+    
+    [dateFormatter setDateFormat:@"dd"];
+    NSString *curDay = [NSString stringWithFormat:@"%ld", [[dateFormatter stringFromDate:date] integerValue]];
+    
+    [dateFormatter setDateFormat:@"YYYY"];
+    NSString *curYear = [dateFormatter stringFromDate:date];
+    
+    
+    return [NSString stringWithFormat:@"%@ %@, %@", self.months[curMonth], curDay, curYear];
+}
+
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
+    NSLog(@"WHOOOooooo: %@", [annotation class]);
+
     if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
+        NSLog(@"THATS WATSUP");
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
         if (annotation == mapView.userLocation) {
@@ -294,15 +334,19 @@
         return nil;
 }
 
--(void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
 {
-    MKAnnotationView *ulv = [mapView viewForAnnotation:mapView.userLocation];
-    ulv.hidden = YES;
-}
-
-- (IBAction)returnToTableList:(id)sender {
-    NSMutableDictionary *data;
-    [FLMasterNavigationController switchToViewController:@"FLTableViewController" fromViewController:@"FLFlurInfoViewController" withData:data];
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 800, 800);
+    [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
+    
+    // Add an annotation
+    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+    point.coordinate = userLocation.coordinate;
+    point.title = @"Where am I?";
+    point.subtitle = @"I'm here!!!";
+    self.coord = userLocation.coordinate;
+    
+    //[self.mapView addAnnotation:point];
 }
 
 /*

@@ -65,12 +65,17 @@ static bool userFound = false;
 
     [query findObjectsInBackgroundWithBlock:^(NSArray *imagesContributed, NSError *error) {
         if (!error) {
+            // Will map a flur objectId to all the information needed in order to stored in CD.
             NSMutableDictionary *localStorageFlurData = [[NSMutableDictionary alloc] init];
+            
+            // Will contain a list of all flur objectId's
             NSMutableArray *flurObjectIds = [[NSMutableArray alloc] init];
 
             for (id image in imagesContributed) {
+                // Get a pointer to the flur to which the image was added
                 PFObject *flurContributedTo = image[@"flurPin"];
 
+                // If I haven't yet added this flur to my master container
                 if ([localStorageFlurData objectForKey:flurContributedTo[@"objectId"]] == nil) {
                     NSMutableDictionary *flurToAdd = [[NSMutableDictionary alloc] init];
                     
@@ -81,7 +86,8 @@ static bool userFound = false;
                     flurToAdd[@"lat"] = [NSNumber numberWithDouble:location.latitude];
                     flurToAdd[@"lng"] = [NSNumber numberWithDouble:location.longitude];
                     
-                    flurToAdd[@"numContributions"] = flurContributedTo[@"contentCount"];
+                    flurToAdd[@"totalContentCount"] = flurContributedTo[@"contentCount"];
+                    flurToAdd[@"myContentPosition"] = image[@"contributionPosition"];
 
                     flurToAdd[@"dateCreated"] = [flurContributedTo createdAt];
                     flurToAdd[@"dateAdded"] = [image createdAt];
@@ -187,7 +193,7 @@ static bool userFound = false;
                 NSLog(@"Error loading flurs");
             }
             else {
-                NSLog(@"Size %lu", allFlurs.count);
+                // NSLog(@"Size %lu", allFlurs.count);
                // for (Flur* obj in allFlurs)
                // [document.managedObjectContext deleteObject:obj];
                 
@@ -216,7 +222,11 @@ static bool userFound = false;
 }
 
 + (void) addFlur:(NSMutableDictionary*)flurToAdd withCompletion:(void(^)()) completion {
+    // Get all Flurs I have contributed to so far.
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
+        
+        // If I'm trying to add an entry for a Flur that I have added content to before,
+        // dont add the flur to the CD.
         for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
             if ([flur.objectId isEqualToString:flurToAdd[@"objectId"]]) {
                 NSLog(@"Flur with this object ID already exists, not adding");
@@ -227,14 +237,20 @@ static bool userFound = false;
         
         Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
                                                    inManagedObjectContext:document.managedObjectContext];
+        
+        if (![self checkForKey:@[@"prompt", @"lng", @"lat", @"totalContentCount", @"objectId", @"creatorUsername", @"dateAdded", @"dateCreated", @"myContentPosition"] inData:flurToAdd]  )
+            return;
+        
+        
         flur.prompt = flurToAdd[@"prompt"];
         flur.lng = flurToAdd[@"lng"];
         flur.lat = flurToAdd[@"lat"];
-        flur.numContributions = flurToAdd[@"numContributions"];
+        flur.totalContentCount = flurToAdd[@"totalContentCount"];
         flur.objectId = flurToAdd[@"objectId"];
         flur.creatorUsername = flurToAdd[@"creatorUsername"];
         flur.dateAdded = flurToAdd[@"dateAdded"];
         flur.dateCreated = flurToAdd[@"dateCreated"];
+        flur.myContentPosition = flurToAdd[@"myContentPosition"];
         
         NSLog(@"flur: %@", flur);
         
@@ -244,6 +260,17 @@ static bool userFound = false;
                 completion();
         }];
     }];
+}
+
++ (BOOL) checkForKey:(NSArray *)keys inData:(NSMutableDictionary *)data {
+    for (NSString* key in keys) {
+        if ([data objectForKey:key] == nil) {
+            NSLog([NSString stringWithFormat:@"Error when adding flur: key '%@' not set", key]);
+            return false;
+        }
+    }
+    
+    return TRUE;
 }
 
 + (void) deleteAllFlurs {
@@ -322,7 +349,10 @@ static bool userFound = false;
     [flur1 setObject:@"9hCC7XSqj1" forKey:@"objectId"];
     [flur1 setObject:[NSNumber numberWithDouble:42.27855013634855] forKey:@"lat"];
     [flur1 setObject:[NSNumber numberWithDouble:-83.74086164719826] forKey:@"lng"];
-    [flur1 setObject:[NSNumber numberWithInt:9] forKey:@"numContributions"];
+    
+    [flur1 setObject:[NSNumber numberWithInt:9] forKey:@"totalContentCount"];
+    [flur1 setObject:[NSNumber numberWithInt:9] forKey:@"myContentPosition"];
+
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
@@ -344,7 +374,9 @@ static bool userFound = false;
     [flur2 setObject:@"yh1ej5UCQ4" forKey:@"objectId"];
     [flur2 setObject:[NSNumber numberWithDouble:42.28902135362213] forKey:@"lat"];
     [flur2 setObject:[NSNumber numberWithDouble:-83.71347471014678] forKey:@"lng"];
-    [flur2 setObject:[NSNumber numberWithInt:11] forKey:@"numContributions"];
+    
+    [flur2 setObject:[NSNumber numberWithInt:15] forKey:@"totalContentCount"];
+    [flur2 setObject:[NSNumber numberWithInt:4] forKey:@"myContentPosition"];
     
     dateCreated1 = [dateFormatter dateFromString: @"2012-11-3 23:59:59 JST"];
     [flur2 setObject:dateCreated1 forKey:@"dateAdded"];
@@ -365,7 +397,9 @@ static bool userFound = false;
 
     [flur3 setObject:[NSNumber numberWithDouble:42.275403] forKey:@"lat"];
     [flur3 setObject:[NSNumber numberWithDouble:-83.737254] forKey:@"lng"];
-    [flur3 setObject:[NSNumber numberWithInt:16] forKey:@"numContributions"];
+    
+    [flur3 setObject:[NSNumber numberWithInt:17] forKey:@"totalContentCount"];
+    [flur3 setObject:[NSNumber numberWithInt:13] forKey:@"myContentPosition"];
     
     dateCreated1 = [dateFormatter dateFromString: @"2013-3-22 23:59:59 JST"];
     [flur3 setObject:dateCreated1 forKey:@"dateAdded"];

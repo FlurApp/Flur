@@ -130,28 +130,28 @@
     cell.delegate = self;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-//    cell.cellPrompt.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
-//    
-//    NSDate *date = [[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
-//    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-//    [dateFormatter setDateFormat:@"MM"];
-//    NSInteger curMonth = [[dateFormatter stringFromDate:date] integerValue] - 1;
-//    
-//    [dateFormatter setDateFormat:@"dd"];
-//    NSString *curDay = [NSString stringWithFormat:@"%ld", [[dateFormatter stringFromDate:date] integerValue]];
-//    
-//    [dateFormatter setDateFormat:@"YYYY"];
-//    NSString *curYear = [dateFormatter stringFromDate:date];
-//
-//    
-//    cell.cellDate.text = [NSString stringWithFormat:@"%@ %@, %@", self.months[curMonth], curDay, curYear];
-//    
-//    NSNumber *numContributions = [[self.pinsArray objectAtIndex:indexPath.row] numContributions];
-//    cell.cellContentCount.text = [NSString stringWithFormat:@"%@ Contributors", numContributions];
-//    
-//    cell.flur = [self.pinsArray objectAtIndex:indexPath.row];
+    cell.cellPrompt.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
+    
+    NSDate *date = [[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MM"];
+    NSInteger curMonth = [[dateFormatter stringFromDate:date] integerValue] - 1;
+    
+    [dateFormatter setDateFormat:@"dd"];
+    NSString *curDay = [NSString stringWithFormat:@"%ld", [[dateFormatter stringFromDate:date] integerValue]];
+    
+    [dateFormatter setDateFormat:@"YYYY"];
+    NSString *curYear = [dateFormatter stringFromDate:date];
 
+    
+    cell.cellDate.text = [NSString stringWithFormat:@"%@ %@, %@", self.months[curMonth], curDay, curYear];
+    
+    NSNumber *numContributions = [[self.pinsArray objectAtIndex:indexPath.row] totalContentCount];
+    cell.cellContentCount.text = [NSString stringWithFormat:@"%@ Contributors", numContributions];
+    
+    cell.flur = [self.pinsArray objectAtIndex:indexPath.row];
 
+    NSLog(@"FLUR: %@", [self.pinsArray objectAtIndex:indexPath.row]);
     return cell;
 }
 
@@ -190,18 +190,12 @@
     return NO;
 }
 
-- (IBAction)returnToMap:(id)sender {
-    [FLCustomCellTableViewCell closeCurrentlyOpenCell];
-    [_delegate movePanelToOriginalPosition];
-}
-
 - (IBAction)showInfoButtonPress:(id)sender {
-    [_delegate showInfoPage];
 }
 
 - (void)reloadData {
     // Reload table data
-    NSLog(@"reloading");
+    //NSLog(@"Function *reloadData* called in TableVC");
     [self.tableView reloadData];
     
     // End the refreshing
@@ -220,8 +214,7 @@
 }
 
 - (void) showInfo:(NSMutableDictionary*)data {
-    NSLog(@"yes it worked");
-    [self.delegate showInfoPage];
+    [self.delegate showInfoPage:data];
 }
 
 /*

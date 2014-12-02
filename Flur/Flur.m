@@ -2,7 +2,7 @@
 //  Flur.m
 //  Flur
 //
-//  Created by Netanel Rubin on 11/23/14.
+//  Created by Netanel Rubin on 12/2/14.
 //  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
 //
 
@@ -11,13 +11,14 @@
 
 @implementation Flur
 
-@dynamic lat;
-@dynamic lng;
-@dynamic numContributions;
-@dynamic objectId;
-@dynamic prompt;
+@dynamic creatorUsername;
 @dynamic dateAdded;
 @dynamic dateCreated;
-@dynamic creatorUsername;
+@dynamic lat;
+@dynamic lng;
+@dynamic totalContentCount;
+@dynamic objectId;
+@dynamic prompt;
+@dynamic myContentPosition;
 
 @end

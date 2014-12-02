@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 @import MapKit;
+@import CoreLocation;
 
 @protocol FLFlurInfoViewControllerDelegate <NSObject>
 
@@ -19,9 +20,11 @@
 
 @end
 
-@interface FLFlurInfoViewController : UIViewController <MKMapViewDelegate>
+@interface FLFlurInfoViewController : UIViewController <MKMapViewDelegate,CLLocationManagerDelegate>
 
 - (instancetype) initWithData:(NSMutableDictionary *)data;
 @property (nonatomic, assign) id<FLFlurInfoViewControllerDelegate> delegate;
+- (void) setData:(NSMutableDictionary *)data;
+
 
 @end

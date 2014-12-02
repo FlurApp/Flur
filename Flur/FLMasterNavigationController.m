@@ -40,19 +40,11 @@ static UINavigationController *navController;
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
     
-    // if (false)
-    if (currentUser) {
+    if (currentUser)
         control = [[MainViewController alloc] initWithData:NULL];
-    }
+    else
         control = [[FLSplashViewController alloc] init];
-    
-    //control = [[FLInitialMapViewController alloc] init];
 
-    //control = [[FLTableViewController alloc] init];
-    
-    //control = [[FLSettingsViewController alloc] init];
-   // control = [[FLFlurInfoViewController alloc] init];
-    //control = [[FLSettingsViewController alloc] init];
 
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];

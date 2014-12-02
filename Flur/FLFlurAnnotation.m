@@ -31,6 +31,21 @@
     return self;
 }
 
+- (id) initWithLat:(double) lat initWithLng:(double) lng {
+    self = [super init];
+    if (self) {
+        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(lat, lng);
+        _coordinate = coord;
+        self.pin = nil;
+    }
+    return self;
+}
+
+- (id) init {
+    self = [super init];
+    return self;
+}
+
 - (void) showAnnotationAsOpenable:(MKAnnotationView *) annotationViewFromMap {
     for (UIView *subView in [annotationViewFromMap subviews]) {
         if (subView.tag == 10) {
@@ -110,7 +125,7 @@
     annotationView.enabled = YES;
     annotationView.canShowCallout = NO;
 
-    if (self.pin.haveContributedTo)
+    if (self.pin.contentCount)
         [self showAnnotationAsOpenable:annotationView];
     else
         [self showAnnotationAsNonOpenable:annotationView];

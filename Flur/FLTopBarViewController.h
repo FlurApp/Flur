@@ -17,7 +17,11 @@
 @required
 
 - (void)settingButtonPress;
-- (void)tableButtonPress;
+- (void)showTablePage;
+- (void)hideTablePage;
+- (void) hideInfoPage;
+
+
 
 
 @end
@@ -29,5 +33,6 @@
 
 @property (nonatomic, assign) id<FLTopBarViewControllerDelegate> delegate;
 
+- (void) showInfoPageBar;
 
 @end

@@ -19,7 +19,7 @@
 
 @required
 - (void)movePanelToOriginalPosition;
-- (void)showInfoPage;
+- (void)showInfoPage:(NSMutableDictionary *)data;
 
 @end
 
