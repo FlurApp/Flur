@@ -47,11 +47,9 @@ static UINavigationController *navController;
         control = [[FLSplashViewController alloc] init];
     
     //control = [[FLInitialMapViewController alloc] init];
-
     //control = [[FLTableViewController alloc] init];
-    
     //control = [[FLSettingsViewController alloc] init];
-   // control = [[FLFlurInfoViewController alloc] init];
+    //control = [[FLFlurInfoViewController alloc] init];
     //control = [[FLSettingsViewController alloc] init];
 
     navController = [[UINavigationController alloc] initWithRootViewController: control];
@@ -145,7 +143,7 @@ static UINavigationController *navController;
         
         // entering Map View
         if ([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
-            [navController pushViewController:[[FLInitialMapViewController alloc] init] animated:YES];
+            [navController pushViewController:[[MainViewController alloc] init] animated:YES];
             NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
             [navArray removeObjectAtIndex:0];
             

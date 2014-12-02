@@ -314,12 +314,13 @@
 
     FLFlurAnnotation* fa = view.annotation;
     NSLog(@"Clicked: %@", fa.pin.pinId);
-    if(fa.pin.pinId) {
+    
+    if (fa.pin.pinId) {
+        
         NSString* id = fa.pin.pinId;
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
-       //  NSLog(@"now");
-        if(p) {
-            // NSLog(@"hello");
+        
+        if (p) {
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:p forKey:@"FLPin"];
 
@@ -327,15 +328,13 @@
             self.contributeController = [[FLContributeViewController alloc] initWithData:data];
             UIView *contrView = self.contributeController.view;
             [self.view addSubview: contrView];
-            
-           // NSLog(@"finally");
         }
     }
     return;
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
-    if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
+    if ([annotation isKindOfClass:[FLFlurAnnotation class]]) {
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
         if (annotation == mapView.userLocation) {
@@ -371,17 +370,17 @@
     return NO;
 }
 
-- (IBAction)creatingFlur:(id)sender {
-    
-    NSString *prompt = [self.promptTextField text];
-    NSLog(@"Creating flur with prompt: %@", prompt);
-    [self.mapManager addFlur:prompt];
-    [self.addPinBlurEffectView removeFromSuperview];
-    
-    //PUT CODE IN FOR REFRESHING THE VIEW///
-    [self updateOpenablePins];
-    
-}
+//- (IBAction)creatingFlur:(id)sender {
+//    
+//    NSString *prompt = [self.promptTextField text];
+//    NSLog(@"Creating flur with prompt: %@", prompt);
+//    [self.mapManager addFlur:prompt];
+//    [self.addPinBlurEffectView removeFromSuperview];
+//    
+//    //PUT CODE IN FOR REFRESHING THE VIEW///
+//    [self updateOpenablePins];
+//    
+//}
 
 - (void) addFlur:(NSString*)prompt {
     NSLog(@"adding flur");

@@ -89,7 +89,6 @@
     
     
     // Setup settings view (right view)
-    // this is where you define the view for the left panel
     self.rightPanelViewController = [[FLTableViewController alloc] init];
     self.rightPanelViewController.view.tag = RIGHT_PANEL_TAG;
     self.rightPanelViewController.delegate = self;
@@ -97,7 +96,7 @@
     [self.view addSubview:self.rightPanelViewController.view];
     
     [self addChildViewController:_rightPanelViewController];
-    //[_rightPanelViewController didMoveToParentViewController:self];
+    [_rightPanelViewController didMoveToParentViewController:self];
     
     _rightPanelViewController.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
     

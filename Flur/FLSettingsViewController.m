@@ -13,6 +13,7 @@
 #import "FLMasterNavigationController.h"
 #import "MainViewController.h"
 #import "FLInitialMapViewController.h"
+#import "LocalStorage.h"
 
 @interface FLSettingsViewController ()
 
@@ -198,6 +199,7 @@
 
 - (IBAction)logOut:(id)sender {
     [PFUser logOut];
+    [LocalStorage destroyLocalStorage];
     [FLMasterNavigationController switchToViewController:@"FLSplashViewController" fromViewController:@"FLSettingsViewController" withData:nil];
 }
 
