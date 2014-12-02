@@ -45,7 +45,6 @@ static UINavigationController *navController;
     else
         control = [[FLSplashViewController alloc] init];
 
-
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
     navController.navigationBar.barStyle = UIBarStyleBlack;
@@ -137,6 +136,7 @@ static UINavigationController *navController;
         
         // entering Map View
         if ([newControllerName isEqualToString:@"MainViewController"]) {
+            
             [navController pushViewController:[[MainViewController alloc] initWithData:data] animated:YES];
             NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
             [navArray removeObjectAtIndex:0];

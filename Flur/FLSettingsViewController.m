@@ -11,17 +11,20 @@
 #import "FLSettingsViewController.h"
 #import "FLConstants.h"
 #import "FLMasterNavigationController.h"
+#import "MainViewController.h"
+#import "FLInitialMapViewController.h"
+#import "LocalStorage.h"
 
 @interface FLSettingsViewController ()
 
 @property (nonatomic, strong) UIImageView *profilePicture;
-@property (nonatomic, strong) UILabel *username;
+//@property (nonatomic, strong) UILabel *username;
 @property (nonatomic, strong) UILabel *email;
 @property (nonatomic, strong) UILabel *contributionCount;
 
 @property (nonatomic, strong) UIButton *logoutButton;
 @property (nonatomic, strong) UIButton *changePassword;
-@property (nonatomic, strong) UIButton *inviteFriends;
+@property (nonatomic, strong) UIButton *addNewFlur;
 @property (nonatomic, strong) UIView *profilePictureBorder;
 
 
@@ -91,31 +94,32 @@
     
     PFUser* user = [PFUser currentUser];
     
-    self.username = [[UILabel alloc]init];
-    [self.username setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.username.text = [PFUser currentUser].username;
-    self.username.font = personalInfoFont;
-    [self.username setTextColor:personalInfoColor];
-
-
-    
-    [self.view addSubview:self.username];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.username attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.profilePictureBorder attribute:NSLayoutAttributeBottom multiplier:1.0 constant:25]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.username attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.profilePicture attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+//    self.username = [[UILabel alloc]init];
+//    [self.username setTranslatesAutoresizingMaskIntoConstraints:NO];
+//    self.username.text = user.username;
+//    self.username.font = personalInfoFont;
+//    [self.username setTextColor:personalInfoColor];
+//
+//
+//    
+//    [self.view addSubview:self.username];
+//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.username attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.profilePictureBorder attribute:NSLayoutAttributeBottom multiplier:1.0 constant:25]];
+//    
+//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.username attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.profilePicture attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
     self.email = [[UILabel alloc]init];
     [self.email setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.email.text = [PFUser currentUser].email;
+    self.email.text = user.username;
+    
      self.email.font = personalInfoFont;
     [self.email setTextColor:personalInfoColor];
 
     
     [self.view addSubview:self.email];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.email attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.username attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.email attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.profilePictureBorder attribute:NSLayoutAttributeBottom multiplier:1.0 constant:25]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.email attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.username attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.email attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.profilePicture attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
     
     self.contributionCount = [[UILabel alloc]init];
@@ -131,28 +135,26 @@
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributionCount attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.email attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
+    self.addNewFlur = [[UIButton alloc] init];
+    [self.addNewFlur setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.addNewFlur addTarget:self action:@selector(addFlur:) forControlEvents:UIControlEventTouchUpInside];
 
     
-    self.logoutButton = [[UIButton alloc] init];
-    [self.logoutButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.logoutButton addTarget:self action:@selector(logOut:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.logoutButton setTitle:@"Logout" forState:UIControlStateNormal];
-    self.logoutButton.backgroundColor = RGB(232,72,49);
-    self.logoutButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
-    [self.logoutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.addNewFlur setTitle:@"Drop Flur" forState:UIControlStateNormal];
+    self.addNewFlur.backgroundColor = RGB(238, 0 ,255);
+    self.addNewFlur.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
+    [self.addNewFlur setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     
-    [self.view addSubview:self.logoutButton];
+    [self.view addSubview:self.addNewFlur];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contributionCount attribute:NSLayoutAttributeBottom multiplier:1.0 constant:25]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addNewFlur attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contributionCount attribute:NSLayoutAttributeBottom multiplier:1.0 constant:25]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addNewFlur attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
-        [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-PANEL_WIDTH]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addNewFlur attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-PANEL_WIDTH]];
     
-      [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:buttonHeight]];
-    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addNewFlur attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:buttonHeight]];
     
     
     self.changePassword = [[UIButton alloc] init];
@@ -166,7 +168,7 @@
     
     [self.view addSubview:self.changePassword];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.changePassword attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.logoutButton attribute:NSLayoutAttributeBottom multiplier:1.0 constant:00]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.changePassword attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.addNewFlur attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.changePassword attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
@@ -174,33 +176,42 @@
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.changePassword attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:buttonHeight]];
     
+    self.logoutButton = [[UIButton alloc] init];
+    [self.logoutButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.logoutButton addTarget:self action:@selector(logOut:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.logoutButton setTitle:@"Logout" forState:UIControlStateNormal];
+    self.logoutButton.backgroundColor = RGB(232,72,49);
+    self.logoutButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
+    [self.logoutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     
-    self.inviteFriends = [[UIButton alloc] init];
-    [self.inviteFriends setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.view addSubview:self.logoutButton];
     
-    [self.inviteFriends setTitle:@"Invite Friends" forState:UIControlStateNormal];
-    self.inviteFriends.backgroundColor = RGB(238, 0 ,255);
-    self.inviteFriends.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
-    [self.inviteFriends setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.changePassword attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
-    [self.view addSubview:self.inviteFriends];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-PANEL_WIDTH]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.inviteFriends attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.changePassword attribute:NSLayoutAttributeBottom multiplier:1.0 constant:00]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.inviteFriends attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.inviteFriends attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-PANEL_WIDTH]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.inviteFriends attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:buttonHeight]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.logoutButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:buttonHeight]];
     
     // Do any additional setup after loading the view.
 }
 
 - (IBAction)logOut:(id)sender {
-    // [PFUser logOut];
+    [PFUser logOut];
+    [LocalStorage destroyLocalStorage];
+    
     [FLMasterNavigationController switchToViewController:@"FLSplashViewController" fromViewController:@"FLSettingsViewController" withData:nil];
+}
+
+- (IBAction)addFlur:(id)sender {
+    
+    //NSString *prompt = [self.promptTextField text];
+    NSString *prompt = @"This is a test prompt, please contribute!";
+    [_delegate2 addFlur:prompt];
+    [_delegate movePanelToOriginalPosition];
 }
 
 - (void)didReceiveMemoryWarning {

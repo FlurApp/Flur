@@ -17,7 +17,7 @@
 #define LEFT_PANEL_TAG 2
 #define RIGHT_PANEL_TAG 3
 
-@interface MainViewController : UIViewController <FLInitialMapViewControllerDelegate, FLTableViewControllerDelegate>
+@interface MainViewController : UIViewController <FLInitialMapViewControllerDelegate, FLTableViewControllerDelegate, FLSettingsViewControllerDelegate>
 
 @property (nonatomic, strong) FLInitialMapViewController *mapView;
 @property (nonatomic, strong) FLSettingsViewController *settingsView;

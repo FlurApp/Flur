@@ -44,6 +44,8 @@
 @property (nonatomic, strong, readwrite) CLLocationManager *locationManager;
 @property (nonatomic) BOOL contributeView;
 
+@property (nonatomic, strong) NSLayoutConstraint *contributeButtonHeight;
+@property (nonatomic, strong) NSLayoutConstraint *viewAlbumButtonHeight;
 
 
 
@@ -69,7 +71,11 @@
     }
     else {
         self.contributeView = false;
-        [self.mapViewContainer addSubview:self.mapView];
+        
+        self.contributeButtonHeight.constant = 0;
+        self.mapView.alpha = 1;
+        
+        [self.view layoutIfNeeded];
     }
     
     self.flur = [data objectForKey:@"flur"];
@@ -136,6 +142,51 @@
     [_locationManager startUpdatingLocation];
 
     self.buttonHeight = 80;
+    
+    
+    
+    self.contributeButton = [[UIButton alloc] init];
+    [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    self.contributeButton.backgroundColor = RGB(100,100,100);
+    self.contributeButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
+    [self.contributeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.contributeButton setTitle:@"Add Photo" forState:UIControlStateNormal];
+    
+    [self.view addSubview:self.contributeButton];
+    
+    self.contributeButtonHeight =[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:80];
+    
+    [self.view addConstraint:self.contributeButtonHeight];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    
+    
+    self.viewAlbumButton = [[UIButton alloc] init];
+    [self.viewAlbumButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    self.viewAlbumButton.backgroundColor = [UIColor redColor];
+    self.viewAlbumButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
+    [self.viewAlbumButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.viewAlbumButton setTitle:@"View Album" forState:UIControlStateNormal];
+    
+    [self.view addSubview:self.viewAlbumButton];
+    
+    self.viewAlbumButtonHeight = [NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:80];
+    
+    [self.view addConstraint:self.viewAlbumButtonHeight];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contributeButton attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
     
     self.flurInfoContainer = [[UIView alloc] init];
     self.flurInfoContainer.translatesAutoresizingMaskIntoConstraints = NO;
@@ -222,56 +273,23 @@
     [self.mapView setShowsUserLocation:NO];
     [self.mapView setUserTrackingMode:MKUserTrackingModeFollowWithHeading];
     
+    self.mapView.alpha = 0;
     
-    // [self.mapViewContainer addSubview:self.mapView];
+    
+    [self.mapViewContainer addSubview:self.mapView];
     
     [self.view addSubview:self.mapViewContainer];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
-     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-self.buttonHeight]];
+     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.viewAlbumButton attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
-    
-    self.viewAlbumButton = [[UIButton alloc] init];
-    [self.viewAlbumButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    self.viewAlbumButton.backgroundColor = RGB(100,100,100);
-    self.viewAlbumButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
-    [self.viewAlbumButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.viewAlbumButton setTitle:@"View Album" forState:UIControlStateNormal];
-    
-    [self.view addSubview:self.viewAlbumButton];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:80]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
-    
-    /*self.contributeButton = [[UIButton alloc] init];
-    [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    self.contributeButton.backgroundColor = RGB(100,100,100);
-    self.contributeButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
-    [self.contributeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.contributeButton setTitle:@"Add Photo" forState:UIControlStateNormal];
-    
-    [self.view addSubview:self.contributeButton];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:80]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contributeButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];*/
+
+
     
     
     // Do any additional setup after loading the view.

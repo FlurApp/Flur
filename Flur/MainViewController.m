@@ -159,8 +159,6 @@
     
     self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
                                               self.view.frame.size.height - TOP_BAR_HEIGHT);
-    
-    
 
     
     if (self.shouldSync) {
