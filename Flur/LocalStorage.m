@@ -26,8 +26,12 @@ static bool userFound = false;
     }];
 }
 
++ (void) createUser {
+    
+}
+
 + (void) destroyLocalStorage {
-    NSError *error;
+    /*NSError *error;
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *documentsDirectory = [[fileManager URLsForDirectory:NSDocumentDirectory
@@ -37,10 +41,12 @@ static bool userFound = false;
     NSURL *url = [documentsDirectory URLByAppendingPathComponent:documentName];
 
     [[NSFileManager defaultManager] removeItemAtPath:url.path error:&error];
-    NSLog(@"error : %@", error);
+    NSLog(@"error : %@", error);*/
 }
 
-+ (void) syncWithServer {
++ (void) syncWithServer:(void(^)()) completion {
+    [LocalStorage createTestData];
+    return;
     
     PFUser* curUser = [PFUser currentUser];
     if (!curUser) {
@@ -98,44 +104,18 @@ static bool userFound = false;
                     flurToAdd[@"creatorUsername"] = creatorUsername;
                 }
                 
+                NSInteger counter = 0;
                 for (id key in localStorageFlurData) {
-                    [LocalStorage addFlur:[localStorageFlurData objectForKey:key]];
+                    counter++;
+                    
+                    if (counter < localStorageFlurData.count)
+                        [self addFlur:[localStorageFlurData objectForKey:key]];
+                    else
+                        [self addFlur:[localStorageFlurData objectForKey:key]];
+
                 }
                 
             }];
-            //flurToAdd[@"creatorUsername"] = flurContributedTo[@"creatorUsername"];
-
-
-            
-                //[LocalStorage openDocumentWithCompletion:^{
-                    /*Flur* flur = [NSEntityDescription insertNewObjectForEntityForName:@"Flur"
-                                                               inManagedObjectContext:document.managedObjectContext];
-                    flur.prompt = flurContributedTo[@"prompt"];
-                    
-                    PFGeoPoint *location =((PFGeoPoint *)flurContributedTo[@"location"]);
-
-                    flur.lng = [NSNumber numberWithDouble:location.longitude];
-                    flur.lat = [NSNumber numberWithDouble:location.latitude];
-                    
-                    flur.numContributions = flurContributedTo[@"contentCount"];
-                    flur.objectId = flurContributedTo[@"objectId"];
-                    
-                    flur.creatorUsername = flurContributedTo[@"creatorUsername"];
-                    flur.dateAdded = flurContributedTo[@"dateAdded"];
-                    flur.dateCreated = flurContributedTo[@"dateCreated"];
-                    
-                    
-                    [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
-                        NSLog(@"saved");
-                    }];
-                    
-                    NSLog(@"lat: %@", flurContributedTo[@"location"]);
-                    NSLog(@"asdf: %f", f.latitude);
-                    NSLog(@"lat: %@", ((PFGeoPoint *)flurContributedTo[@"location"]).latitude);*/
-                    
-                
-                
-                //}];
         }
     }];
     
@@ -207,7 +187,7 @@ static bool userFound = false;
                 NSLog(@"Error loading flurs");
             }
             else {
-                //NSLog(@"Size %lu", allFlurs.count);
+                NSLog(@"Size %lu", allFlurs.count);
                // for (Flur* obj in allFlurs)
                // [document.managedObjectContext deleteObject:obj];
                 
@@ -232,6 +212,10 @@ static bool userFound = false;
 }
 
 + (void) addFlur:(NSMutableDictionary*)flurToAdd {
+    [self addFlur:flurToAdd withCompletion:nil];
+}
+
++ (void) addFlur:(NSMutableDictionary*)flurToAdd withCompletion:(void(^)()) completion {
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
             if ([flur.objectId isEqualToString:flurToAdd[@"objectId"]]) {
@@ -251,10 +235,13 @@ static bool userFound = false;
         flur.creatorUsername = flurToAdd[@"creatorUsername"];
         flur.dateAdded = flurToAdd[@"dateAdded"];
         flur.dateCreated = flurToAdd[@"dateCreated"];
-
-
+        
+        NSLog(@"flur: %@", flur);
+        
         [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
             NSLog(@"saved");
+            if (completion != nil)
+                completion();
         }];
     }];
 }
@@ -267,7 +254,7 @@ static bool userFound = false;
         }
     }];*/
     
-        [LocalStorage openDocumentWithCompletion:^ {
+       /* [LocalStorage openDocumentWithCompletion:^ {
             if (documentLoaded) {
                 NSManagedObjectContext *context = document.managedObjectContext;
                 
@@ -291,7 +278,8 @@ static bool userFound = false;
             }
             else {
             }
-        }];
+        }];*/
+    
 }
 
 + (void) saveCurrentUser {

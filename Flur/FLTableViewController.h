@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+#import "FLCustomCellTableViewCell.h"
+
+
 @protocol FLTableViewControllerDelegate <NSObject>
 
 @optional
@@ -16,12 +19,13 @@
 
 @required
 - (void)movePanelToOriginalPosition;
+- (void)showInfoPage;
 
 @end
 
-@interface FLTableViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
+@interface FLTableViewController : UIViewController<UITableViewDelegate, UITableViewDataSource, FLCustomCellTableViewDelegate>
 
 @property (nonatomic, assign) id<FLTableViewControllerDelegate> delegate;
-
+- (void) getFlurs;
 
 @end

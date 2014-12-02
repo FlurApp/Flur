@@ -325,7 +325,11 @@ static FLCustomCellTableViewCell* currentOpenCell;
     [data setObject:self.flur forKey:@"flur"];
     [FLCustomCellTableViewCell closeCurrentlyOpenCell];
 
-    [FLMasterNavigationController switchToViewController:@"FLFlurInfoViewController" fromViewController:@"FLTableViewController" withData:data];
+    [self.delegate showInfo:data];
+}
+
+- (void) showInfo {
+  
 }
 
 

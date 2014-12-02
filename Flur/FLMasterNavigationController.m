@@ -39,8 +39,9 @@ static UINavigationController *navController;
     UIViewController *control;
     
     // if (false)
-    if (currentUser)
-        control = [[MainViewController alloc] init];
+    if (currentUser) {
+        control = [[MainViewController alloc] initWithData:NULL];
+    }
     else
         control = [[FLSplashViewController alloc] init];
     
@@ -152,8 +153,8 @@ static UINavigationController *navController;
     else if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
         
         // entering Map View
-        if ([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
-            [navController pushViewController:[[FLInitialMapViewController alloc] init] animated:YES];
+        if ([newControllerName isEqualToString:@"MainViewController"]) {
+            [navController pushViewController:[[MainViewController alloc] initWithData:data] animated:YES];
             NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
             [navArray removeObjectAtIndex:0];
             

@@ -10,8 +10,15 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "FLConstants.h"
+#import "LocalStorage.h"
 
 @interface MainViewController ()
+
+@property (nonatomic) BOOL shouldSync;
+@property (nonatomic) BOOL settingsVisible;
+@property (nonatomic) BOOL tableVisible;
+
+
 
 @end
 
@@ -20,6 +27,18 @@
 
 #pragma mark -
 #pragma mark View Did Load/Unload
+
+- (instancetype) initWithData:(NSMutableDictionary *) data {
+    self = [super init];
+    
+    if (self) {
+        self.shouldSync = [data objectForKey:@"sync"] != nil;
+        self.settingsVisible = false;
+        self.tableVisible = false;
+    }
+    
+    return self;
+}
 
 - (void)viewDidLoad
 {
@@ -62,50 +81,188 @@
 #pragma mark -
 #pragma mark Setup View
 
-- (void)setupView
-{
-    // setup map view (center view)
-    self.centerViewController = [[FLInitialMapViewController alloc] init];
-    self.centerViewController.view.tag = CENTER_TAG;
-    self.centerViewController.delegate = self;
-    
-    [self.view addSubview:self.centerViewController.view];
-    [self addChildViewController:self.centerViewController];
-    [self.centerViewController didMoveToParentViewController:self];
+- (void)setupView {
+
+
     
     
-    
-    // setup settings view (left view)
-    self.leftPanelViewController = [[FLSettingsViewController alloc] init];
-    self.leftPanelViewController.view.tag = LEFT_PANEL_TAG;
+    /* -------------------------------------------
+                Setup Settings View.
+     -----------------------------------------------*/
+    self.settingsView = [[FLSettingsViewController alloc] init];
+    self.settingsView.view.tag = LEFT_PANEL_TAG;
    
     
-    [self.view addSubview:self.leftPanelViewController.view];
-    [self addChildViewController:_leftPanelViewController];
-    // [_leftPanelViewController didMoveToParentViewController:self];
+    [self.view addSubview:self.settingsView.view];
+    [self addChildViewController:self.settingsView];
     
-    _leftPanelViewController.view.frame = CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+    self.settingsView.view.frame = CGRectMake(0, 0,
+                                              self.view.frame.size.width,
+                                              self.view.frame.size.height);
+    
+    /* -------------------------------------------
+     Setup Map View.
+     -----------------------------------------------*/
+    self.mapView = [[FLInitialMapViewController alloc] init];
+    self.mapView.view.tag = CENTER_TAG;
+    self.mapView.delegate = self;
+    
+    [self.view addSubview:self.mapView.view];
+    [self addChildViewController:self.mapView];
+    self.mapView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    
+    self.mapView.view.layer.masksToBounds = NO;
+    [self.mapView.view.layer setCornerRadius:0];
+    [self.mapView.view.layer setShadowColor:[UIColor blackColor].CGColor];
+    [self.mapView.view.layer setShadowOpacity:.4];
+    [self.mapView.view.layer setShadowOffset:CGSizeMake(0.0f, 3.0f)];
     
     
-    // Setup settings view (right view)
-    // this is where you define the view for the left panel
-    self.rightPanelViewController = [[FLTableViewController alloc] init];
-    self.rightPanelViewController.view.tag = RIGHT_PANEL_TAG;
-    self.rightPanelViewController.delegate = self;
+    /* ---------------------------------------
+     Setup Top Bar View
+     -----------------------------------------------*/
+    self.topBarView = [[FLTopBarViewController alloc] init];
+    self.topBarView.delegate = self;
     
-    [self.view addSubview:self.rightPanelViewController.view];
+    [self.view addSubview:self.topBarView.view];
     
-    [self addChildViewController:_rightPanelViewController];
-    //[_rightPanelViewController didMoveToParentViewController:self];
+    [self addChildViewController:self.topBarView];
     
-    _rightPanelViewController.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+    self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
+    
+    
+    /* -------------------------------------------
+                    Setup Table View.
+     -----------------------------------------------*/
+    self.tableView = [[FLTableViewController alloc] init];
+    self.tableView.delegate = self;
+    
+    [self.view addSubview:self.tableView.view];
+    
+    [self addChildViewController:self.tableView];
+    
+    self.tableView.view.frame = CGRectMake(self.view.frame.size.width, TOP_BAR_HEIGHT,
+                                           self.view.frame.size.width, self.view.frame.size.height);
+    
+    
+    
+    /* -------------------------------------------
+                Setup Flur INfo View.
+     -----------------------------------------------*/
+    self.flurInfoView = [[FLFlurInfoViewController alloc] init];
+    self.flurInfoView.delegate = self;
+    
+    [self.view addSubview:self.flurInfoView.view];
+    
+    [self addChildViewController:self.flurInfoView];
+    
+    self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
+    
+    
+
+    
+    if (self.shouldSync) {
+        NSLog(@"yessss");
+        [LocalStorage syncWithServer:^{
+            [self.tableView getFlurs];
+        }];
+    }
+    else {
+        [LocalStorage getFlurs:^(NSMutableDictionary *data) {
+            NSLog(@"wtf");
+        }];
+    }
     
 
 }
 
+// Delegate function called by the Top Var View Controller
+- (void) settingButtonPress {
+    if (self.settingsVisible)
+        [self hideSettingsPage];
+    else
+        [self showSettingsPage];
+}
+
+- (void) showSettingsPage {
+    self.settingsVisible = true;
+    [self.mapView showWhiteLayer];
+    [self.settingsView didMoveToParentViewController:self];
+
+    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+                         
+             self.mapView.view.frame = CGRectMake(self.view.frame.size.width - PANEL_WIDTH, 0,
+                                                  self.mapView.view.frame.size.width,
+                                                  self.mapView.view.frame.size.height);
+             
+             self.topBarView.view.frame = CGRectMake(self.view.frame.size.width-PANEL_WIDTH, 0,
+                                                     self.topBarView.view.frame.size.width,
+                                                     self.topBarView.view.frame.size.height);
+
+    } completion:^(BOOL finished) { }];
+}
+
+- (void) hideSettingsPage {
+    self.settingsVisible = false;
+    [self.mapView hideWhiteLayer];
+    [self.mapView didMoveToParentViewController:self];
+
+    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+             self.mapView.view.frame = CGRectMake(0, 0, self.mapView.view.frame.size.width,
+                                                  self.mapView.view.frame.size.height);
+             
+             self.topBarView.view.frame =  CGRectMake(0, 0, self.topBarView.view.frame.size.width,
+                                                      self.topBarView.view.frame.size.height);
+             
+    } completion:^(BOOL finished) { }];
+}
+
+- (void) tableButtonPress {
+    if (self.tableVisible)
+        [self hideTablePage];
+    else
+        [self showTablePage];
+
+}
+
+- (void) showTablePage {
+    self.tableVisible = true;
+    [self.tableView didMoveToParentViewController:self];
+
+    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        
+        self.mapView.view.frame = CGRectMake(-self.view.frame.size.width, 0,
+                                             self.view.frame.size.width,
+                                             self.view.frame.size.height);
+        
+        self.tableView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT, self.view.frame.size.width,
+                                               self.view.frame.size.height);
+        
+    } completion:^(BOOL finished) { }];
+    
+}
+
+- (void) hideTablePage {
+    self.tableVisible = false;
+    [self.mapView didMoveToParentViewController:self];
+    
+    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        
+        self.mapView.view.frame = CGRectMake(0, 0,
+                                             self.view.frame.size.width,
+                                             self.view.frame.size.height);
+        
+        self.tableView.view.frame = CGRectMake(self.view.frame.size.width, TOP_BAR_HEIGHT, self.view.frame.size.width,
+                                               self.view.frame.size.height);
+        
+    } completion:^(BOOL finished) { }];
+}
+
+
 - (void)showCenterViewWithShadow:(BOOL)value withOffset:(double)offset
 {
-    if (value)
+    /*if (value)
     {
         [_centerViewController.view.layer setCornerRadius:CORNER_RADIUS];
         [_centerViewController.view.layer setShadowColor:[UIColor blackColor].CGColor];
@@ -117,10 +274,10 @@
     {
         [_centerViewController.view.layer setCornerRadius:0.0f];
         [_centerViewController.view.layer setShadowOffset:CGSizeMake(offset, offset)];
-    }
+    }*/
 }
 
-- (void)resetMainView
+/*- (void)resetMainView
 {
 
         
@@ -134,39 +291,23 @@
     
     // remove view shadows
     [self showCenterViewWithShadow:NO withOffset:0];
+}*/
+
+- (UIView *) getMapView {
+    [self.mapView didMoveToParentViewController:self];
+    return self.mapView.view;
 }
 
-- (UIView *)getLeftView
-{
- 
-    [_leftPanelViewController didMoveToParentViewController:self];
-
-    
-    self.showingLeftPanel = YES;
-    
-    // set up view shadows
-    [self showCenterViewWithShadow:YES withOffset:-2];
-    
-    UIView *view = self.leftPanelViewController.view;
-    return view;
+- (UIView *)getSettingsView {
+    [self.settingsView didMoveToParentViewController:self];
+    return self.settingsView.view;
 }
 
-
-
-- (UIView *)getRightView
-{
-
-    [_rightPanelViewController didMoveToParentViewController:self];
-
-    self.showingRightPanel = YES;
-    
-    // set up view shadows
-    [self showCenterViewWithShadow:YES withOffset:-2];
-    
-    UIView *view = self.rightPanelViewController.view;
-    return view;
+- (UIView *)getTableView {
+    [self.tableView didMoveToParentViewController:self];
+    return self.tableView.view;
 }
-
+/*
 #pragma mark -
 #pragma mark Swipe Gesture Setup/Actions
 
@@ -182,11 +323,23 @@
 
 #pragma mark -
 #pragma mark Delegate Actions
+- (void) showInfoPage {
+    _flurInfoVC.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
+    
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                        _flurInfoVC.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+                     }
+                     completion:^(BOOL finished) {
+                         if (finished) {
+                         }
+                     }];
+    
+}
 
 - (void)movePanelLeft // to show right panel
 {
-    UIView *childView = [self getRightView];
-    [self.view sendSubviewToBack:childView];
+
     
     [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
                      animations:^{
@@ -239,7 +392,7 @@
                              [self resetMainView];
                          }
                      }];
-}
+}*/
 
 #pragma mark -
 #pragma mark Default System Code

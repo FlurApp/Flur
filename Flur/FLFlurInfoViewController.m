@@ -65,9 +65,9 @@
     
     NSLog(@"Height %lu", self.flurInfoHeight);
     
-    UIView *topBarContainer = [[UIView alloc] init];
+    /*UIView *topBarContainer = [[UIView alloc] init];
     topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    topBarContainer.backgroundColor = [UIColor redColor];
+    topBarContainer.backgroundColor = [UIColor clearColor];
 
 
 
@@ -83,8 +83,9 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     [self.view setNeedsLayout];
     [self.view layoutIfNeeded];
+    [self.view sendSubviewToBack:topBarContainer];
     
-    CAGradientLayer *gradient = [CAGradientLayer layer];
+    /*CAGradientLayer *gradient = [CAGradientLayer layer];
 
     gradient.frame = topBarContainer.bounds;
     gradient.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, 1) CGColor], (id)[RGBA(179, 88, 224, 1) CGColor], nil];
@@ -139,14 +140,14 @@
                                                                toItem:nil
                                                             attribute:NSLayoutAttributeNotAnAttribute
                                                            multiplier:1.0
-                                                             constant:40.0]];
+                                                             constant:40.0]];*/
     
     self.flurInfoContainer = [[UIView alloc] init];
     self.flurInfoContainer.translatesAutoresizingMaskIntoConstraints = NO;
     self.flurInfoContainer.backgroundColor = RGB(253, 253, 253);
     [self.view addSubview:self.flurInfoContainer];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
 //    
 //    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.flurInfoHeight]];
     

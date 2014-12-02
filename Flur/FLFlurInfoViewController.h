@@ -9,8 +9,19 @@
 #import <UIKit/UIKit.h>
 @import MapKit;
 
+@protocol FLFlurInfoViewControllerDelegate <NSObject>
+
+@optional
+- (void)movePanelLeft;
+- (void)movePanelRight;
+
+@required
+
+@end
+
 @interface FLFlurInfoViewController : UIViewController <MKMapViewDelegate>
 
 - (instancetype) initWithData:(NSMutableDictionary *)data;
+@property (nonatomic, assign) id<FLFlurInfoViewControllerDelegate> delegate;
 
 @end

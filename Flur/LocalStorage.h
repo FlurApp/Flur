@@ -23,7 +23,7 @@
 + (void) addFlur:(NSMutableDictionary*)flurToAdd;
 + (void) deleteAllFlurs;
 
-+ (void) syncWithServer;
++ (void) syncWithServer:(void(^)()) completion;
 
 + (void) createTestData;
 

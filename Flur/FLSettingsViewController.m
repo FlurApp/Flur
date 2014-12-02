@@ -92,7 +92,7 @@
     
     self.username = [[UILabel alloc]init];
     [self.username setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.username.text = @"codemang";
+    self.username.text = [PFUser currentUser].username;
     self.username.font = personalInfoFont;
     [self.username setTextColor:personalInfoColor];
 
@@ -105,7 +105,7 @@
     
     self.email = [[UILabel alloc]init];
     [self.email setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.email.text = @"narubin@umich.edu";
+    self.email.text = [PFUser currentUser].email;
      self.email.font = personalInfoFont;
     [self.email setTextColor:personalInfoColor];
 
@@ -119,7 +119,8 @@
     
     self.contributionCount = [[UILabel alloc]init];
     [self.contributionCount setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.contributionCount.text = @"Contributions: 7";
+    //self.contributionCount.text =[NSString stringWithFormat:@"Contributions: %lu", [PFUser currentUser].numContributions];
+     self.contributionCount.text = @"Contributions: 7";
      self.contributionCount.font = personalInfoFont;
     [self.contributionCount setTextColor:personalInfoColor];
     

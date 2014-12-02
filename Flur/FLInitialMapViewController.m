@@ -49,6 +49,9 @@
 @property (nonatomic, strong) FLMapManager* mapManager;
 
 @property (nonatomic, strong) NSMutableArray *myContrPins;
+@property (nonatomic, strong) UIView *whiteLayer;
+
+
 
 @end
 
@@ -57,20 +60,12 @@
 
 - (instancetype) initWithData:(NSMutableDictionary *)data {
     self = [super init];
-    
-    if (self) {
-        if ([data objectForKey:@"sync"] != nil) {
-            [LocalStorage syncWithServer];
-        }
-    }
-    
+
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    [LocalStorage syncWithServer];
     
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
@@ -99,7 +94,9 @@
     
     //----loading Initial View----//
     [self loadMapView];
-    [self loadTopBar];
+    self.whiteLayer = [[UIView alloc] init];
+    [self.whiteLayer setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.whiteLayer.backgroundColor = RGBA(255, 255, 255, 0);
     
     [self setNeedsStatusBarAppearanceUpdate];
 }
@@ -137,116 +134,6 @@
      [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
      
      [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
-}
-
-- (void) loadTopBar {
-    UIView *topBarContainer = [[UIView alloc] init];
-    topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    topBarContainer.backgroundColor = [UIColor redColor];
-
-    [self.view addSubview:topBarContainer];
- 
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    [self.view setNeedsLayout];
-    [self.view layoutIfNeeded];
-    
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = topBarContainer.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, 1) CGColor], (id)[RGBA(179, 88, 224, 1) CGColor], nil];
-    
-//    [gradient setShadowOffset:CGSizeMake(1, 1)];
-//    [gradient setShadowColor:[[UIColor blackColor] CGColor]];
-//    [gradient setShadowOpacity:0.5];
-
-    
-    [topBarContainer.layer insertSublayer:gradient atIndex:0];
-    
-    CAGradientLayer *shadow = [CAGradientLayer layer];
-    shadow.frame = CGRectMake(0, topBarContainer.frame.origin.y + topBarContainer.frame.size.height, self.view.frame.size.width, 3);
-    shadow.colors = [NSArray arrayWithObjects:(id)[RGBA(100,100,100,.9) CGColor], (id)[RGBA(255,255,255,0) CGColor], nil];
-    [topBarContainer.layer insertSublayer:shadow atIndex:1];
-
-
-    
-
-    // add flur button
-    self.tableListButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
-    [self.tableListButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    self.tableListButton.tag = 1;
-    [self.tableListButton addTarget:self action:@selector(btnMovePanelLeft:)
-              forControlEvents:UIControlEventTouchUpInside];
-    //[self.tableListButton addTarget:self action:@selector(addingFlur:) forControlEvents:UIControlEventTouchDown];
-    
-    [self.view addSubview: self.tableListButton];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1 constant:33]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
-    
-    // make menu button
-    self.menuButton = [UIButton buttonWithType:(UIButtonTypeCustom)];
-    self.menuButton = [[UIButton alloc] init];
-    self.menuButton.tag = 1;
-    [self.menuButton addTarget:self action:@selector(btnMovePanelRight:)
-                                    forControlEvents:UIControlEventTouchUpInside];
-    self.menuButton.backgroundColor = [UIColor clearColor];
-    
-    // create image for menu button
-    UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
-    CGRect rect = CGRectMake(0,0,75,75);
-    UIGraphicsBeginImageContext(rect.size);
-    [hamburger drawInRect:rect];
-    UIImage *hamburgerResized = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    NSData *imageData = UIImagePNGRepresentation(hamburgerResized);
-    UIImage *menuImg = [UIImage imageWithData:imageData];
-    
-    // set image for menu button
-    [self.menuButton setImage:menuImg forState:UIControlStateNormal];
-    [self.menuButton setContentMode:UIViewContentModeCenter];
-    [self.menuButton setImageEdgeInsets:UIEdgeInsetsMake(25,25,25,25)];
-    
-    // add menu button to view
-    [self.menuButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[self view] addSubview:self.menuButton];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:8]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-8]];
-    
-    
-    UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
-    UIImageView *flurImageContainer = [[UIImageView alloc] initWithImage:flurImage];
-    flurImageContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    [topBarContainer addSubview:flurImageContainer];
-    
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
-    
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
-    
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer
-                                                          attribute:NSLayoutAttributeHeight
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:nil
-                                                          attribute:NSLayoutAttributeNotAnAttribute
-                                                         multiplier:1.0
-                                                           constant:30.0]];
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:flurImageContainer
-                                                          attribute:NSLayoutAttributeWidth
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:nil
-                                                          attribute:NSLayoutAttributeNotAnAttribute
-                                                         multiplier:1.0
-                                                           constant:60.0]];
-
     
 }
 
@@ -418,157 +305,73 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)exitBlur:(UITapGestureRecognizer *)recognizer {
-    [self.blurEffectView removeFromSuperview];
+- (void) showWhiteLayer {
+    [self.view addSubview:self.whiteLayer];
+    self.whiteLayer.frame = self.view.frame;
+    [UIView animateWithDuration:.2 animations:^{
+        self.whiteLayer.backgroundColor = RGBA(255, 255, 255, .6);
+    }];
 }
 
-- (void)exitEnterPromptBlur:(UITapGestureRecognizer *)recognizer {
-    
-    if ([self.promptTextField isFirstResponder]) {
-        [self.promptTextField resignFirstResponder];
-    }
-    else {
-        [self.addPinBlurEffectView removeFromSuperview];
-    }
+- (void) hideWhiteLayer {
+    [self.whiteLayer removeFromSuperview];
+    self.whiteLayer.backgroundColor = RGBA(255, 255, 255, 0);
 }
 
-- (void) removeBlur {
-    [self.blurEffectView removeFromSuperview];
-}
-
-- (UIColor*) colorWithHexString:(NSString*)hex {
-    NSString *cString = [[hex stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
-    
-    // String should be 6 or 8 characters
-    if ([cString length] < 6) return [UIColor grayColor];
-    
-    // strip 0X if it appears
-    if ([cString hasPrefix:@"0X"]) cString = [cString substringFromIndex:2];
-    
-    if ([cString length] != 6) return  [UIColor grayColor];
-    
-    // Separate into r, g, b substrings
-    NSRange range;
-    range.location = 0;
-    range.length = 2;
-    NSString *rString = [cString substringWithRange:range];
-    
-    range.location = 2;
-    NSString *gString = [cString substringWithRange:range];
-    
-    range.location = 4;
-    NSString *bString = [cString substringWithRange:range];
-    
-    // Scan values
-    unsigned int r, g, b;
-    [[NSScanner scannerWithString:rString] scanHexInt:&r];
-    [[NSScanner scannerWithString:gString] scanHexInt:&g];
-    [[NSScanner scannerWithString:bString] scanHexInt:&b];
-    
-    return [UIColor colorWithRed:((float) r / 255.0f)
-                           green:((float) g / 255.0f)
-                            blue:((float) b / 255.0f)
-                           alpha:1.0f];
-}
-
-- (IBAction)btnMovePanelRight:(id)sender
-{
-    
-    UIButton *button = sender;
-    switch (button.tag) {
-        case 0: {
-            [_delegate movePanelToOriginalPosition];
-            break;
-        }
-            
-        case 1: {
-            [_delegate movePanelRight];
-            break;
-        }
-            
-        default:
-            break;
-    }
-}
-
-- (IBAction)btnMovePanelLeft:(id)sender
-{
-    
-    UIButton *button = sender;
-    switch (button.tag) {
-        case 0: {
-            [_delegate movePanelToOriginalPosition];
-            break;
-        }
-            
-        case 1: {
-            [_delegate movePanelLeft];
-            break;
-        }
-            
-        default:
-            break;
-    }
-}
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
         
         long dist;
         long minDist = HUGE_VALF;
+        [self.delegate hideSettingsPage];
+      
+            
+        // flur annotation
+        FLFlurAnnotation * fa;
         
-        // If we are in the hamburger/side view - any touch on map panel moves us back
-        if (self.menuButton.tag == 0) {
-            [self btnMovePanelRight:self.menuButton];
-        }
-        else {
+        // closest annotation holder
+        FLFlurAnnotation * ca = nil;
+        
+        // tp = touch point, fp = flur point, cap = closest annotation point
+        CGPoint tp, fp, cap;
+        
+        // for every openable pin
+        for (NSString* pin in self.mapManager.openablePins) {
             
-            // flur annotation
-            FLFlurAnnotation * fa;
+            // get the pin's annotation
+            fa = [self.allAnnotations objectForKey:pin];
             
-            // closest annotation holder
-            FLFlurAnnotation * ca = nil;
+            // get the touch location
+            tp = [touch locationInView:self.view];
             
-            // tp = touch point, fp = flur point, cap = closest annotation point
-            CGPoint tp, fp, cap;
+            // convert coordinates to screen point b.c. getting frame/bounds doesnt work
+            fp = [self.mapView convertCoordinate:fa.coordinate toPointToView:self.mapView];
             
-            // for every openable pin
-            for (NSString* pin in self.mapManager.openablePins) {
-                
-                // get the pin's annotation
-                fa = [self.allAnnotations objectForKey:pin];
-                
-                // get the touch location
-                tp = [touch locationInView:self.view];
-                
-                // convert coordinates to screen point b.c. getting frame/bounds doesnt work
-                fp = [self.mapView convertCoordinate:fa.coordinate toPointToView:self.mapView];
-                
-                // calculate distance between
-                long xDist = tp.x - fp.x;
-                long yDist = tp.y - fp.y;
-                dist = sqrt(xDist*xDist + yDist*yDist);
-                
-                if (dist < minDist) {
-                    minDist = dist;
-                    ca = fa;
-                    cap = fp;
-                }
+            // calculate distance between
+            long xDist = tp.x - fp.x;
+            long yDist = tp.y - fp.y;
+            dist = sqrt(xDist*xDist + yDist*yDist);
+            
+            if (dist < minDist) {
+                minDist = dist;
+                ca = fa;
+                cap = fp;
             }
+        }
+        
+        // if we got atleast one openable pin to check
+        if (ca) {
+            // draw rect around the closest annotation to the touch
+            CGRect fap = CGRectMake(cap.x- (annotationTargetSize/2),
+                                    cap.y- (annotationTargetSize/2),
+                                    annotationTargetSize,
+                                    annotationTargetSize);
             
-            // if we got atleast one openable pin to check
-            if (ca) {
-                // draw rect around the closest annotation to the touch
-                CGRect fap = CGRectMake(cap.x- (annotationTargetSize/2),
-                                        cap.y- (annotationTargetSize/2),
-                                        annotationTargetSize,
-                                        annotationTargetSize);
-                
-                // if the closest target area contains our touch point
-                // then select associated annotation
-                if (CGRectContainsPoint(fap, tp)) {
-                    [self.mapView selectAnnotation:ca animated:FALSE];
-                }
+            // if the closest target area contains our touch point
+            // then select associated annotation
+            if (CGRectContainsPoint(fap, tp)) {
+                [self.mapView selectAnnotation:ca animated:FALSE];
             }
         }
     }

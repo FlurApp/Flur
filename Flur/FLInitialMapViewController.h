@@ -21,6 +21,7 @@
 
 @required
 - (void)movePanelToOriginalPosition;
+- (void)hideSettingsPage;
 
 @end
 
@@ -34,6 +35,9 @@
 @property (nonatomic, strong) UIButton *tableListButton;
 
 - (instancetype) initWithData:(NSMutableDictionary *)data;
+- (void) showWhiteLayer;
+- (void) hideWhiteLayer;
+
 
 
 @end

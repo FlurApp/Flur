@@ -521,7 +521,7 @@
             
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:@"true" forKey:@"sync"];
-            [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLLoginViewController" withData:data];
+            [FLMasterNavigationController switchToViewController:@"MainViewController" fromViewController:@"FLLoginViewController" withData:data];
         } else {
             // The login failed. Check error to see why.
             NSLog(@"login failed...");
