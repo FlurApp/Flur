@@ -442,11 +442,11 @@
     }];
 }
 
-- (void) loadPhotos {
-    [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray* allPhotos) {
-    }];
-}
-    
+//- (void) loadPhotos {
+//    [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray* allPhotos) {
+//    }];
+//}
+
 - (void) handOffToPhotoVC {
 
     self.count++;

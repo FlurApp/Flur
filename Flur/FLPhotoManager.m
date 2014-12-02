@@ -63,7 +63,7 @@
                      NSString *dateString = [dateFormat stringFromDate:date];
                      
                      flur[@"dateAdded"] = dateString;
-                     [flur setObject:[PFUser currentUser] forKey:@"creatorUsername"];
+                     [flur setObject:[PFUser currentUser].username forKey:@"creatorUsername"];
 
                      
                      [LocalStorage addFlur:flur];

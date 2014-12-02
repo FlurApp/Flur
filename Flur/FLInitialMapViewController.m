@@ -383,9 +383,10 @@
     
 }
 
-- (IBAction)addingFlur:(id)sender {
+- (void) addFlur:(NSString*)prompt {
     NSLog(@"adding flur");
-    // [self showAddPromptToNewFlurOverlay];
+    [self.mapManager addFlur:prompt];
+    [self updateOpenablePins];
 }
 
 - (void)didReceiveMemoryWarning {

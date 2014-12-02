@@ -78,11 +78,12 @@
     // setup settings view (left view)
     self.leftPanelViewController = [[FLSettingsViewController alloc] init];
     self.leftPanelViewController.view.tag = LEFT_PANEL_TAG;
-   
+    self.leftPanelViewController.delegate = self;
+    self.leftPanelViewController.delegate2 = self.centerViewController;
     
     [self.view addSubview:self.leftPanelViewController.view];
     [self addChildViewController:_leftPanelViewController];
-    // [_leftPanelViewController didMoveToParentViewController:self];
+    [self.leftPanelViewController didMoveToParentViewController:self];
     
     _leftPanelViewController.view.frame = CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
     

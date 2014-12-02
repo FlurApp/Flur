@@ -9,10 +9,15 @@
 #import <UIKit/UIKit.h>
 
 @protocol FLSettingsViewControllerDelegate <NSObject>
+@optional
+- (void)addFlur:(NSString*)prompt;
+- (void)movePanelToOriginalPosition;
 @end
 
-@interface FLSettingsViewController : UIViewController
+@interface FLSettingsViewController : UIViewController <FLSettingsViewControllerDelegate>
 
 @property (nonatomic, assign) id<FLSettingsViewControllerDelegate> delegate;
+@property (nonatomic, assign) id<FLSettingsViewControllerDelegate> delegate2;
+
 
 @end

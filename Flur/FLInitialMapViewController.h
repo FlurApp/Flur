@@ -19,8 +19,6 @@
 @optional
 - (void)movePanelLeft;
 - (void)movePanelRight;
-
-@required
 - (void)movePanelToOriginalPosition;
 
 @end
