@@ -204,10 +204,6 @@
 }
 
 - (IBAction)addFlur:(id)sender {
-    
-    //NSString *prompt = [self.promptTextField text];
-    NSString *prompt = @"This is a test prompt, please contribute!";
-    [_delegate2 addFlur:prompt];
     [_delegate movePanelToOriginalPosition];
 }
 

@@ -255,36 +255,40 @@
     annotationView.canShowCallout = NO;
 }
 
+- (void) reloadMap {
+    
+    [self.allAnnotations removeAllObjects];
+    [self.mapView removeAnnotations:self.mapView.annotations];
+    
+    
+    [self.mapManager getViewablePins:^(NSMutableDictionary* allViewablePins) {
+        for (id key in allViewablePins) {
+            FLPin * pin = [allViewablePins objectForKey:key];
+            FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin];
+            [self.allAnnotations setObject:annotation forKey:pin.pinId];
+            [self.mapView addAnnotation:annotation];
+        }
+    }];
+}
+
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     [self.mapManager updateCurrentLocation:newLocation
                         andRefreshLocation:false];
     
-    if([self.mapManager shouldRefreshMap]) {
+    if ([self.mapManager shouldRefreshMap]) {
      
-        [self.allAnnotations removeAllObjects];
-        [self.mapView removeAnnotations:self.mapView.annotations];
-        
         [self.mapManager updateCurrentLocation:newLocation
                             andRefreshLocation:true];
-        
-        [self.mapManager getViewablePins:^(NSMutableDictionary* allNonOpenablePins) {
-            for (id key in allNonOpenablePins) {
-                FLPin * pin = [allNonOpenablePins objectForKey:key];
-                FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin];
-                [self.allAnnotations setObject:annotation forKey:pin.pinId];
-                [self.mapView addAnnotation:annotation];
-            }
-        }];
+        [self reloadMap];
     }
     else {
+        
         [self.mapManager updateCurrentLocation:newLocation
                             andRefreshLocation:false];
         
         [self updateAnnotations:[self.mapManager getNewlyOpenablePins] isNowOpenable:true];
         [self updateAnnotations:[self.mapManager getNewlyNonOpenablePins] isNowOpenable:false];
     }
-    
-    
 }
 
 - (void) updateAnnotations:(NSMutableArray *)indexes isNowOpenable:(BOOL)isNowOpenable {
@@ -385,7 +389,7 @@
 - (void) addFlur:(NSString*)prompt {
     NSLog(@"adding flur");
     [self.mapManager addFlur:prompt];
-    [self updateOpenablePins];
+    [self reloadMap];
 }
 
 - (void)didReceiveMemoryWarning {

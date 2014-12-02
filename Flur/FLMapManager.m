@@ -91,7 +91,7 @@
             // completion(self.nonOpenablePins);
         }
         else {
-            NSLog(@"fuck");
+            
             UIAlertView *errorAlert = [[UIAlertView alloc]
                                        initWithTitle:@"Cannot Connect" message:(@"No Internet Connection") delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
             [errorAlert show];
@@ -122,7 +122,7 @@
 
 - (BOOL) shouldRefreshMap {
     
-    if(self.firstPinGrab) {
+    if (self.firstPinGrab) {
         self.firstPinGrab = false;
         return true;
     }
