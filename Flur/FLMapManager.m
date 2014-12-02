@@ -3,7 +3,7 @@
 //  Flur
 //
 //  Created by Netanel Rubin on 10/20/14.
-//  Copyright (c) 2014 lhashemi. All rights reserved.
+//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
 //
 
 #import "FLMapManager.h"
@@ -90,8 +90,12 @@
             [self sendPinsToVC:completion];
             // completion(self.nonOpenablePins);
         }
-        else
+        else {
             NSLog(@"fuck");
+            UIAlertView *errorAlert = [[UIAlertView alloc]
+                                       initWithTitle:@"Cannot Connect" message:(@"No Internet Connection") delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [errorAlert show];
+        }
     }];
 }
 

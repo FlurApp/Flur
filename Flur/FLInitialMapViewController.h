@@ -3,7 +3,7 @@
 //  Flur
 //
 //  Created by Lily Hashemi on 10/4/14.
-//  Copyright (c) 2014 lhashemi. All rights reserved.
+//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -12,6 +12,7 @@
 
 #import "FLTableViewController.h"
 #import "FLSettingsViewController.h"
+#import "FLContributeViewController.h"
 
 @protocol FLInitialMapViewControllerDelegate <NSObject>
 
@@ -39,5 +40,6 @@
 - (void) hideWhiteLayer;
 
 
+@property (nonatomic, strong) FLContributeViewController *contributeController;
 
 @end

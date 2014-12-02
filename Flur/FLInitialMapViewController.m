@@ -3,7 +3,7 @@
 //  Flur
 //
 //  Created by Lily Hashemi on 10/4/14.
-//  Copyright (c) 2014 lhashemi. All rights reserved.
+//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
 //
 
 @import MapKit;
@@ -52,9 +52,7 @@
 @property (nonatomic, strong) UIView *whiteLayer;
 
 
-
 @end
-
 
 @implementation FLInitialMapViewController
 
@@ -203,31 +201,34 @@
     }
 }
 
-- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view
-{
+- (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view {
     id<MKAnnotation> annotation = view.annotation;
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
         view.selected = NO;
         return;
-        // this is where you can find the annotation type is whether it is userlocation or not...
     }
+}
+
+- (void) didSelectAnnotationView_custom:(MKAnnotationView *)view
+{
+
     FLFlurAnnotation* fa = view.annotation;
     NSLog(@"Clicked: %@", fa.pin.pinId);
     if(fa.pin.pinId) {
         NSString* id = fa.pin.pinId;
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
-        NSLog(@"now");
+       //  NSLog(@"now");
         if(p) {
-            NSLog(@"hello");
+            // NSLog(@"hello");
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:p forKey:@"FLPin"];
-            [FLMasterNavigationController switchToViewController:@"FLContributeViewController"
-                            fromViewController:@"FLInitialMapViewController"
-                                                        withData:data];
+
+            // add contribute view (it handles the status bar too)
+            self.contributeController = [[FLContributeViewController alloc] initWithData:data];
+            UIView *contrView = self.contributeController.view;
+            [self.view addSubview: contrView];
             
-            
-            NSLog(@"finally");
-            [self.mapView deselectAnnotation:view.annotation animated:false];
+           // NSLog(@"finally");
         }
     }
     return;
@@ -287,18 +288,6 @@
     // [self showAddPromptToNewFlurOverlay];
 }
 
-
-- (IBAction)contributingToFlur:(id)sender {
-    NSLog(@"clicked contribute");
-    
-    FLButton *buttonClicked = (FLButton *)sender;
-    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-    [data setObject:buttonClicked.pin forKey:@"FLPin"];
-    [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
-                                      fromViewController:@"FLInitialMapViewController"
-                                                withData:data];
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     
@@ -317,8 +306,6 @@
     [self.whiteLayer removeFromSuperview];
     self.whiteLayer.backgroundColor = RGBA(255, 255, 255, 0);
 }
-
-
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
         
@@ -371,7 +358,7 @@
             // if the closest target area contains our touch point
             // then select associated annotation
             if (CGRectContainsPoint(fap, tp)) {
-                [self.mapView selectAnnotation:ca animated:FALSE];
+                [self didSelectAnnotationView_custom:ca.annotationView];
             }
         }
     }

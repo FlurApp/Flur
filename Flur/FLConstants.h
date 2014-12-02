@@ -18,8 +18,8 @@
 #define annotationTargetSize 60
 
 // FLContributeVieController
-#define purp RGB(186,108,224)
-
+#define contributeColor RGB(186,108,224)
+#define darkContributeColor RGB(186/2,108/2,224/2);
 
 // FLLoginViewController
 #define MAXLENGTH 30
