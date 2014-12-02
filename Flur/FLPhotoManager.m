@@ -58,11 +58,11 @@
                      flur[@"dateCreated"] = pin.dateCreated;
                      
                      NSDate *date = [NSDate date];
-                     NSDateFormatter *dateFormat = [[NSDateFormatter alloc]init];
-                     [dateFormat setDateFormat:@"MMM dd, yyyy"];
-                     NSString *dateString = [dateFormat stringFromDate:date];
+//                     NSDateFormatter *dateFormat = [[NSDateFormatter alloc]init];
+//                     [dateFormat setDateFormat:@"MMM dd, yyyy"];
+//                     NSString *dateString = [dateFormat stringFromDate:date];
                      
-                     flur[@"dateAdded"] = dateString;
+                     flur[@"dateAdded"] = date;
                      [flur setObject:[PFUser currentUser].username forKey:@"creatorUsername"];
 
                      

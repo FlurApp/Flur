@@ -455,7 +455,7 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     for (UITouch *touch in touches) {
-        
+        NSLog(@"touch");
         long dist;
         long minDist = HUGE_VALF;
         
