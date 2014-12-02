@@ -110,6 +110,7 @@
     self.email = [[UILabel alloc]init];
     [self.email setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.email.text = user.username;
+    
      self.email.font = personalInfoFont;
     [self.email setTextColor:personalInfoColor];
 
@@ -123,7 +124,8 @@
     
     self.contributionCount = [[UILabel alloc]init];
     [self.contributionCount setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.contributionCount.text = @"Contributions: 7";
+    //self.contributionCount.text =[NSString stringWithFormat:@"Contributions: %lu", [PFUser currentUser].numContributions];
+     self.contributionCount.text = @"Contributions: 7";
      self.contributionCount.font = personalInfoFont;
     [self.contributionCount setTextColor:personalInfoColor];
     
@@ -200,6 +202,7 @@
 - (IBAction)logOut:(id)sender {
     [PFUser logOut];
     [LocalStorage destroyLocalStorage];
+    
     [FLMasterNavigationController switchToViewController:@"FLSplashViewController" fromViewController:@"FLSettingsViewController" withData:nil];
 }
 

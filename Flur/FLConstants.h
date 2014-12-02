@@ -35,12 +35,11 @@
 #define closeToPinDistance .02 //how close we are to open a pin
 
 // FLSettingsViewController
-#define profilePictureSize 120
-#define profilePictureBorderSize 126
+#define profilePictureSize 180
+#define profilePictureBorderSize 186
 #define buttonHeight 70
 
 #define personalInfoLeading 20
-#define PANEL_WIDTH 60
 
 #define personalInfoColor RGB(120,120,120)
 #define personalInfoFont [UIFont fontWithName:@"Avenir-Light" size:18]
@@ -48,7 +47,9 @@
 // MainViewController
 #define CORNER_RADIUS 4
 #define SLIDE_TIMING .20
-#define PANEL_WIDTH 60
+#define PANEL_WIDTH 120
+
+#define TOP_BAR_HEIGHT 80
 
 
 

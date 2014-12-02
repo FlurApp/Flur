@@ -20,6 +20,7 @@
 - (void)movePanelLeft;
 - (void)movePanelRight;
 - (void)movePanelToOriginalPosition;
+- (void)hideSettingsPage;
 
 @end
 
@@ -31,6 +32,12 @@
 
 @property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) UIButton *tableListButton;
+
+- (instancetype) initWithData:(NSMutableDictionary *)data;
+- (void) showWhiteLayer;
+- (void) hideWhiteLayer;
+
+
 @property (nonatomic, strong) FLContributeViewController *contributeController;
 
 @end

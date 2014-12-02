@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "Flur.h"
+@protocol FLCustomCellTableViewDelegate <NSObject>
+
+@optional
+
+@required
+- (void) showInfo:(NSMutableDictionary *)data;
+
+@end
 
 @interface FLCustomCellTableViewCell : UITableViewCell
 
@@ -22,6 +30,9 @@
 @property (nonatomic, strong) UILabel *cellDate;
 
 @property (nonatomic, strong) Flur *flur;
+
+@property (nonatomic, assign) id<FLCustomCellTableViewDelegate> delegate;
+
 
 + (void) closeCurrentlyOpenCell;
 

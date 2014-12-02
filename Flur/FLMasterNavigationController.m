@@ -40,17 +40,10 @@ static UINavigationController *navController;
     PFUser *currentUser = [PFUser currentUser];
     UIViewController *control;
     
-    //if (false)
     if (currentUser)
-        control = [[MainViewController alloc] init];
+        control = [[MainViewController alloc] initWithData:NULL];
     else
         control = [[FLSplashViewController alloc] init];
-    
-    //control = [[FLInitialMapViewController alloc] init];
-    //control = [[FLTableViewController alloc] init];
-    //control = [[FLSettingsViewController alloc] init];
-    //control = [[FLFlurInfoViewController alloc] init];
-    //control = [[FLSettingsViewController alloc] init];
 
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];
@@ -130,7 +123,7 @@ static UINavigationController *navController;
             int position = (navController.viewControllers.count - 1);
             [navArray removeObjectAtIndex:position-1];
             MainViewController *main = [navArray objectAtIndex:0];
-            [main.centerViewController.contributeController.view removeFromSuperview];
+            [main.mapView.contributeController.view removeFromSuperview];
             
             [navController setViewControllers:navArray animated:YES];
             [navController popViewControllerAnimated:YES];
@@ -142,8 +135,9 @@ static UINavigationController *navController;
     else if ([oldControllerName isEqualToString:@"FLLoginViewController"]) {
         
         // entering Map View
-        if ([newControllerName isEqualToString:@"FLInitialMapViewController"]) {
-            [navController pushViewController:[[MainViewController alloc] init] animated:YES];
+        if ([newControllerName isEqualToString:@"MainViewController"]) {
+            
+            [navController pushViewController:[[MainViewController alloc] initWithData:data] animated:YES];
             NSMutableArray* navArray = [[NSMutableArray alloc] initWithArray:navController.viewControllers];
             [navArray removeObjectAtIndex:0];
             

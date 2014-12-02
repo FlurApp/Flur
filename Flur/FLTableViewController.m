@@ -9,8 +9,6 @@
 #import <Parse/Parse.h>
 #import "FLTableViewController.h"
 #import "LocalStorage.h"
-#import <SWTableViewCell/SWTableViewCell.h>
-#import "FLCustomCellTableViewCell.h"
 #import "FLConstants.h"
 
 @interface FLTableViewController ()
@@ -19,6 +17,8 @@
 @property (nonatomic, strong) UIView* topBar;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UIButton *backButton;
+@property (nonatomic, strong) UILabel *pageTitle;
+
 
 @end
 
@@ -57,26 +57,6 @@
    // self.tableView = [[UITableView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame] style:UITableViewStylePlain];
     
     
-
-    UIView *waste = [[UIView alloc]init];
-     [waste setTranslatesAutoresizingMaskIntoConstraints:NO];
-     [self.view addSubview:waste];
-     
-     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:waste attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-     
-     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:waste attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
-     
-     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:waste attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-     
-     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:waste attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-     
-     [self.view setNeedsLayout];
-     [self.view layoutIfNeeded];
-
-    
-    
-    
-    
     self.tableView = [[UITableView alloc] init];
     [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
 
@@ -90,7 +70,7 @@
     
     [self.view addSubview: self.tableView];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:waste attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
@@ -98,73 +78,7 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
   
-    
-    
-    
-    self.topBar = [[UIView alloc]init];
-    [self.topBar setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.topBar.backgroundColor = [UIColor redColor];
 
-    [self.view addSubview:self.topBar];
-    
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
-    [self.view setNeedsLayout];
-    [self.view layoutIfNeeded];
-    
-    
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = self.topBar.frame;
-    gradient.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, .98) CGColor], (id)[RGBA(179, 88, 224, .98) CGColor], nil];
-    
-//    [gradient setShadowOffset:CGSizeMake(1, 1)];
-//    [gradient setShadowColor:[[UIColor blackColor] CGColor]];
-//    [gradient setShadowOpacity:0.5];
-    
-    [self.topBar.layer insertSublayer:gradient atIndex:0];
-    
-//    CAGradientLayer *shadow = [CAGradientLayer layer];
-//    shadow.frame = CGRectMake(0, self.topBar.frame.origin.y + self.topBar.frame.size.height, self.view.frame.size.width, 3);
-//    shadow.colors = [NSArray arrayWithObjects:(id)[RGBA(100,100,100,.9) CGColor], (id)[RGBA(255,255,255,0) CGColor], nil];
-//    [self.topBar.layer insertSublayer:shadow atIndex:1];
-    
-    self.backButton = [[UIButton alloc] init];
-    [self.backButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.backButton addTarget:self action:@selector(returnToMap:) forControlEvents:UIControlEventTouchDown];
-    [self.backButton setImage:[UIImage imageNamed:@"leaveCamera.png"] forState:UIControlStateNormal];
-    
-    [self.topBar addSubview:self.backButton];
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:_backButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton
-                                                            attribute:NSLayoutAttributeHeight
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:nil
-                                                            attribute:NSLayoutAttributeNotAnAttribute
-                                                           multiplier:1.0
-                                                             constant:40.0]];
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton
-                                                            attribute:NSLayoutAttributeWidth
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:nil
-                                                            attribute:NSLayoutAttributeNotAnAttribute
-                                                           multiplier:1.0
-                                                             constant:40.0]];
-    
-
-    
-    
-    
     // get flurs
     [self getFlurs];
     
@@ -172,14 +86,12 @@
 
 - (void) getFlurs {
     // get contributed pins
-    //[LocalStorage deleteAllFlurs];
-    
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         self.pinsArray = allFlurs[@"allFlurs"];
         
        // NSLog(@"first: %@", [self.pinsArray[0] prompt]);
         //NSLog(@"second: %@", [self.pinsArray[1] prompt]);
-
+        
         [self reloadData];
         
     }];
@@ -214,59 +126,24 @@
     // Configure the cell...
     if (cell == nil) {
         cell = [[FLCustomCellTableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier];
-        /*cell.leftUtilityButtons = [self leftButtons];
-        cell.rightUtilityButtons = [self rightButtons];
-        cell.delegate = self;*/
     }
+    cell.delegate = self;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     cell.cellPrompt.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
     
     NSDate *date = [[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    
     [dateFormatter setDateFormat:@"MMM d, YYYY"];
-
     
     cell.cellDate.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:[NSDate date]]];
 
-    cell.cellContentCount.text = [NSString stringWithFormat:@"%@ contributions", [[[self.pinsArray objectAtIndex:indexPath.row] numContributions] stringValue]];
+    cell.cellContentCount.text = [NSString stringWithFormat:@"%@ contributions", [[[self.pinsArray objectAtIndex:indexPath.row] totalContentCount] stringValue]];
     
     cell.flur = [self.pinsArray objectAtIndex:indexPath.row];
 
     return cell;
-}
-
-- (NSArray *)rightButtons
-{
-    NSMutableArray *rightUtilityButtons = [NSMutableArray new];
-    [rightUtilityButtons sw_addUtilityButtonWithColor:
-     [UIColor colorWithRed:0.78f green:0.78f blue:0.8f alpha:1.0]
-                                                title:@"More"];
-    [rightUtilityButtons sw_addUtilityButtonWithColor:
-     [UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f]
-                                                title:@"Delete"];
-    
-    return rightUtilityButtons;
-}
-
-- (NSArray *)leftButtons
-{
-    NSMutableArray *leftUtilityButtons = [NSMutableArray new];
-    
-    [leftUtilityButtons sw_addUtilityButtonWithColor:
-     [UIColor colorWithRed:0.07 green:0.75f blue:0.16f alpha:1.0]
-                                                icon:[UIImage imageNamed:@"check.png"]];
-    [leftUtilityButtons sw_addUtilityButtonWithColor:
-     [UIColor colorWithRed:1.0f green:1.0f blue:0.35f alpha:1.0]
-                                                icon:[UIImage imageNamed:@"clock.png"]];
-    [leftUtilityButtons sw_addUtilityButtonWithColor:
-     [UIColor colorWithRed:1.0f green:0.231f blue:0.188f alpha:1.0]
-                                                icon:[UIImage imageNamed:@"cross.png"]];
-    [leftUtilityButtons sw_addUtilityButtonWithColor:
-     [UIColor colorWithRed:0.55f green:0.27f blue:0.07f alpha:1.0]
-                                                icon:[UIImage imageNamed:@"list.png"]];
-    
-    return leftUtilityButtons;
 }
 
 
@@ -304,13 +181,12 @@
     return NO;
 }
 
-- (IBAction)returnToMap:(id)sender {
-    [FLCustomCellTableViewCell closeCurrentlyOpenCell];
-    [_delegate movePanelToOriginalPosition];
+- (IBAction)showInfoButtonPress:(id)sender {
 }
 
 - (void)reloadData {
     // Reload table data
+    //NSLog(@"Function *reloadData* called in TableVC");
     [self.tableView reloadData];
     
     // End the refreshing
@@ -326,6 +202,10 @@
         
         [self.refreshControl endRefreshing];
     }*/
+}
+
+- (void) showInfo:(NSMutableDictionary*)data {
+    [self.delegate showInfoPage:data];
 }
 
 /*

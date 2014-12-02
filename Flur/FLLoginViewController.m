@@ -511,23 +511,33 @@
 - (void) loginWithUsername:(NSString*)username withPassword:(NSString*)password {
     [PFUser logInWithUsernameInBackground:username password:password
                                     block:^(PFUser *user, NSError *error) {
-                                        if (user) {
-                                            // Do stuff after successful login.
-                                            NSLog(@"successful login");
-                                            
-                                            [self dropSubmitButton];
-                                            [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLLoginViewController" withData:NULL];
-                                        } else {
-                                            // The login failed. Check error to see why.
-                                            NSLog(@"login failed...");
+                                        
+        if (user) {
+            // Do stuff after successful login.
+            NSLog(@"successful login");
+            
+            [self dropSubmitButton];
+            [self syncCoreDataWithServer];
+            
+            NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+            [data setObject:@"true" forKey:@"sync"];
+            [FLMasterNavigationController switchToViewController:@"MainViewController" fromViewController:@"FLLoginViewController" withData:data];
+        } else {
+            // The login failed. Check error to see why.
+            NSLog(@"login failed...");
 
-                                            [self showErrorMessage];
-                                            [self hideSubmitButton];
-                                            [self.passwordInput becomeFirstResponder];
-                                            
-                                            // check reasons...and display
-                                        }
-                                    }];
+            [self showErrorMessage];
+            [self hideSubmitButton];
+            [self.passwordInput becomeFirstResponder];
+            
+            // check reasons...and display
+        }
+                                        
+    }];
+}
+
+- (void) syncCoreDataWithServer {
+    
 }
 
 - (IBAction)doForgotPassword:(id)sender {

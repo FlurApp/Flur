@@ -56,7 +56,10 @@ static FLCustomCellTableViewCell* currentOpenCell;
         
         self.button1 = [[UIButton alloc] init];
         self.button1.backgroundColor =  RGB(13, 191, 255);
-        [self.button1 setTitle:@"Photos" forState:UIControlStateNormal];
+        //[self.button1 setTitle:@"Photos" forState:UIControlStateNormal];
+        UIImage *img = [[UIImage imageNamed:@"test.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(30,10,30,10)];
+        [self.button1 setImage:img forState:UIControlStateNormal];
+        
         [self.button1 setTranslatesAutoresizingMaskIntoConstraints:NO];
         
         
@@ -236,7 +239,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
         }
             break;
         case UIGestureRecognizerStateEnded:
-            if (self.contentViewRightConstraint.constant < -80)
+            if (self.contentViewRightConstraint.constant < -30)
                 [self openRight];
             else
                 [self closeRight];
@@ -325,7 +328,11 @@ static FLCustomCellTableViewCell* currentOpenCell;
     [data setObject:self.flur forKey:@"flur"];
     [FLCustomCellTableViewCell closeCurrentlyOpenCell];
 
-    [FLMasterNavigationController switchToViewController:@"FLFlurInfoViewController" fromViewController:@"FLTableViewController" withData:data];
+    [self.delegate showInfo:data];
+}
+
+- (void) showInfo {
+  
 }
 
 

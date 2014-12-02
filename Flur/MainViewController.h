@@ -10,6 +10,8 @@
 #import "FLInitialMapViewController.h"
 #import "FLTableViewController.h"
 #import "FLSettingsViewController.h"
+#import "FLFlurInfoViewController.h"
+#import "FLTopBarViewController.h"
 
 #define CENTER_TAG 1
 #define LEFT_PANEL_TAG 2
@@ -17,12 +19,18 @@
 
 @interface MainViewController : UIViewController <FLInitialMapViewControllerDelegate, FLTableViewControllerDelegate, FLSettingsViewControllerDelegate>
 
-@property (nonatomic, strong) FLInitialMapViewController *centerViewController;
-@property (nonatomic, strong) FLSettingsViewController *leftPanelViewController;
-@property (nonatomic, strong) FLTableViewController *rightPanelViewController;
+@property (nonatomic, strong) FLInitialMapViewController *mapView;
+@property (nonatomic, strong) FLSettingsViewController *settingsView;
+@property (nonatomic, strong) FLTableViewController *tableView;
+@property (nonatomic, strong) FLFlurInfoViewController *flurInfoView;
+@property (nonatomic, strong) FLTopBarViewController *topBarView;
+
+
 
 @property (nonatomic, assign) BOOL showingLeftPanel;
 @property (nonatomic, assign) BOOL showingRightPanel;
+
+- (instancetype) initWithData:(NSMutableDictionary *)data;
 
 
 @end
