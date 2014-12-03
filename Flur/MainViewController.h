@@ -12,20 +12,20 @@
 #import "FLSettingsViewController.h"
 #import "FLFlurInfoViewController.h"
 #import "FLTopBarViewController.h"
+#import "FLNewFlurViewController.h"
 
 #define CENTER_TAG 1
 #define LEFT_PANEL_TAG 2
 #define RIGHT_PANEL_TAG 3
 
-@interface MainViewController : UIViewController <FLInitialMapViewControllerDelegate, FLTableViewControllerDelegate, FLSettingsViewControllerDelegate>
+@interface MainViewController : UIViewController <FLInitialMapViewControllerDelegate, FLTableViewControllerDelegate, FLSettingsViewControllerDelegate, FLFlurInfoViewControllerDelegate, FLNewFlurViewControllerDelegate>
 
 @property (nonatomic, strong) FLInitialMapViewController *mapView;
 @property (nonatomic, strong) FLSettingsViewController *settingsView;
 @property (nonatomic, strong) FLTableViewController *tableView;
 @property (nonatomic, strong) FLFlurInfoViewController *flurInfoView;
 @property (nonatomic, strong) FLTopBarViewController *topBarView;
-
-
+@property (nonatomic, strong) FLNewFlurViewController *dropFlurView;
 
 @property (nonatomic, assign) BOOL showingLeftPanel;
 @property (nonatomic, assign) BOOL showingRightPanel;

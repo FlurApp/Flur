@@ -207,7 +207,7 @@
 }
 
 - (IBAction)addFlur:(id)sender {
-    [_delegate movePanelToOriginalPosition];
+    [_delegate showDropFlurPage];
 }
 
 - (void)didReceiveMemoryWarning {

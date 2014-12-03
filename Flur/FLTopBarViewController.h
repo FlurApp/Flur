@@ -34,5 +34,6 @@
 @property (nonatomic, assign) id<FLTopBarViewControllerDelegate> delegate;
 
 - (void) showInfoPageBar;
+- (void) showDropFlurBar;
 
 @end

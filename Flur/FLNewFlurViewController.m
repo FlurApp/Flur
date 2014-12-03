@@ -20,8 +20,9 @@
 
 
 - (void)viewDidLoad {
+    self.view.backgroundColor = [UIColor whiteColor];
     
-    self.addNewFlur = [[UIButton alloc] init];
+    self.addNewFlur = [[UIButton alloc] initWithFrame:CGRectMake(0,0,200,100)];
     [self.addNewFlur setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.addNewFlur addTarget:self action:@selector(addFlur:) forControlEvents:UIControlEventTouchUpInside];
     
@@ -34,12 +35,12 @@
     
     [self.view addSubview:self.addNewFlur];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addNewFlur attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:25]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addNewFlur attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
 
 }
 
 - (IBAction)addFlur:(id)sender {
-    
+    [_delegate addFlur:@"test"];
 }
 
 @end

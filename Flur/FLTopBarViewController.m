@@ -17,7 +17,7 @@
 
 @property (nonatomic) BOOL tableViewMode;
 @property (nonatomic) BOOL infoViewMode;
-
+//@property (nonatomic) BOOL dropFlurViewMode;
 
 
 @end
@@ -246,6 +246,21 @@
         }];
     }];
  
+}
+
+- (void) showDropFlurBar {
+    
+    self.flurImageContainer.alpha = 0;
+    
+    [UIView animateWithDuration:.2 animations:^{
+        self.pageTitle.alpha = 0;
+    } completion:^(BOOL finished) {
+        self.pageTitle.text = @"Drop Flur";
+        [UIView animateWithDuration:.2 animations:^{
+            self.pageTitle.alpha = 1;
+        }];
+    }];
+    
 }
 
 - (void)didReceiveMemoryWarning {

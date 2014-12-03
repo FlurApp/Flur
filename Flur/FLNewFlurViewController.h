@@ -8,6 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol FLNewFlurViewControllerDelegate <NSObject>
+
+@required
+-(void) addFlur: (NSString*)prompt;
+
+@end
+
 @interface FLNewFlurViewController : UIViewController
+
+@property (nonatomic, assign) id<FLNewFlurViewControllerDelegate> delegate;
 
 @end
