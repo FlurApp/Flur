@@ -515,7 +515,7 @@
         [self.tableView getFlurs];
     }];
     
-    [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+    [UIView animateWithDuration:0 delay:.3 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.loginView.view.frame = CGRectMake(-self.loginView.view.frame.size.width, 0,
                                                 self.loginView.view.frame.size.width,
                                                 self.loginView.view.frame.size.height);
