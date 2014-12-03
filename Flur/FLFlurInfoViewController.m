@@ -13,6 +13,7 @@
 #import "UILabel+MultiColor.h"
 #import "FLFlurAnnotation.h"
 #import "flur.h"
+#import "FLPhotoManager.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 #define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
@@ -51,7 +52,8 @@
 @property (nonatomic, strong) NSLayoutConstraint *yourContributionConstraint;
 
 @property (nonatomic, strong) NSMutableDictionary *pin_data;
-
+@property (nonatomic, strong) FLPhotoManager *photoManager;
+@property (nonatomic, strong) FLPin *pin;
 
 @end
 
@@ -68,6 +70,7 @@
 - (void) setData:(NSMutableDictionary *) data {
     //NSLog(@"data: %@", data);
     self.pin_data = data;
+    self.pin = [data objectForKey:@"FLPin"];
     
     NSString* creatorUsername = [data objectForKey:@"creatorUsername"];
     
@@ -402,7 +405,13 @@
 
 - (IBAction)viewAlbum:(id)sender {
     [self exitPage:nil];
-    [_delegate showPhotoPage:self.pin_data];
+    
+    self.photoManager = [[FLPhotoManager alloc] init];
+    [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray *allPhotos) {
+        
+        [self.pin_data setObject:allPhotos forKey:@"allPhotos"];
+        [_delegate showPhotoPage:self.pin_data];
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
