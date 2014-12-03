@@ -17,9 +17,6 @@
 @protocol FLInitialMapViewControllerDelegate <NSObject>
 
 @optional
-//- (void)movePanelLeft;
-//- (void)movePanelRight;
-//- (void)movePanelToOriginalPosition;
 - (void)hideSettingsPage;
 
 @end
@@ -36,6 +33,8 @@
 - (instancetype) initWithData:(NSMutableDictionary *)data;
 - (void) showWhiteLayer;
 - (void) hideWhiteLayer;
+
+- (void) addFlur:(NSString*)prompt;
 
 
 @property (nonatomic, strong) FLContributeViewController *contributeController;

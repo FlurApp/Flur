@@ -3,7 +3,7 @@
 //  Flur
 //
 //  Created by Netanel Rubin on 11/8/14.
-//  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
+//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
 //
 #import <CoreData/CoreData.h>
 #import <UIKit/UIKit.h>
@@ -45,7 +45,7 @@ static bool userFound = false;
 }
 
 + (void) syncWithServer:(void(^)()) completion {
-    [LocalStorage createTestData];
+    //[LocalStorage createTestData];
     return;
     
     PFUser* curUser = [PFUser currentUser];

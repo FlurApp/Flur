@@ -3,7 +3,7 @@
 //  Flur
 //
 //  Created by David Lee on 11/16/14.
-//  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
+//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
 //
 
 #import "FLContributeViewController.h"

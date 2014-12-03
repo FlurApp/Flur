@@ -74,8 +74,6 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor blackColor];
-    [self setNeedsStatusBarAppearanceUpdate];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
     self.session = [[AVCaptureSession alloc] init];
     

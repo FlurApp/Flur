@@ -3,7 +3,7 @@
 //  Flur
 //
 //  Created by David Lee on 11/8/14.
-//  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
+//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
 //
 
 #import "FLSplashViewController.h"
@@ -65,7 +65,7 @@
     [self.signupButton addTarget:self action:@selector(signUp:) forControlEvents:UIControlEventTouchDown];
     self.signupButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
     self.signupButton.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 40);
-    [self.signupButton setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
+    [self.signupButton.titleLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
 
     [[self view] addSubview:self.signupButton];
     
@@ -87,7 +87,7 @@
     [self.loginButton setCenter: self.view.center];
     [self.loginButton addTarget:self action:@selector(loginToFlur:) forControlEvents:UIControlEventTouchDown];
     //[self.loginButton setFont:[UIFont systemFontOfSize:20]];
-    [self.loginButton setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
+    [self.loginButton.titleLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
 
 
        self.loginButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
