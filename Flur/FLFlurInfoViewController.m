@@ -19,6 +19,10 @@
 #define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 
 
+/*@interface InsetLabel : UILabel
+@property (nonatomic)
+@end*/
+
 @interface FLFlurInfoViewController ()
 
 @property (nonatomic, strong) UIButton *viewAlbumButton;
@@ -37,7 +41,6 @@
 @property (nonatomic) CLLocationCoordinate2D coord;
 @property (nonatomic) NSInteger buttonHeight;
 
-@property (nonatomic, strong) Flur *flur;
 @property (nonatomic, strong) NSArray *months;
 @property (nonatomic, strong) FLFlurAnnotation *annotation;
 
@@ -46,7 +49,7 @@
 
 @property (nonatomic, strong) NSLayoutConstraint *contributeButtonHeight;
 @property (nonatomic, strong) NSLayoutConstraint *viewAlbumButtonHeight;
-
+@property (nonatomic, strong) NSLayoutConstraint *yourContributionConstraint;
 
 
 @end
@@ -56,7 +59,6 @@
 - (instancetype) initWithData:(NSMutableDictionary *) data {
     self = [super init];
     if (self) {
-        self.flur = [data objectForKey:@"flur"];
         self.months = [[NSArray alloc] initWithObjects:@"Jan", @"Feb", @"Mar", @"Apr", @"Jun", @"Jul", @"Aug", @"Sep", @"Oct", @"Nov", @"Dec", nil];
         self.annotation = nil;
     }
@@ -64,43 +66,75 @@
 }
 
 - (void) setData:(NSMutableDictionary *) data {
+    NSLog(@"data: %@", data);
+    NSString* creatorUsername = [data objectForKey:@"creatorUsername"];
+    
+    NSDate *date = [data objectForKey:@"dateCreated"];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    
+    [dateFormatter setDateFormat:@"MMM d, YYYY"];
+    
+    NSString* dateCreated = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:date]];
+    
+    self.flurCreated.text = [NSString stringWithFormat:@"@%@ created this flur on %@.", creatorUsername,
+                             dateCreated];
+    
+    [self.flurCreated setTextColor:RGB(13, 191, 255)
+                             range:NSMakeRange(0, creatorUsername.length+1)];
+    
+    NSNumber *num = [data objectForKey:@"totalContentCount"];
+    NSInteger totalContentCount = num.integerValue;
+    
+    self.totalContributions.text = [NSString stringWithFormat:@"%lu other people have contributed to this flur.", totalContentCount];
+    [self.totalContributions setTextColor:RGB(238, 0, 255)
+                                    range:NSMakeRange(0, [self numDigits:totalContentCount])];
+
     
     if ([data objectForKey:@"contributeView"]) {
         self.contributeView = true;
-        [self.mapView removeFromSuperview];
-    }
-    else {
-        self.contributeView = false;
+        self.mapView.alpha = 0;
         
-        self.contributeButtonHeight.constant = 0;
-        self.mapView.alpha = 1;
+        self.yourContributionConstraint.constant = 0;
+        self.yourContribution.text = @"";
+        
+        if ([[data objectForKey:@"haveContributedTo"] isEqual:@"true"]) {
+            self.viewAlbumButtonHeight.constant = 80;
+            [self.viewAlbumButton setTitle:@"View Album" forState:UIControlStateNormal];
+        }
+        else {
+            self.viewAlbumButtonHeight.constant = 0;
+            [self.viewAlbumButton setTitle:@"" forState:UIControlStateNormal];
+
+        }
         
         [self.view layoutIfNeeded];
     }
-    
-    self.flur = [data objectForKey:@"flur"];
-   // NSLog(@"FLur: %@", self.flur);
-    
-    self.flurCreated.text = [NSString stringWithFormat:@"@%@ created this flur on %@", self.flur.creatorUsername, [self stringFromDate:self.flur.dateCreated]];
-    [self.flurCreated setTextColor:RGB(13, 191, 255)
-                             range:NSMakeRange(0, self.flur.creatorUsername.length+1)];
-    
-    int num = self.flur.totalContentCount.intValue;
-    int digits = 1;
+    else {
+        self.contributeView = false;
+        self.yourContributionConstraint.constant = 0;
 
-    while ((num = num/10) > 0.0) {
-        digits++;
+        self.mapView.alpha = 1;
+        
+        num = [data objectForKey:@"myContentPosition"];
+        NSInteger myContentPosition = num.integerValue;
+        
+        date = [data objectForKey:@"dateAdded"];
+        NSString* dateAdded = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:date]];
+        
+        self.yourContribution.text = [NSString stringWithFormat:@"You were the %lu person to contribute to this flur on %@.", myContentPosition, dateAdded];
+        [self.yourContribution setTextColor:RGB(232,72,49)
+                                        range:NSMakeRange(13, [self numDigits:myContentPosition])];
+        self.yourContributionConstraint.constant = 10;
+
+        [self.view layoutIfNeeded];
     }
     
-    self.totalContributions.text = [NSString stringWithFormat:@"%@ other people have contributed to this flur.", self.flur.totalContentCount];
-    [self.totalContributions setTextColor:RGB(238, 0, 255)
-                                    range:NSMakeRange(0, digits)];
     
     /*if (self.annotation == nil) {
         self.annotation = [[FLFlurAnnotation alloc] init];
 
     }*/
-    self.annotation = nil;
+    /*self.annotation = nil;
     self.annotation = [[FLFlurAnnotation alloc] initWithLat:self.flur.lat.doubleValue initWithLng:self.flur.lng.doubleValue];
     [self.mapView addAnnotation:self.annotation];
     
@@ -118,13 +152,23 @@
 
     self.coord = CLLocationCoordinate2DMake(coord.latitude, coord.longitude);
     NSLog(@"coord2: %f %f", self.coord.latitude, self.coord.longitude);
-    [self.mapView addAnnotation:point];
+    [self.mapView addAnnotation:point];*/
 
 
     
 
     
     
+}
+
+- (int) numDigits:(NSInteger) number {
+    int digits = 1;
+    
+    while ((number = number/10) > 0.0) {
+        digits++;
+    }
+    return digits;
+
 }
 
 - (void)viewDidLoad {
@@ -204,12 +248,11 @@
     
     self.flurCreated = [[UILabel alloc] init];
     [self.flurCreated setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.flurCreated.text = [NSString stringWithFormat:@"@%@ created this flur on Aug 3, 2014.", self.flur.creatorUsername];
+
     self.flurCreated.font = [UIFont fontWithName:@"Avenir-Light" size:19];
 
     [self.flurCreated setNumberOfLines:0];
-
-    [self.flurCreated setTextColor:RGB(13, 191, 255) range:NSMakeRange(0, self.flur.creatorUsername.length+1)];
+    
     [self.flurInfoContainer addSubview:self.flurCreated];
     
     
@@ -222,35 +265,32 @@
     
     self.yourContribution = [[UILabel alloc] init];
     [self.yourContribution setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.yourContribution.text = @"You were the 7th person to contribute to this flur.";
     self.yourContribution.font = [UIFont fontWithName:@"Avenir-Light" size:19];
-    
     [self.yourContribution setNumberOfLines:0];
     
-    [self.yourContribution setTextColor:RGB(232,72,49) range:NSMakeRange(13, 3)];
     [self.flurInfoContainer addSubview:self.yourContribution];
     
+        self.yourContributionConstraint =[NSLayoutConstraint constraintWithItem:self.yourContribution attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurCreated attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10] ;
     
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.yourContribution attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurCreated attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
+    [self.flurInfoContainer addConstraint:self.yourContributionConstraint];
     
+
     [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.yourContribution attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
     
     [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.yourContribution attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
     
     
-    
     self.totalContributions = [[UILabel alloc] init];
     [self.totalContributions setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.totalContributions.text = @"9 other people have contributed to this flur.";
     self.totalContributions.font = [UIFont fontWithName:@"Avenir-Light" size:19];
-    
+    //self.totalContributions.text = @"asdf jedfa asdf asdf asdf asdf asdf f fdsa ff d fasdf";
+
     [self.totalContributions setNumberOfLines:0];
     
-    [self.totalContributions setTextColor:RGB(238, 0, 255) range:NSMakeRange(0, 1)];
     [self.flurInfoContainer addSubview:self.totalContributions];
     
     
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.totalContributions attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.yourContribution attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.totalContributions attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.yourContribution attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
     
     [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.totalContributions attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
     

@@ -205,7 +205,16 @@
 }
 
 - (void) showInfo:(NSMutableDictionary*)data {
-    [self.delegate showInfoPage:data];
+    Flur *flur = (Flur *)[data objectForKey:@"flur"];
+    NSMutableDictionary *newData = [[NSMutableDictionary alloc] init];
+    
+    [newData setObject:flur.creatorUsername forKey:@"creatorUsername"];
+    [newData setObject:flur.dateCreated forKey:@"dateCreated"];
+    [newData setObject:flur.dateAdded forKey:@"dateAdded"];
+    [newData setObject:flur.totalContentCount forKey:@"totalContentCount"];
+    [newData setObject:flur.myContentPosition forKey:@"myContentPosition"];
+
+    [self.delegate showInfoPage:newData];
 }
 
 /*

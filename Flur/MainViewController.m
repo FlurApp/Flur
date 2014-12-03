@@ -91,7 +91,6 @@
                 Setup Settings View.
      -----------------------------------------------*/
     self.settingsView = [[FLSettingsViewController alloc] init];
-    self.settingsView.view.tag = LEFT_PANEL_TAG;
    
     
     [self.view addSubview:self.settingsView.view];
@@ -105,7 +104,6 @@
      Setup Map View.
      -----------------------------------------------*/
     self.mapView = [[FLInitialMapViewController alloc] init];
-    self.mapView.view.tag = CENTER_TAG;
     self.mapView.delegate = self;
     
     [self.view addSubview:self.mapView.view];
@@ -281,6 +279,19 @@
 - (void) hideInfoPage {
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                                  self.flurInfoView.view.frame.size.width,
+                                                  self.flurInfoView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+}
+
+- (void) showContributePage:(NSMutableDictionary *)data {
+    [self.flurInfoView setData:data];
+    self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                              self.flurInfoView.view.frame.size.width,
+                                              self.flurInfoView.view.frame.size.height);
+    
+    [UIView animateWithDuration:.3 delay:.2 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.flurInfoView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
                                                   self.flurInfoView.view.frame.size.width,
                                                   self.flurInfoView.view.frame.size.height);
     } completion:^(BOOL finished) { }];
