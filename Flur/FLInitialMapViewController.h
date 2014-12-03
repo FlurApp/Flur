@@ -17,16 +17,16 @@
 @protocol FLInitialMapViewControllerDelegate <NSObject>
 
 @optional
-- (void)movePanelLeft;
-- (void)movePanelRight;
-- (void)movePanelToOriginalPosition;
+//- (void)movePanelLeft;
+//- (void)movePanelRight;
+//- (void)movePanelToOriginalPosition;
 - (void)hideSettingsPage;
 
 @end
 
 
 
-@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate, FLTableViewControllerDelegate, FLSettingsViewControllerDelegate>
+@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate>
 
 @property (nonatomic, assign) id<FLInitialMapViewControllerDelegate> delegate;
 

@@ -19,8 +19,6 @@
 @property (nonatomic) BOOL settingsVisible;
 @property (nonatomic) BOOL tableVisible;
 
-
-
 @end
 
 @implementation MainViewController
@@ -171,15 +169,26 @@
     self.dropFlurView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
                                               self.view.frame.size.height - TOP_BAR_HEIGHT);
     
+    /* -------------------------------------------
+     Setup Camera View
+     -----------------------------------------------*/
+    self.cameraView = [[FLCameraViewController alloc] init];
+    self.cameraView.delegate = self;
+    
+    [self.view addSubview:self.cameraView.view];
+    [self addChildViewController:self.cameraView];
+    self.cameraView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
+                                              self.view.frame.size.height);
+    
     if (self.shouldSync) {
-        NSLog(@"yessss");
+        //NSLog(@"yessss");
         [LocalStorage syncWithServer:^{
             [self.tableView getFlurs];
         }];
     }
     else {
         [LocalStorage getFlurs:^(NSMutableDictionary *data) {
-            NSLog(@"wtf");
+            //NSLog(@"wtf");
         }];
     }
     
@@ -320,8 +329,35 @@
 }
 
 -(void) addFlur:(NSString*)prompt {
-    [self.mapView addFlur:prompt];
+    // [self.mapView addFlur:prompt];
+    [self.topBarView revertTopBar];
     [self hideDropFlurPage];
+    [self showCameraPage];
+}
+
+-(void) showCameraPage {
+    
+    [self setNeedsStatusBarAppearanceUpdate];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    
+    self.cameraView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                              self.cameraView.view.frame.size.width,
+                                              self.cameraView.view.frame.size.height);
+    
+    [UIView animateWithDuration:.3 delay:.2 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.cameraView.view.frame = CGRectMake(0, 0,
+                                                  self.cameraView.view.frame.size.width,
+                                                  self.cameraView.view.frame.size.height);
+    } completion:^(BOOL finished) {}];
+    
+}
+
+-(void) hideCameraPage {
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.cameraView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                                  self.cameraView.view.frame.size.width,
+                                                  self.cameraView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
 }
 
 #pragma mark -

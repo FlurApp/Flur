@@ -23,7 +23,5 @@
 @interface FLSettingsViewController : UIViewController <FLSettingsViewControllerDelegate>
 
 @property (nonatomic, assign) id<FLSettingsViewControllerDelegate> delegate;
-@property (nonatomic, assign) id<FLSettingsViewControllerDelegate> delegate2;
-
 
 @end

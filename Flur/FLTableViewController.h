@@ -14,11 +14,8 @@
 @protocol FLTableViewControllerDelegate <NSObject>
 
 @optional
-- (void)movePanelLeft;
-- (void)movePanelRight;
 
 @required
-- (void)movePanelToOriginalPosition;
 - (void)showInfoPage:(NSMutableDictionary *)data;
 
 @end

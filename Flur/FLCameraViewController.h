@@ -10,8 +10,17 @@
 #import <AVFoundation/AVFoundation.h>
 #import "FLPin.h"
 
-@interface FLCameraViewController : UIViewController
+@protocol FLCameraViewControllerDelegate <NSObject>
 
-- (id)initWithData:(NSMutableDictionary*) data;
+@required
+- (void) hideCameraPage;
+@end
+
+@interface FLCameraViewController : UIViewController <FLCameraViewControllerDelegate>
+
+- (void) setData:(NSMutableDictionary *)data;
+
+@property (nonatomic, assign) id<FLCameraViewControllerDelegate> delegate;
+
 
 @end

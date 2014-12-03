@@ -35,5 +35,6 @@
 
 - (void) showInfoPageBar;
 - (void) showDropFlurBar;
+- (void) revertTopBar;
 
 @end

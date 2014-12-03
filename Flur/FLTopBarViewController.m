@@ -210,6 +210,11 @@
     
 }
 
+- (void) revertTopBar {
+    self.pageTitle.alpha = 0;
+    self.flurImageContainer.alpha = 1;
+}
+
 - (IBAction)showTableView:(id)sender {
     [self.delegate showTablePage];
     self.tableViewMode = true;

@@ -330,10 +330,10 @@
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
-    NSLog(@"WHOOOooooo: %@", [annotation class]);
+    //NSLog(@"WHOOOooooo: %@", [annotation class]);
 
     if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
-        NSLog(@"THATS WATSUP");
+        //NSLog(@"THATS WATSUP");
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
         if (annotation == mapView.userLocation) {
