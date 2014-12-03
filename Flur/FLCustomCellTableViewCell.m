@@ -9,6 +9,7 @@
 #import "FLCustomCellTableViewCell.h"
 #import "FLMasterNavigationController.h"
 #import "FLConstants.h"
+#import "GrowButton.h"
 
 @interface FLCustomCellTableViewCell() <UIGestureRecognizerDelegate> {}
 
@@ -54,11 +55,16 @@ static FLCustomCellTableViewCell* currentOpenCell;
         
         [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.rightButtonsColorLayer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
         
+        
+        
         self.button1 = [[UIButton alloc] init];
         self.button1.backgroundColor =  RGB(13, 191, 255);
         //[self.button1 setTitle:@"Photos" forState:UIControlStateNormal];
-        UIImage *img = [[UIImage imageNamed:@"test.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(30,10,30,10)];
-        [self.button1 setImage:img forState:UIControlStateNormal];
+        //
+//        [UIView animateWithDuration:.5
+//                         animations:^{
+//                             self.button1.imageView.transform = CGAffineTransformMakeScale(2, 2);
+//                         }];
         
         [self.button1 setTranslatesAutoresizingMaskIntoConstraints:NO];
         
@@ -72,6 +78,48 @@ static FLCustomCellTableViewCell* currentOpenCell;
          [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button1 attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-80]];
         
         [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button1 attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+        
+        [self.contentView layoutIfNeeded];
+        UIImage *img = [UIImage imageNamed:@"camera_final2.png"];
+        [self.button1 setBackgroundImage:img forState:UIControlStateNormal];
+        //[self.button1 setImageEdgeInsets:UIEdgeInsetsMake(20,20,20,20)];
+        
+        /*GrowButton *button = [[GrowButton alloc] init];
+        [button setTranslatesAutoresizingMaskIntoConstraints:NO];
+
+        [self.contentView addSubview:button];
+        
+        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:button attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+        
+        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:button attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+        
+        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:button attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-80]];
+        
+        [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:button attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+        
+
+        
+        
+        
+        
+        
+        UITapGestureRecognizer *singleFingerTap =
+        [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                action:@selector(handleSingleTap:)];
+        [button addGestureRecognizer:singleFingerTap];
+        
+        
+        UILongPressGestureRecognizer *fingerHold = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(fingerHold:)];
+        [button addGestureRecognizer:fingerHold];
+        fingerHold.minimumPressDuration = .01;//Up to you;*/
+
+        
+        
+        
+        
+        
+        
+
         
         self.button2 = [[UIButton alloc] init];
         self.button2.backgroundColor = RGB(232, 72, 49);
@@ -196,6 +244,32 @@ static FLCustomCellTableViewCell* currentOpenCell;
 - (void)awakeFromNib {
     // Initialization code
 
+}
+
+- (void)handleSingleTap:(UITapGestureRecognizer *)recognizer {
+   // NSLog(@"pressed");
+}
+
+- (void)fingerHold:(UILongPressGestureRecognizer *)recognizer {
+    NSLog(@"HOlding");
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    /*UITouch *touch = [[event allTouches] anyObject];
+    CGPoint touchLocation = [touch locationInView:self];
+    
+    if ([[touch.view class] isSubclassOfClass:[UILabel class]]) {
+        UILabel *label = (UILabel *)touch.view;
+        if (CGRectContainsPoint(label.frame, touchLocation)) {
+            dragging = YES;
+            oldX = touchLocation.x;
+            oldY = touchLocation.y;
+        }
+    }*/
+    //NSLog(@"fuck");
+    
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

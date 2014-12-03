@@ -87,7 +87,6 @@
                 Setup Settings View.
      -----------------------------------------------*/
     self.settingsView = [[FLSettingsViewController alloc] init];
-    self.settingsView.view.tag = LEFT_PANEL_TAG;
     self.settingsView.delegate = self;
    
     
@@ -102,7 +101,6 @@
      Setup Map View.
      -----------------------------------------------*/
     self.mapView = [[FLInitialMapViewController alloc] init];
-    self.mapView.view.tag = CENTER_TAG;
     self.mapView.delegate = self;
     
     [self.view addSubview:self.mapView.view];
@@ -256,7 +254,7 @@
 
     [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         
-        self.mapView.view.frame = CGRectMake(-self.view.frame.size.width, 0,
+        self.mapView.view.frame = CGRectMake(-self.view.frame.size.width + 20, 0,
                                              self.view.frame.size.width,
                                              self.view.frame.size.height);
         
@@ -298,6 +296,7 @@
 }
 
 - (void) hideInfoPage {
+    [self.topBarView showTableBar];
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
                                                   self.flurInfoView.view.frame.size.width,
@@ -305,6 +304,47 @@
     } completion:^(BOOL finished) { }];
 }
 
+- (void) showContributePage:(NSMutableDictionary *)data {
+    [self.flurInfoView setData:data];
+    [self.topBarView showContributeBar];
+    self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                              self.flurInfoView.view.frame.size.width,
+                                              self.flurInfoView.view.frame.size.height);
+    
+    [UIView animateWithDuration:.3 delay:.2 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.flurInfoView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
+                                                  self.flurInfoView.view.frame.size.width,
+                                                  self.flurInfoView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+}
+
+- (UIView *) getMapView {
+    [self.mapView didMoveToParentViewController:self];
+    return self.mapView.view;
+}
+
+- (UIView *)getSettingsView {
+    [self.settingsView didMoveToParentViewController:self];
+    return self.settingsView.view;
+}
+
+- (UIView *)getTableView {
+    [self.tableView didMoveToParentViewController:self];
+    return self.tableView.view;
+}
+/*
+#pragma mark -
+#pragma mark Swipe Gesture Setup/Actions
+
+#pragma mark - setup
+
+- (void)setupGestures
+{
+}
+
+-(void)movePanel:(id)sender
+{
+}*/
 
 - (void) showDropFlurPage {
     [self.topBarView showDropFlurBar];
@@ -357,6 +397,16 @@
         self.cameraView.view.frame = CGRectMake(0, self.view.frame.size.height,
                                                   self.cameraView.view.frame.size.width,
                                                   self.cameraView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+}
+
+- (void) hideContributePage {
+    [self.topBarView showMapBar];
+
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                                  self.flurInfoView.view.frame.size.width,
+                                                  self.flurInfoView.view.frame.size.height);
     } completion:^(BOOL finished) { }];
 }
 

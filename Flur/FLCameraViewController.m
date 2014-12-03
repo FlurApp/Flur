@@ -10,7 +10,6 @@
 
 #import "FLMasterNavigationController.h"
 #import "FLCameraViewController.h"
-#import "FLButton.h"
 #import "FLPhotoManager.h"
 #import "LocalStorage.h"
 #import "Flur.h"
@@ -280,6 +279,7 @@
 }
 
 - (void) growButtonAnimation: (UIButton*) button {
+    
     [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         button.transform = CGAffineTransformMakeScale(1.5,1.5);
 

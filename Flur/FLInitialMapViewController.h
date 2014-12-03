@@ -19,6 +19,9 @@
 @optional
 - (void)hideSettingsPage;
 
+@required
+- (void) showContributePage:(NSMutableDictionary *)data;
+
 @end
 
 

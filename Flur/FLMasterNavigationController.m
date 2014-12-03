@@ -45,6 +45,8 @@ static UINavigationController *navController;
         control = [[MainViewController alloc] initWithData:NULL];
     else
         control = [[FLSplashViewController alloc] init];
+    
+    //control = [[FLCameraViewController alloc] init];
 
     navController = [[UINavigationController alloc] initWithRootViewController: control];
     [navController setNavigationBarHidden:YES];

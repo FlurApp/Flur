@@ -35,6 +35,10 @@
 
 - (void) showInfoPageBar;
 - (void) showDropFlurBar;
+- (void) showTableBar;
+- (void) showMapBar;
+- (void) showContributeBar;
+
 - (void) revertTopBar;
 
 @end

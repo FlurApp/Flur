@@ -15,7 +15,6 @@
 #import "FLFlurAnnotation.h"
 #import "FLMapManager.h"
 #import "FLPin.h"
-#import "FLButton.h"
 #import "LocalStorage.h"
 #import "FLConstants.h"
 
@@ -30,7 +29,7 @@
 
 @property (nonatomic, strong, readwrite) UIPopoverController *contributePopover;
 
-@property (nonatomic, strong, readwrite) FLButton *contributeButton;
+@property (nonatomic, strong, readwrite) UIButton *contributeButton;
 @property (nonatomic, strong, readwrite) UIVisualEffectView *blurEffectView;
 @property (nonatomic, strong, readwrite) UIVisualEffectView *addPinBlurEffectView;
 @property (nonatomic, strong, readwrite) UITextField *promptTextField;
@@ -228,12 +227,14 @@
         
         if (p) {
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-            [data setObject:p forKey:@"FLPin"];
-
-            // add contribute view (it handles the status bar too)
-            self.contributeController = [[FLContributeViewController alloc] initWithData:data];
-            UIView *contrView = self.contributeController.view;
-            [self.view addSubview: contrView];
+            [data setObject:@"true" forKey:@"contributeView"];
+            [data setObject:[(PFUser *)p.createdBy username] forKey:@"creatorUsername"];
+            [data setObject:p.dateCreated forKey:@"dateCreated"];
+            [data setObject:[NSNumber numberWithInteger:p.contentCount] forKey:@"totalContentCount"];
+            
+            NSString *haveContributedTo = p.haveContributedTo ? @"true" : @"false";
+            [data setObject:haveContributedTo forKey:@"haveContributedTo"];
+            [self.delegate showContributePage:data];
         }
     }
     return;
