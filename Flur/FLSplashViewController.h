@@ -10,7 +10,7 @@
 
 @protocol FLSplashViewControllerDelegate <NSObject>
 
-@required
+@optional
 -(void)hideSplashPage;
 -(void)showLoginPage:(NSMutableDictionary*)data;
 

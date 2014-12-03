@@ -62,10 +62,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self setNeedsStatusBarAppearanceUpdate];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    
+        
     self.haveLoadedFlurs = false;
     
     _viewablePins = [[NSMutableArray alloc] init];

@@ -235,6 +235,8 @@
     
     self.viewAlbumButton = [[UIButton alloc] init];
     [self.viewAlbumButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.viewAlbumButton addTarget:self action:@selector(viewAlbum:) forControlEvents:UIControlEventTouchUpInside];
+
     
     self.viewAlbumButton.backgroundColor = RGBA(232,72,49,.95);
     self.viewAlbumButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
@@ -396,6 +398,11 @@
         [self.delegate hideContributePage];
     else
         [self.delegate hideInfoPage];
+}
+
+- (IBAction)viewAlbum:(id)sender {
+    [self exitPage:nil];
+    [_delegate showPhotoPage:self.pin_data];
 }
 
 - (void)didReceiveMemoryWarning {

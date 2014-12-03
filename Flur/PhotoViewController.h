@@ -11,9 +11,10 @@
 
 @protocol PhotoViewControllerDelegate <NSObject>
 
-@required
+@optional
 -(void)hidePhotoPage;
 -(void)showMapPage;
+-(void)showPhotoPage;
 @end
 
 @interface PhotoViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, PhotoViewControllerDelegate>

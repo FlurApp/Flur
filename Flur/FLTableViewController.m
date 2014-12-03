@@ -123,7 +123,7 @@
     
     // Configure the cell...
     if (cell == nil) {
-        cell = [[FLCustomCellTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[FLCustomCellTableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier];
     }
     cell.delegate = self;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;

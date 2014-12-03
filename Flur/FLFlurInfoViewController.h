@@ -13,11 +13,10 @@
 @protocol FLFlurInfoViewControllerDelegate <NSObject>
 
 @optional
-
-@required
 - (void)hideContributePage;
 - (void)hideInfoPage;
 - (void)showCameraPage:(NSMutableDictionary*)data;
+- (void)showPhotoPage:(NSMutableDictionary*)data;
 
 @end
 

@@ -532,6 +532,9 @@
                                                self.photoView.view.frame.size.width,
                                                self.photoView.view.frame.size.height);
     } completion:^(BOOL finished) {}];
+
+    [self setNeedsStatusBarAppearanceUpdate];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 #pragma mark -

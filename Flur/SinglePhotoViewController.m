@@ -130,27 +130,27 @@ static bool firstToggle = true;
         }
     }
     
-    // Calculate size of image depending on screen size
-    double imageRatio = (self.view.frame.size.width)/image.size.width;
-    double x = image.size.width * imageRatio;
-    double y = image.size.height* imageRatio;
-    
-    // Set size of image
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
-                                                       attribute:NSLayoutAttributeHeight
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:nil
-                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                      multiplier:1.0
-                                                        constant:y]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
-                                                       attribute:NSLayoutAttributeWidth
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:nil
-                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                      multiplier:1.0
-                                                        constant:x]];
+//    // Calculate size of image depending on screen size
+//    double imageRatio = ([[UIScreen mainScreen] applicationFrame].size.width)/image.size.width;
+//    double x = image.size.width * imageRatio;
+//    double y = image.size.height* imageRatio;
+//    
+//    // Set size of image
+//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
+//                                                       attribute:NSLayoutAttributeHeight
+//                                                       relatedBy:NSLayoutRelationEqual
+//                                                          toItem:nil
+//                                                       attribute:NSLayoutAttributeNotAnAttribute
+//                                                      multiplier:1.0
+//                                                        constant:y]];
+//    
+//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
+//                                                       attribute:NSLayoutAttributeWidth
+//                                                       relatedBy:NSLayoutRelationEqual
+//                                                          toItem:nil
+//                                                       attribute:NSLayoutAttributeNotAnAttribute
+//                                                      multiplier:1.0
+//                                                        constant:x]];
     
     
     [self.view layoutIfNeeded];
