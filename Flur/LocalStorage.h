@@ -26,5 +26,6 @@
 + (void) syncWithServer:(void(^)()) completion;
 
 + (void) createTestData;
++ (void) createTestDataWithCompletion:(void(^)()) completion;
 
 @end

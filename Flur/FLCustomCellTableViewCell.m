@@ -169,8 +169,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
         self.cellPrompt = [[UILabel alloc] init];
         [self.cellPrompt setTranslatesAutoresizingMaskIntoConstraints:NO];
         
-        self.cellPrompt.text = @"Hi this is a test of the app and how it handles long prompts";//[[self.pinsArray objectAtIndex:indexPath.row] prompt];
-        [self.cellPrompt setFont:[UIFont fontWithName:@"Avenir-Light" size:19]];
+        self.cellPrompt.text = @"Hi this is a test of the app and how it handles long prompts";        [self.cellPrompt setFont:[UIFont fontWithName:@"Avenir-Light" size:19]];
         [self.cellPrompt setTextColor:RGB(50,50,50) ];
         self.cellPrompt.numberOfLines = 0;
         self.cellPrompt.lineBreakMode = NSLineBreakByWordWrapping;

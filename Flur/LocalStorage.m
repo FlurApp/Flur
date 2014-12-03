@@ -48,7 +48,7 @@ static bool userFound = false;
     NSLog(@"SYncing");
     //[LocalStorage deleteAllFlursWithCompletion:^{
         
-    PFUser* curUser = [PFUser currentUser];
+    /*PFUser* curUser = [PFUser currentUser];
     if (!curUser) {
         NSLog(@"Error: Trying to sync with server in LocalStorage.m but not logged.");
         return;
@@ -128,7 +128,8 @@ static bool userFound = false;
             }];
         }
     }];
-    //}];
+    //}];*/
+    [self createTestDataWithCompletion:completion];
     
 }
 
@@ -358,7 +359,7 @@ static bool userFound = false;
     }
 }
 
-+ (void) createTestData {
++ (void) createTestDataWithCompletion:(void(^)()) completion {
     NSMutableDictionary *flur1 = [[NSMutableDictionary alloc] init];
     [flur1 setObject:@"Nikki is awesome" forKey:@"prompt"];
     [flur1 setObject:@"9hCC7XSqj1" forKey:@"objectId"];
@@ -367,7 +368,7 @@ static bool userFound = false;
     
     [flur1 setObject:[NSNumber numberWithInt:9] forKey:@"totalContentCount"];
     [flur1 setObject:[NSNumber numberWithInt:9] forKey:@"myContentPosition"];
-
+    
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss zzz"];
@@ -379,7 +380,7 @@ static bool userFound = false;
     NSDate *dateAdded1 = [dateFormatter dateFromString: @"2012-09-20 23:59:59 JST"];
     [flur1 setObject:dateAdded1 forKey:@"dateCreated"];
     [flur1 setObject:@"petebes" forKey:@"creatorUsername"];
-
+    
     
     [self addFlur:flur1];
     
@@ -398,18 +399,18 @@ static bool userFound = false;
     
     dateAdded1 = [dateFormatter dateFromString: @"2012-11-16 23:59:59 JST"];
     [flur2 setObject:dateAdded1 forKey:@"dateCreated"];
-
+    
     [flur2 setObject:@"joly" forKey:@"creatorUsername"];
-
+    
     
     [self addFlur:flur2];
     
     
     NSMutableDictionary *flur3 = [[NSMutableDictionary alloc] init];
     [flur3 setObject:@"What's the weirdest thing you've seen at the UGLI today?" forKey:@"prompt"];
-    //[flur3 setObject:@"P94Sa0RpoS" forKey:@"objectId"];
+    [flur3 setObject:@"P94Sa0RpoS" forKey:@"objectId"];
     [flur3 setObject:@"c8kzGmjHaU" forKey:@"objectId"];
-
+    
     [flur3 setObject:[NSNumber numberWithDouble:42.275403] forKey:@"lat"];
     [flur3 setObject:[NSNumber numberWithDouble:-83.737254] forKey:@"lng"];
     
@@ -424,7 +425,14 @@ static bool userFound = false;
     
     [flur3 setObject:@"davmlee" forKey:@"creatorUsername"];
     
-    [self addFlur:flur3];
+    [self addFlur:flur3 withCompletion:completion];
+    
+    
+ 
+}
+
++ (void) createTestData {
+    [self createTestDataWithCompletion:nil];
 }
 
 

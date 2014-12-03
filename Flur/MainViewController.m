@@ -213,7 +213,7 @@
                                             self.view.frame.size.height);
     
     
-    if (self.shouldSync) {
+    /*if (self.shouldSync) {
         NSLog(@"syncing");
         [LocalStorage syncWithServer:^{
             [self.tableView getFlurs];
@@ -224,7 +224,7 @@
             NSLog(@"hii");
             NSLog(@"wtf: %lu", data.count);
         }];
-    }
+    }*/
 //    [LocalStorage syncWithServer:^{
 //        [self.tableView getFlurs];
 //    }];
@@ -497,6 +497,11 @@
 }
 
 -(void)hideLoginPage {
+    NSLog(@"syncing");
+    [LocalStorage syncWithServer:^{
+        NSLog(@"Done syncing");
+        [self.tableView getFlurs];
+    }];
     [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.loginView.view.frame = CGRectMake(-self.loginView.view.frame.size.width, 0,
                                                 self.loginView.view.frame.size.width,
