@@ -10,7 +10,6 @@
 
 #import "FLSettingsViewController.h"
 #import "FLConstants.h"
-#import "FLMasterNavigationController.h"
 #import "MainViewController.h"
 #import "FLInitialMapViewController.h"
 #import "LocalStorage.h"
@@ -202,8 +201,9 @@
 - (IBAction)logOut:(id)sender {
     [PFUser logOut];
     [LocalStorage destroyLocalStorage];
-    
-    [FLMasterNavigationController switchToViewController:@"FLSplashViewController" fromViewController:@"FLSettingsViewController" withData:nil];
+    [_delegate hideSettingsPage];
+    [_delegate hideMapPage];
+    [_delegate showSplashPage];
 }
 
 - (IBAction)addFlur:(id)sender {

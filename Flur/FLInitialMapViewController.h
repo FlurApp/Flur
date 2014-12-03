@@ -12,7 +12,6 @@
 
 #import "FLTableViewController.h"
 #import "FLSettingsViewController.h"
-#import "FLContributeViewController.h"
 
 @protocol FLInitialMapViewControllerDelegate <NSObject>
 
@@ -38,8 +37,5 @@
 - (void) hideWhiteLayer;
 
 - (void) addFlur:(NSString*)prompt;
-
-
-@property (nonatomic, strong) FLContributeViewController *contributeController;
 
 @end

@@ -8,7 +8,6 @@
 
 #import "FLContributeViewController.h"
 #import "FLPin.h"
-#import "FLMasterNavigationController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "FLConstants.h"
 

@@ -10,8 +10,27 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "User.h"
 
-@interface FLLoginViewController : UIViewController <UITextFieldDelegate>
+@protocol FLLoginViewControllerDelegate <NSObject>
 
-- (id)initWithData:(NSMutableDictionary*) data;
+@required
+-(void)hideLoginPage;
+-(void)showMapPage;
 
 @end
+
+@interface FLTextField : UITextField<UITextFieldDelegate>
+
+@end
+
+@interface FLLoginViewController : UIViewController <UITextFieldDelegate, FLLoginViewControllerDelegate>
+
+- (void)setData:(NSMutableDictionary *)data;
+
+@property (nonatomic, strong) FLTextField* usernameInput;
+@property (nonatomic, strong) FLTextField* passwordInput;
+
+
+@property (nonatomic, assign) id<FLLoginViewControllerDelegate> delegate;
+
+@end
+

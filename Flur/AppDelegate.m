@@ -9,12 +9,7 @@
 #import <Parse/Parse.h>
 
 #import "AppDelegate.h"
-#import "FLCameraViewController.h"
-#import "FLInitialMapViewController.h"
-#import "FLLoginViewController.h"
-#import "FLMasterNavigationController.h"
-#import "FLPin.h"
-#import "PhotoViewController.h"
+#import "MainViewController.h"
 
 @interface AppDelegate ()
 
@@ -22,8 +17,6 @@
 @end
 
 @implementation AppDelegate
-            
-static FLMasterNavigationController *navigationController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
@@ -57,8 +50,7 @@ static FLMasterNavigationController *navigationController;
 
     
     // Create navigation controller
-    [FLMasterNavigationController init];
-    self.window.rootViewController = [FLMasterNavigationController getNavController];
+    self.window.rootViewController = [[MainViewController alloc] init];
     
     // Boiler plate code from AppDelegate
     self.window.backgroundColor = [UIColor whiteColor];

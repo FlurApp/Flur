@@ -8,14 +8,7 @@
 
 #import <Parse/Parse.h>
 #import "FLLoginViewController.h"
-#import "FLMasterNavigationController.h"
 #import "FLConstants.h"
-
-
-
-@interface FLTextField : UITextField<UITextFieldDelegate>
-
-@end
 
 @implementation FLTextField
 
@@ -30,16 +23,12 @@
 
 @end
 
-
-
 @interface FLLoginViewController ()
 
 @property (nonatomic, strong) NSString *mode;
 
 @property (nonatomic) CGRect keyboard;
 
-@property (nonatomic, strong) FLTextField* usernameInput;
-@property (nonatomic, strong) FLTextField* passwordInput;
 @property (nonatomic, strong) UIButton *orDoOpposite;
 @property (nonatomic, strong) UIButton *submitButton;
 @property (nonatomic, strong) UILabel* errorMessage;
@@ -66,14 +55,17 @@
 
 @implementation FLLoginViewController
 
-- (id)initWithData:(NSMutableDictionary *)data {
-    self = [super init];
-    if (self) {
-        self.mode = [data objectForKey:@"mode"];
-        self.otherMode = [self.mode isEqualToString:@"Sign Up"] ? @"Login" : @"Sign Up";
-    }
+- (void)setData:(NSMutableDictionary *)data {
+    self.mode = [data objectForKey:@"mode"];
+    self.otherMode = [self.mode isEqualToString:@"Sign Up"] ? @"Login" : @"Sign Up";
+    self.pageTitle.text = self.mode;
+    [self.submitButton setTitle:self.mode forState:UIControlStateNormal];
     
-    return self;
+    NSString* orDoOppositeText = [NSString stringWithFormat:@"or %@", self.otherMode];
+    [self.orDoOpposite setTitle:orDoOppositeText forState:UIControlStateNormal];
+    [self.orDoOpposite setTitleColor:submitButtonColor forState:UIControlStateNormal];
+    self.orDoOpposite.backgroundColor = [UIColor clearColor];
+    [self.orDoOpposite.titleLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:16]];
 }
 
 - (void)viewDidLoad {
@@ -97,7 +89,6 @@
 
     [self.pageTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
 
-    self.pageTitle.text = self.mode;
     [self.pageTitle setFont:[UIFont fontWithName:@"Avenir-Light" size:30]];
     self.pageTitle.textColor = [UIColor whiteColor];
     
@@ -154,7 +145,6 @@
     self.usernameInput.textColor = RGB(110,110,110);
     self.usernameInput.layer.cornerRadius = 4;
     self.usernameInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    [self.usernameInput becomeFirstResponder];
     self.usernameInput.returnKeyType = UIReturnKeyNext;
     self.usernameInput.keyboardAppearance = UIKeyboardAppearanceDark;
     self.usernameInput.keyboardType = UIKeyboardTypeEmailAddress;
@@ -210,12 +200,6 @@
     self.orDoOpposite = [[UIButton alloc]init];
     [self.orDoOpposite setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    NSString* orDoOppositeText = [NSString stringWithFormat:@"or %@", self.otherMode];
-    [self.orDoOpposite setTitle:orDoOppositeText forState:UIControlStateNormal];
-    [self.orDoOpposite setTitleColor:submitButtonColor forState:UIControlStateNormal];
-    self.orDoOpposite.backgroundColor = [UIColor clearColor];
-    [self.orDoOpposite.titleLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:16]];
-    
     [self.orDoOpposite addTarget:self action:@selector(switchScreen:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.orDoOpposite];
     
@@ -228,8 +212,6 @@
     // Creat the submit button for the login/signup info
     self.submitButton = [[UIButton alloc] init];
     [self.submitButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-
-    [self.submitButton setTitle:self.mode forState:UIControlStateNormal];
 
     //[self.submitButton setTitleColor:RGB(179, 88, 224) forState:UIControlStateNormal];
     [self.submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -502,8 +484,10 @@
             return;
         }
         else {
-             [self dropSubmitButton];
-             [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLLoginViewController" withData:NULL];
+            [self dropSubmitButton];
+            [_delegate hideLoginPage];
+            [_delegate showMapPage];
+            [self cleanUp];
         }
     }];
 }
@@ -517,11 +501,16 @@
             NSLog(@"successful login");
             
             [self dropSubmitButton];
+            [_delegate hideLoginPage];
+            [_delegate showMapPage];
+            
+            // clean up
+            [self cleanUp];
+            
             [self syncCoreDataWithServer];
             
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:@"true" forKey:@"sync"];
-            [FLMasterNavigationController switchToViewController:@"MainViewController" fromViewController:@"FLLoginViewController" withData:data];
         } else {
             // The login failed. Check error to see why.
             NSLog(@"login failed...");
@@ -536,6 +525,11 @@
     }];
 }
 
+- (void) cleanUp {
+    [self hideSubmitButton];
+    self.usernameInput.text = @"";
+    self.passwordInput.text = @"";
+}
 - (void) syncCoreDataWithServer {
     
 }
@@ -571,6 +565,7 @@
     [self.view layoutIfNeeded];
     [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         [self.passwordInput resignFirstResponder];
+        [self.usernameInput resignFirstResponder];
         self.submitBottom.constant = 0;
         self.submitTop.constant = -50;
 

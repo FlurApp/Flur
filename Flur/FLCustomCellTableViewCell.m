@@ -7,7 +7,6 @@
 //
 
 #import "FLCustomCellTableViewCell.h"
-#import "FLMasterNavigationController.h"
 #import "FLConstants.h"
 #import "GrowButton.h"
 

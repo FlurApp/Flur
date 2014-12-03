@@ -13,7 +13,6 @@
 #import "UILabel+MultiColor.h"
 #import "FLFlurAnnotation.h"
 #import "flur.h"
-#import "FLMasterNavigationController.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 #define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
@@ -51,6 +50,8 @@
 @property (nonatomic, strong) NSLayoutConstraint *viewAlbumButtonHeight;
 @property (nonatomic, strong) NSLayoutConstraint *yourContributionConstraint;
 
+@property (nonatomic, strong) NSMutableDictionary *pin_data;
+
 
 @end
 
@@ -65,7 +66,9 @@
 }
 
 - (void) setData:(NSMutableDictionary *) data {
-    NSLog(@"data: %@", data);
+    //NSLog(@"data: %@", data);
+    self.pin_data = data;
+    
     NSString* creatorUsername = [data objectForKey:@"creatorUsername"];
     
     NSDate *date = [data objectForKey:@"dateCreated"];
@@ -209,6 +212,7 @@
     
     self.contributeButton = [[UIButton alloc] init];
     [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.contributeButton addTarget:self action:@selector(addPhoto:) forControlEvents:UIControlEventTouchUpInside];
     
     self.contributeButton.backgroundColor = RGBA(13,191,255, .95);
     self.contributeButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
@@ -382,6 +386,10 @@
     
     // Do any additional setup after loading the view.
 }
+-(IBAction)addPhoto:(id)sender {
+    [self exitPage:nil];
+    [_delegate showCameraPage:self.pin_data];
+}
 
 - (void) exitPage:(UITapGestureRecognizer *)recognizer {
     if (self.contributeView)
@@ -402,10 +410,10 @@
    // ulv.hidden = YES;
 }
 
-- (IBAction)returnToTableList:(id)sender {
-    NSMutableDictionary *data;
-    [FLMasterNavigationController switchToViewController:@"FLTableViewController" fromViewController:@"FLFlurInfoViewController" withData:data];
-}
+//- (IBAction)returnToTableList:(id)sender {
+//    NSMutableDictionary *data;
+////    [FLMasterNavigationController switchToViewController:@"FLTableViewController" fromViewController:@"FLFlurInfoViewController" withData:data];
+//}
 
 - (NSString *) stringFromDate:(NSDate *)dateAdded {
     

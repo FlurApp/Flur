@@ -9,11 +9,20 @@
 #import <UIKit/UIKit.h>
 #import "FLPin.h"
 
-@interface PhotoViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
+@protocol PhotoViewControllerDelegate <NSObject>
 
-    @property (strong, nonatomic) UIPageViewController *pageController;
-    @property (assign, nonatomic) FLPin* pin;
+@required
+-(void)hidePhotoPage;
+-(void)showMapPage;
+@end
 
-    - (instancetype) initWithData: (NSMutableDictionary*) data;
+@interface PhotoViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, PhotoViewControllerDelegate>
+
+@property (strong, nonatomic) UIPageViewController *pageController;
+@property (assign, nonatomic) FLPin* pin;
+
+- (void) setData: (NSMutableDictionary*) data;
+
+@property (nonatomic, assign) id<PhotoViewControllerDelegate> delegate;
 
 @end

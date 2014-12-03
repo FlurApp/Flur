@@ -8,7 +8,8 @@
 
 #import <Parse/Parse.h>
 
-#import "FLMasterNavigationController.h"
+#import <AVFoundation/AVFoundation.h>
+#import "FLPin.h"
 #import "FLCameraViewController.h"
 #import "FLPhotoManager.h"
 #import "LocalStorage.h"
@@ -60,13 +61,15 @@
 }
 
 - (void) setData:(NSMutableDictionary *)data {
-    FLPin *pin = [data objectForKey:@"FLPin"];
-    self.pin = pin;
-    self.count = 0;
-    self.allPhotos = [[NSMutableArray alloc] init];
-    self.dataToPass = [[NSMutableDictionary alloc] init];
-    [self.dataToPass setObject:pin forKey:@"FLPin"];
-    self.photoManager = [[FLPhotoManager alloc] init];
+    if (data) {
+        FLPin *pin = [data objectForKey:@"FLPin"];
+        self.pin = pin;
+        self.count = 0;
+        self.allPhotos = [[NSMutableArray alloc] init];
+        self.dataToPass = [[NSMutableDictionary alloc] init];
+        [self.dataToPass setObject:pin forKey:@"FLPin"];
+        self.photoManager = [[FLPhotoManager alloc] init];
+    }
 }
 
 - (void)viewDidLoad {
@@ -425,7 +428,9 @@
         [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
         NSLog(@"out2");
         
-        [FLMasterNavigationController switchToViewController:@"PhotoViewController" fromViewController:@"FLCameraViewController" withData:self.dataToPass];
+//        [FLMasterNavigationController switchToViewController:@"PhotoViewController" fromViewController:@"FLCameraViewController" withData:self.dataToPass];
+        [_delegate hideCameraPage];
+        [_delegate showPhotoPage:self.dataToPass];
 
     }
 }

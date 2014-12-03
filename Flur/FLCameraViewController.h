@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AVFoundation/AVFoundation.h>
-#import "FLPin.h"
 
 @protocol FLCameraViewControllerDelegate <NSObject>
 
 @required
 - (void) hideCameraPage;
+- (void) showPhotoPage:(NSMutableDictionary*)data;
 @end
 
 @interface FLCameraViewController : UIViewController <FLCameraViewControllerDelegate>
