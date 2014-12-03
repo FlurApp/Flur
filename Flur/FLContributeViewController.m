@@ -8,7 +8,6 @@
 
 #import "FLContributeViewController.h"
 #import "FLPin.h"
-#import "FLMasterNavigationController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "FLConstants.h"
 
@@ -200,10 +199,6 @@
     
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:self.pin forKey:@"FLPin"];
-    
-    [FLMasterNavigationController switchToViewController:@"FLCameraViewController"
-                                      fromViewController:@"FLContributeViewController"
-                                                withData:data];
 }
 
 - (IBAction)contributingTouchDown:(id)sender {

@@ -11,7 +11,6 @@
 #import <Parse/Parse.h>
 
 #import "FLInitialMapViewController.h"
-#import "FLMasterNavigationController.h"
 #import "FLFlurAnnotation.h"
 #import "FLMapManager.h"
 #import "FLPin.h"
@@ -245,6 +244,7 @@
         
         if (p) {
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+            [data setObject:p forKey:@"FLPin"];
             [data setObject:@"true" forKey:@"contributeView"];
             [data setObject:[(PFUser *)p.createdBy username] forKey:@"creatorUsername"];
             [data setObject:p.dateCreated forKey:@"dateCreated"];
@@ -294,18 +294,6 @@
     [textField resignFirstResponder];
     return NO;
 }
-
-//- (IBAction)creatingFlur:(id)sender {
-//    
-//    NSString *prompt = [self.promptTextField text];
-//    NSLog(@"Creating flur with prompt: %@", prompt);
-//    [self.mapManager addFlur:prompt];
-//    [self.addPinBlurEffectView removeFromSuperview];
-//    
-//    //PUT CODE IN FOR REFRESHING THE VIEW///
-//    [self updateOpenablePins];
-//    
-//}
 
 - (void) addFlur:(NSString*)prompt {
     NSLog(@"adding flur");

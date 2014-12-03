@@ -8,6 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FLSplashViewController : UIViewController
+@protocol FLSplashViewControllerDelegate <NSObject>
+
+@required
+-(void)hideSplashPage;
+-(void)showLoginPage:(NSMutableDictionary*)data;
+
+@end
+
+@interface FLSplashViewController : UIViewController <FLSplashViewControllerDelegate>
+
+@property (nonatomic, assign) id<FLSplashViewControllerDelegate> delegate;
 
 @end

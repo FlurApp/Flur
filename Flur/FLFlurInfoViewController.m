@@ -13,7 +13,6 @@
 #import "UILabel+MultiColor.h"
 #import "FLFlurAnnotation.h"
 #import "flur.h"
-#import "FLMasterNavigationController.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
 #define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
@@ -51,6 +50,8 @@
 @property (nonatomic, strong) NSLayoutConstraint *viewAlbumButtonHeight;
 @property (nonatomic, strong) NSLayoutConstraint *yourContributionConstraint;
 
+@property (nonatomic, strong) NSMutableDictionary *pin_data;
+
 
 @end
 
@@ -59,14 +60,15 @@
 - (instancetype) initWithData:(NSMutableDictionary *) data {
     self = [super init];
     if (self) {
-        self.months = [[NSArray alloc] initWithObjects:@"Jan", @"Feb", @"Mar", @"Apr", @"Jun", @"Jul", @"Aug", @"Sep", @"Oct", @"Nov", @"Dec", nil];
         self.annotation = nil;
     }
     return self;
 }
 
 - (void) setData:(NSMutableDictionary *) data {
-    NSLog(@"data: %@", data);
+    //NSLog(@"data: %@", data);
+    self.pin_data = data;
+    
     NSString* creatorUsername = [data objectForKey:@"creatorUsername"];
     
     NSDate *date = [data objectForKey:@"dateCreated"];
@@ -85,7 +87,7 @@
     NSNumber *num = [data objectForKey:@"totalContentCount"];
     NSInteger totalContentCount = num.integerValue;
     
-    self.totalContributions.text = [NSString stringWithFormat:@"%lu other people have contributed to this flur.", totalContentCount];
+    self.totalContributions.text = [NSString stringWithFormat:@"%lu other people have contributed to this flur.", (long)totalContentCount];
     [self.totalContributions setTextColor:RGB(238, 0, 255)
                                     range:NSMakeRange(0, [self numDigits:totalContentCount])];
 
@@ -210,6 +212,7 @@
     
     self.contributeButton = [[UIButton alloc] init];
     [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.contributeButton addTarget:self action:@selector(addPhoto:) forControlEvents:UIControlEventTouchUpInside];
     
     self.contributeButton.backgroundColor = RGBA(13,191,255, .95);
     self.contributeButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
@@ -383,6 +386,10 @@
     
     // Do any additional setup after loading the view.
 }
+-(IBAction)addPhoto:(id)sender {
+    [self exitPage:nil];
+    [_delegate showCameraPage:self.pin_data];
+}
 
 - (void) exitPage:(UITapGestureRecognizer *)recognizer {
     if (self.contributeView)
@@ -403,26 +410,19 @@
 //   // ulv.hidden = YES;
 //}
 
-- (IBAction)returnToTableList:(id)sender {
-    NSMutableDictionary *data;
-    [FLMasterNavigationController switchToViewController:@"FLTableViewController" fromViewController:@"FLFlurInfoViewController" withData:data];
-}
+//- (IBAction)returnToTableList:(id)sender {
+//    NSMutableDictionary *data;
+////    [FLMasterNavigationController switchToViewController:@"FLTableViewController" fromViewController:@"FLFlurInfoViewController" withData:data];
+//}
 
 - (NSString *) stringFromDate:(NSDate *)dateAdded {
     
     NSDate *date = dateAdded;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"MM"];
-    NSInteger curMonth = [[dateFormatter stringFromDate:date] integerValue] - 1;
     
-    [dateFormatter setDateFormat:@"dd"];
-    NSString *curDay = [NSString stringWithFormat:@"%ld", [[dateFormatter stringFromDate:date] integerValue]];
+    [dateFormatter setDateFormat:@"MMM d, YYYY"];
     
-    [dateFormatter setDateFormat:@"YYYY"];
-    NSString *curYear = [dateFormatter stringFromDate:date];
-    
-    
-    return [NSString stringWithFormat:@"%@ %@, %@", self.months[curMonth], curDay, curYear];
+    return [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:date]];
 }
 
 //- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {

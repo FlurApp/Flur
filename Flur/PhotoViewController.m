@@ -10,7 +10,6 @@
 
 #import "PhotoViewController.h"
 #import "SinglePhotoViewController.h"
-#import "FLMasterNavigationController.h"
 #import "FLConstants.h"
 
 @interface PhotoViewController ()
@@ -37,16 +36,25 @@
 
 @implementation PhotoViewController
 
-- (instancetype) initWithData: (NSMutableDictionary*) data {
-    self = [super init];
+- (void) setData: (NSMutableDictionary*) data {
+    self.pin = [data objectForKey:@"FLPin"];
+    self.topBarVisible = true;
+    self.allPhotos = [data objectForKey:@"allPhotos"];
+    self.viewPrompt.text = self.pin.prompt;
     
-    if (self) {
-        self.pin = [data objectForKey:@"FLPin"];
-        self.topBarVisible = true;
-        self.allPhotos = [data objectForKey:@"allPhotos"];
-    }
+    SinglePhotoViewController *initialViewController = [self viewControllerAtIndex:0];
     
-    return self;
+    
+    NSArray *viewControllers = [NSArray arrayWithObject:initialViewController];
+    
+    [self.pageController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
+    
+    [self addChildViewController:self.pageController];
+    [[self view] addSubview:[self.pageController view]];
+    [self.pageController didMoveToParentViewController:self];
+    
+    // Load custom views
+    [self loadViews];
 }
 
 - (void)viewDidLoad {
@@ -61,8 +69,6 @@
     self.viewsToToggle =    [[NSMutableArray alloc] init];
 
     self.view.backgroundColor = [UIColor blackColor];
-//    self.pinId = @"c8kzGmjHaU";
-
     
     // Set up controller for the multiple page view
     self.pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
@@ -70,20 +76,6 @@
     self.pageController.dataSource = self;
     self.pageController.delegate = self;
     [[self.pageController view] setFrame:[[self view] bounds]];
-    
-    SinglePhotoViewController *initialViewController = [self viewControllerAtIndex:0];
-   
-    
-    NSArray *viewControllers = [NSArray arrayWithObject:initialViewController];
-    
-    [self.pageController setViewControllers:viewControllers direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:nil];
-    
-    [self addChildViewController:self.pageController];
-    [[self view] addSubview:[self.pageController view]];
-    [self.pageController didMoveToParentViewController:self];
-    
-    // Load custom views
-    [self loadViews];
 }
 
 
@@ -228,8 +220,6 @@
     self.viewPrompt.translatesAutoresizingMaskIntoConstraints = NO;
     [self.viewPrompt setTextColor:[UIColor whiteColor]];
     [self.viewPrompt setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:18]];
-
-    self.viewPrompt.text = self.pin.prompt;
     
     [self.bottomBar addSubview:self.viewPrompt];
     
@@ -253,9 +243,8 @@
 
 
 - (void) navBack {
-   // AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-   // [appDelegate popMyself];
-    [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"PhotoViewController" withData:[[NSMutableDictionary alloc]init]];
+    [_delegate hidePhotoPage];
+    [_delegate showMapPage];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -326,7 +315,7 @@
     
     // Everytime a page is turned, grab the index of the current page, display as current photo number
     SinglePhotoViewController* a= [self.pageController.viewControllers lastObject];
-    NSLog(@"index %lu", a.index);
+    NSLog(@"index %lu", (long)a.index);
     
     self.currentPicture.text = [NSString stringWithFormat:@"%lu/%lu", (a.index+1), (unsigned long)self.allPhotos.count];
 }
