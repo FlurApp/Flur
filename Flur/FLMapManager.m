@@ -185,12 +185,7 @@
 }
 
 - (void) justContributedToFlur:(NSString *) objectId {
-    NSLog(@"Have Contributed 3");
-    NSLog(@"ObjectId: %@",objectId);
-    NSLog(@"Pin1: %@", (FLPin*)self.openablePins[objectId]);
     ((FLPin*)self.openablePins[objectId]).haveContributedTo = true;
-
-
 }
 
 @end

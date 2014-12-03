@@ -325,11 +325,13 @@
         self.mapView.view.frame = CGRectMake(0, 0,
                                              self.view.frame.size.width,
                                              self.view.frame.size.height);
+        
+        self.tableView.view.frame = CGRectMake(-self.view.frame.size.width, TOP_BAR_HEIGHT,
+                                               self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
 
         
     } completion:^(BOOL finished) {
-        self.tableView.view.frame = CGRectMake(-self.view.frame.size.width, TOP_BAR_HEIGHT,
-                                               self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
+
     }];
 }
 
@@ -563,8 +565,6 @@
 }
 
 - (void) haveContributedToFlur:(NSString *) objectId {
-    NSLog(@"Have Contributed 1");
-
     [self.mapView justContributedToFlur:objectId];
 }
 
