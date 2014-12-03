@@ -57,7 +57,6 @@
     self = [super init];
     if (self) {
         self.flur = [data objectForKey:@"flur"];
-        self.months = [[NSArray alloc] initWithObjects:@"Jan", @"Feb", @"Mar", @"Apr", @"Jun", @"Jul", @"Aug", @"Sep", @"Oct", @"Nov", @"Dec", nil];
         self.annotation = nil;
     }
     return self;
@@ -316,17 +315,10 @@
     
     NSDate *date = dateAdded;
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"MM"];
-    NSInteger curMonth = [[dateFormatter stringFromDate:date] integerValue] - 1;
     
-    [dateFormatter setDateFormat:@"dd"];
-    NSString *curDay = [NSString stringWithFormat:@"%ld", [[dateFormatter stringFromDate:date] integerValue]];
+    [dateFormatter setDateFormat:@"MMM d, YYYY"];
     
-    [dateFormatter setDateFormat:@"YYYY"];
-    NSString *curYear = [dateFormatter stringFromDate:date];
-    
-    
-    return [NSString stringWithFormat:@"%@ %@, %@", self.months[curMonth], curDay, curYear];
+    return [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:date]];
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {

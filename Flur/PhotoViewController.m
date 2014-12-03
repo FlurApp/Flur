@@ -326,7 +326,7 @@
     
     // Everytime a page is turned, grab the index of the current page, display as current photo number
     SinglePhotoViewController* a= [self.pageController.viewControllers lastObject];
-    NSLog(@"index %lu", a.index);
+    NSLog(@"index %lu", (long)a.index);
     
     self.currentPicture.text = [NSString stringWithFormat:@"%lu/%lu", (a.index+1), (unsigned long)self.allPhotos.count];
 }

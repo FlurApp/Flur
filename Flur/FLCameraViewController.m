@@ -167,7 +167,7 @@
 
 - (IBAction)toggleCamera:(id)sender {
     
-    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationCurveEaseInOut animations:^{
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.toggleCamButton.transform = CGAffineTransformMakeScale(1,1);
         
     } completion:^(BOOL finished) {
@@ -280,7 +280,7 @@
 }
 
 - (void) growButtonAnimation: (UIButton*) button {
-    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationCurveEaseInOut animations:^{
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         button.transform = CGAffineTransformMakeScale(1.5,1.5);
 
     } completion:^(BOOL finished) {
@@ -291,7 +291,7 @@
 
 
 - (IBAction)returnToMap:(id)sender {
-    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationCurveEaseInOut animations:^{
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.backButton.transform = CGAffineTransformMakeScale(1,1);
         
     } completion:^(BOOL finished) {
