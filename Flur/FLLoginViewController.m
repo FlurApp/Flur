@@ -148,6 +148,8 @@
     self.usernameInput.returnKeyType = UIReturnKeyNext;
     self.usernameInput.keyboardAppearance = UIKeyboardAppearanceDark;
     self.usernameInput.keyboardType = UIKeyboardTypeEmailAddress;
+    self.usernameInput.autocorrectionType = UITextAutocorrectionTypeNo;
+
     
     [self.usernameInput addTarget:self
                   action:@selector(textFieldDidChange:)
@@ -179,6 +181,8 @@
     [self.passwordInput setEnablesReturnKeyAutomatically: YES];
     self.passwordInput.secureTextEntry = YES;
     self.passwordInput.keyboardAppearance = UIKeyboardAppearanceDark;
+    self.passwordInput.autocorrectionType = UITextAutocorrectionTypeNo;
+
 
     
     [self.passwordInput addTarget:self
