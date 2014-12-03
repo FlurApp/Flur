@@ -435,5 +435,17 @@ static bool userFound = false;
     [self createTestDataWithCompletion:nil];
 }
 
++ (void) alterImages {
+    PFQuery *query = [PFQuery queryWithClassName:@"Images"];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *imagesContributed, NSError *error) {
+        if (!error) {
+            for (PFObject * image in imagesContributed) {
+                //[image setObject:<#(id)#> forKey:<#(NSString *)#>]
+            }
+        }
+    }];
+}
+
 
 @end

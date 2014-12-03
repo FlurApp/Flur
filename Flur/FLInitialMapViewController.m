@@ -77,23 +77,23 @@
     [[self view] setBackgroundColor:[UIColor whiteColor]];
     
     //----Setting up the Location Manager-----//
-    /*_locationManager = [[CLLocationManager alloc] init];
+    _locationManager = [[CLLocationManager alloc] init];
     _locationManager.delegate = self;
 
     [self.locationManager requestAlwaysAuthorization];
-    [self.locationManager startUpdatingLocation];
     
     
-    [self loadMapView];
     _locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
     _locationManager.distanceFilter = 3;
-    [_locationManager startUpdatingLocation];*/
+    [_locationManager startUpdatingLocation];
     
     //----loading Initial View----//
     self.whiteLayer = [[UIView alloc] init];
     [self.whiteLayer setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.whiteLayer.backgroundColor = RGBA(255, 255, 255, 0);
     
+    [self loadMapView];
+
     [self setNeedsStatusBarAppearanceUpdate];
 
 
@@ -122,7 +122,7 @@
     self.mapViewContainer.translatesAutoresizingMaskIntoConstraints = NO;
   
     self.mapView = [[MKMapView alloc] initWithFrame:self.mapViewContainer.frame];
-    //self.mapView.showsUserLocation = YES;
+    self.mapView.showsUserLocation = YES;
     self.mapView.delegate = self;
     self.mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.mapView setZoomEnabled:YES];
@@ -163,11 +163,6 @@
     MKAnnotationView* annotationView = [mapView viewForAnnotation:userLocation];
     mapView.userLocation.title = @"";
     annotationView.canShowCallout = NO;
-}
-
-- (void) locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
-    [self.locationManager requestAlwaysAuthorization];
-    [self.locationManager startUpdatingLocation];
 }
 
 - (void) reloadMap {
@@ -241,8 +236,8 @@
         
         NSString* id = fa.pin.pinId;
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
-        
         if (p) {
+            NSLog(@"PIn: %@", p);
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:p forKey:@"FLPin"];
             [data setObject:@"true" forKey:@"contributeView"];
@@ -252,6 +247,8 @@
             
             NSString *haveContributedTo = p.haveContributedTo ? @"true" : @"false";
             [data setObject:haveContributedTo forKey:@"haveContributedTo"];
+            NSLog(@"data: %@", data);
+
             [self.delegate showContributePage:data];
         }
     }

@@ -78,6 +78,7 @@
         if (!error) {
             for (int i=0; i<objects.count; i++) {
                 FLPin* pin = [[FLPin alloc] initWith: objects[i]];
+                NSLog(@"Adding pin: %@", pin);
                 
                 [self.allFlursFromServer setObject:pin forKey:pin.pinId];
                 

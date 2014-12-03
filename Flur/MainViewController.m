@@ -435,11 +435,11 @@
     
     [self.cameraView setData:data];
     
-    self.cameraView.view.frame = CGRectMake(0, self.view.frame.size.height,
+    self.cameraView.view.frame = CGRectMake(0, -self.view.frame.size.height,
                                               self.cameraView.view.frame.size.width,
                                               self.cameraView.view.frame.size.height);
     
-    [UIView animateWithDuration:.3 delay:.2 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+    [UIView animateWithDuration:.3 delay:.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.cameraView.view.frame = CGRectMake(0, 0,
                                                   self.cameraView.view.frame.size.width,
                                                   self.cameraView.view.frame.size.height);
@@ -497,11 +497,11 @@
 }
 
 -(void)hideLoginPage {
-    NSLog(@"syncing");
     [LocalStorage syncWithServer:^{
         NSLog(@"Done syncing");
         [self.tableView getFlurs];
     }];
+    
     [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.loginView.view.frame = CGRectMake(-self.loginView.view.frame.size.width, 0,
                                                 self.loginView.view.frame.size.width,

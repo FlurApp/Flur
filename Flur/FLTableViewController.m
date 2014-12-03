@@ -118,24 +118,19 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"Creating cell");
     static NSString *CellIdentifier = @"Cell";
     FLCustomCellTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
                                             CellIdentifier];
     
     // Configure the cell...
     if (cell == nil) {
-        cell = [[FLCustomCellTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[FLCustomCellTableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier];
     }
-    NSLog(@"Cell: %@", cell);
+    
     cell.delegate = self;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//    NSLog(@"Pin: %@", [self.pinsArray objectAtIndex:indexPath.row]);
-//    NSLog(@"Prompt: %@", [[self.pinsArray objectAtIndex:indexPath.row] prompt]);
 
     cell.cellPrompt.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
-//    NSLog(@"Prompt: %@", cell.cellPrompt);
-
     
     NSDate *date = [[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -147,7 +142,6 @@
     cell.cellContentCount.text = [NSString stringWithFormat:@"%@ contributions", [[[self.pinsArray objectAtIndex:indexPath.row] totalContentCount] stringValue]];
     
     cell.flur = [self.pinsArray objectAtIndex:indexPath.row];
-    NSLog(@"Cell: %@", cell);
 
     return cell;
 }
