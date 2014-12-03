@@ -17,7 +17,7 @@
 
 @property (nonatomic) BOOL tableViewMode;
 @property (nonatomic) BOOL infoViewMode;
-
+//@property (nonatomic) BOOL dropFlurViewMode;
 
 
 @end
@@ -182,16 +182,7 @@
         [self.delegate hideTablePage];
         self.tableViewMode = false;
         
-        [UIView animateWithDuration:.2 animations:^{
-            self.pageTitle.alpha = 0;
-            self.backButton.alpha = 0;
-        } completion:^(BOOL finished) {
-            [UIView animateWithDuration:.2 animations:^{
-                self.menuButton.alpha = 1;
-                self.tableListButton.alpha = 1;
-                self.flurImageContainer.alpha = 1;
-            }];
-        }];
+        [self showMapBar];
     }
     else if (self.infoViewMode) {
         self.infoViewMode = false;
@@ -212,8 +203,11 @@
 
 - (IBAction)showTableView:(id)sender {
     [self.delegate showTablePage];
+    [self showTableBar];
+}
+
+- (void) showTableBar {
     self.tableViewMode = true;
-    
     [UIView animateWithDuration:.2 animations:^{
         self.menuButton.alpha = 0;
         self.tableListButton.alpha = 0;
@@ -225,8 +219,21 @@
             self.backButton.alpha = 1;
         }];
     }];
+
 }
 
+- (void) showMapBar {
+    [UIView animateWithDuration:.2 animations:^{
+        self.pageTitle.alpha = 0;
+        self.backButton.alpha = 0;
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:.2 animations:^{
+            self.menuButton.alpha = 1;
+            self.tableListButton.alpha = 1;
+            self.flurImageContainer.alpha = 1;
+        }];
+    }];
+}
 
 - (IBAction)showSettingsPage:(id)sender {
     [self.delegate settingButtonPress];
@@ -239,6 +246,7 @@
     
     [UIView animateWithDuration:.2 animations:^{
         self.pageTitle.alpha = 0;
+        self.backButton.alpha = 0;
     } completion:^(BOOL finished) {
         self.pageTitle.text = @"Flur Info";
         [UIView animateWithDuration:.2 animations:^{
@@ -246,6 +254,35 @@
         }];
     }];
  
+}
+
+- (void) showDropFlurBar {
+    
+    self.flurImageContainer.alpha = 0;
+    
+    [UIView animateWithDuration:.2 animations:^{
+        self.pageTitle.alpha = 0;
+    } completion:^(BOOL finished) {
+        self.pageTitle.text = @"Drop Flur";
+        [UIView animateWithDuration:.2 animations:^{
+            self.pageTitle.alpha = 1;
+        }];
+    }];
+    
+}
+
+- (void) showContributeBar {
+    self.tableViewMode = true;
+    [UIView animateWithDuration:.2 animations:^{
+        self.menuButton.alpha = 0;
+        self.tableListButton.alpha = 0;
+        self.flurImageContainer.alpha = 0;
+    } completion:^(BOOL finished) {
+        self.pageTitle.text = @"Contribute";
+        [UIView animateWithDuration:.2 animations:^{
+            self.pageTitle.alpha = 1;
+        }];
+    }];
 }
 
 - (void)didReceiveMemoryWarning {

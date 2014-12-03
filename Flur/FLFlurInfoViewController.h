@@ -16,7 +16,10 @@
 - (void)movePanelLeft;
 - (void)movePanelRight;
 
+
 @required
+- (void)hideContributePage;
+- (void)hideInfoPage;
 
 @end
 

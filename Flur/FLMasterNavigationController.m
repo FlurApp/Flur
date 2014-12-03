@@ -18,6 +18,7 @@
 #import "MainViewController.h"
 #import "FLSettingsViewController.h"
 #import "FLFlurInfoViewController.h"
+#import "FLNewFlurViewController.h"
 
 @interface FLMasterNavigationController ()
 

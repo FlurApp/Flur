@@ -83,14 +83,13 @@
 #pragma mark Setup View
 
 - (void)setupView {
-
-    NSLog(@"wadup");
     
     
     /* -------------------------------------------
                 Setup Settings View.
      -----------------------------------------------*/
     self.settingsView = [[FLSettingsViewController alloc] init];
+    self.settingsView.delegate = self;
    
     
     [self.view addSubview:self.settingsView.view];
@@ -146,7 +145,7 @@
     
     
     /* -------------------------------------------
-                Setup Flur INfo View.
+                Setup Flur Info View.
      -----------------------------------------------*/
     self.flurInfoView = [[FLFlurInfoViewController alloc] initWithData:nil];
     self.flurInfoView.delegate = self;
@@ -157,7 +156,18 @@
     
     self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
                                               self.view.frame.size.height - TOP_BAR_HEIGHT);
-
+    
+    
+    /* -------------------------------------------
+     Setup Add New Flur View.
+     -----------------------------------------------*/
+    self.dropFlurView = [[FLNewFlurViewController alloc] init];
+    self.dropFlurView.delegate = self;
+    
+    [self.view addSubview:self.dropFlurView.view];
+    [self addChildViewController:self.dropFlurView];
+    self.dropFlurView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
+                                              self.view.frame.size.height - TOP_BAR_HEIGHT);
     
     if (self.shouldSync) {
         NSLog(@"yessss");
@@ -235,7 +245,7 @@
 
     [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         
-        self.mapView.view.frame = CGRectMake(-self.view.frame.size.width, 0,
+        self.mapView.view.frame = CGRectMake(-self.view.frame.size.width + 20, 0,
                                              self.view.frame.size.width,
                                              self.view.frame.size.height);
         
@@ -277,6 +287,7 @@
 }
 
 - (void) hideInfoPage {
+    [self.topBarView showTableBar];
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
                                                   self.flurInfoView.view.frame.size.width,
@@ -286,6 +297,7 @@
 
 - (void) showContributePage:(NSMutableDictionary *)data {
     [self.flurInfoView setData:data];
+    [self.topBarView showContributeBar];
     self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
                                               self.flurInfoView.view.frame.size.width,
                                               self.flurInfoView.view.frame.size.height);
@@ -323,80 +335,44 @@
 
 -(void)movePanel:(id)sender
 {
-}
-
-#pragma mark -
-#pragma mark Delegate Actions
-- (void) showInfoPage {
-    _flurInfoVC.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height);
-    
-    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                        _flurInfoVC.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-                     }
-                     completion:^(BOOL finished) {
-                         if (finished) {
-                         }
-                     }];
-    
-}
-
-- (void)movePanelLeft // to show right panel
-{
-
-    
-    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                         _centerViewController.view.frame = CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
-                         _rightPanelViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-                     }
-                     completion:^(BOOL finished) {
-                         if (finished) {
-                             
-                             _centerViewController.menuButton.tag = 0;
-                         }
-                     }];
-
-}
-
-- (void)movePanelRight // to show left panel
-{
-    
-    UIView *childView = [self getLeftView];
-    [self.view sendSubviewToBack:childView];
-    
-    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                         _centerViewController.view.frame = CGRectMake(self.view.frame.size.width - PANEL_WIDTH, 0, self.view.frame.size.width, self.view.frame.size.height);
-                         _leftPanelViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-                     }
-                     completion:^(BOOL finished) {
-                         if (finished) {
-                             
-                             _centerViewController.menuButton.tag = 0;
-                         }
-                     }];
-}
-
-- (void)movePanelToOriginalPosition
-{
-    [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                         _centerViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-                         
-                         if (self.showingLeftPanel)
-                             _leftPanelViewController.view.frame = CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
-                         else
-                             _rightPanelViewController.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
-                             
-                     }
-                     completion:^(BOOL finished) {
-                         if (finished) {
-                             
-                             [self resetMainView];
-                         }
-                     }];
 }*/
+
+- (void) showDropFlurPage {
+    [self.topBarView showDropFlurBar];
+    [self hideSettingsPage];
+    self.dropFlurView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                              self.dropFlurView.view.frame.size.width,
+                                              self.dropFlurView.view.frame.size.height);
+    
+    [UIView animateWithDuration:.3 delay:.2 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.dropFlurView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
+                                                  self.dropFlurView.view.frame.size.width,
+                                                    self.dropFlurView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+}
+
+- (void) hideDropFlurPage {
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.dropFlurView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                                  self.dropFlurView.view.frame.size.width,
+                                                  self.dropFlurView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+}
+
+-(void) addFlur:(NSString*)prompt {
+    [self.mapView addFlur:prompt];
+    [self hideDropFlurPage];
+}
+
+- (void) hideContributePage {
+    [self.topBarView showMapBar];
+
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
+                                                  self.flurInfoView.view.frame.size.width,
+                                                  self.flurInfoView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+}
 
 #pragma mark -
 #pragma mark Default System Code

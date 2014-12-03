@@ -96,14 +96,25 @@
         
         self.yourContributionConstraint.constant = 0;
         self.yourContribution.text = @"";
-        
+        self.contributeButtonHeight.constant = 80;
+
         if ([[data objectForKey:@"haveContributedTo"] isEqual:@"true"]) {
             self.viewAlbumButtonHeight.constant = 80;
             [self.viewAlbumButton setTitle:@"View Album" forState:UIControlStateNormal];
+            
+            [self.viewAlbumButton.layer setCornerRadius:0];
+            [self.viewAlbumButton.layer setShadowColor:[UIColor blackColor].CGColor];
+            [self.viewAlbumButton.layer setShadowOpacity:.3];
+            [self.viewAlbumButton.layer setShadowOffset:CGSizeMake(0.0f, -2.0f)];
         }
         else {
             self.viewAlbumButtonHeight.constant = 0;
             [self.viewAlbumButton setTitle:@"" forState:UIControlStateNormal];
+            
+            [self.contributeButton.layer setCornerRadius:0];
+            [self.contributeButton.layer setShadowColor:[UIColor blackColor].CGColor];
+            [self.contributeButton.layer setShadowOpacity:.3];
+            [self.contributeButton.layer setShadowOffset:CGSizeMake(0.0f, -2.0f)];
 
         }
         
@@ -126,6 +137,14 @@
                                         range:NSMakeRange(13, [self numDigits:myContentPosition])];
         self.yourContributionConstraint.constant = 10;
 
+        self.contributeButtonHeight.constant = 0;
+        self.viewAlbumButtonHeight.constant = 0;
+
+        
+        [self.viewAlbumButton.layer setCornerRadius:0];
+        [self.viewAlbumButton.layer setShadowColor:[UIColor blackColor].CGColor];
+        [self.viewAlbumButton.layer setShadowOpacity:.3];
+        [self.viewAlbumButton.layer setShadowOffset:CGSizeMake(0.0f, -2.0f)];
         [self.view layoutIfNeeded];
     }
     
@@ -192,7 +211,7 @@
     self.contributeButton = [[UIButton alloc] init];
     [self.contributeButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    self.contributeButton.backgroundColor = RGB(100,100,100);
+    self.contributeButton.backgroundColor = RGBA(13,191,255, .95);
     self.contributeButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
     [self.contributeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.contributeButton setTitle:@"Add Photo" forState:UIControlStateNormal];
@@ -214,7 +233,7 @@
     self.viewAlbumButton = [[UIButton alloc] init];
     [self.viewAlbumButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    self.viewAlbumButton.backgroundColor = [UIColor redColor];
+    self.viewAlbumButton.backgroundColor = RGBA(232,72,49,.95);
     self.viewAlbumButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:18];
     [self.viewAlbumButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.viewAlbumButton setTitle:@"View Album" forState:UIControlStateNormal];
@@ -232,73 +251,12 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.viewAlbumButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
     
-    self.flurInfoContainer = [[UIView alloc] init];
-    self.flurInfoContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    self.flurInfoContainer.backgroundColor = RGB(253, 253, 253);
-    [self.view addSubview:self.flurInfoContainer];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-    
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
-    
-    
-    self.flurCreated = [[UILabel alloc] init];
-    [self.flurCreated setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.viewAlbumButton.layer setCornerRadius:0];
+    [self.viewAlbumButton.layer setShadowColor:[UIColor blackColor].CGColor];
+    [self.viewAlbumButton.layer setShadowOpacity:.3];
+    [self.viewAlbumButton.layer setShadowOffset:CGSizeMake(0.0f, -2.0f)];
 
-    self.flurCreated.font = [UIFont fontWithName:@"Avenir-Light" size:19];
-
-    [self.flurCreated setNumberOfLines:0];
-    
-    [self.flurInfoContainer addSubview:self.flurCreated];
-    
-    
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
-    
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
-    
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
-    
-    
-    self.yourContribution = [[UILabel alloc] init];
-    [self.yourContribution setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.yourContribution.font = [UIFont fontWithName:@"Avenir-Light" size:19];
-    [self.yourContribution setNumberOfLines:0];
-    
-    [self.flurInfoContainer addSubview:self.yourContribution];
-    
-        self.yourContributionConstraint =[NSLayoutConstraint constraintWithItem:self.yourContribution attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurCreated attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10] ;
-    
-    [self.flurInfoContainer addConstraint:self.yourContributionConstraint];
-    
-
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.yourContribution attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
-    
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.yourContribution attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
-    
-    
-    self.totalContributions = [[UILabel alloc] init];
-    [self.totalContributions setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.totalContributions.font = [UIFont fontWithName:@"Avenir-Light" size:19];
-    //self.totalContributions.text = @"asdf jedfa asdf asdf asdf asdf asdf f fdsa ff d fasdf";
-
-    [self.totalContributions setNumberOfLines:0];
-    
-    [self.flurInfoContainer addSubview:self.totalContributions];
-    
-    
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.totalContributions attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.yourContribution attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
-    
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.totalContributions attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
-    
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.totalContributions attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
-
-    
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.totalContributions attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
     
     
     self.mapViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
@@ -319,20 +277,118 @@
     [self.mapViewContainer addSubview:self.mapView];
     
     [self.view addSubview:self.mapViewContainer];
+    [self.view sendSubviewToBack:self.mapViewContainer];
+
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     
-     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.viewAlbumButton attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.mapViewContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
+    
+    
+    
+    self.flurInfoContainer = [[UIView alloc] init];
+    self.flurInfoContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    //self.flurInfoContainer.backgroundColor = RGB(253, 253, 253);
+    self.flurInfoContainer.backgroundColor = RGBA(253,253,253,.9);
+
+    [self.view addSubview:self.flurInfoContainer];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    
+    [self.flurInfoContainer.layer setCornerRadius:0];
+    [self.flurInfoContainer.layer setShadowColor:[UIColor blackColor].CGColor];
+    [self.flurInfoContainer.layer setShadowOpacity:.2];
+    [self.flurInfoContainer.layer setShadowOffset:CGSizeMake(0.0f, 2.0f)];
+    
+    self.flurCreated = [[UILabel alloc] init];
+    [self.flurCreated setTranslatesAutoresizingMaskIntoConstraints:NO];
+
+    self.flurCreated.font = [UIFont fontWithName:@"Avenir-Light" size:17];
+
+    [self.flurCreated setNumberOfLines:0];
+    
+    [self.flurInfoContainer addSubview:self.flurCreated];
+    
+    
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
+    
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
+    
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
+    
+    
+    self.yourContribution = [[UILabel alloc] init];
+    [self.yourContribution setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.yourContribution.font = [UIFont fontWithName:@"Avenir-Light" size:17];
+    [self.yourContribution setNumberOfLines:0];
+    
+    [self.flurInfoContainer addSubview:self.yourContribution];
+    
+        self.yourContributionConstraint =[NSLayoutConstraint constraintWithItem:self.yourContribution attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurCreated attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10] ;
+    
+    [self.flurInfoContainer addConstraint:self.yourContributionConstraint];
+    
+
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.yourContribution attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
+    
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.yourContribution attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
+    
+    
+    self.totalContributions = [[UILabel alloc] init];
+    [self.totalContributions setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.totalContributions.font = [UIFont fontWithName:@"Avenir-Light" size:17];
+    //self.totalContributions.text = @"asdf jedfa asdf asdf asdf asdf asdf f fdsa ff d fasdf";
+
+    [self.totalContributions setNumberOfLines:0];
+    
+    [self.flurInfoContainer addSubview:self.totalContributions];
+    
+    
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.totalContributions attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.yourContribution attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
+    
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.totalContributions attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
+    
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.totalContributions attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
+
+    
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flurInfoContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.totalContributions attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
+    
+    
+    
+    UITapGestureRecognizer *singleFingerTap =
+    [[UITapGestureRecognizer alloc] initWithTarget:self
+                                            action:@selector(exitPage:)];
+    [self.flurInfoContainer addGestureRecognizer:singleFingerTap];
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc]
+                                   initWithTarget:self action:@selector(exitPage:)];
+    tgr.numberOfTapsRequired = 1;
+    tgr.numberOfTouchesRequired = 1;
+    [self.mapViewContainer addGestureRecognizer:tgr];
 
 
     
     
     // Do any additional setup after loading the view.
+}
+
+- (void) exitPage:(UITapGestureRecognizer *)recognizer {
+    if (self.contributeView)
+        [self.delegate hideContributePage];
+    else
+        [self.delegate hideInfoPage];
 }
 
 - (void)didReceiveMemoryWarning {

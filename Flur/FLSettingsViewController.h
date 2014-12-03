@@ -9,10 +9,16 @@
 #import <UIKit/UIKit.h>
 
 @protocol FLSettingsViewControllerDelegate <NSObject>
+
 @optional
 - (void)addFlur:(NSString*)prompt;
-- (void)movePanelToOriginalPosition;
+- (void)hideInfoView;
+
+@required
+-(void)showDropFlurPage;
+
 @end
+
 
 @interface FLSettingsViewController : UIViewController <FLSettingsViewControllerDelegate>
 

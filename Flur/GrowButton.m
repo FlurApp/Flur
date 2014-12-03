@@ -18,8 +18,7 @@
 - (void)drawRect:(CGRect)rect {
     // Drawing code
     NSLog(@"drawing");
-    UIView *button = [[UIView alloc] initWithFrame:rect];
-    button.backgroundColor = [UIColor yellowColor];
+    self.backgroundColor = [UIColor yellowColor];
 
     
     /*UIImageView *imgView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"camera-100.png"]];
