@@ -78,24 +78,31 @@
     [[self view] setBackgroundColor:[UIColor whiteColor]];
     
     //----Setting up the Location Manager-----//
-    _locationManager = [[CLLocationManager alloc] init];
+    /*_locationManager = [[CLLocationManager alloc] init];
     _locationManager.delegate = self;
+
+    [self.locationManager requestAlwaysAuthorization];
+    [self.locationManager startUpdatingLocation];
     
-    if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
-        [self.locationManager requestAlwaysAuthorization];
-    }
     
+    [self loadMapView];
     _locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
     _locationManager.distanceFilter = 3;
-    [_locationManager startUpdatingLocation];
+    [_locationManager startUpdatingLocation];*/
     
     //----loading Initial View----//
-    [self loadMapView];
     self.whiteLayer = [[UIView alloc] init];
     [self.whiteLayer setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.whiteLayer.backgroundColor = RGBA(255, 255, 255, 0);
     
     [self setNeedsStatusBarAppearanceUpdate];
+
+
+    
+   }
+
+-(void)viewDidAppear:(BOOL)animated {
+   
 }
 
 -(BOOL)prefersStatusBarHidden{
@@ -106,14 +113,17 @@
     return UIStatusBarStyleLightContent;
 }
 
-
+- (void) locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse)
+        self.mapView.showsUserLocation = YES;
+}
 
 - (void)loadMapView {
     self.mapViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
     self.mapViewContainer.translatesAutoresizingMaskIntoConstraints = NO;
   
     self.mapView = [[MKMapView alloc] initWithFrame:self.mapViewContainer.frame];
-    self.mapView.showsUserLocation = YES;
+    //self.mapView.showsUserLocation = YES;
     self.mapView.delegate = self;
     self.mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.mapView setZoomEnabled:YES];
@@ -156,6 +166,11 @@
     annotationView.canShowCallout = NO;
 }
 
+- (void) locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    [self.locationManager requestAlwaysAuthorization];
+    [self.locationManager startUpdatingLocation];
+}
+
 - (void) reloadMap {
     
     [self.allAnnotations removeAllObjects];
@@ -173,6 +188,9 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+
+
+    
     [self.mapManager updateCurrentLocation:newLocation
                         andRefreshLocation:false];
     

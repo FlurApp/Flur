@@ -15,6 +15,13 @@
 @property (nonatomic, strong) UILabel *pageTitle;
 @property (nonatomic, strong) UIButton *backButton;
 
+@property (nonatomic, strong) UIView *purpleView;
+@property (nonatomic, strong) UIView *blueView;
+
+
+
+
+
 @property (nonatomic) BOOL tableViewMode;
 @property (nonatomic) BOOL infoViewMode;
 //@property (nonatomic) BOOL dropFlurViewMode;
@@ -49,16 +56,10 @@
     [self.view setNeedsLayout];
     [self.view layoutIfNeeded];
     
-    
-    
-    /* ---------------------------------------
-            Add gradient to Top Bar
-     -----------------------------------------*/
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = topBarContainer.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, 1) CGColor], (id)[RGBA(179, 88, 224, 1) CGColor], nil];
 
-    [topBarContainer.layer insertSublayer:gradient atIndex:0];
+
+    
+    
 
     
     /* ----------------------------------------------------------
@@ -120,7 +121,7 @@
     self.flurImageContainer.translatesAutoresizingMaskIntoConstraints = NO;
     [topBarContainer addSubview:self.flurImageContainer];
     
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
+    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:35]];
     
     [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
@@ -138,6 +139,51 @@
                                                                 attribute:NSLayoutAttributeNotAnAttribute
                                                                multiplier:1.0
                                                                  constant:60.0]];
+    
+    self.purpleView = [[UIView alloc] init];
+    [self.purpleView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [topBarContainer addSubview:self.purpleView];
+
+    self.purpleView.frame = CGRectMake(0, 0, topBarContainer.frame.size.width, topBarContainer.frame.size.height);
+    
+    
+     CAGradientLayer *gradient1 = [CAGradientLayer layer];
+     gradient1.frame = topBarContainer.bounds;
+     gradient1.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, 1) CGColor], (id)[RGBA(179, 88, 224, 1) CGColor], nil];
+
+
+
+     [self.purpleView.layer insertSublayer:gradient1 atIndex:0];
+    
+    
+    
+    
+    
+    self.blueView = [[UIView alloc] init];
+    [self.blueView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [topBarContainer addSubview:self.blueView];
+    
+    self.blueView.frame = CGRectMake(self.view.frame.size.width, 0, topBarContainer.frame.size.width, topBarContainer.frame.size.height);
+    
+    
+    CAGradientLayer *gradient2 = [CAGradientLayer layer];
+    gradient2.frame = self.blueView.bounds;
+    gradient2.colors = [NSArray arrayWithObjects:(id)[RGBA(99, 214, 255, 1) CGColor], (id)[RGBA(9, 190, 255, 1) CGColor], nil];
+
+    
+    [self.blueView.layer insertSublayer:gradient2 atIndex:0];
+    
+    
+    
+    
+    
+    
+    /* ---------------------------------------
+     Add gradient to Top Bar
+     -----------------------------------------*/
+    
+    
+    
     
     self.pageTitle = [[UILabel alloc] init];
     [self.pageTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -174,6 +220,8 @@
     
    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30]];
     
+    [self.view bringSubviewToFront:self.purpleView];
+    [self.view sendSubviewToBack:self.blueView];
 
 }
 
@@ -208,15 +256,23 @@
 
 - (IBAction)showTableView:(id)sender {
     [self.delegate showTablePage];
+
     [self showTableBar];
 }
 
 - (void) showTableBar {
     self.tableViewMode = true;
+    [self.view bringSubviewToFront:self.blueView];
+    [self.view sendSubviewToBack:self.purpleView];
+
+    
     [UIView animateWithDuration:.2 animations:^{
         self.menuButton.alpha = 0;
         self.tableListButton.alpha = 0;
-        self.flurImageContainer.alpha = 0;
+        self.blueView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+        self.purpleView.frame = CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+
+
     } completion:^(BOOL finished) {
         self.pageTitle.text = @"Past Contributions";
         [UIView animateWithDuration:.2 animations:^{
@@ -228,9 +284,16 @@
 }
 
 - (void) showMapBar {
+    [self.view bringSubviewToFront:self.purpleView];
+    [self.view sendSubviewToBack:self.blueView];
+    
     [UIView animateWithDuration:.2 animations:^{
         self.pageTitle.alpha = 0;
         self.backButton.alpha = 0;
+        self.blueView.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+        self.purpleView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+
+
     } completion:^(BOOL finished) {
         [UIView animateWithDuration:.2 animations:^{
             self.menuButton.alpha = 1;

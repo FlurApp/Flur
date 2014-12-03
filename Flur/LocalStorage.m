@@ -45,9 +45,9 @@ static bool userFound = false;
 }
 
 + (void) syncWithServer:(void(^)()) completion {
-    //[LocalStorage createTestData];
-    return;
-    
+    NSLog(@"SYncing");
+    //[LocalStorage deleteAllFlursWithCompletion:^{
+        
     PFUser* curUser = [PFUser currentUser];
     if (!curUser) {
         NSLog(@"Error: Trying to sync with server in LocalStorage.m but not logged.");
@@ -65,6 +65,7 @@ static bool userFound = false;
 
     [query findObjectsInBackgroundWithBlock:^(NSArray *imagesContributed, NSError *error) {
         if (!error) {
+
             // Will map a flur objectId to all the information needed in order to stored in CD.
             NSMutableDictionary *localStorageFlurData = [[NSMutableDictionary alloc] init];
             
@@ -77,16 +78,18 @@ static bool userFound = false;
 
                 // If I haven't yet added this flur to my master container
                 if ([localStorageFlurData objectForKey:flurContributedTo[@"objectId"]] == nil) {
+
                     NSMutableDictionary *flurToAdd = [[NSMutableDictionary alloc] init];
                     
                     flurToAdd[@"objectId"] = [flurContributedTo objectId];
                     flurToAdd[@"prompt"] = flurContributedTo[@"prompt"];
-                    
+
                     PFGeoPoint *location =((PFGeoPoint *)flurContributedTo[@"location"]);
                     flurToAdd[@"lat"] = [NSNumber numberWithDouble:location.latitude];
                     flurToAdd[@"lng"] = [NSNumber numberWithDouble:location.longitude];
-                    
+
                     flurToAdd[@"totalContentCount"] = flurContributedTo[@"contentCount"];
+
                     flurToAdd[@"myContentPosition"] = image[@"contributionPosition"];
 
                     flurToAdd[@"dateCreated"] = [flurContributedTo createdAt];
@@ -96,17 +99,18 @@ static bool userFound = false;
                     [flurObjectIds addObject:[flurContributedTo objectId]];
                 }
             }
-            
             PFQuery *query2 = [PFQuery queryWithClassName:@"FlurPin"];
             [query2 whereKey:@"objectId" containedIn:[NSArray arrayWithArray:flurObjectIds]];
             [query2 includeKey:@"createdBy"];
             [query2 selectKeys:@[@"createdBy", @"objectId"]];
                                                                                                                                                                                                                                         
 
-            [query2 findObjectsInBackgroundWithBlock:^(NSArray *users, NSError *error) {
-                for (id user in users) {
-                    NSMutableDictionary *flurToAdd = [localStorageFlurData objectForKey:[user objectId]];
-                    NSString *creatorUsername = user[@"createdBy"][@"username"];
+            [query2 findObjectsInBackgroundWithBlock:^(NSArray *flurPins, NSError *error) {
+
+                for (id flurPin in flurPins) {
+                    NSMutableDictionary *flurToAdd = [localStorageFlurData objectForKey:[flurPin objectId]];
+                    NSString *creatorUsername = flurPin[@"createdBy"][@"username"];
+
                     flurToAdd[@"creatorUsername"] = creatorUsername;
                 }
                 
@@ -124,7 +128,7 @@ static bool userFound = false;
             }];
         }
     }];
-    
+    //}];
     
 }
 
@@ -203,6 +207,7 @@ static bool userFound = false;
             }
         }
         else {
+            NSLog(@"badddd");
         }
     }];
 }
@@ -252,10 +257,9 @@ static bool userFound = false;
         flur.dateCreated = flurToAdd[@"dateCreated"];
         flur.myContentPosition = flurToAdd[@"myContentPosition"];
         
-        NSLog(@"flur: %@", flur);
         
         [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
-            NSLog(@"saved");
+            NSLog(success ? @"successfully saved" : @"Not saved");
             if (completion != nil)
                 completion();
         }];
@@ -273,6 +277,41 @@ static bool userFound = false;
     return TRUE;
 }
 
++ (void) deleteAllFlursWithCompletion:(void(^)()) completion {
+    [LocalStorage openDocumentWithCompletion:^ {
+        if (documentLoaded) {
+            NSManagedObjectContext *context = document.managedObjectContext;
+            
+            
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Flur"];
+            //request.fetchBatchSize = 1;
+            //request.fetchLimit = 1;
+            
+            NSError *error;
+            NSArray *allFlurs = [context executeFetchRequest:request error:&error];
+            if (!allFlurs) {
+                NSLog(@"Error loading flurs");
+            }
+            else {
+                NSLog(@"Size of flurs: %lu", allFlurs.count);
+                for (Flur* obj in allFlurs)
+                    [document.managedObjectContext deleteObject:obj];
+                
+                [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
+                    NSLog(success ? @"successfully saved" : @"Not saved");
+                    
+                    if (completion != nil)
+                        completion();
+                }];
+                //NSMutableDictionary* data = [[NSMutableDictionary alloc ] init];
+                // [data setObject:allFlurs forKey:@"allFlurs"];
+            }
+        }
+        else {
+        }
+    }];
+
+}
 + (void) deleteAllFlurs {
    /* [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
@@ -280,32 +319,8 @@ static bool userFound = false;
             [document.managedObjectContext deleteObject:flur];
         }
     }];*/
+    [self deleteAllFlursWithCompletion:^{}];
     
-       /* [LocalStorage openDocumentWithCompletion:^ {
-            if (documentLoaded) {
-                NSManagedObjectContext *context = document.managedObjectContext;
-                
-                
-                NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Flur"];
-                //request.fetchBatchSize = 1;
-                //request.fetchLimit = 1;
-                
-                NSError *error;
-                NSArray *allFlurs = [context executeFetchRequest:request error:&error];
-                if (!allFlurs) {
-                    NSLog(@"Error loading flurs");
-                }
-                else {
-                     for (Flur* obj in allFlurs)
-                     [document.managedObjectContext deleteObject:obj];
-                    
-                    //NSMutableDictionary* data = [[NSMutableDictionary alloc ] init];
-                   // [data setObject:allFlurs forKey:@"allFlurs"];
-                }
-            }
-            else {
-            }
-        }];*/
     
 }
 

@@ -179,16 +179,20 @@
                                               self.view.frame.size.height);
     
     if (self.shouldSync) {
-        //NSLog(@"yessss");
+        NSLog(@"syncing");
         [LocalStorage syncWithServer:^{
             [self.tableView getFlurs];
         }];
     }
     else {
         [LocalStorage getFlurs:^(NSMutableDictionary *data) {
-            //NSLog(@"wtf");
+            NSLog(@"hii");
+            NSLog(@"wtf: %lu", data.count);
         }];
     }
+//    [LocalStorage syncWithServer:^{
+//        [self.tableView getFlurs];
+//    }];
     
 
 }
@@ -247,16 +251,19 @@
     self.tableVisible = true;
     [self.tableView didMoveToParentViewController:self];
     
-    self.tableView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
+    self.tableView.view.frame = CGRectMake(self.view.frame.size.width, TOP_BAR_HEIGHT,
                                            self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
 
     [self.view sendSubviewToBack:self.tableView.view];
 
     [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         
-        self.mapView.view.frame = CGRectMake(-self.view.frame.size.width + 20, 0,
+        self.mapView.view.frame = CGRectMake(-self.view.frame.size.width, 0,
                                              self.view.frame.size.width,
                                              self.view.frame.size.height);
+        
+        self.tableView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
+                                               self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
         
     } completion:^(BOOL finished) { }];
     

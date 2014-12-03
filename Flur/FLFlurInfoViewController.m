@@ -263,7 +263,7 @@
     self.mapViewContainer.translatesAutoresizingMaskIntoConstraints = NO;
     self.mapViewContainer.backgroundColor = RGBA(255, 255, 255, .4);
     
-    self.mapView = [[MKMapView alloc] initWithFrame:self.mapViewContainer.frame];
+    /*self.mapView = [[MKMapView alloc] initWithFrame:self.mapViewContainer.frame];
     self.mapView.delegate = self;
     self.mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.mapView setZoomEnabled:YES];
@@ -274,7 +274,7 @@
     self.mapView.alpha = 0;
     
     
-    [self.mapViewContainer addSubview:self.mapView];
+    [self.mapViewContainer addSubview:self.mapView];*/
     
     [self.view addSubview:self.mapViewContainer];
     [self.view sendSubviewToBack:self.mapViewContainer];
@@ -396,12 +396,12 @@
     // Dispose of any resources that can be recreated.
 }
 
-
--(void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
-{
-   // MKAnnotationView *ulv = [mapView viewForAnnotation:mapView.userLocation];
-   // ulv.hidden = YES;
-}
+//
+//-(void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views
+//{
+//   // MKAnnotationView *ulv = [mapView viewForAnnotation:mapView.userLocation];
+//   // ulv.hidden = YES;
+//}
 
 - (IBAction)returnToTableList:(id)sender {
     NSMutableDictionary *data;
@@ -425,43 +425,43 @@
     return [NSString stringWithFormat:@"%@ %@, %@", self.months[curMonth], curDay, curYear];
 }
 
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
-    //NSLog(@"WHOOOooooo: %@", [annotation class]);
-
-    if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
-        //NSLog(@"THATS WATSUP");
-        FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
-        MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
-        if (annotation == mapView.userLocation) {
-            myLocation.annotationView.enabled = false;
-        }
-        if (annotationView == nil) {
-            annotationView = myLocation.annotationView;
-        }
-        else {
-            annotationView.annotation = annotation;
-        }
-        
-        return annotationView;
-    }
-    else
-        return nil;
-}
-
-- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
-{
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 800, 800);
-    [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
-    
-    // Add an annotation
-    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
-    point.coordinate = userLocation.coordinate;
-    point.title = @"Where am I?";
-    point.subtitle = @"I'm here!!!";
-    self.coord = userLocation.coordinate;
-    
-    //[self.mapView addAnnotation:point];
-}
+//- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
+//    //NSLog(@"WHOOOooooo: %@", [annotation class]);
+//
+//    if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
+//        //NSLog(@"THATS WATSUP");
+//        FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
+//        MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
+//        if (annotation == mapView.userLocation) {
+//            myLocation.annotationView.enabled = false;
+//        }
+//        if (annotationView == nil) {
+//            annotationView = myLocation.annotationView;
+//        }
+//        else {
+//            annotationView.annotation = annotation;
+//        }
+//        
+//        return annotationView;
+//    }
+//    else
+//        return nil;
+//}
+//
+//- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
+//{
+//    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(userLocation.coordinate, 800, 800);
+//    [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
+//    
+//    // Add an annotation
+//    MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+//    point.coordinate = userLocation.coordinate;
+//    point.title = @"Where am I?";
+//    point.subtitle = @"I'm here!!!";
+//    self.coord = userLocation.coordinate;
+//    
+//    //[self.mapView addAnnotation:point];
+//}
 
 /*
 #pragma mark - Navigation

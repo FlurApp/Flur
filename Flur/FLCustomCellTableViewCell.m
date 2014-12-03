@@ -58,7 +58,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
         
         
         self.button1 = [[UIButton alloc] init];
-        self.button1.backgroundColor =  RGB(13, 191, 255);
+        self.button1.backgroundColor =  RGB(179, 88, 224);
         //[self.button1 setTitle:@"Photos" forState:UIControlStateNormal];
         //
 //        [UIView animateWithDuration:.5
@@ -191,7 +191,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
         [self.cellDate setTranslatesAutoresizingMaskIntoConstraints:NO];
         
         self.cellDate.text = @"Aug 1, 2014";
-        [self.cellDate setTextColor:RGB(179, 88, 224) ];
+        [self.cellDate setTextColor:RGB(13, 191, 255) ];
         [self.cellDate setFont:[UIFont fontWithName:@"Avenir-Light" size:14]];
         
         [self.myContentView addSubview:self.cellDate];

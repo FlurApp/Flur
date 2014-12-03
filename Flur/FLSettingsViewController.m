@@ -201,7 +201,7 @@
 
 - (IBAction)logOut:(id)sender {
     [PFUser logOut];
-    [LocalStorage destroyLocalStorage];
+    [LocalStorage deleteAllFlurs];
     
     [FLMasterNavigationController switchToViewController:@"FLSplashViewController" fromViewController:@"FLSettingsViewController" withData:nil];
 }
