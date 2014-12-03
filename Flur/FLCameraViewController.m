@@ -68,6 +68,7 @@
         self.allPhotos = [[NSMutableArray alloc] init];
         self.dataToPass = [[NSMutableDictionary alloc] init];
         [self.dataToPass setObject:pin forKey:@"FLPin"];
+        self.photoManager = [[FLPhotoManager alloc] init];
     }
 }
 
