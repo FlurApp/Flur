@@ -3,7 +3,7 @@
 //  Flur
 //
 //  Created by David Lee on 11/12/14.
-//  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
+//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
 //
 
 #import <Parse/Parse.h>
@@ -137,7 +137,7 @@
     
     [dateFormatter setDateFormat:@"MMM d, YYYY"];
     
-    cell.cellDate.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:[NSDate date]]];
+    cell.cellDate.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:date]];
 
     cell.cellContentCount.text = [NSString stringWithFormat:@"%@ contributions", [[[self.pinsArray objectAtIndex:indexPath.row] totalContentCount] stringValue]];
     

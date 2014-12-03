@@ -17,9 +17,6 @@
 @protocol FLInitialMapViewControllerDelegate <NSObject>
 
 @optional
-- (void)movePanelLeft;
-- (void)movePanelRight;
-- (void)movePanelToOriginalPosition;
 - (void)hideSettingsPage;
 
 @required
@@ -29,7 +26,7 @@
 
 
 
-@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate, FLTableViewControllerDelegate, FLSettingsViewControllerDelegate>
+@interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate>
 
 @property (nonatomic, assign) id<FLInitialMapViewControllerDelegate> delegate;
 
@@ -39,6 +36,8 @@
 - (instancetype) initWithData:(NSMutableDictionary *)data;
 - (void) showWhiteLayer;
 - (void) hideWhiteLayer;
+
+- (void) addFlur:(NSString*)prompt;
 
 
 @property (nonatomic, strong) FLContributeViewController *contributeController;

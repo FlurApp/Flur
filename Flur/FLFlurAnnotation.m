@@ -52,7 +52,6 @@
             [subView removeFromSuperview];
         }
     }
-    NSLog(@"Hey");
     UIImageView* animatedImageView = [[UIImageView alloc] init];
     animatedImageView.userInteractionEnabled = YES;
     animatedImageView.tag = 10;

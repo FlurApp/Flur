@@ -3,7 +3,7 @@
 //  Flur
 //
 //  Created by Netanel Rubin on 11/23/14.
-//  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
+//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
 //
 
 @import MapKit;
@@ -426,10 +426,10 @@
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
-    NSLog(@"WHOOOooooo: %@", [annotation class]);
+    //NSLog(@"WHOOOooooo: %@", [annotation class]);
 
     if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
-        NSLog(@"THATS WATSUP");
+        //NSLog(@"THATS WATSUP");
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
         if (annotation == mapView.userLocation) {

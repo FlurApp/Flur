@@ -3,7 +3,7 @@
 //  Flur
 //
 //  Created by David Lee on 11/6/14.
-//  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
+//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
 //
 
 #import <Parse/Parse.h>
@@ -214,7 +214,7 @@
     [self.orDoOpposite setTitle:orDoOppositeText forState:UIControlStateNormal];
     [self.orDoOpposite setTitleColor:submitButtonColor forState:UIControlStateNormal];
     self.orDoOpposite.backgroundColor = [UIColor clearColor];
-    [self.orDoOpposite setFont:[UIFont fontWithName:@"Avenir-Light" size:16]];
+    [self.orDoOpposite.titleLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:16]];
     
     [self.orDoOpposite addTarget:self action:@selector(switchScreen:) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:self.orDoOpposite];
@@ -368,11 +368,11 @@
 - (IBAction)switchScreen:(id)sender {
 
     // Animate a fade out of the page title and a fade in of the new page title
-    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationCurveEaseOut animations:^{
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.pageTitle.alpha = 0;
     } completion:^(BOOL finished) {
         
-         [UIView animateWithDuration:.5 delay:0 options:UIViewAnimationCurveEaseOut animations:^{
+         [UIView animateWithDuration:.5 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
              self.pageTitle.text = self.otherMode;
              self.pageTitle.alpha = 1;
          } completion:^(BOOL finished) {
@@ -380,11 +380,11 @@
     }];
     
     // Animate a fade out of the page title and a fade in of the new page title
-    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationCurveEaseOut animations:^{
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.orDoOpposite.alpha = 0;
     } completion:^(BOOL finished) {
         
-        [UIView animateWithDuration:.5 delay:0 options:UIViewAnimationCurveEaseOut animations:^{
+        [UIView animateWithDuration:.5 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             [self.orDoOpposite setTitle:[NSString stringWithFormat:@"or %@",self.mode] forState:UIControlStateNormal];
             self.orDoOpposite.alpha = 1;
         } completion:^(BOOL finished) {

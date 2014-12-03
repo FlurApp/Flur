@@ -80,7 +80,9 @@ static UINavigationController *navController;
         // Entering Camera View
         if ([newControllerName isEqualToString:@"FLCameraViewController"]) {
             
-            FLCameraViewController *camController = [[FLCameraViewController alloc] initWithData:data];
+            FLCameraViewController *camController = [[FLCameraViewController alloc] init];
+            [camController setData:data];
+            
             [UIView animateWithDuration:0.75
                              animations:^{
                                  [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];

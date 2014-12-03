@@ -59,50 +59,20 @@
     BOOL retake;
 }
 
-- (id)initWithData:(NSMutableDictionary *)data {
-    self = [super init];
-    if (self) {
-        FLPin *pin = [data objectForKey:@"FLPin"];
-        self.pin = pin;
-        self.count = 0;
-        self.allPhotos = [[NSMutableArray alloc] init];
-        self.dataToPass = [[NSMutableDictionary alloc] init];
-        [self.dataToPass setObject:pin forKey:@"FLPin"];
-        self.photoManager = [[FLPhotoManager alloc] init];
-        
-    }
-    
-    NSLog(@"PIN2: %@", self.pin);
-    return self;
+- (void) setData:(NSMutableDictionary *)data {
+    FLPin *pin = [data objectForKey:@"FLPin"];
+    self.pin = pin;
+    self.count = 0;
+    self.allPhotos = [[NSMutableArray alloc] init];
+    self.dataToPass = [[NSMutableDictionary alloc] init];
+    [self.dataToPass setObject:pin forKey:@"FLPin"];
+    self.photoManager = [[FLPhotoManager alloc] init];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-  
-    // Do any additional setup after loading the view.
-    //[[self view] setBackgroundColor: RGB(111, 225 ,242)];
-    /*self.view.backgroundColor =[UIColor colorWithPatternImage: [UIImage imageNamed:@"texture.jpg"]];
-    [self setNeedsStatusBarAppearanceUpdate];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
-    UIBlurEffect *blurEffect;
-    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    
-    UIVisualEffectView* blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    
-    // Vibrancy effect
-    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
-    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-    [vibrancyEffectView setFrame:self.view.bounds];
-    
-    [[blurEffectView contentView] addSubview:vibrancyEffectView];
-    
-    // add blur view to view
-    blurEffectView.frame = self.view.bounds;
-    [self.view addSubview:blurEffectView];*/
     self.view.backgroundColor = [UIColor blackColor];
-    [self setNeedsStatusBarAppearanceUpdate];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
     self.session = [[AVCaptureSession alloc] init];
     
@@ -324,7 +294,7 @@
         self.backButton.transform = CGAffineTransformMakeScale(1,1);
         
     } completion:^(BOOL finished) {
-        [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"FLCameraViewController" withData:self.dataToPass];
+        [_delegate hideCameraPage];
     }];
 }
 
@@ -440,11 +410,6 @@
         [self handOffToPhotoVC];
     }];
 }
-
-//- (void) loadPhotos {
-//    [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray* allPhotos) {
-//    }];
-//}
 
 - (void) handOffToPhotoVC {
 

@@ -3,7 +3,7 @@
 //  Flur
 //
 //  Created by David Lee on 11/12/14.
-//  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
+//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -14,11 +14,8 @@
 @protocol FLTableViewControllerDelegate <NSObject>
 
 @optional
-- (void)movePanelLeft;
-- (void)movePanelRight;
 
 @required
-- (void)movePanelToOriginalPosition;
 - (void)showInfoPage:(NSMutableDictionary *)data;
 
 @end

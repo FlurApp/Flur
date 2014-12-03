@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FLPin.h"
 
-@interface PhotoViewController : UIViewController <UIPageViewControllerDataSource>
+@interface PhotoViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
     @property (strong, nonatomic) UIPageViewController *pageController;
     @property (assign, nonatomic) FLPin* pin;

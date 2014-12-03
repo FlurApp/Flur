@@ -292,7 +292,6 @@
 - (void) addFlur:(NSString*)prompt {
     NSLog(@"adding flur");
     [self.mapManager addFlur:prompt];
-    [self reloadMap];
 }
 
 - (void)didReceiveMemoryWarning {
