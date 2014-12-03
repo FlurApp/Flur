@@ -13,6 +13,7 @@
 @optional
 - (void) hideCameraPage;
 - (void) showPhotoPage:(NSMutableDictionary*)data;
+- (void) haveContributedToFlur:(NSString *) objectId;
 @end
 
 @interface FLCameraViewController : UIViewController <FLCameraViewControllerDelegate>

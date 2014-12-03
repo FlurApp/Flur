@@ -29,7 +29,7 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"Latitude: %f \n Longitude: %f\n", self.coordinate.latitude, self.coordinate.longitude];
+    return [NSString stringWithFormat:@"Pin ID: %@   haveContributedTo : %f\n", self.pinId, self.coordinate.longitude];
 }
 
 @end

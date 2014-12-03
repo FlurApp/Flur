@@ -440,10 +440,23 @@
                                               self.cameraView.view.frame.size.height);
     
     [UIView animateWithDuration:.3 delay:.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.cameraView.view.frame = CGRectMake(0, 0,
+        self.cameraView.view.frame = CGRectMake(0, -20,
                                                   self.cameraView.view.frame.size.width,
                                                   self.cameraView.view.frame.size.height);
-    } completion:^(BOOL finished) {}];
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:.07 delay:.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut animations:^{
+            self.cameraView.view.frame = CGRectMake(0, -10,
+                                                    self.cameraView.view.frame.size.width,
+                                                    self.cameraView.view.frame.size.height);
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:.07 delay:.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut animations:^{
+                self.cameraView.view.frame = CGRectMake(0, 0,
+                                                        self.cameraView.view.frame.size.width,
+                                                        self.cameraView.view.frame.size.height);
+            } completion:^(BOOL finished) {}];
+        }];
+
+    }];
     
 }
 
@@ -547,6 +560,12 @@
 
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+}
+
+- (void) haveContributedToFlur:(NSString *) objectId {
+    NSLog(@"Have Contributed 1");
+
+    [self.mapView justContributedToFlur:objectId];
 }
 
 #pragma mark -

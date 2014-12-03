@@ -28,7 +28,7 @@
 
 - (NSMutableArray*) getNewlyOpenablePins;
 - (NSMutableArray*) getNewlyNonOpenablePins;
-
+- (void) justContributedToFlur:(NSString *) objectId;
 
 
 - (instancetype) init;

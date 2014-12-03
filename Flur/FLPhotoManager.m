@@ -57,7 +57,7 @@
                      flur[@"totalContentCount"] = [NSNumber numberWithInt:pin.contentCount];
                      flur[@"myContentPosition"] = [NSNumber numberWithInt:pin.contentCount];
                      flur[@"dateCreated"] = pin.dateCreated;
-                     
+                     flur[@"dateCreated"] = [NSDate date];
                      
                      NSDate *date = [NSDate date];
 //                     NSDateFormatter *dateFormat = [[NSDateFormatter alloc]init];

@@ -404,6 +404,8 @@
 
 - (IBAction)uploadImageButtonClick:(id)sender {
     [self loadSpinner];
+    NSLog(@"Holler");
+    [self.delegate haveContributedToFlur:self.pin.pinId];
     
     [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray *allPhotos) {
         self.allPhotos = allPhotos;

@@ -234,7 +234,8 @@
         NSString* id = fa.pin.pinId;
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
         if (p) {
-            NSLog(@"PIn: %@", p);
+            //NSLog(@"PIn: %@", p);
+            NSLog(@"Object Id in did select: %@", fa.pin.pinId);
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:p forKey:@"FLPin"];
             [data setObject:@"true" forKey:@"contributeView"];
@@ -244,7 +245,6 @@
             
             NSString *haveContributedTo = p.haveContributedTo ? @"true" : @"false";
             [data setObject:haveContributedTo forKey:@"haveContributedTo"];
-            NSLog(@"data: %@", data);
 
             [self.delegate showContributePage:data];
         }
@@ -368,6 +368,15 @@
             }
         }
     }
+}
+
+- (void) justContributedToFlur:(NSString *) objectId {
+    FLFlurAnnotation* annotation = (FLFlurAnnotation *)self.allAnnotations[@"objectId"];
+    [annotation showAnnotationAsOpenable:[self.mapView viewForAnnotation:annotation]];
+    NSLog(@"Have Contributed 2: %@", objectId);
+
+    [self.mapManager justContributedToFlur:objectId];
+
 }
 
 @end
