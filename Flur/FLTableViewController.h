@@ -14,8 +14,6 @@
 @protocol FLTableViewControllerDelegate <NSObject>
 
 @optional
-
-@required
 - (void)showInfoPage:(NSMutableDictionary *)data;
 
 @end

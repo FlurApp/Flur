@@ -11,11 +11,6 @@
 @protocol FLTopBarViewControllerDelegate <NSObject>
 
 @optional
-- (void)movePanelLeft;
-- (void)movePanelRight;
-
-@required
-
 - (void)settingButtonPress;
 - (void)showTablePage;
 - (void)hideTablePage;

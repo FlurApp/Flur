@@ -427,8 +427,7 @@
         NSLog(@"out");
         [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
         NSLog(@"out2");
-        
-//        [FLMasterNavigationController switchToViewController:@"PhotoViewController" fromViewController:@"FLCameraViewController" withData:self.dataToPass];
+
         [_delegate hideCameraPage];
         [_delegate showPhotoPage:self.dataToPass];
 

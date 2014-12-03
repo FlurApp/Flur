@@ -10,7 +10,7 @@
 
 @protocol FLCameraViewControllerDelegate <NSObject>
 
-@required
+@optional
 - (void) hideCameraPage;
 - (void) showPhotoPage:(NSMutableDictionary*)data;
 @end

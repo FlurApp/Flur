@@ -12,9 +12,9 @@
 
 @protocol FLLoginViewControllerDelegate <NSObject>
 
-@required
--(void)hideLoginPage;
--(void)showMapPage;
+@optional
+- (void)hideLoginPage;
+- (void)showMapPage;
 
 @end
 

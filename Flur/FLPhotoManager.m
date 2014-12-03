@@ -54,8 +54,10 @@
                      flur[@"lat"] = [NSNumber numberWithDouble:pin.coordinate.latitude];
                      flur[@"lng"] = [NSNumber numberWithDouble:pin.coordinate.longitude];
                      flur[@"objectId"] = pin.pinId;
-                     flur[@"numContributions"] = [NSNumber numberWithInt:pin.contentCount];
+                     flur[@"totalContentCount"] = [NSNumber numberWithInt:pin.contentCount];
+                     flur[@"myContentPosition"] = [NSNumber numberWithInt:pin.contentCount];
                      flur[@"dateCreated"] = pin.dateCreated;
+                     
                      
                      NSDate *date = [NSDate date];
 //                     NSDateFormatter *dateFormat = [[NSDateFormatter alloc]init];

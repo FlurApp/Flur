@@ -10,8 +10,8 @@
 
 @protocol FLNewFlurViewControllerDelegate <NSObject>
 
-@required
--(void) addFlur: (NSString*)prompt;
+@optional
+- (void)addFlur: (NSString*)prompt;
 
 @end
 
