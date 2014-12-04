@@ -13,8 +13,7 @@
 
 @property (strong, nonatomic) NSLayoutConstraint* yConstraint;
 @property (strong, nonatomic) UIView* seeThroughContainer;
-
-
+@property (nonatomic, strong) UIImageView *imageViewContainer;
 
 @end
 
@@ -63,25 +62,16 @@ static bool firstToggle = true;
 
     
     // Add image container for displaying images, initially empty image
-    UIImageView *imageView = [[UIImageView alloc] init];
-    imageView.translatesAutoresizingMaskIntoConstraints = NO;
-    [imageView setImage:[UIImage imageNamed:@""]];
-    imageView.tag = 1;
+    self.imageViewContainer = [[UIImageView alloc] init];
+    self.imageViewContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.imageViewContainer setImage:[UIImage imageNamed:@""]];
     
-    [self.view addSubview:imageView];
+    [self.view addSubview:self.imageViewContainer];
     
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:imageView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.imageViewContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:imageView
-                                                            attribute:NSLayoutAttributeCenterY
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:self.view
-                                                            attribute:NSLayoutAttributeCenterY
-                                                           multiplier:1.0
-                                                             constant:0]];
-    
-
+        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.imageViewContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
 }
 
 // On finger press, toggle top and bottom bar
@@ -122,79 +112,53 @@ static bool firstToggle = true;
     
     // Create image from data and find correct subview to put it in
     UIImage *image = [UIImage imageWithData:data];
-    UIImageView *imageViewPointer;
-    imageViewPointer.frame = CGRectZero;
-    imageViewPointer.contentMode = UIViewContentModeScaleAspectFill;
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    [imageView setClipsToBounds:YES];
+    [imageView setFrame:self.view.frame];
+    
+    [self.imageViewContainer addSubview:imageView];
 
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+                                                          attribute:NSLayoutAttributeTop
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeTop
+                                                         multiplier:1.0
+                                                           constant:0]];
     
-    for (UIView *subView in [self.view subviews]) {
-        if (subView.tag == 1) {
-            imageViewPointer = (UIImageView*) subView;
-            [imageViewPointer setImage:image];
-        }
-    }
-
-    // Calculate size of image depending on screen size
-    double imageRatio = ([[UIScreen mainScreen] applicationFrame].size.height)/image.size.height;
-    double x = image.size.width * imageRatio;
-    double y = image.size.height* imageRatio;
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+                                                          attribute:NSLayoutAttributeBottom
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:imageView.superview
+                                                          attribute:NSLayoutAttributeBottom
+                                                         multiplier:1.0
+                                                           constant:0]];
     
-    // Set size of image
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
-                                                       attribute:NSLayoutAttributeHeight
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:nil
-                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                      multiplier:1.0
-                                                        constant:y]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+                                                          attribute:NSLayoutAttributeBottom
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:imageView.superview
+                                                          attribute:NSLayoutAttributeBottom
+                                                         multiplier:1.0
+                                                           constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
-                                                       attribute:NSLayoutAttributeWidth
-                                                       relatedBy:NSLayoutRelationEqual
-                                                          toItem:nil
-                                                       attribute:NSLayoutAttributeNotAnAttribute
-                                                      multiplier:1.0
-                                                        constant:x]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+                                                          attribute:NSLayoutAttributeLeading
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:imageView.superview
+                                                          attribute:NSLayoutAttributeLeading
+                                                         multiplier:1.0
+                                                           constant:0]];
     
-//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
-//                                                          attribute:NSLayoutAttributeTop
-//                                                          relatedBy:NSLayoutRelationEqual
-//                                                             toItem:self.view
-//                                                          attribute:NSLayoutAttributeTop
-//                                                         multiplier:1.0
-//                                                           constant:0]];
-//    
-//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
-//                                                          attribute:NSLayoutAttributeBottom
-//                                                          relatedBy:NSLayoutRelationEqual
-//                                                             toItem:self.view
-//                                                          attribute:NSLayoutAttributeBottom
-//                                                         multiplier:1.0
-//                                                           constant:0]];
-//    
-//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
-//                                                          attribute:NSLayoutAttributeBottom
-//                                                          relatedBy:NSLayoutRelationEqual
-//                                                             toItem:self.view
-//                                                          attribute:NSLayoutAttributeBottom
-//                                                         multiplier:1.0
-//                                                           constant:0]];
-//    
-//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
-//                                                          attribute:NSLayoutAttributeLeading
-//                                                          relatedBy:NSLayoutRelationEqual
-//                                                             toItem:self.view
-//                                                          attribute:NSLayoutAttributeLeading
-//                                                         multiplier:1.0
-//                                                           constant:0]];
-//    
-//    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
-//                                                          attribute:NSLayoutAttributeTrailing
-//                                                          relatedBy:NSLayoutRelationEqual
-//                                                             toItem:self.view
-//                                                          attribute:NSLayoutAttributeTrailing
-//                                                         multiplier:1.0
-//                                                           constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageView
+                                                          attribute:NSLayoutAttributeTrailing
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:imageView.superview
+                                                          attribute:NSLayoutAttributeTrailing
+                                                         multiplier:1.0
+                                                           constant:0]];
     
     
     

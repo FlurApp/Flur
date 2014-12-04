@@ -203,7 +203,14 @@
     [prompt setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Regular" size:23]];
 
     prompt.translatesAutoresizingMaskIntoConstraints = NO;
-    prompt.text = @"What did we do?";
+    
+    // date string
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MMM d, YYYY"];
+    
+    NSString* dateCreated = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:self.pin.dateCreated]];
+    prompt.text = dateCreated;
+    
     [prompt setTextColor:RGB(98,234,239)];
     
     [self.bottomBar addSubview:prompt];
@@ -285,6 +292,7 @@
 - (SinglePhotoViewController *)viewControllerAtIndex:(NSUInteger)index {
     
     SinglePhotoViewController *childViewController = [[SinglePhotoViewController alloc] init];
+    [childViewController.view setFrame:self.view.frame];
     
     childViewController.index = index;
     childViewController.viewsToToggle = self.viewsToToggle;
