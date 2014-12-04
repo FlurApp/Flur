@@ -450,7 +450,7 @@
     self.count++;
     if (self.count == 2) {
         
-        if (self.allPhotos.count != self.pin.contentCount) {
+        if (self.allPhotos.count != self.pin.totalContentCount) {
             [self.allPhotos addObject: self.imageData];
         }
         

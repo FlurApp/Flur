@@ -19,7 +19,7 @@
         self.username = [object[@"createdBy"] username];
         self.pinId = [object objectId];
         self.prompt = object[@"prompt"];
-        self.contentCount = [object[@"contentCount"] integerValue];
+        self.totalContentCount = [object[@"totalContentCount"] integerValue];
         self.haveContributedTo = false;
         
         self.dateCreated = [object createdAt];

@@ -240,7 +240,7 @@
             [data setObject:@"true" forKey:@"contributeView"];
             [data setObject:[(PFUser *)p.createdBy username] forKey:@"creatorUsername"];
             [data setObject:p.dateCreated forKey:@"dateCreated"];
-            [data setObject:[NSNumber numberWithInteger:p.contentCount] forKey:@"totalContentCount"];
+            [data setObject:[NSNumber numberWithInteger:p.totalContentCount] forKey:@"totalContentCount"];
             
             NSString *haveContributedTo = p.haveContributedTo ? @"true" : @"false";
             [data setObject:haveContributedTo forKey:@"haveContributedTo"];

@@ -18,7 +18,7 @@
 @property (nonatomic, strong) NSString* pinId;
 @property (nonatomic, strong) NSString* prompt;
 
-@property (nonatomic) NSInteger contentCount;
+@property (nonatomic) NSInteger totalContentCount;
 @property (nonatomic) BOOL haveContributedTo;
 
 
