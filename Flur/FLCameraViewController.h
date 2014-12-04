@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FLPin.h"
 
 @protocol FLCameraViewControllerDelegate <NSObject>
 
@@ -14,6 +15,8 @@
 - (void) hideCameraPage;
 - (void) showPhotoPage:(NSMutableDictionary*)data;
 - (void) haveContributedToFlur:(NSString *) objectId;
+- (void) addNewFlur:(FLPin *)pin;
+
 @end
 
 @interface FLCameraViewController : UIViewController <FLCameraViewControllerDelegate>

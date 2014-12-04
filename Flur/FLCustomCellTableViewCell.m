@@ -58,6 +58,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
         
         self.button1 = [[UIButton alloc] init];
         self.button1.backgroundColor =  RGB(179, 88, 224);
+
         //[self.button1 setTitle:@"Photos" forState:UIControlStateNormal];
         //
 //        [UIView animateWithDuration:.5
@@ -121,7 +122,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
 
         
         self.button2 = [[UIButton alloc] init];
-        self.button2.backgroundColor = RGB(232, 72, 49);
+        self.button2.backgroundColor = RGB(219,219,219); // RGB(255,182,82); //RGBA(255,198,119,1);//RGB(232, 72, 49);
         [self.button2 setTitle:@"Map" forState:UIControlStateNormal];
         [self.button2 setTranslatesAutoresizingMaskIntoConstraints:NO];
         

@@ -25,6 +25,7 @@
         CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(pin.coordinate.latitude,
                                                                   pin.coordinate.longitude);
         _coordinate = coord;
+        NSLog(@"Coord of annotation: %f %f");
         self.pin = pin;
     }
     
@@ -108,7 +109,7 @@
      }
      UIImageView* animatedImageView = [[UIImageView alloc] init];
      animatedImageView.tag = 10;
-     [animatedImageView setImage:[UIImage imageNamed:@"14.png"]];
+     [animatedImageView setImage:[UIImage imageNamed:@"pinkflur2_64px.png"]];
      
      [animatedImageView setFrame: CGRectMake(-15,-15,30,30)];
      
@@ -124,11 +125,12 @@
     annotationView.enabled = YES;
     annotationView.canShowCallout = NO;
 
-    if (self.pin.contentCount)
-        [self showAnnotationAsOpenable:annotationView];
-    else
-        [self showAnnotationAsNonOpenable:annotationView];
+//    if (self.pin.contentCount)
+//        [self showAnnotationAsOpenable:annotationView];
+//    else
+//        [self showAnnotationAsNonOpenable:annotationView];
     
+    [self showAnnotationAsNonOpenable:annotationView];
     return annotationView;
 }
 

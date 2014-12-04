@@ -180,7 +180,7 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
 
-
+    NSLog(@"New location: %@", newLocation);
     
     [self.mapManager updateCurrentLocation:newLocation
                         andRefreshLocation:false];
@@ -234,10 +234,8 @@
         NSString* id = fa.pin.pinId;
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
         if (p) {
-            //NSLog(@"PIn: %@", p);
-            NSLog(@"Object Id in did select: %@", fa.pin.pinId);
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
-            [data setObject:p forKey:@"FLPin"];
+            [data setObject:p.pinId forKey:@"pinId"];
             [data setObject:@"true" forKey:@"contributeView"];
             [data setObject:[(PFUser *)p.createdBy username] forKey:@"creatorUsername"];
             [data setObject:p.dateCreated forKey:@"dateCreated"];
@@ -368,6 +366,14 @@
             }
         }
     }
+}
+
+- (void) addNewFlur:(FLPin *)pin {
+    FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin];
+    [self.allAnnotations setObject:annotation forKey:pin.pinId];
+    [self.mapView addAnnotation:annotation];
+    
+    [self.mapManager addNewFlur:pin];
 }
 
 - (void) justContributedToFlur:(NSString *) objectId {

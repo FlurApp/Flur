@@ -12,6 +12,7 @@
 
 #import "FLTableViewController.h"
 #import "FLSettingsViewController.h"
+#import "FLPin.h"
 
 @protocol FLInitialMapViewControllerDelegate <NSObject>
 
@@ -36,5 +37,7 @@
 
 - (void) addFlur:(NSString*)prompt;
 - (void) justContributedToFlur:(NSString *) objectId;
+
+- (void) addNewFlur:(FLPin *)pin;
 
 @end

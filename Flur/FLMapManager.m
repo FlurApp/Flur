@@ -78,7 +78,6 @@
         if (!error) {
             for (int i=0; i<objects.count; i++) {
                 FLPin* pin = [[FLPin alloc] initWith: objects[i]];
-                NSLog(@"Adding pin: %@", pin);
                 
                 [self.allFlursFromServer setObject:pin forKey:pin.pinId];
                 
@@ -134,7 +133,7 @@
 }
 
 - (void) addFlur: (NSString *)prompt {
-    PFObject *flurPin = [PFObject objectWithClassName:@"FlurPin"];
+    /*PFObject *flurPi  n = [PFObject objectWithClassName:@"FlurPin"];
     [flurPin setObject:self.currentLocation forKey:@"location"];
     [flurPin setObject: [PFUser currentUser]forKey:@"createdBy"];
     [flurPin setObject:prompt forKey: @"prompt"];
@@ -142,7 +141,8 @@
     
     [flurPin saveEventually:^(BOOL succeeded, NSError *error) {
         if (succeeded) { }
-    }];
+    }];*/
+    NSLog(@"All this code has been commented out in MapManager");
     
 }
 
@@ -186,6 +186,11 @@
 
 - (void) justContributedToFlur:(NSString *) objectId {
     ((FLPin*)self.openablePins[objectId]).haveContributedTo = true;
+}
+
+- (void) addNewFlur:(FLPin *)pin {
+    [self.openablePins setObject:pin forKey:pin.pinId];
+    [self.allFlursFromServer setObject:pin forKey:pin.pinId];
 }
 
 @end

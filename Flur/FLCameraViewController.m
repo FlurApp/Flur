@@ -51,7 +51,7 @@
 // used for determining when both completion handlers finished
 @property (nonatomic) int count;
 
-
+@property (nonatomic) BOOL newFlur;
 
 
 @end
@@ -69,6 +69,7 @@
         self.dataToPass = [[NSMutableDictionary alloc] init];
         [self.dataToPass setObject:pin forKey:@"FLPin"];
         self.photoManager = [[FLPhotoManager alloc] init];
+        self.newFlur = [data[@"newFlur"] isEqual:@"true"] ? true : false;
     }
 }
 
@@ -412,31 +413,48 @@
     [self loadSpinner];
     [self cleanUp];
     
-    NSLog(@"Holler");
     [self.delegate haveContributedToFlur:self.pin.pinId];
     
-    [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray *allPhotos) {
-        self.allPhotos = allPhotos;
-        [self handOffToPhotoVC];
-    }];
     
-    [self.photoManager uploadPhotoWithData:self.imageData withPin:self.pin withCompletion:^{
-        [self handOffToPhotoVC];
-    }];
+
+    if (self.newFlur) {
+
+        [self.photoManager uploadPhotoWithData:self.imageData forNewFlur:self.pin withServerCompletion:^{
+            // Go to to photoVC
+            [self handOffToPhotoVC];
+        } WithCoreDataCompletion:^{
+            [self.delegate addNewFlur:self.pin];
+        }];
+    }
+    else {
+        [self.photoManager uploadPhotoWithData:self.imageData forExistingFlur:self.pin withServerCompletion:^{
+            NSLog(@"Server completion");
+            [self handOffToPhotoVC];
+        } WithCoreDataCompletion:^{
+            NSLog(@"core data completion");
+            [self.delegate haveContributedToFlur:self.pin.pinId];
+
+        }];
+        
+        [self.photoManager loadPhotosWithPin:self.pin.pinId withCompletion:^(NSMutableArray *allPhotos) {
+            self.allPhotos = allPhotos;
+            [self handOffToPhotoVC];
+        }];
+    }
+    
+    [self handOffToPhotoVC];
 }
 
 - (void) handOffToPhotoVC {
 
     self.count++;
     if (self.count == 2) {
-        NSLog(@"handOffToPhotoVC Running");
-        NSLog(@"Pin %lu", (long)self.pin.contentCount);
+        
         if (self.allPhotos.count != self.pin.contentCount) {
             [self.allPhotos addObject: self.imageData];
         }
-        NSLog(@"out");
+        
         [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
-        NSLog(@"out2");
 
         [_delegate hideCameraPage];
         [_delegate showPhotoPage:self.dataToPass];
@@ -446,7 +464,6 @@
 
 -(IBAction)retakePicture:(id)sender {
     
-    NSLog(@"retake picture");
     [self.retakeButton removeFromSuperview];
     [self.useButton removeFromSuperview];
     [self.imageTaken removeFromSuperview];

@@ -20,7 +20,10 @@
 
 + (void) getFlurs:(void(^)(NSMutableDictionary*)) completion;
 + (void) getFlursInDict:(void(^)(NSMutableDictionary*)) completion;
+
 + (void) addFlur:(NSMutableDictionary*)flurToAdd;
++ (void) addFlur:(NSMutableDictionary*)flurToAdd withCompletion:(void(^)()) completion;
+
 + (void) deleteAllFlurs;
 
 + (void) syncWithServer:(void(^)()) completion;

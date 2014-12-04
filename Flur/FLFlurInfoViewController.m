@@ -53,7 +53,7 @@
 
 @property (nonatomic, strong) NSMutableDictionary *pin_data;
 @property (nonatomic, strong) FLPhotoManager *photoManager;
-@property (nonatomic, strong) FLPin *pin;
+@property (nonatomic, strong) NSString *pinId;
 
 @end
 
@@ -68,9 +68,9 @@
 }
 
 - (void) setData:(NSMutableDictionary *) data {
-    //NSLog(@"data: %@", data);
+    
     self.pin_data = data;
-    self.pin = [data objectForKey:@"FLPin"];
+    self.pinId = [data objectForKey:@"pinId"];
     
     NSString* creatorUsername = [data objectForKey:@"creatorUsername"];
     
@@ -143,7 +143,8 @@
         self.yourContributionConstraint.constant = 10;
 
         self.contributeButtonHeight.constant = 0;
-        self.viewAlbumButtonHeight.constant = 0;
+        self.viewAlbumButtonHeight.constant = 80;
+        [self.viewAlbumButton setTitle:@"View Album" forState:UIControlStateNormal];
 
         
         [self.viewAlbumButton.layer setCornerRadius:0];
@@ -407,7 +408,7 @@
     [self exitPage:nil];
     
     self.photoManager = [[FLPhotoManager alloc] init];
-    [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray *allPhotos) {
+    [self.photoManager loadPhotosWithPin:self.pinId withCompletion:^(NSMutableArray *allPhotos) {
         
         [self.pin_data setObject:allPhotos forKey:@"allPhotos"];
         [_delegate showPhotoPage:self.pin_data];

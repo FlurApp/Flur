@@ -140,7 +140,7 @@
 
     
     [self.addNewFlur setTitle:@"Drop Flur" forState:UIControlStateNormal];
-    self.addNewFlur.backgroundColor = RGB(238, 0 ,255);
+    self.addNewFlur.backgroundColor = RGB(179,88,224);
     self.addNewFlur.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
     [self.addNewFlur setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
@@ -180,7 +180,7 @@
     [self.logoutButton addTarget:self action:@selector(logOut:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.logoutButton setTitle:@"Logout" forState:UIControlStateNormal];
-    self.logoutButton.backgroundColor = RGB(232,72,49);
+    self.logoutButton.backgroundColor = RGB(244,99,83);
     self.logoutButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
     [self.logoutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
