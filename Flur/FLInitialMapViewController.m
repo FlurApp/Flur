@@ -235,6 +235,7 @@
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
         if (p) {
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+            [data setObject:p forKey:@"FLPin"];
             [data setObject:p.pinId forKey:@"pinId"];
             [data setObject:@"true" forKey:@"contributeView"];
             [data setObject:[(PFUser *)p.createdBy username] forKey:@"creatorUsername"];
