@@ -365,7 +365,7 @@
     [_useButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_useButton setEnabled:TRUE];
     [_useButton addTarget:self action:@selector(uploadImageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [_useButton setImage:[UIImage imageNamed:@"uploadPhoto.png"] forState:UIControlStateNormal];
+    [_useButton setImage:[UIImage imageNamed:@"right_arrow.png"] forState:UIControlStateNormal];
     _useButton.alpha = 0;
     
     [[self view] addSubview:_useButton];

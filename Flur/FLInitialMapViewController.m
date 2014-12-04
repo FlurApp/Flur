@@ -373,7 +373,6 @@
 - (void) justContributedToFlur:(NSString *) objectId {
     FLFlurAnnotation* annotation = (FLFlurAnnotation *)self.allAnnotations[@"objectId"];
     [annotation showAnnotationAsOpenable:[self.mapView viewForAnnotation:annotation]];
-    NSLog(@"Have Contributed 2: %@", objectId);
 
     [self.mapManager justContributedToFlur:objectId];
 
