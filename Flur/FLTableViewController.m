@@ -208,6 +208,7 @@
     Flur *flur = (Flur *)[data objectForKey:@"flur"];
     NSMutableDictionary *newData = [[NSMutableDictionary alloc] init];
     
+    [newData setObject:flur forKey: @"flur"];
     [newData setObject:flur.creatorUsername forKey:@"creatorUsername"];
     [newData setObject:flur.dateCreated forKey:@"dateCreated"];
     [newData setObject:flur.dateAdded forKey:@"dateAdded"];

@@ -11,6 +11,7 @@
 #import "PhotoViewController.h"
 #import "SinglePhotoViewController.h"
 #import "FLConstants.h"
+#import "Flur.h"
 
 @interface PhotoViewController ()
 
@@ -26,21 +27,38 @@
 @property (strong, nonatomic) NSMutableArray *allPhotos;
 @property (strong, nonatomic) NSString *prompt;
 
-
 // Used to detect whether two async calls have returned
 @property (nonatomic) int count;
 @property (nonatomic) bool topBarVisible;
 
+@property (nonatomic,strong) NSMutableDictionary *pin_data;
 
 @end
 
 @implementation PhotoViewController
 
 - (void) setData: (NSMutableDictionary*) data {
+    self.pin_data = data;
     self.pin = [data objectForKey:@"FLPin"];
     self.topBarVisible = true;
     self.allPhotos = [data objectForKey:@"allPhotos"];
-    self.viewPrompt.text = self.pin.prompt;
+    
+    
+    // date string
+    self.dateLabel = [[UILabel alloc] init];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MMM d, YYYY"];
+    
+    if (self.pin) {
+        self.viewPrompt.text = self.pin.prompt;
+        self.dateLabel.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:self.pin.dateCreated]];
+    }
+    else {
+        Flur *flur = [data objectForKey:@"flur"];
+        self.viewPrompt.text = flur.prompt;
+        self.dateLabel.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:flur.dateCreated]];
+    }
+    [self.dateLabel setTextColor:RGB(98,234,239)];
     
     SinglePhotoViewController *initialViewController = [self viewControllerAtIndex:0];
     
@@ -199,29 +217,19 @@
     
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
-    UILabel* prompt = [[UILabel alloc] init];
-    [prompt setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Regular" size:23]];
-
-    prompt.translatesAutoresizingMaskIntoConstraints = NO;
     
-    // date string
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"MMM d, YYYY"];
-    
-    NSString* dateCreated = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:self.pin.dateCreated]];
-    prompt.text = dateCreated;
-    
-    [prompt setTextColor:RGB(98,234,239)];
-    
-    [self.bottomBar addSubview:prompt];
-    
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:prompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
+    // data label
+    [self.dateLabel setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Regular" size:23]];
+    self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.bottomBar addSubview:self.dateLabel];
     
     
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:prompt attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
     
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:prompt attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
     
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
     
     
     self.viewPrompt.translatesAutoresizingMaskIntoConstraints = NO;
@@ -233,7 +241,7 @@
     self.viewPrompt.numberOfLines = 0;
     self.viewPrompt.lineBreakMode = NSLineBreakByWordWrapping;
     
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:prompt attribute:NSLayoutAttributeBottom multiplier:1.0 constant:5]];
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.dateLabel attribute:NSLayoutAttributeBottom multiplier:1.0 constant:5]];
     
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-10]];
     
@@ -251,7 +259,11 @@
 
 - (void) navBack {
     [_delegate hidePhotoPage];
-    [_delegate showMapPage];
+    
+    if ([[self.pin_data objectForKey:@"previousPage"] isEqualToString: @"tablePage"])
+        [_delegate showTablePage];
+    else
+        [_delegate showMapPage];
 }
 
 - (void)didReceiveMemoryWarning {

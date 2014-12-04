@@ -560,6 +560,10 @@
 }
 
 - (void) showPhotoPage:(NSMutableDictionary*)data {
+//    self.photoView = [[PhotoViewController alloc] init];
+//    self.photoView.delegate = self;
+//    [self.view addSubview:self.photoView.view];
+//    [self addChildViewController:self.photoView];
     [self.photoView setData:data];
     
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{

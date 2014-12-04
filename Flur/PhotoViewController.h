@@ -15,12 +15,14 @@
 -(void)hidePhotoPage;
 -(void)showMapPage;
 -(void)showPhotoPage;
+-(void)showTablePage;
 @end
 
 @interface PhotoViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, PhotoViewControllerDelegate>
 
 @property (strong, nonatomic) UIPageViewController *pageController;
 @property (assign, nonatomic) FLPin* pin;
+@property (nonatomic, strong) UILabel *dateLabel;
 
 - (void) setData: (NSMutableDictionary*) data;
 

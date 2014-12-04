@@ -404,10 +404,5 @@ static FLCustomCellTableViewCell* currentOpenCell;
     [self.delegate showInfo:data];
 }
 
-- (void) showInfo {
-  
-}
-
-
 
 @end

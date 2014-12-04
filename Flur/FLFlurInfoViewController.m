@@ -12,7 +12,7 @@
 #import "FLFlurInfoViewController.h"
 #import "UILabel+MultiColor.h"
 #import "FLFlurAnnotation.h"
-#import "flur.h"
+#import "Flur.h"
 #import "FLPhotoManager.h"
 
 #define RGB(r, g, b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1]
@@ -411,6 +411,11 @@
     [self.photoManager loadPhotosWithPin:self.pinId withCompletion:^(NSMutableArray *allPhotos) {
         
         [self.pin_data setObject:allPhotos forKey:@"allPhotos"];
+        if (self.contributeView)
+            [self.pin_data setObject:@"infoPage" forKey:@"previousPage"];
+        else
+            [self.pin_data setObject:@"tablePage" forKey:@"previousPage"];
+        
         [_delegate showPhotoPage:self.pin_data];
     }];
 }
