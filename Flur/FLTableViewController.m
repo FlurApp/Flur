@@ -83,11 +83,11 @@
 }
 
 - (void) getFlurs {
-    NSLog(@"Getting flurs");
+    // NSLog(@"Getting flurs");
     // get contributed pins
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         self.pinsArray = allFlurs[@"allFlurs"];
-        NSLog(@"Size: %lu", self.pinsArray.count);
+        // NSLog(@"Size: %lu", self.pinsArray.count);
         
        // NSLog(@"first: %@", [self.pinsArray[0] prompt]);
         //NSLog(@"second: %@", [self.pinsArray[1] prompt]);

@@ -39,8 +39,8 @@
 - (void) hideWhiteLayer;
 
 - (void) addFlur:(NSString*)prompt;
-- (void) justContributedToFlur:(NSString *) objectId;
 
+- (void) justContributedToFlur:(NSString *) objectId;
 - (void) addNewFlur:(FLPin *)pin;
 
 @end
