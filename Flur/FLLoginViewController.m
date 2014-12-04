@@ -533,7 +533,10 @@
     [self hideSubmitButton];
     self.usernameInput.text = @"";
     self.passwordInput.text = @"";
+    
+    self.errorMessageBottom.constant = 0;
     self.errorMessageTop.constant = self.view.frame.size.height;
+    
 }
 - (void) syncCoreDataWithServer {
     
