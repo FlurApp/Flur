@@ -50,7 +50,6 @@
     
     [self uploadPhotoWithData:imageData withFlurObjectId:pin.pinId withCompletion:^{
         // Increment content count on server
-        pin.contentCount++;
         PFObject* flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin" objectId:pin.pinId];
         [flurPin incrementKey:@"contentCount"];
         [flurPin save];
@@ -66,6 +65,7 @@
     flur[@"lat"] = [NSNumber numberWithDouble:pin.coordinate.latitude];
     flur[@"lng"] = [NSNumber numberWithDouble:pin.coordinate.longitude];
     
+    pin.contentCount++;
     flur[@"totalContentCount"] = [NSNumber numberWithInt:pin.contentCount];
     flur[@"myContentPosition"] = [NSNumber numberWithInt:pin.contentCount];
     

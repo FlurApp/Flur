@@ -418,7 +418,7 @@
     
 
     if (self.newFlur) {
-
+        NSLog(@"Adding new flur");
         [self.photoManager uploadPhotoWithData:self.imageData forNewFlur:self.pin withServerCompletion:^{
             // Go to to photoVC
             [self handOffToPhotoVC];

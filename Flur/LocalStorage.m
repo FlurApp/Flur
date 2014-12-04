@@ -235,7 +235,17 @@ static bool userFound = false;
         // dont add the flur to the CD.
         for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
             if ([flur.objectId isEqualToString:flurToAdd[@"objectId"]]) {
-                NSLog(@"Flur with this object ID already exists, not adding");
+                NSNumber *totalContentCount = flurToAdd[@"totalContentCount"];
+                flur.totalContentCount = [NSNumber numberWithInt:totalContentCount.integerValue];
+                
+                NSLog(@"Flur with this object ID already exists, not adding but updating");
+                
+                if (completion != nil) {
+                    completion();
+                }
+                else
+                    NSLog(@"Not calling completion");
+                
                 return;
             }
         }
