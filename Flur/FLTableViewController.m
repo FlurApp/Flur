@@ -213,6 +213,7 @@
     [newData setObject:flur.dateAdded forKey:@"dateAdded"];
     [newData setObject:flur.totalContentCount forKey:@"totalContentCount"];
     [newData setObject:flur.myContentPosition forKey:@"myContentPosition"];
+    [newData setObject:flur.objectId forKey:@"pinId"];
 
     [self.delegate showInfoPage:newData];
 }

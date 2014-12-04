@@ -230,7 +230,7 @@ static bool userFound = false;
 + (void) addFlur:(NSMutableDictionary*)flurToAdd withCompletion:(void(^)()) completion {
     // Get all Flurs I have contributed to so far.
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
-        
+
         // If I'm trying to add an entry for a Flur that I have added content to before,
         // dont add the flur to the CD.
         for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
@@ -261,8 +261,11 @@ static bool userFound = false;
         
         [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
             NSLog(success ? @"successfully saved" : @"Not saved");
-            if (completion != nil)
+            if (completion != nil) {
                 completion();
+            }
+            else
+                NSLog(@"Not calling completion");
         }];
     }];
 }
@@ -299,7 +302,6 @@ static bool userFound = false;
                     [document.managedObjectContext deleteObject:obj];
                 
                 [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
-                    NSLog(success ? @"successfully saved" : @"Not saved");
                     
                     if (completion != nil)
                         completion();

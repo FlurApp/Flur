@@ -35,7 +35,7 @@
 @property (nonatomic, readwrite) UIButton* useButton;
 @property (nonatomic, readwrite) UIButton* backButton;
 @property (nonatomic, readwrite) UIImageView* imageTaken;
-@property (strong, nonatomic) UIImageView * spinner;
+@property (nonatomic, strong) UIImageView * spinner;
 
 
 @property (nonatomic, strong) NSMutableArray* allPhotos;
@@ -51,9 +51,7 @@
 // used for determining when both completion handlers finished
 @property (nonatomic) int count;
 
-@property (nonatomic, strong) NSString* prompt;
-@property (nonatomic, strong) NSNumber *openableRadius;
-@property (nonatomic, strong) PFGeoPoint *currentLocation;
+@property (nonatomic) BOOL newFlur;
 
 
 @end
@@ -71,11 +69,7 @@
         self.dataToPass = [[NSMutableDictionary alloc] init];
         [self.dataToPass setObject:pin forKey:@"FLPin"];
         self.photoManager = [[FLPhotoManager alloc] init];
-        
-        self.prompt = [data objectForKey:@"prompt"];
-        self.openableRadius = [data objectForKey:@"openableRadius"];
-        self.currentLocation = [data objectForKey:@"currentLocation"];
-        
+        self.newFlur = [data[@"newFlur"] isEqual:@"true"] ? true : false;
     }
 }
 
@@ -409,24 +403,43 @@
     [UIView commitAnimations];
 }
 
+- (void) cleanUp {
+    [self retakePicture:nil];
+    self.frontBack = true;
+    [self toggleCamButton];
+}
+
 - (IBAction)uploadImageButtonClick:(id)sender {
     [self loadSpinner];
+    [self cleanUp];
     
-    [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray *allPhotos) {
-        self.allPhotos = allPhotos;
-        [self handOffToPhotoVC];
-    }];
+    [self.delegate haveContributedToFlur:self.pin.pinId];
+    
     
 
-    if (self.pin != nil) {
-        NSLog(@"Adding a photo");
-        [self.photoManager uploadPhotoWithData:self.imageData forExistingFlur:self.pin withCompletion:^{
-            [self.delegate haveContributedToFlur:self.pin.pinId];
+    if (self.newFlur) {
+
+        [self.photoManager uploadPhotoWithData:self.imageData forNewFlur:self.pin withServerCompletion:^{
+            // Go to to photoVC
             [self handOffToPhotoVC];
+        } WithCoreDataCompletion:^{
+            [self.delegate addNewFlur:self.pin];
         }];
     }
     else {
-        //[self.photoManager up]
+        [self.photoManager uploadPhotoWithData:self.imageData forExistingFlur:self.pin withServerCompletion:^{
+            NSLog(@"Server completion");
+            [self handOffToPhotoVC];
+        } WithCoreDataCompletion:^{
+            NSLog(@"core data completion");
+            [self.delegate haveContributedToFlur:self.pin.pinId];
+
+        }];
+        
+        [self.photoManager loadPhotosWithPin:self.pin.pinId withCompletion:^(NSMutableArray *allPhotos) {
+            self.allPhotos = allPhotos;
+            [self handOffToPhotoVC];
+        }];
     }
     
     [self handOffToPhotoVC];
@@ -470,8 +483,8 @@
     UIBlurEffect *blurEffect;
     blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     
-    UIVisualEffectView* blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    blurEffectView.alpha = 1;
+    self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    self.blurEffectView.alpha = 1;
     
     // Vibrancy effect
     UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
@@ -482,11 +495,11 @@
     
     
     // Add the vibrancy view to the blur view
-    [[blurEffectView contentView] addSubview:vibrancyEffectView];
+    [[self.blurEffectView contentView] addSubview:vibrancyEffectView];
     
     // add blur view to view
-    blurEffectView.frame = self.view.bounds;
-    [self.view addSubview: blurEffectView];
+    self.blurEffectView.frame = self.view.bounds;
+    [self.view addSubview: self.blurEffectView];
     
     self.spinner = [[UIImageView alloc] init];
     self.spinner.translatesAutoresizingMaskIntoConstraints = NO;
@@ -506,12 +519,12 @@
     self.spinner.animationDuration = 1.0f;
     self.spinner.animationRepeatCount = 0;
     [self.spinner startAnimating];
-    [self.view addSubview:self.spinner];
+    [self.blurEffectView addSubview:self.spinner];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
                                                           attribute:NSLayoutAttributeCenterY
                                                           relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
+                                                             toItem:self.blurEffectView
                                                           attribute:NSLayoutAttributeCenterY
                                                          multiplier:1.0
                                                            constant:0.0]];
@@ -520,7 +533,7 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
                                                           attribute:NSLayoutAttributeCenterX
                                                           relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
+                                                             toItem:self.blurEffectView
                                                           attribute:NSLayoutAttributeCenterX
                                                          multiplier:1.0
                                                            constant:0.0]];

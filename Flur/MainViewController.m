@@ -232,7 +232,7 @@
     
     // INITIAL CONTROL LOGIC
     PFUser *currentUser = [PFUser currentUser];
-    
+//    [LocalStorage deleteAllFlurs];
     if (currentUser) {
         self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
         self.mapView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
@@ -424,11 +424,26 @@
 }
 
 -(void) addFlur:(NSString*)prompt {
-    [self.mapView addFlur:prompt];
-    [self.topBarView revertTopBar];
+    // [self.mapView addFlur:prompt];
+    //[self.topBarView revertTopBar];
+    //[self hideDropFlurPage];
+    //[self showCameraPage:nil];
+    
     [self hideDropFlurPage];
-    [self showCameraPage:nil];
+    
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    
+    FLPin *pin = [[FLPin alloc] init];
+    pin.coordinate = [PFGeoPoint geoPointWithLatitude:40.75921100 longitude:-73.98463800];
+    pin.prompt = @"Hey there the test works!";
+    
+    data[@"FLPin"] = pin;
+    data[@"newFlur"] = @"true";
+    
+    [self showCameraPage:data];
 }
+
+
 
 -(void) showCameraPage:(NSMutableDictionary*)data {
     
@@ -471,6 +486,8 @@
     
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    
+    [self.cameraView.blurEffectView removeFromSuperview];
 }
 
 - (void) hideContributePage {
@@ -540,7 +557,6 @@
                                                self.mapView.view.frame.size.width,
                                                self.mapView.view.frame.size.height);
     } completion:^(BOOL finished) { }];
-    
 }
 
 - (void) showPhotoPage:(NSMutableDictionary*)data {
@@ -566,6 +582,12 @@
 
 - (void) haveContributedToFlur:(NSString *) objectId {
     [self.mapView justContributedToFlur:objectId];
+    [self.tableView getFlurs];
+}
+
+- (void) addNewFlur:(FLPin *)pin {
+    [self.mapView addNewFlur:pin];
+    [self.tableView getFlurs];
 }
 
 #pragma mark -

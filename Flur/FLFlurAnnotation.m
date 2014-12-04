@@ -25,6 +25,7 @@
         CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(pin.coordinate.latitude,
                                                                   pin.coordinate.longitude);
         _coordinate = coord;
+        NSLog(@"Coord of annotation: %f %f");
         self.pin = pin;
     }
     
