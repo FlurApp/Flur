@@ -419,7 +419,10 @@
     
 
     if (self.pin != nil) {
+        NSLog(@"Adding a photo");
         [self.photoManager uploadPhotoWithData:self.imageData forExistingFlur:self.pin withCompletion:^{
+            [self.delegate haveContributedToFlur:self.pin.pinId];
+            [self handOffToPhotoVC];
         }];
     }
     else {
