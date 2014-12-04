@@ -11,7 +11,10 @@
 
 @interface FLPhotoManager : NSObject
 
-- (void) uploadPhotoWithData : (NSData*) imageData withPin:(FLPin*) pin withCompletion:(void (^)()) completion;
 - (void) loadPhotosWithPin:(FLPin *)pin withCompletion:(void (^)(NSMutableArray* allPhotos))completion;
+
+- (void) uploadPhotoWithData:(NSData*)imageData withFlurObjectId:(NSString *)flurObjectId withCompletion:(void(^)()) completion;
+
+- (void) uploadPhotoWithData:(NSData *)imageData forExistingFlur:(FLPin *)pin withCompletion:(void (^)())completion;
 
 @end

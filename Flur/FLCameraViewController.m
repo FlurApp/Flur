@@ -51,7 +51,9 @@
 // used for determining when both completion handlers finished
 @property (nonatomic) int count;
 
-
+@property (nonatomic, strong) NSString* prompt;
+@property (nonatomic, strong) NSNumber *openableRadius;
+@property (nonatomic, strong) PFGeoPoint *currentLocation;
 
 
 @end
@@ -69,6 +71,11 @@
         self.dataToPass = [[NSMutableDictionary alloc] init];
         [self.dataToPass setObject:pin forKey:@"FLPin"];
         self.photoManager = [[FLPhotoManager alloc] init];
+        
+        self.prompt = [data objectForKey:@"prompt"];
+        self.openableRadius = [data objectForKey:@"openableRadius"];
+        self.currentLocation = [data objectForKey:@"currentLocation"];
+        
     }
 }
 
@@ -404,31 +411,34 @@
 
 - (IBAction)uploadImageButtonClick:(id)sender {
     [self loadSpinner];
-    NSLog(@"Holler");
-    [self.delegate haveContributedToFlur:self.pin.pinId];
     
     [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray *allPhotos) {
         self.allPhotos = allPhotos;
         [self handOffToPhotoVC];
     }];
     
-    [self.photoManager uploadPhotoWithData:self.imageData withPin:self.pin withCompletion:^{
-        [self handOffToPhotoVC];
-    }];
+
+    if (self.pin != nil) {
+        [self.photoManager uploadPhotoWithData:self.imageData forExistingFlur:self.pin withCompletion:^{
+        }];
+    }
+    else {
+        //[self.photoManager up]
+    }
+    
+    [self handOffToPhotoVC];
 }
 
 - (void) handOffToPhotoVC {
 
     self.count++;
     if (self.count == 2) {
-        NSLog(@"handOffToPhotoVC Running");
-        NSLog(@"Pin %lu", (long)self.pin.contentCount);
+        
         if (self.allPhotos.count != self.pin.contentCount) {
             [self.allPhotos addObject: self.imageData];
         }
-        NSLog(@"out");
+        
         [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
-        NSLog(@"out2");
 
         [_delegate hideCameraPage];
         [_delegate showPhotoPage:self.dataToPass];
@@ -438,7 +448,6 @@
 
 -(IBAction)retakePicture:(id)sender {
     
-    NSLog(@"retake picture");
     [self.retakeButton removeFromSuperview];
     [self.useButton removeFromSuperview];
     [self.imageTaken removeFromSuperview];

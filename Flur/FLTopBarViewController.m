@@ -160,6 +160,7 @@
      CAGradientLayer *gradient1 = [CAGradientLayer layer];
      gradient1.frame = self.topBarContainer.bounds;
      gradient1.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, 1) CGColor], (id)[RGBA(179, 88, 224, 1) CGColor], nil];
+     // gradient1.colors = [NSArray arrayWithObjects:(id)[RGBA(255,211,150, 1) CGColor], (id)[RGBA(255,198,119,1) CGColor], nil];
 
 
 

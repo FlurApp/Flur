@@ -143,7 +143,8 @@
         self.yourContributionConstraint.constant = 10;
 
         self.contributeButtonHeight.constant = 0;
-        self.viewAlbumButtonHeight.constant = 0;
+        self.viewAlbumButtonHeight.constant = 80;
+        [self.viewAlbumButton setTitle:@"View Album" forState:UIControlStateNormal];
 
         
         [self.viewAlbumButton.layer setCornerRadius:0];
