@@ -21,8 +21,14 @@
          if (!error) {
              PFObject *userPhoto = [PFObject objectWithClassName:@"Images"];
              [userPhoto setObject:imageFile forKey:@"imageFile"];
-             [userPhoto setObject:flurObjectId forKey:@"pinId"];
+             PFObject * flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin"
+                                                                  objectId:flurObjectId];
+
+             [userPhoto setObject:flurPin forKey:@"flurPin"];
              [userPhoto setObject:[PFUser currentUser] forKey:@"createdBy"];
+             [userPhoto setObject:@33 forKey:@"contributionPosition"];
+             NSLog(@"Need to fix uploadPhoto to incorporate contribute position");
+
 
      
              [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -39,6 +45,7 @@
              // Log details of the failure
              NSLog(@"Error: %@ %@", error, [error userInfo]);
          }
+         
      } progressBlock:^(int percentDone) {
      // Update your progress spinner here. percentDone will be between 0 and 100.
      //HUD.progress = (float)percentDone/100;
@@ -51,7 +58,7 @@
     [self uploadPhotoWithData:imageData withFlurObjectId:pin.pinId withCompletion:^{
         // Increment content count on server
         PFObject* flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin" objectId:pin.pinId];
-        [flurPin incrementKey:@"contentCount"];
+        [flurPin incrementKey:@"totalContentCount"];
         [flurPin save];
         serverCompletion();
     }];
@@ -65,9 +72,9 @@
     flur[@"lat"] = [NSNumber numberWithDouble:pin.coordinate.latitude];
     flur[@"lng"] = [NSNumber numberWithDouble:pin.coordinate.longitude];
     
-    pin.contentCount++;
-    flur[@"totalContentCount"] = [NSNumber numberWithInt:pin.contentCount];
-    flur[@"myContentPosition"] = [NSNumber numberWithInt:pin.contentCount];
+    pin.totalContentCount++;
+    flur[@"totalContentCount"] = [NSNumber numberWithInt:pin.totalContentCount];
+    flur[@"myContentPosition"] = [NSNumber numberWithInt:pin.totalContentCount];
     
     NSDate *date = [NSDate date];
     flur[@"dateAdded"] = date;
@@ -89,7 +96,7 @@
     [flurPin setObject:pin.coordinate forKey:@"location"];
     [flurPin setObject: [PFUser currentUser]forKey:@"createdBy"];
     [flurPin setObject:pin.prompt forKey: @"prompt"];
-    [flurPin setObject:@1 forKey:@"contentCount"];
+    [flurPin setObject:@1 forKey:@"totalContentCount"];
     
     [flurPin saveEventually:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
@@ -97,7 +104,7 @@
             pin.pinId = [flurPin objectId];
             pin.createdBy = [PFUser currentUser];
             pin.dateCreated = [NSDate date];
-            pin.contentCount = 1;
+            pin.totalContentCount = 1;
             pin.haveContributedTo = true;
         
             // Add image to server

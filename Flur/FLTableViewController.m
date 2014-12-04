@@ -26,8 +26,6 @@
 
 - (void) didMoveToParentViewController:(UIViewController *)parent {
     [self getFlurs];
-    NSLog(@"moving to parent");
-
 }
 
 - (void)viewDidLoad {

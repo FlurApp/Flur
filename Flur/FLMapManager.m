@@ -137,7 +137,7 @@
     [flurPin setObject:self.currentLocation forKey:@"location"];
     [flurPin setObject: [PFUser currentUser]forKey:@"createdBy"];
     [flurPin setObject:prompt forKey: @"prompt"];
-    [flurPin setObject:@0 forKey:@"contentCount"];
+    [flurPin setObject:@0 forKey:@"totalContentCount"];
     
     [flurPin saveEventually:^(BOOL succeeded, NSError *error) {
         if (succeeded) { }

@@ -25,7 +25,6 @@
         CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(pin.coordinate.latitude,
                                                                   pin.coordinate.longitude);
         _coordinate = coord;
-        NSLog(@"Coord of annotation: %f %f");
         self.pin = pin;
     }
     
@@ -125,7 +124,7 @@
     annotationView.enabled = YES;
     annotationView.canShowCallout = NO;
 
-//    if (self.pin.contentCount)
+//    if (self.pin.totalContentCount)
 //        [self showAnnotationAsOpenable:annotationView];
 //    else
 //        [self showAnnotationAsNonOpenable:annotationView];

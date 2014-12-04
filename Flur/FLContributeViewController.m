@@ -77,7 +77,7 @@
     
     // pin contentCount
     
-    NSNumber *n = [NSNumber numberWithInt:[self.pin contentCount]];
+    NSNumber *n = [NSNumber numberWithInt:[self.pin totalContentCount]];
     UILabel *contentCountLabel = [[UILabel alloc] init];
     [contentCountLabel setText: [NSString stringWithFormat:@"Count: %@",n]];
     [contentCountLabel setTextColor:contributeColor];

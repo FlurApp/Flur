@@ -48,7 +48,7 @@ static bool userFound = false;
     NSLog(@"SYncing");
     //[LocalStorage deleteAllFlursWithCompletion:^{
         
-    /*PFUser* curUser = [PFUser currentUser];
+    PFUser* curUser = [PFUser currentUser];
     if (!curUser) {
         NSLog(@"Error: Trying to sync with server in LocalStorage.m but not logged.");
         return;
@@ -71,14 +71,15 @@ static bool userFound = false;
             
             // Will contain a list of all flur objectId's
             NSMutableArray *flurObjectIds = [[NSMutableArray alloc] init];
-
             for (id image in imagesContributed) {
                 // Get a pointer to the flur to which the image was added
                 PFObject *flurContributedTo = image[@"flurPin"];
 
                 // If I haven't yet added this flur to my master container
                 if ([localStorageFlurData objectForKey:flurContributedTo[@"objectId"]] == nil) {
-
+                    NSLog(@"Image: %@", image);
+                    NSLog(@"Flur: %@", flurContributedTo);
+                    
                     NSMutableDictionary *flurToAdd = [[NSMutableDictionary alloc] init];
                     
                     flurToAdd[@"objectId"] = [flurContributedTo objectId];
@@ -88,8 +89,7 @@ static bool userFound = false;
                     flurToAdd[@"lat"] = [NSNumber numberWithDouble:location.latitude];
                     flurToAdd[@"lng"] = [NSNumber numberWithDouble:location.longitude];
 
-                    flurToAdd[@"totalContentCount"] = flurContributedTo[@"contentCount"];
-
+                    flurToAdd[@"totalContentCount"] = flurContributedTo[@"totalContentCount"];
                     flurToAdd[@"myContentPosition"] = image[@"contributionPosition"];
 
                     flurToAdd[@"dateCreated"] = [flurContributedTo createdAt];
@@ -99,6 +99,7 @@ static bool userFound = false;
                     [flurObjectIds addObject:[flurContributedTo objectId]];
                 }
             }
+
             PFQuery *query2 = [PFQuery queryWithClassName:@"FlurPin"];
             [query2 whereKey:@"objectId" containedIn:[NSArray arrayWithArray:flurObjectIds]];
             [query2 includeKey:@"createdBy"];
@@ -106,7 +107,6 @@ static bool userFound = false;
                                                                                                                                                                                                                                         
 
             [query2 findObjectsInBackgroundWithBlock:^(NSArray *flurPins, NSError *error) {
-
                 for (id flurPin in flurPins) {
                     NSMutableDictionary *flurToAdd = [localStorageFlurData objectForKey:[flurPin objectId]];
                     NSString *creatorUsername = flurPin[@"createdBy"][@"username"];
@@ -121,15 +121,15 @@ static bool userFound = false;
                     if (counter < localStorageFlurData.count)
                         [self addFlur:[localStorageFlurData objectForKey:key]];
                     else
-                        [self addFlur:[localStorageFlurData objectForKey:key]];
+                        [self addFlur:[localStorageFlurData objectForKey:key] withCompletion:completion];
 
                 }
                 
             }];
         }
     }];
-    //}];*/
-    [self createTestDataWithCompletion:completion];
+    //}];
+    //[self createTestDataWithCompletion:completion];
     
 }
 
@@ -235,17 +235,13 @@ static bool userFound = false;
         // dont add the flur to the CD.
         for (Flur* flur in [allFlurs objectForKey:@"allFlurs"]) {
             if ([flur.objectId isEqualToString:flurToAdd[@"objectId"]]) {
-                NSNumber *totalContentCount = flurToAdd[@"totalContentCount"];
-                flur.totalContentCount = [NSNumber numberWithInt:totalContentCount.integerValue];
-                
+
                 NSLog(@"Flur with this object ID already exists, not adding but updating");
-                
-                if (completion != nil) {
-                    completion();
-                }
-                else
-                    NSLog(@"Not calling completion");
-                
+
+                NSNumber *totalContentCount = flurToAdd[@"totalContentCount"];
+                [self updateFlurWithCoreDataFlur:flur
+                            andTotalContentCount:totalContentCount
+                                      completion:completion];
                 return;
             }
         }
@@ -271,6 +267,8 @@ static bool userFound = false;
         
         [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
             NSLog(success ? @"successfully saved" : @"Not saved");
+            [document.managedObjectContext save:nil];
+
             if (completion != nil) {
                 completion();
             }
@@ -278,6 +276,31 @@ static bool userFound = false;
                 NSLog(@"Not calling completion");
         }];
     }];
+}
+
++ (void) updateFlurWithObjectId:(NSString *) flurObjectId andTotalContentCount:(NSNumber *) totalContentCount completion:(void(^)()) completion{
+    [self getFlursInDict:^(NSMutableDictionary *allFlurs) {
+        Flur *flur = [allFlurs objectForKey:flurObjectId];
+        if (flur == nil) {
+            NSLog(@"Error: Trying to update flur that does not exist in core data.");
+            return;
+        }
+        
+        [self updateFlurWithCoreDataFlur:flur andTotalContentCount:totalContentCount completion:completion];
+    }];
+}
+
++ (void) updateFlurWithCoreDataFlur:(Flur *) flur andTotalContentCount:(NSNumber *) totalContentCount completion:(void(^)()) completion {
+    
+    flur.totalContentCount = totalContentCount;
+    
+    if (completion != nil) {
+        completion();
+    }
+    else {
+        NSLog(@"Not calling completion");
+    }
+    
 }
 
 + (BOOL) checkForKey:(NSArray *)keys inData:(NSMutableDictionary *)data {
