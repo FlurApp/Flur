@@ -135,10 +135,9 @@ static bool firstToggle = true;
     }
 
     // Calculate size of image depending on screen size
-    double imageRatio_x = ([[UIScreen mainScreen] applicationFrame].size.width)/image.size.width;
-    double imageRatio_y = ([[UIScreen mainScreen] applicationFrame].size.height)/image.size.height;
-    double x = image.size.width * imageRatio_x;
-    double y = image.size.height* imageRatio_y;
+    double imageRatio = ([[UIScreen mainScreen] applicationFrame].size.height)/image.size.height;
+    double x = image.size.width * imageRatio;
+    double y = image.size.height* imageRatio;
     
     // Set size of image
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:imageViewPointer
