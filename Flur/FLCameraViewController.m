@@ -455,7 +455,8 @@
         }
         
         [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
-
+        [self.dataToPass setObject:@"cameraPage" forKey:@"previousPage"];
+        
         [_delegate hideCameraPage];
         [_delegate showPhotoPage:self.dataToPass];
 

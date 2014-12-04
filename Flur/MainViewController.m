@@ -434,7 +434,7 @@
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     
     FLPin *pin = [[FLPin alloc] init];
-    pin.coordinate = [PFGeoPoint geoPointWithLatitude:40.75921100 longitude:-73.98463800];
+    pin.coordinate = [self getCurrentLocation];
     pin.prompt = @"Hey there the test works!";
     
     data[@"FLPin"] = pin;
@@ -560,6 +560,10 @@
 }
 
 - (void) showPhotoPage:(NSMutableDictionary*)data {
+//    self.photoView = [[PhotoViewController alloc] init];
+//    self.photoView.delegate = self;
+//    [self.view addSubview:self.photoView.view];
+//    [self addChildViewController:self.photoView];
     [self.photoView setData:data];
     
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -588,6 +592,10 @@
 - (void) addNewFlur:(FLPin *)pin {
     [self.mapView addNewFlur:pin];
     [self.tableView getFlurs];
+}
+
+- (PFGeoPoint*) getCurrentLocation {
+    return self.mapView.mapManager.currentLocation;
 }
 
 #pragma mark -
