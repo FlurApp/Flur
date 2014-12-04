@@ -469,6 +469,8 @@
     
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    
+    [self.cameraView.blurEffectView removeFromSuperview];
 }
 
 - (void) hideContributePage {

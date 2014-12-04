@@ -22,5 +22,6 @@
 
 @property (nonatomic, assign) id<FLCameraViewControllerDelegate> delegate;
 
+@property (nonatomic, strong) UIVisualEffectView* blurEffectView;
 
 @end
