@@ -12,7 +12,6 @@
 
 #import "FLInitialMapViewController.h"
 #import "FLFlurAnnotation.h"
-#import "FLMapManager.h"
 #import "FLPin.h"
 #import "LocalStorage.h"
 #import "FLConstants.h"
@@ -43,8 +42,6 @@
 
 @property (nonatomic, strong, readwrite) NSMutableArray *viewablePins;
 @property (nonatomic, strong, readwrite) PFGeoPoint *PFCurrentLocation;
-
-@property (nonatomic, strong) FLMapManager* mapManager;
 
 @property (nonatomic, strong) NSMutableArray *myContrPins;
 @property (nonatomic, strong) UIView *whiteLayer;

@@ -12,6 +12,7 @@
 
 #import "FLTableViewController.h"
 #import "FLSettingsViewController.h"
+#import "FLMapManager.h"
 #import "FLPin.h"
 
 @protocol FLInitialMapViewControllerDelegate <NSObject>
@@ -27,6 +28,8 @@
 @interface FLInitialMapViewController : UIViewController<MKMapViewDelegate,CLLocationManagerDelegate, UITextFieldDelegate>
 
 @property (nonatomic, assign) id<FLInitialMapViewControllerDelegate> delegate;
+
+@property (nonatomic, strong) FLMapManager* mapManager;
 
 @property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) UIButton *tableListButton;

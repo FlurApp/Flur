@@ -434,7 +434,7 @@
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     
     FLPin *pin = [[FLPin alloc] init];
-    pin.coordinate = [PFGeoPoint geoPointWithLatitude:40.75921100 longitude:-73.98463800];
+    pin.coordinate = [self getCurrentLocation];
     pin.prompt = @"Hey there the test works!";
     
     data[@"FLPin"] = pin;
@@ -592,6 +592,10 @@
 - (void) addNewFlur:(FLPin *)pin {
     [self.mapView addNewFlur:pin];
     [self.tableView getFlurs];
+}
+
+- (PFGeoPoint*) getCurrentLocation {
+    return self.mapView.mapManager.currentLocation;
 }
 
 #pragma mark -
