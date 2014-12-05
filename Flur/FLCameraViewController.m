@@ -339,6 +339,7 @@
     [_retakeButton addTarget:self action:@selector(retakePicture:) forControlEvents:UIControlEventTouchUpInside];
     [_retakeButton setImage:[UIImage imageNamed:@"retake.png"] forState:UIControlStateNormal];
     _retakeButton.alpha = 0;
+    [_retakeButton  setImageEdgeInsets:UIEdgeInsetsMake(4,4,4,4)];
 
     
     [[self view] addSubview:_retakeButton];
@@ -353,14 +354,14 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_retakeButton
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     
     _useButton = [[UIButton alloc] init];
     [_useButton setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -368,6 +369,24 @@
     [_useButton addTarget:self action:@selector(uploadImageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [_useButton setImage:[UIImage imageNamed:@"right_arrow.png"] forState:UIControlStateNormal];
     _useButton.alpha = 0;
+    [_useButton setImageEdgeInsets:UIEdgeInsetsMake(4,4,4,4)];
+    
+//    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionRepeat animations:^{
+//        [UIView setAnimationRepeatCount:10];
+//        self.useButton.transform = CGAffineTransformMakeScale(2,2);
+//        [self.view layoutIfNeeded];
+//        self.useButton.transform = CGAffineTransformMakeScale(1,1);
+//        [self.view layoutIfNeeded];
+//    } completion:nil];
+    
+    CABasicAnimation *animateSize = [CABasicAnimation animationWithKeyPath:@"transform"];
+    animateSize.duration = 1.0;
+    animateSize.autoreverses = YES;
+    animateSize.repeatCount = CGFLOAT_MAX;
+    animateSize.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    animateSize.toValue = [NSNumber numberWithFloat:1.1];
+    [self.useButton.layer addAnimation:animateSize forKey:@"transform"];
+
     
     [[self view] addSubview:_useButton];
     
@@ -382,14 +401,14 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_useButton
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     
     [self.cameraButton setHidden:YES];
     [self.backButton setHidden:YES];

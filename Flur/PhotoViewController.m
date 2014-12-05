@@ -13,6 +13,11 @@
 #import "FLConstants.h"
 #import "Flur.h"
 
+#define flurYellow RGBA(255,220,15,.98)
+#define flurBlue RGBA(13,191,255,1)
+#define flurPurple RGBA(179,88,224,1)
+#define flurRed RGBA(244,99,83,1)
+
 @interface PhotoViewController ()
 
 // UI elements
@@ -38,6 +43,10 @@
 @implementation PhotoViewController
 
 - (void) setData: (NSMutableDictionary*) data {
+    
+    // Set appearance of status bar
+    //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    
     self.pin_data = data;
     self.pin = [data objectForKey:@"FLPin"];
     self.topBarVisible = true;
@@ -67,7 +76,7 @@
         self.viewPrompt.text = flur.prompt;
         self.dateLabel.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:flur.dateCreated]];
     }
-    [self.dateLabel setTextColor:RGB(98,234,239)];
+    [self.dateLabel setTextColor:[UIColor whiteColor]];
     
     SinglePhotoViewController *initialViewController = [self viewControllerAtIndex:0];
     
@@ -100,6 +109,7 @@
 
 - (void) loadTopBar {
     self.topBar.translatesAutoresizingMaskIntoConstraints = NO;
+    self.topBar.backgroundColor = flurYellow;
 
     [self.view addSubview:self.topBar];
     
@@ -111,24 +121,24 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
-    UIBlurEffect *blurEffect;
-    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    
-    UIVisualEffectView *blurEffectView;
-    blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    
-    [self.topBar addSubview:blurEffectView];
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
-    
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+//    UIBlurEffect *blurEffect;
+//    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+//    
+//    UIVisualEffectView *blurEffectView;
+//    blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+//    blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
+//    
+//    
+//    [self.topBar addSubview:blurEffectView];
+//    
+//    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+//    
+//    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+//    
+//    
+//    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+//    
+//    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
 
     
     UIButton *exitButton = [[UIButton alloc] init];
@@ -167,7 +177,7 @@
     self.currentPicture.text = [NSString stringWithFormat:@"1/%lu", (unsigned long) self.allPhotos.count];
     NSLog(@"%@",self.currentPicture.text);
     
-    [self.currentPicture setTextColor:[UIColor whiteColor]];
+    [self.currentPicture setTextColor:flurBlue];
     [self.currentPicture setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Thin" size:25]];
 
     self.currentPicture.translatesAutoresizingMaskIntoConstraints = NO;
@@ -182,7 +192,7 @@
 
 - (void) loadBottomBar {
     self.bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
-    //self.bottomBar.backgroundColor = [UIColor blackColor];
+    self.bottomBar.backgroundColor = flurYellow;
     [self.view addSubview:self.bottomBar];
     
     
@@ -199,24 +209,24 @@
     self.topBar.alpha = 1;
     self.bottomBar.alpha = 1;
     
-    UIBlurEffect *blurEffect;
-    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    
-    UIVisualEffectView *blurEffectView;
-    blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    
-    [self.bottomBar addSubview:blurEffectView];
-    
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-    
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
-    
-    
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+//    UIBlurEffect *blurEffect;
+//    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+//    
+//    UIVisualEffectView *blurEffectView;
+//    blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+//    blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
+//    
+//    
+//    [self.bottomBar addSubview:blurEffectView];
+//    
+//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+//    
+//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+//    
+//    
+//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+//    
+//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
     
     // data label
@@ -234,7 +244,7 @@
     
     
     self.viewPrompt.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.viewPrompt setTextColor:[UIColor whiteColor]];
+    [self.viewPrompt setTextColor:flurRed];
     [self.viewPrompt setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:18]];
     
     [self.bottomBar addSubview:self.viewPrompt];

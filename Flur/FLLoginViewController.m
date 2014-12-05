@@ -548,7 +548,7 @@
                                                 block:^(BOOL succeeded,NSError *error) {
         
         if (!error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Password Reset"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Reset Password"
                                                             message:[NSString stringWithFormat: @"A link to reset your password has been sent to your email"]
                                                            delegate:nil
                                                     cancelButtonTitle:@"OK"

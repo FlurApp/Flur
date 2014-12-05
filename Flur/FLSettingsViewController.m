@@ -163,6 +163,8 @@
     self.changePassword.backgroundColor = RGB(13,191,255);
     self.changePassword.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
     [self.changePassword setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.changePassword addTarget:self action:@selector(resetPassword:) forControlEvents:UIControlEventTouchUpInside];
+
     
     
     [self.view addSubview:self.changePassword];
@@ -218,6 +220,31 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+- (IBAction)resetPassword:(id)sender{
+    
+    [PFUser requestPasswordResetForEmailInBackground:[PFUser currentUser].email
+                                               block:^(BOOL succeeded,NSError *error) {
+   
+       if (!error) {
+           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Reset Password"
+                                                       message:[NSString stringWithFormat: @"A link to reset your password has been sent to your email"]
+                                                          delegate:nil
+                                                 cancelButtonTitle:@"OK"
+                                                 otherButtonTitles:nil];
+           [alert show];
+           return;
+           
+       }
+       else
+       {
+           NSString *errorString = [error userInfo][@"error"];
+           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:[NSString stringWithFormat: @"%@",errorString] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+           [alert show];
+           return;
+       }
+   }];
+}
 /*
 #pragma mark - Navigation
 
