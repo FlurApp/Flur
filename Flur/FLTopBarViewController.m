@@ -105,7 +105,7 @@
     self.menuButton.backgroundColor = [UIColor clearColor];
     
     // create image for menu button
-    UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
+    UIImage* hamburger = [UIImage imageNamed:@"big-menu.png"];
     CGRect rect = CGRectMake(0,0,75,75);
     UIGraphicsBeginImageContext(rect.size);
     [hamburger drawInRect:rect];
@@ -117,23 +117,39 @@
     // set image for menu button
     [self.menuButton setImage:menuImg forState:UIControlStateNormal];
     [self.menuButton setContentMode:UIViewContentModeCenter];
-    [self.menuButton setImageEdgeInsets:UIEdgeInsetsMake(25,25,25,25)];
+    [self.menuButton setImageEdgeInsets:UIEdgeInsetsMake(20,20,20,20)];
     
     // add menu button to view
     [self.menuButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.topBarContainer addSubview:self.menuButton];
     
-    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.flurImageContainer attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.flurImageContainer attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:4]];
     
-    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-10]];
     
 
     
     /* ----------------------------------------------------------
      Add Table List button to Top Bar
      -----------------------------------------------------------*/
-    self.tableListButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    // create image for tableList button
+    UIImage* tableIcon = [UIImage imageNamed:@"glasses-480.png"];
+    CGRect temp_rect = CGRectMake(0,0,75,75);
+    UIGraphicsBeginImageContext(rect.size);
+    [tableIcon drawInRect:temp_rect];
+    UIImage *tableIconResized = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    NSData *imgData = UIImagePNGRepresentation(tableIconResized);
+    UIImage *tableImg = [UIImage imageWithData:imgData];
+    
+    // create tableList button
+    self.tableListButton = [[UIButton alloc] init];
     [self.tableListButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    // set image for tableList button
+    [self.tableListButton setImage:tableImg forState:UIControlStateNormal];
+    [self.tableListButton setContentMode:UIViewContentModeCenter];
+    [self.tableListButton setImageEdgeInsets:UIEdgeInsetsMake(22.5,22.5,22.5,22.5)];
     
     self.tableListButton.tag = 1;
     [self.tableListButton addTarget:self action:@selector(showTableView:)
@@ -141,9 +157,9 @@
     
     [self.topBarContainer addSubview: self.tableListButton];
     
-    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.flurImageContainer attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.menuButton attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
     
-    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
     
     /* ----------------------------------------------------------

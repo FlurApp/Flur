@@ -204,13 +204,13 @@
     /* -------------------------------------------
                 Setup photo view
      -----------------------------------------------*/
-    self.photoView = [[PhotoViewController alloc] init];
-    self.photoView.delegate = self;
-    
-    [self.view addSubview:self.photoView.view];
-    [self addChildViewController:self.photoView];
-    self.photoView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
-                                            self.view.frame.size.height);
+//    self.photoView = [[PhotoViewController alloc] init];
+//    self.photoView.delegate = self;
+//    
+//    [self.view addSubview:self.photoView.view];
+//    [self addChildViewController:self.photoView];
+//    self.photoView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
+//                                            self.view.frame.size.height);
     
     
     /*if (self.shouldSync) {
@@ -560,10 +560,10 @@
 }
 
 - (void) showPhotoPage:(NSMutableDictionary*)data {
-//    self.photoView = [[PhotoViewController alloc] init];
-//    self.photoView.delegate = self;
-//    [self.view addSubview:self.photoView.view];
-//    [self addChildViewController:self.photoView];
+    self.photoView = [[PhotoViewController alloc] init];
+    self.photoView.delegate = self;
+    [self.view addSubview:self.photoView.view];
+    [self addChildViewController:self.photoView];
     [self.photoView setData:data];
     
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
