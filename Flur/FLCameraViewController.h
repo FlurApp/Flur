@@ -15,7 +15,7 @@
 - (void) hideCameraPage;
 - (void) showPhotoPage:(NSMutableDictionary*)data;
 - (void) haveContributedToFlur:(NSString *) objectId;
-- (void) addNewFlur:(FLPin *)pin;
+- (void) setUpNewFlurPinWithObjectId:(NSString *)objectId;
 
 @end
 

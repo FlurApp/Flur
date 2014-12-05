@@ -76,6 +76,7 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
   
+    [self.view bringSubviewToFront:self.tableView];
 
     // get flurs
     [self getFlurs];

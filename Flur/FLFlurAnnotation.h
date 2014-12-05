@@ -30,6 +30,8 @@
 @property (nonatomic, readonly, copy) NSString *title;
 @property (nonatomic, readonly, copy) NSString *subtitle;
 @property (nonatomic, strong) FLPin* pin;
+@property (nonatomic) BOOL newFlur;
+
 
 //@property (nonatomic) NSString *pinId;
 //@property (nonatomic) bool isAnimated;

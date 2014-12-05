@@ -262,8 +262,17 @@
     
     if ([[self.pin_data objectForKey:@"previousPage"] isEqualToString: @"tablePage"])
         [_delegate showTablePage];
-    else
-        [_delegate showMapPage];
+    else {
+        NSLog(@"ookkkk");
+        if ([[self.pin_data objectForKey:@"justAddedFlur"] isEqualToString:@"true"]) {
+            [self.delegate animateNewPin];
+            NSLog(@"fuck");
+
+        }
+        else {
+            [_delegate showMapPage];
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning {

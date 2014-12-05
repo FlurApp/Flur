@@ -437,6 +437,7 @@
     NSMutableDictionary *dataToPass = [[NSMutableDictionary alloc] init];
     dataToPass[@"FLPin"] = pin;
     dataToPass[@"newFlur"] = @"true";
+    [self.mapView setFlurAboutToBeAdded:data[@"prompt"]];
     
     [self showCameraPage:dataToPass];
 
@@ -588,13 +589,21 @@
     [self.tableView getFlurs];
 }
 
-- (void) addNewFlur:(FLPin *)pin {
-    [self.mapView addNewFlur:pin];
+- (void) setUpNewFlurPinWithObjectId:(NSString *)objectId {
+    [self.mapView setUpNewFlurPinWithObjectId:objectId];
     [self.tableView getFlurs];
 }
 
 - (PFGeoPoint*) getCurrentLocation {
     return self.mapView.mapManager.currentLocation;
+}
+
+- (void) animateNewPin {
+    [self performSelector:@selector(animateNewPinAfterDelay:) withObject:self afterDelay:.5];
+}
+
+- (IBAction) animateNewPinAfterDelay:(id)sender {
+    [self.mapView addNewFlurAndAnimate];
 }
 
 #pragma mark -

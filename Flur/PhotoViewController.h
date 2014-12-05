@@ -16,6 +16,7 @@
 -(void)showMapPage;
 -(void)showPhotoPage;
 -(void)showTablePage;
+- (void) animateNewPin;
 @end
 
 @interface PhotoViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, PhotoViewControllerDelegate>

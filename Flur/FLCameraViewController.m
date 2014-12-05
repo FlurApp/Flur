@@ -413,17 +413,13 @@
     [self loadSpinner];
     [self cleanUp];
     
-    [self.delegate haveContributedToFlur:self.pin.pinId];
-    
-    
 
     if (self.newFlur) {
-        NSLog(@"Adding new flur");
         [self.photoManager uploadPhotoWithData:self.imageData forNewFlur:self.pin withServerCompletion:^{
             // Go to to photoVC
             [self handOffToPhotoVC];
         } WithCoreDataCompletion:^{
-            [self.delegate addNewFlur:self.pin];
+            [self.delegate setUpNewFlurPinWithObjectId:self.pin.pinId];
         }];
     }
     else {
@@ -456,6 +452,10 @@
         
         [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
         [self.dataToPass setObject:@"cameraPage" forKey:@"previousPage"];
+        
+        if (self.newFlur)
+            [self.dataToPass setObject:@"true" forKey:@"justAddedFlur"];
+
         
         [_delegate hideCameraPage];
         [_delegate showPhotoPage:self.dataToPass];

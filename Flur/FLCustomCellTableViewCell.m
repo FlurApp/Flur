@@ -404,5 +404,10 @@ static FLCustomCellTableViewCell* currentOpenCell;
     [self.delegate showInfo:data];
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+
 
 @end

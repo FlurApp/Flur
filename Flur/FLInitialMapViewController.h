@@ -41,6 +41,8 @@
 - (void) addFlur:(NSString*)prompt;
 
 - (void) justContributedToFlur:(NSString *) objectId;
-- (void) addNewFlur:(FLPin *)pin;
+- (void) setUpNewFlurPinWithObjectId:(NSString *)objectId;
+- (void) setFlurAboutToBeAdded:(NSString *)prompt;
+- (void) addNewFlurAndAnimate;
 
 @end

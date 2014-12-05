@@ -45,6 +45,7 @@
 
 @property (nonatomic, strong) NSMutableArray *myContrPins;
 @property (nonatomic, strong) UIView *whiteLayer;
+@property (nonatomic, strong) FLPin *flurToAdd;
 
 
 @end
@@ -61,6 +62,7 @@
     [super viewDidLoad];
         
     self.haveLoadedFlurs = false;
+    self.flurToAdd = [[FLPin alloc] init];
     
     _viewablePins = [[NSMutableArray alloc] init];
     _PFCurrentLocation = [[PFGeoPoint alloc] init];
@@ -252,10 +254,12 @@
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
+    NSLog(@"anno1");
     if ([annotation isKindOfClass:[FLFlurAnnotation class]]) {
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
-        
+        NSLog(@"anno2");
+
         
         if (annotation == mapView.userLocation) {
             myLocation.annotationView.enabled = false;
@@ -371,18 +375,45 @@
     }
 }
 
-- (void) addNewFlur:(FLPin *)pin {
-    FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin];
-    [self.allAnnotations setObject:annotation forKey:pin.pinId];
-    [self.mapView addAnnotation:annotation];
+- (void) setFlurAboutToBeAdded:(NSString *)prompt {
+    self.flurToAdd = [[FLPin alloc] init];
+    self.flurToAdd.prompt = prompt;
+    self.flurToAdd.coordinate = [PFGeoPoint geoPointWithLatitude:[self.mapManager currentLat] longitude:[self.mapManager currentLng]];
     
-    [self.mapManager addNewFlur:pin];
+    self.flurToAdd.createdBy = [PFUser currentUser];
+    self.flurToAdd.dateCreated = [NSDate date];
+    self.flurToAdd.haveContributedTo = true;
+    self.flurToAdd.openable = true;
+    self.flurToAdd.username = [PFUser currentUser].username;
+    self.flurToAdd.totalContentCount = 1;
+
+}
+
+- (void) setUpNewFlurPinWithObjectId:(NSString *)objectId; {
+    self.flurToAdd.pinId = objectId;
+    NSLog(@"New Flur: %@", self.flurToAdd);
+}
+
+
+- (void) addNewFlurAndAnimate {
+    
+    FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:self.flurToAdd];
+    annotation.newFlur = true;
+    
+    
+    [self.allAnnotations setObject:annotation forKey:self.flurToAdd.pinId];
+    [self.mapView addAnnotation:annotation];
+    NSLog(@"okiieee");
+    
+    [self.mapManager addNewFlur:self.flurToAdd];
 }
 
 - (void) justContributedToFlur:(NSString *) objectId {
     // TODO: yes
     NSLog(@"Need to update just contributed to flur function in map view");
-    FLFlurAnnotation* annotation = (FLFlurAnnotation *)self.allAnnotations[@"objectId"];
+    FLFlurAnnotation* annotation = [[FLFlurAnnotation alloc] initWithPin:self.flurToAdd];
+    annotation.newFlur = true;
+    
     [annotation showAnnotationAsOpenable:[self.mapView viewForAnnotation:annotation]];
 
     [self.mapManager justContributedToFlur:objectId];

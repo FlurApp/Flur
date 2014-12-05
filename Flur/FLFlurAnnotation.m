@@ -34,6 +34,7 @@
         self.myAnnotationView = [[UIImageView alloc] init];
         self.myImageSize = CGRectMake(-15,-15,30,30);
         self.hey = 1;
+        self.newFlur = false;
     }
     
     return self;
@@ -48,6 +49,8 @@
         self.myAnnotationView = [[UIImageView alloc] init];
         self.myImageSize = CGRectMake(-15,-15,30,30);
         self.hey = 1;
+        self.newFlur = false;
+
 
 
     }
@@ -59,6 +62,8 @@
     self.myAnnotationView = [[UIImageView alloc] init];
     self.myImageSize = CGRectMake(-15,-15,30,30);
     self.hey = 1;
+    self.newFlur = false;
+
 
     return self;
 }
@@ -83,6 +88,7 @@
 }
 
 - (void) growFlur:(MKAnnotationView *) annotationViewFromMap {
+    NSLog(@"GROWWING");
     self.myAnnotationView.userInteractionEnabled = YES;
     [self.myAnnotationView setImage:[UIImage imageNamed:@""]];
 
@@ -101,12 +107,12 @@
     [self.myAnnotationView startAnimating];
     [self.myAnnotationView setFrame: self.myImageSize];
     
-    [self performSelector:@selector(drawRed:) withObject:nil afterDelay:.4];
+    [self performSelector:@selector(drawRedIB:) withObject:nil afterDelay:.4];
 
 }
 
-- (void) finish:(MKAnnotationView *) annotationViewFromMap {
-    
+- (IBAction)drawRedIB:(id)sender {
+    [self drawRed];
 }
 
 - (void) animateRed {
@@ -156,7 +162,7 @@
 }
 
 - (void) drawRed {
-    //[self.myAnnotationView stopAnimating];
+    [self.myAnnotationView stopAnimating];
     [self.myAnnotationView setImage:[UIImage imageNamed:@"redPulsing1.png"]];
     [self.myAnnotationView setFrame: self.myImageSize];
 }
@@ -181,7 +187,9 @@
     annotationView.canShowCallout = NO;
     
     [annotationView addSubview:self.myAnnotationView];
-    if (self.pin.openable)
+    if (self.newFlur)
+        [self growFlur:annotationView];
+    else if (self.pin.openable)
         [self showAnnotationAsOpenable:annotationView];
     else
         [self showAnnotationAsNonOpenable:annotationView];
