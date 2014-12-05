@@ -142,7 +142,11 @@
 - (void) loadPhotosWithPin:(NSString *)flurPinObjectId withCompletion:(void (^)(NSMutableArray* allPhotos))completion {
     NSMutableArray* allPhotos = [[NSMutableArray alloc] init];
     PFQuery *query = [PFQuery queryWithClassName:@"Images"];
-    [query whereKey:@"pinId" equalTo:flurPinObjectId];
+    
+    PFObject * flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin"
+                                                         objectId:flurPinObjectId];
+
+    [query whereKey:@"flurPin" equalTo:flurPin];
     [query orderByAscending:@"createdAt"];
 
     // Run query to download all relevant photos

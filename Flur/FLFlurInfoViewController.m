@@ -411,6 +411,7 @@
     [self.photoManager loadPhotosWithPin:self.pinId withCompletion:^(NSMutableArray *allPhotos) {
         
         [self.pin_data setObject:allPhotos forKey:@"allPhotos"];
+        
         if (self.contributeView)
             [self.pin_data setObject:@"infoPage" forKey:@"previousPage"];
         else
