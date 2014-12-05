@@ -395,7 +395,7 @@
                                                            constant:40.0]];
     
     // animate button
-    [UIView animateWithDuration:.4 delay:1 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse animations:^{
+    [UIView animateWithDuration:.4 delay:1 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse | UIViewAnimationOptionAllowUserInteraction animations:^{
         [UIView setAnimationRepeatCount:FLT_MAX];
         self.useButton.transform = CGAffineTransformMakeScale(1.2,1.2);
     } completion:nil];
@@ -408,6 +408,7 @@
     [UIView setAnimationDuration:.4];
     _retakeButton.alpha = 1;
     _useButton.alpha = 1;
+    [UIView commitAnimations];
 }
 
 - (void) cleanUp {
