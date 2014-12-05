@@ -371,22 +371,6 @@
     _useButton.alpha = 0;
     [_useButton setImageEdgeInsets:UIEdgeInsetsMake(4,4,4,4)];
     
-//    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionRepeat animations:^{
-//        [UIView setAnimationRepeatCount:10];
-//        self.useButton.transform = CGAffineTransformMakeScale(2,2);
-//        [self.view layoutIfNeeded];
-//        self.useButton.transform = CGAffineTransformMakeScale(1,1);
-//        [self.view layoutIfNeeded];
-//    } completion:nil];
-    
-    CABasicAnimation *animateSize = [CABasicAnimation animationWithKeyPath:@"transform"];
-    animateSize.duration = 1.0;
-    animateSize.autoreverses = YES;
-    animateSize.repeatCount = CGFLOAT_MAX;
-    animateSize.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    animateSize.toValue = [NSNumber numberWithFloat:1.1];
-    [self.useButton.layer addAnimation:animateSize forKey:@"transform"];
-
     
     [[self view] addSubview:_useButton];
     
@@ -410,6 +394,12 @@
                                                          multiplier:1.0
                                                            constant:40.0]];
     
+    // animate button
+    [UIView animateWithDuration:.4 delay:1 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse animations:^{
+        [UIView setAnimationRepeatCount:FLT_MAX];
+        self.useButton.transform = CGAffineTransformMakeScale(1.2,1.2);
+    } completion:nil];
+    
     [self.cameraButton setHidden:YES];
     [self.backButton setHidden:YES];
     [self.toggleCamButton setHidden:YES];
@@ -418,8 +408,6 @@
     [UIView setAnimationDuration:.4];
     _retakeButton.alpha = 1;
     _useButton.alpha = 1;
-
-    [UIView commitAnimations];
 }
 
 - (void) cleanUp {
