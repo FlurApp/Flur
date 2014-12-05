@@ -81,8 +81,10 @@
                 
                 [self.allFlursFromServer setObject:pin forKey:pin.pinId];
                 
-                if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance)
+                if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance) {
+                    pin.openable = true;
                     [self.openablePins setObject:pin forKey: pin.pinId];
+                }
                 else
                     [self.nonOpenablePins setObject:pin forKey: pin.pinId];
             }
@@ -157,6 +159,7 @@
         FLPin * pin = [self.nonOpenablePins objectForKey:key];
 
         if ([self.currentLocation distanceInKilometersTo: pin.coordinate] < closeToPinDistance) {
+            pin.openable = true;
             [pinsOpenable addObject: pin.pinId];
             [self.openablePins setObject:pin forKey:pin.pinId];
         }
@@ -175,6 +178,7 @@
         
         FLPin * pin = [self.openablePins objectForKey:key];
         if ([self.currentLocation distanceInKilometersTo: pin.coordinate] >= closeToPinDistance) {
+            pin.openable = false;
             [pinsNonOpenable addObject: pin.pinId];
             [self.nonOpenablePins setObject:pin forKey:pin.pinId];
         }

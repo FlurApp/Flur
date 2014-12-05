@@ -21,6 +21,8 @@
         self.prompt = object[@"prompt"];
         self.totalContentCount = [object[@"totalContentCount"] integerValue];
         self.haveContributedTo = false;
+        self.openable = false;
+
         
         self.dateCreated = [object createdAt];
     }

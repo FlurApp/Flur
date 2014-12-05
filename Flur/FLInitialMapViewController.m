@@ -159,7 +159,7 @@
     annotationView.canShowCallout = NO;
 }
 
-- (void) reloadMap {
+- (void) reloadMap:(CLLocation *)newLocation {
     
     [self.allAnnotations removeAllObjects];
     [self.mapView removeAnnotations:self.mapView.annotations];
@@ -171,7 +171,11 @@
             FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin];
             [self.allAnnotations setObject:annotation forKey:pin.pinId];
             [self.mapView addAnnotation:annotation];
+            
+            [self updateAnnotations:[self.mapManager getNewlyNonOpenablePins] isNowOpenable:false];
         }
+        
+
     }];
 }
 
@@ -186,7 +190,7 @@
      
         [self.mapManager updateCurrentLocation:newLocation
                             andRefreshLocation:true];
-        [self reloadMap];
+        [self reloadMap:newLocation];
     }
     else {
         
@@ -201,7 +205,6 @@
 - (void) updateAnnotations:(NSMutableArray *)indexes isNowOpenable:(BOOL)isNowOpenable {
     for (NSString* pinId in indexes) {
         FLFlurAnnotation* f = [self.allAnnotations objectForKey:pinId];
-
         if (isNowOpenable) {
             [f showAnnotationAsOpenable:[self.mapView viewForAnnotation:f]];
         }
@@ -252,6 +255,8 @@
     if ([annotation isKindOfClass:[FLFlurAnnotation class]]) {
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
+        
+        
         if (annotation == mapView.userLocation) {
             myLocation.annotationView.enabled = false;
         }
@@ -375,6 +380,8 @@
 }
 
 - (void) justContributedToFlur:(NSString *) objectId {
+    // TODO: yes
+    NSLog(@"Need to update just contributed to flur function in map view");
     FLFlurAnnotation* annotation = (FLFlurAnnotation *)self.allAnnotations[@"objectId"];
     [annotation showAnnotationAsOpenable:[self.mapView viewForAnnotation:annotation]];
 

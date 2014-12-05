@@ -20,6 +20,8 @@
 
 @property (nonatomic) NSInteger totalContentCount;
 @property (nonatomic) BOOL haveContributedTo;
+@property (nonatomic) BOOL openable;
+
 
 
 @property (nonatomic, strong) NSDate* dateCreated;

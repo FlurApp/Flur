@@ -13,6 +13,11 @@
 @property (nonatomic, strong) PFObject *object;
 @property (nonatomic, copy) NSString *title;
 
+@property (nonatomic, strong) UIImageView *myAnnotationView;
+@property (nonatomic) CGRect myImageSize;
+@property (nonatomic) NSInteger hey;
+
+
 @end
 
 @implementation FLFlurAnnotation
@@ -26,6 +31,9 @@
                                                                   pin.coordinate.longitude);
         _coordinate = coord;
         self.pin = pin;
+        self.myAnnotationView = [[UIImageView alloc] init];
+        self.myImageSize = CGRectMake(-15,-15,30,30);
+        self.hey = 1;
     }
     
     return self;
@@ -37,99 +45,147 @@
         CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(lat, lng);
         _coordinate = coord;
         self.pin = nil;
+        self.myAnnotationView = [[UIImageView alloc] init];
+        self.myImageSize = CGRectMake(-15,-15,30,30);
+        self.hey = 1;
+
+
     }
     return self;
 }
 
 - (id) init {
     self = [super init];
+    self.myAnnotationView = [[UIImageView alloc] init];
+    self.myImageSize = CGRectMake(-15,-15,30,30);
+    self.hey = 1;
+
     return self;
 }
 
 - (void) showAnnotationAsOpenable:(MKAnnotationView *) annotationViewFromMap {
-    for (UIView *subView in [annotationViewFromMap subviews]) {
-        if (subView.tag == 10) {
-            [subView removeFromSuperview];
-        }
+    if (self.pin.haveContributedTo) {
+        [self animateRed];
     }
-    UIImageView* animatedImageView = [[UIImageView alloc] init];
-    animatedImageView.userInteractionEnabled = YES;
-    animatedImageView.tag = 10;
-    animatedImageView.animationImages = [NSArray arrayWithObjects:
-                                         [UIImage imageNamed:@"14.png"],
-                                         [UIImage imageNamed:@"14.png"],
-                                         [UIImage imageNamed:@"14.png"],
-                                         [UIImage imageNamed:@"14.png"],
-                                         [UIImage imageNamed:@"14.png"],
-                                         [UIImage imageNamed:@"13.png"],
-                                         [UIImage imageNamed:@"12.png"],
-                                         [UIImage imageNamed:@"11.png"],
-                                         [UIImage imageNamed:@"10.png"],
-                                         [UIImage imageNamed:@"9.png"],
-                                         [UIImage imageNamed:@"8.png"],
-                                         [UIImage imageNamed:@"7.png"],
-                                         [UIImage imageNamed:@"6.png"],
-                                         [UIImage imageNamed:@"5.png"],
-                                         [UIImage imageNamed:@"4.png"],
-                                         [UIImage imageNamed:@"3.png"],
-                                         [UIImage imageNamed:@"2.png"],
-                                         [UIImage imageNamed:@"1.png"],
-                                         [UIImage imageNamed:@"0.png"],
-                                         [UIImage imageNamed:@"0.png"],
-                                         [UIImage imageNamed:@"0.png"],
-                                         [UIImage imageNamed:@"0.png"],
-                                         [UIImage imageNamed:@"0.png"],
-                                         [UIImage imageNamed:@"1.png"],
-                                         [UIImage imageNamed:@"2.png"],
-                                         [UIImage imageNamed:@"3.png"],
-                                         [UIImage imageNamed:@"4.png"],
-                                         [UIImage imageNamed:@"5.png"],
-                                         [UIImage imageNamed:@"6.png"],
-                                         [UIImage imageNamed:@"7.png"],
-                                         [UIImage imageNamed:@"8.png"],
-                                         [UIImage imageNamed:@"9.png"],
-                                         [UIImage imageNamed:@"10.png"],
-                                         [UIImage imageNamed:@"11.png"],
-                                         [UIImage imageNamed:@"12.png"],
-                                         [UIImage imageNamed:@"13.png"], nil];
-    animatedImageView.animationDuration = 1.3f;
-    animatedImageView.animationRepeatCount = 0;
-    [animatedImageView startAnimating];
-    [animatedImageView setFrame: CGRectMake(-15,-15,30,30)];
-    
-    [annotationViewFromMap addSubview:animatedImageView];
+    else {
+        [self animateBlue];
+    }
 }
+
 
 - (void) showAnnotationAsNonOpenable:(MKAnnotationView *) annotationViewFromMap {
-    for (UIView *subView in [annotationViewFromMap subviews]) {
-        if (subView.tag == 10) {
-            [subView removeFromSuperview];
-        }
-     }
-     UIImageView* animatedImageView = [[UIImageView alloc] init];
-     animatedImageView.tag = 10;
-     [animatedImageView setImage:[UIImage imageNamed:@"pinkflur2_64px.png"]];
-     
-     [animatedImageView setFrame: CGRectMake(-15,-15,30,30)];
-     
-     
-     [annotationViewFromMap addSubview:animatedImageView];
+    if (self.pin.haveContributedTo) {
+        [self drawRed];
+    }
+    else {
+        [self drawBlue];
+    }
+}
+
+- (void) growFlur:(MKAnnotationView *) annotationViewFromMap {
+    self.myAnnotationView.userInteractionEnabled = YES;
+    [self.myAnnotationView setImage:[UIImage imageNamed:@""]];
+
+    NSMutableArray *frames = [[NSMutableArray alloc] init];
+    
+    for (int i=1; i<=18; i++)
+        [frames addObject:[UIImage imageNamed:[NSString stringWithFormat:@"redGrowing%d.png", i]]];
+    for (int i=18; i>=15; i--)
+        [frames addObject:[UIImage imageNamed:[NSString stringWithFormat:@"redGrowing%d.png", i]]];
+    
+    
+    self.myAnnotationView.animationImages = [[NSArray alloc] initWithArray:frames];
+    
+    self.myAnnotationView.animationDuration = .5f;
+    self.myAnnotationView.animationRepeatCount = 1;
+    [self.myAnnotationView startAnimating];
+    [self.myAnnotationView setFrame: self.myImageSize];
+    
+    [self performSelector:@selector(drawRed:) withObject:nil afterDelay:.4];
 
 }
+
+- (void) finish:(MKAnnotationView *) annotationViewFromMap {
+    
+}
+
+- (void) animateRed {
+    self.myAnnotationView.userInteractionEnabled = YES;
+    [self.myAnnotationView setImage:[UIImage imageNamed:@""]];
+
+    NSMutableArray *frames = [[NSMutableArray alloc] init];
+    
+    for (int i=1; i<=16; i++)
+        [frames addObject:[UIImage imageNamed:[NSString stringWithFormat:@"redPulsing%d.png", i]]];
+    
+    for (int i=1; i<=4; i++)
+        [frames addObject:[UIImage imageNamed:@"redPulsing16"]];
+    
+    for (int i=16; i>=1; i--)
+        [frames addObject:[UIImage imageNamed:[NSString stringWithFormat:@"redPulsing%d.png", i]]];
+    
+    for (int i=1; i<=4; i++)
+        [frames addObject:[UIImage imageNamed:@"redPulsing1"]];
+    
+         
+    self.myAnnotationView.animationImages = nil;
+    self.myAnnotationView.animationImages = [[NSArray alloc] initWithArray:frames];
+    
+    self.myAnnotationView.animationDuration = 1.0f;
+    self.myAnnotationView.animationRepeatCount = 0;
+    [self.myAnnotationView startAnimating];
+    [self.myAnnotationView setFrame: self.myImageSize];
+}
+
+- (void) animateBlue {
+    self.myAnnotationView.userInteractionEnabled = YES;
+    [self.myAnnotationView setImage:[UIImage imageNamed:@""]];
+
+    
+    NSMutableArray *frames = [[NSMutableArray alloc] init];
+    
+    for (int i=1; i<=16; i++)
+        [frames addObject:[UIImage imageNamed:[NSString stringWithFormat:@"bluePulsing%d.png", i]]];
+    
+    self.myAnnotationView.animationImages = [[NSArray alloc] initWithArray:frames];
+    
+    self.myAnnotationView.animationDuration = 1.0f;
+    self.myAnnotationView.animationRepeatCount = 0;
+    [self.myAnnotationView startAnimating];
+    [self.myAnnotationView setFrame: self.myImageSize];
+}
+
+- (void) drawRed {
+    //[self.myAnnotationView stopAnimating];
+    [self.myAnnotationView setImage:[UIImage imageNamed:@"redPulsing1.png"]];
+    [self.myAnnotationView setFrame: self.myImageSize];
+}
+
+- (void) drawBlue {
+    [self.myAnnotationView stopAnimating];
+    [self.myAnnotationView setImage:[UIImage imageNamed:@"bluePulsing1.png"]];
+    [self.myAnnotationView setFrame: self.myImageSize];
+}
+
+
 
 - (MKAnnotationView*) annotationView {
     MKAnnotationView *annotationView = [[MKAnnotationView alloc] initWithAnnotation:self
                                                                     reuseIdentifier:@"MyCustomAnnotation"];
+    // I dont know why this function is getting called twice
+    if (self.hey == 2)
+        return annotationView;
+    self.hey++;
     
     annotationView.enabled = YES;
     annotationView.canShowCallout = NO;
-
-//    if (self.pin.totalContentCount)
-//        [self showAnnotationAsOpenable:annotationView];
-//    else
-//        [self showAnnotationAsNonOpenable:annotationView];
     
-    [self showAnnotationAsNonOpenable:annotationView];
+    [annotationView addSubview:self.myAnnotationView];
+    if (self.pin.openable)
+        [self showAnnotationAsOpenable:annotationView];
+    else
+        [self showAnnotationAsNonOpenable:annotationView];
+
     return annotationView;
 }
 
