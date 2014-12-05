@@ -367,9 +367,9 @@
     [_useButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_useButton setEnabled:TRUE];
     [_useButton addTarget:self action:@selector(uploadImageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [_useButton setImage:[UIImage imageNamed:@"right_arrow.png"] forState:UIControlStateNormal];
+    [_useButton setImage:[UIImage imageNamed:@"rightArrow.png"] forState:UIControlStateNormal];
     _useButton.alpha = 0;
-    [_useButton setImageEdgeInsets:UIEdgeInsetsMake(4,4,4,4)];
+    [_useButton setImageEdgeInsets:UIEdgeInsetsMake(2,2,2,2)];
     
     
     [[self view] addSubview:_useButton];
