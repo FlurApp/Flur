@@ -43,6 +43,15 @@
     self.topBarVisible = true;
     self.allPhotos = [data objectForKey:@"allPhotos"];
     
+    self.view.backgroundColor = [UIColor blackColor];
+    
+    // Set up controller for the multiple page view
+    self.pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
+    
+    self.pageController.dataSource = self;
+    self.pageController.delegate = self;
+    [[self.pageController view] setFrame:[[self view] bounds]];
+    
     
     // date string
     self.dateLabel = [[UILabel alloc] init];
@@ -85,15 +94,6 @@
     self.bottomBar =        [[UIView alloc] initWithFrame:CGRectZero];
     
     self.viewsToToggle =    [[NSMutableArray alloc] init];
-
-    self.view.backgroundColor = [UIColor blackColor];
-    
-    // Set up controller for the multiple page view
-    self.pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
-    
-    self.pageController.dataSource = self;
-    self.pageController.delegate = self;
-    [[self.pageController view] setFrame:[[self view] bounds]];
 }
 
 
@@ -163,9 +163,10 @@
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
                                                            constant:30.0]];
+
+    self.currentPicture.text = [NSString stringWithFormat:@"1/%lu", (unsigned long) self.allPhotos.count];
+    NSLog(@"%@",self.currentPicture.text);
     
-    
-    self.currentPicture.text = [NSString stringWithFormat:@"1/%d", self.allPhotos.count];
     [self.currentPicture setTextColor:[UIColor whiteColor]];
     [self.currentPicture setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Thin" size:25]];
 
@@ -346,7 +347,7 @@
     SinglePhotoViewController* a= [self.pageController.viewControllers lastObject];
     NSLog(@"index %lu", (long)a.index);
     
-    self.currentPicture.text = [NSString stringWithFormat:@"%lu/%lu", (a.index+1), (unsigned long)self.allPhotos.count];
+    self.currentPicture.text = [NSString stringWithFormat:@"%d/%lu", (a.index+1), (unsigned long)self.allPhotos.count];
 }
 
 
