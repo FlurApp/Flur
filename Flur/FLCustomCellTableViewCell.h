@@ -12,7 +12,7 @@
 
 @optional
 - (void)showInfo:(NSMutableDictionary *)data;
-
+- (void)showPhotoPage:(NSMutableDictionary*)data;
 @end
 
 @interface FLCustomCellTableViewCell : UITableViewCell

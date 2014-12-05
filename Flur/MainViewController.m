@@ -560,6 +560,7 @@
 }
 
 - (void) showPhotoPage:(NSMutableDictionary*)data {
+    
     self.photoView = [[PhotoViewController alloc] init];
     self.photoView.delegate = self;
     [self.view addSubview:self.photoView.view];

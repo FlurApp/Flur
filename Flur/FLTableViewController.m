@@ -217,6 +217,10 @@
     [self.delegate showInfoPage:newData];
 }
 
+-(void) showPhotoPage:(NSMutableDictionary *)data {
+    [_delegate showPhotoPage:data];
+}
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
