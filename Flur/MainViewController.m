@@ -412,7 +412,9 @@
         self.dropFlurView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
                                                   self.dropFlurView.view.frame.size.width,
                                                     self.dropFlurView.view.frame.size.height);
-    } completion:^(BOOL finished) { }];
+    } completion:^(BOOL finished) {
+        [self.dropFlurView setFocus];
+    }];
 }
 
 - (void) hideDropFlurPage {
@@ -423,24 +425,21 @@
     } completion:^(BOOL finished) { }];
 }
 
--(void) addFlur:(NSString*)prompt {
-    // [self.mapView addFlur:prompt];
-    //[self.topBarView revertTopBar];
-    //[self hideDropFlurPage];
-    //[self showCameraPage:nil];
-    
+
+- (void)addFlurToCamera: (NSMutableDictionary*)data {
     [self hideDropFlurPage];
     
-    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     
     FLPin *pin = [[FLPin alloc] init];
     pin.coordinate = [self getCurrentLocation];
-    pin.prompt = @"Hey there the test works!";
+    pin.prompt = data[@"prompt"];
     
-    data[@"FLPin"] = pin;
-    data[@"newFlur"] = @"true";
+    NSMutableDictionary *dataToPass = [[NSMutableDictionary alloc] init];
+    dataToPass[@"FLPin"] = pin;
+    dataToPass[@"newFlur"] = @"true";
     
-    [self showCameraPage:data];
+    [self showCameraPage:dataToPass];
+
 }
 
 

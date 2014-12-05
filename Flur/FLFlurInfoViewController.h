@@ -24,6 +24,7 @@
 
 - (instancetype) initWithData:(NSMutableDictionary *)data;
 @property (nonatomic, assign) id<FLFlurInfoViewControllerDelegate> delegate;
+
 - (void) setData:(NSMutableDictionary *)data;
 
 

@@ -11,12 +11,19 @@
 @protocol FLNewFlurViewControllerDelegate <NSObject>
 
 @optional
-- (void)addFlur: (NSString*)prompt;
+- (void)addFlurToCamera: (NSMutableDictionary*)data;
 
 @end
 
-@interface FLNewFlurViewController : UIViewController
+
+@interface FLNewFlurViewController : UIViewController<UITextViewDelegate>
 
 @property (nonatomic, assign) id<FLNewFlurViewControllerDelegate> delegate;
+
+
+
+- (void) setFocus;
+
+
 
 @end

@@ -100,6 +100,7 @@ static bool userFound = false;
                 }
             }
 
+            NSLog(@"WTF");
             PFQuery *query2 = [PFQuery queryWithClassName:@"FlurPin"];
             [query2 whereKey:@"objectId" containedIn:[NSArray arrayWithArray:flurObjectIds]];
             [query2 includeKey:@"createdBy"];
