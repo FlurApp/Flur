@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
+#import "FLPin.h"
+
 @interface FLMapManager : NSObject
 
 @property (nonatomic, strong) PFGeoPoint *currentLocation;
@@ -28,8 +30,8 @@
 
 - (NSMutableArray*) getNewlyOpenablePins;
 - (NSMutableArray*) getNewlyNonOpenablePins;
-
-
+- (void) justContributedToFlur:(NSString *) objectId;
+- (void) addNewFlur:(FLPin *)pin;
 
 - (instancetype) init;
 

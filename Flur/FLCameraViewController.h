@@ -7,13 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AVFoundation/AVFoundation.h>
 #import "FLPin.h"
 
 @protocol FLCameraViewControllerDelegate <NSObject>
 
-@required
+@optional
 - (void) hideCameraPage;
+- (void) showPhotoPage:(NSMutableDictionary*)data;
+- (void) haveContributedToFlur:(NSString *) objectId;
+- (void) addNewFlur:(FLPin *)pin;
+
 @end
 
 @interface FLCameraViewController : UIViewController <FLCameraViewControllerDelegate>
@@ -22,5 +25,6 @@
 
 @property (nonatomic, assign) id<FLCameraViewControllerDelegate> delegate;
 
+@property (nonatomic, strong) UIVisualEffectView* blurEffectView;
 
 @end

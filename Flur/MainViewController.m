@@ -105,7 +105,7 @@
     
     [self.view addSubview:self.mapView.view];
     [self addChildViewController:self.mapView];
-    self.mapView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    self.mapView.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
     
     self.mapView.view.layer.masksToBounds = NO;
     [self.mapView.view.layer setCornerRadius:0];
@@ -124,7 +124,7 @@
     
     [self addChildViewController:self.topBarView];
     
-    self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
+    self.topBarView.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
     
     
     /* -------------------------------------------
@@ -157,7 +157,7 @@
     
     
     /* -------------------------------------------
-     Setup Add New Flur View.
+                Setup Add New Flur View.
      -----------------------------------------------*/
     self.dropFlurView = [[FLNewFlurViewController alloc] init];
     self.dropFlurView.delegate = self;
@@ -168,7 +168,7 @@
                                               self.view.frame.size.height - TOP_BAR_HEIGHT);
     
     /* -------------------------------------------
-     Setup Camera View
+                Setup Camera View
      -----------------------------------------------*/
     self.cameraView = [[FLCameraViewController alloc] init];
     self.cameraView.delegate = self;
@@ -178,19 +178,69 @@
     self.cameraView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
                                               self.view.frame.size.height);
     
-    if (self.shouldSync) {
-        //NSLog(@"yessss");
+    /* -------------------------------------------
+                Setup login View
+     -----------------------------------------------*/
+    self.loginView = [[FLLoginViewController alloc] init];
+    self.loginView.delegate = self;
+    
+    [self.view addSubview:self.loginView.view];
+    [self addChildViewController:self.loginView];
+    self.loginView.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width,
+                                            self.view.frame.size.height);
+    
+    
+    /* -------------------------------------------
+                Setup splash View
+     -----------------------------------------------*/
+    self.splashView = [[FLSplashViewController alloc] init];
+    self.splashView.delegate = self;
+    
+    [self.view addSubview:self.splashView.view];
+    [self addChildViewController:self.splashView];
+    self.splashView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
+                                            self.view.frame.size.height);
+    
+    /* -------------------------------------------
+                Setup photo view
+     -----------------------------------------------*/
+//    self.photoView = [[PhotoViewController alloc] init];
+//    self.photoView.delegate = self;
+//    
+//    [self.view addSubview:self.photoView.view];
+//    [self addChildViewController:self.photoView];
+//    self.photoView.view.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,
+//                                            self.view.frame.size.height);
+    
+    
+    /*if (self.shouldSync) {
+        NSLog(@"syncing");
         [LocalStorage syncWithServer:^{
             [self.tableView getFlurs];
         }];
     }
     else {
         [LocalStorage getFlurs:^(NSMutableDictionary *data) {
-            //NSLog(@"wtf");
+            NSLog(@"hii");
+            NSLog(@"wtf: %lu", data.count);
         }];
-    }
+    }*/
+//    [LocalStorage syncWithServer:^{
+//        [self.tableView getFlurs];
+//    }];
     
+    
+    // INITIAL CONTROL LOGIC
+    PFUser *currentUser = [PFUser currentUser];
+//    [LocalStorage deleteAllFlurs];
+    if (currentUser) {
+        self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
+        self.mapView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 
+    }
+    else {
+        self.splashView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    }
 }
 
 // Delegate function called by the Top Var View Controller
@@ -247,16 +297,19 @@
     self.tableVisible = true;
     [self.tableView didMoveToParentViewController:self];
     
-    self.tableView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
+    self.tableView.view.frame = CGRectMake(self.view.frame.size.width, TOP_BAR_HEIGHT,
                                            self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
 
     [self.view sendSubviewToBack:self.tableView.view];
 
     [UIView animateWithDuration:SLIDE_TIMING delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         
-        self.mapView.view.frame = CGRectMake(-self.view.frame.size.width + 20, 0,
+        self.mapView.view.frame = CGRectMake(-self.view.frame.size.width, 0,
                                              self.view.frame.size.width,
                                              self.view.frame.size.height);
+        
+        self.tableView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
+                                               self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
         
     } completion:^(BOOL finished) { }];
     
@@ -272,11 +325,13 @@
         self.mapView.view.frame = CGRectMake(0, 0,
                                              self.view.frame.size.width,
                                              self.view.frame.size.height);
+        
+        self.tableView.view.frame = CGRectMake(-self.view.frame.size.width, TOP_BAR_HEIGHT,
+                                               self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
 
         
     } completion:^(BOOL finished) {
-        self.tableView.view.frame = CGRectMake(-self.view.frame.size.width, TOP_BAR_HEIGHT,
-                                               self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
+
     }];
 }
 
@@ -369,26 +424,56 @@
 }
 
 -(void) addFlur:(NSString*)prompt {
-    [self.mapView addFlur:prompt];
-    [self.topBarView revertTopBar];
+    // [self.mapView addFlur:prompt];
+    //[self.topBarView revertTopBar];
+    //[self hideDropFlurPage];
+    //[self showCameraPage:nil];
+    
     [self hideDropFlurPage];
-    [self showCameraPage];
+    
+    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    
+    FLPin *pin = [[FLPin alloc] init];
+    pin.coordinate = [self getCurrentLocation];
+    pin.prompt = @"Hey there the test works!";
+    
+    data[@"FLPin"] = pin;
+    data[@"newFlur"] = @"true";
+    
+    [self showCameraPage:data];
 }
 
--(void) showCameraPage {
+
+
+-(void) showCameraPage:(NSMutableDictionary*)data {
     
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
-    self.cameraView.view.frame = CGRectMake(0, self.view.frame.size.height,
+    [self.cameraView setData:data];
+    
+    self.cameraView.view.frame = CGRectMake(0, -self.view.frame.size.height,
                                               self.cameraView.view.frame.size.width,
                                               self.cameraView.view.frame.size.height);
     
-    [UIView animateWithDuration:.3 delay:.2 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.cameraView.view.frame = CGRectMake(0, 0,
+    [UIView animateWithDuration:.3 delay:.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.cameraView.view.frame = CGRectMake(0, -20,
                                                   self.cameraView.view.frame.size.width,
                                                   self.cameraView.view.frame.size.height);
-    } completion:^(BOOL finished) {}];
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:.07 delay:.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut animations:^{
+            self.cameraView.view.frame = CGRectMake(0, -10,
+                                                    self.cameraView.view.frame.size.width,
+                                                    self.cameraView.view.frame.size.height);
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:.07 delay:.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut animations:^{
+                self.cameraView.view.frame = CGRectMake(0, 0,
+                                                        self.cameraView.view.frame.size.width,
+                                                        self.cameraView.view.frame.size.height);
+            } completion:^(BOOL finished) {}];
+        }];
+
+    }];
     
 }
 
@@ -398,6 +483,11 @@
                                                   self.cameraView.view.frame.size.width,
                                                   self.cameraView.view.frame.size.height);
     } completion:^(BOOL finished) { }];
+    
+    [self setNeedsStatusBarAppearanceUpdate];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    
+    [self.cameraView.blurEffectView removeFromSuperview];
 }
 
 - (void) hideContributePage {
@@ -408,6 +498,105 @@
                                                   self.flurInfoView.view.frame.size.width,
                                                   self.flurInfoView.view.frame.size.height);
     } completion:^(BOOL finished) { }];
+}
+
+-(void)showSplashPage {
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.splashView.view.frame = CGRectMake(0, 0,
+                                               self.splashView.view.frame.size.width,
+                                               self.splashView.view.frame.size.height);
+    } completion:^(BOOL finished) {}];
+}
+
+-(void)hideSplashPage {
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.splashView.view.frame = CGRectMake(-self.splashView.view.frame.size.width, 0,
+                                                self.splashView.view.frame.size.width,
+                                                self.splashView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+}
+
+-(void)showLoginPage:(NSMutableDictionary*)data {
+    [self.loginView setData:data];
+    
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.loginView.view.frame = CGRectMake(0, 0,
+                                                self.loginView.view.frame.size.width,
+                                                self.loginView.view.frame.size.height);
+    } completion:^(BOOL finished) {}];
+    
+    [self.loginView.usernameInput becomeFirstResponder];
+}
+
+-(void)hideLoginPage {
+    [LocalStorage syncWithServer:^{
+        NSLog(@"Done syncing");
+        [self.tableView getFlurs];
+    }];
+    
+    [UIView animateWithDuration:0 delay:.3 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.loginView.view.frame = CGRectMake(-self.loginView.view.frame.size.width, 0,
+                                                self.loginView.view.frame.size.width,
+                                                self.loginView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+}
+
+-(void)showMapPage {
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
+        self.mapView.view.frame = CGRectMake(0, 0,
+                                               self.mapView.view.frame.size.width,
+                                               self.mapView.view.frame.size.height);
+    } completion:^(BOOL finished) {}];
+    
+}
+
+-(void)hideMapPage {
+    [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.mapView.view.frame = CGRectMake(self.mapView.view.frame.size.width, 0,
+                                               self.mapView.view.frame.size.width,
+                                               self.mapView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+}
+
+- (void) showPhotoPage:(NSMutableDictionary*)data {
+    
+    self.photoView = [[PhotoViewController alloc] init];
+    self.photoView.delegate = self;
+    [self.view addSubview:self.photoView.view];
+    [self addChildViewController:self.photoView];
+    [self.photoView setData:data];
+    
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.photoView.view.frame = CGRectMake(0, 0,
+                                               self.photoView.view.frame.size.width,
+                                               self.photoView.view.frame.size.height);
+    } completion:^(BOOL finished) {}];
+}
+
+-(void)hidePhotoPage {
+    [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.photoView.view.frame = CGRectMake(0, self.photoView.view.frame.size.height,
+                                               self.photoView.view.frame.size.width,
+                                               self.photoView.view.frame.size.height);
+    } completion:^(BOOL finished) {}];
+
+    [self setNeedsStatusBarAppearanceUpdate];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+}
+
+- (void) haveContributedToFlur:(NSString *) objectId {
+    [self.mapView justContributedToFlur:objectId];
+    [self.tableView getFlurs];
+}
+
+- (void) addNewFlur:(FLPin *)pin {
+    [self.mapView addNewFlur:pin];
+    [self.tableView getFlurs];
+}
+
+- (PFGeoPoint*) getCurrentLocation {
+    return self.mapView.mapManager.currentLocation;
 }
 
 #pragma mark -

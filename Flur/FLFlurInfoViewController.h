@@ -13,13 +13,10 @@
 @protocol FLFlurInfoViewControllerDelegate <NSObject>
 
 @optional
-- (void)movePanelLeft;
-- (void)movePanelRight;
-
-
-@required
 - (void)hideContributePage;
 - (void)hideInfoPage;
+- (void)showCameraPage:(NSMutableDictionary*)data;
+- (void)showPhotoPage:(NSMutableDictionary*)data;
 
 @end
 

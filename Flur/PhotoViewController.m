@@ -10,8 +10,13 @@
 
 #import "PhotoViewController.h"
 #import "SinglePhotoViewController.h"
-#import "FLMasterNavigationController.h"
 #import "FLConstants.h"
+#import "Flur.h"
+
+#define flurYellow RGBA(255,220,15,.98)
+#define flurBlue RGBA(13,191,255,1)
+#define flurPurple RGBA(179,88,224,1)
+#define flurRed RGBA(244,99,83,1)
 
 @interface PhotoViewController ()
 
@@ -27,42 +32,27 @@
 @property (strong, nonatomic) NSMutableArray *allPhotos;
 @property (strong, nonatomic) NSString *prompt;
 
-
 // Used to detect whether two async calls have returned
 @property (nonatomic) int count;
 @property (nonatomic) bool topBarVisible;
 
+@property (nonatomic,strong) NSMutableDictionary *pin_data;
 
 @end
 
 @implementation PhotoViewController
 
-- (instancetype) initWithData: (NSMutableDictionary*) data {
-    self = [super init];
+- (void) setData: (NSMutableDictionary*) data {
     
-    if (self) {
-        self.pin = [data objectForKey:@"FLPin"];
-        self.topBarVisible = true;
-        self.allPhotos = [data objectForKey:@"allPhotos"];
-    }
+    // Set appearance of status bar
+    //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
-    return self;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-
-       // Allocate space for all data members
-    self.viewPrompt =       [[UILabel alloc] init];
-    self.currentPicture =   [[UILabel alloc] init];
-    self.topBar =           [[UIView alloc] initWithFrame:CGRectZero];
-    self.bottomBar =        [[UIView alloc] initWithFrame:CGRectZero];
+    self.pin_data = data;
+    self.pin = [data objectForKey:@"FLPin"];
+    self.topBarVisible = true;
+    self.allPhotos = [data objectForKey:@"allPhotos"];
     
-    self.viewsToToggle =    [[NSMutableArray alloc] init];
-
     self.view.backgroundColor = [UIColor blackColor];
-//    self.pinId = @"c8kzGmjHaU";
-
     
     // Set up controller for the multiple page view
     self.pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
@@ -71,8 +61,25 @@
     self.pageController.delegate = self;
     [[self.pageController view] setFrame:[[self view] bounds]];
     
+    
+    // date string
+    self.dateLabel = [[UILabel alloc] init];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MMM d, YYYY"];
+    
+    if (self.pin) {
+        self.viewPrompt.text = self.pin.prompt;
+        self.dateLabel.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:self.pin.dateCreated]];
+    }
+    else {
+        Flur *flur = [data objectForKey:@"flur"];
+        self.viewPrompt.text = flur.prompt;
+        self.dateLabel.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:flur.dateCreated]];
+    }
+    [self.dateLabel setTextColor:[UIColor whiteColor]];
+    
     SinglePhotoViewController *initialViewController = [self viewControllerAtIndex:0];
-   
+    
     
     NSArray *viewControllers = [NSArray arrayWithObject:initialViewController];
     
@@ -86,10 +93,23 @@
     [self loadViews];
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+       // Allocate space for all data members
+    self.viewPrompt =       [[UILabel alloc] init];
+    self.currentPicture =   [[UILabel alloc] init];
+    self.topBar =           [[UIView alloc] initWithFrame:CGRectZero];
+    self.bottomBar =        [[UIView alloc] initWithFrame:CGRectZero];
+    
+    self.viewsToToggle =    [[NSMutableArray alloc] init];
+}
+
 
 
 - (void) loadTopBar {
     self.topBar.translatesAutoresizingMaskIntoConstraints = NO;
+    self.topBar.backgroundColor = flurYellow;
 
     [self.view addSubview:self.topBar];
     
@@ -101,29 +121,29 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
-    UIBlurEffect *blurEffect;
-    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    
-    UIVisualEffectView *blurEffectView;
-    blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    
-    [self.topBar addSubview:blurEffectView];
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
-    
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+//    UIBlurEffect *blurEffect;
+//    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+//    
+//    UIVisualEffectView *blurEffectView;
+//    blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+//    blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
+//    
+//    
+//    [self.topBar addSubview:blurEffectView];
+//    
+//    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+//    
+//    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+//    
+//    
+//    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+//    
+//    [self.topBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
 
     
     UIButton *exitButton = [[UIButton alloc] init];
     exitButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [exitButton setImage:[UIImage imageNamed:@"leaveCamera.png"] forState:UIControlStateNormal];
+    [exitButton setImage:[UIImage imageNamed:@"less_then-100.png"] forState:UIControlStateNormal];
 
    
     [exitButton addTarget:self
@@ -135,7 +155,7 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:28 ]];
     
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
     
     
     
@@ -153,10 +173,11 @@
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
                                                            constant:30.0]];
+
+    self.currentPicture.text = [NSString stringWithFormat:@"1/%lu", (unsigned long) self.allPhotos.count];
+    NSLog(@"%@",self.currentPicture.text);
     
-    
-    self.currentPicture.text = [NSString stringWithFormat:@"1/%d", self.allPhotos.count];
-    [self.currentPicture setTextColor:[UIColor whiteColor]];
+    [self.currentPicture setTextColor:flurBlue];
     [self.currentPicture setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Thin" size:25]];
 
     self.currentPicture.translatesAutoresizingMaskIntoConstraints = NO;
@@ -166,12 +187,12 @@
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:30]];
     
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
 }
 
 - (void) loadBottomBar {
     self.bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
-    //self.bottomBar.backgroundColor = [UIColor blackColor];
+    self.bottomBar.backgroundColor = flurYellow;
     [self.view addSubview:self.bottomBar];
     
     
@@ -188,55 +209,50 @@
     self.topBar.alpha = 1;
     self.bottomBar.alpha = 1;
     
-    UIBlurEffect *blurEffect;
-    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    
-    UIVisualEffectView *blurEffectView;
-    blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    
-    [self.bottomBar addSubview:blurEffectView];
-    
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-    
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
-    
-    
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
-    UILabel* prompt = [[UILabel alloc] init];
-    [prompt setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Regular" size:23]];
-
-    prompt.translatesAutoresizingMaskIntoConstraints = NO;
-    prompt.text = @"What did we do?";
-    [prompt setTextColor:RGB(98,234,239)];
-    
-    [self.bottomBar addSubview:prompt];
-    
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:prompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
+//    UIBlurEffect *blurEffect;
+//    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+//    
+//    UIVisualEffectView *blurEffectView;
+//    blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+//    blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
+//    
+//    
+//    [self.bottomBar addSubview:blurEffectView];
+//    
+//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+//    
+//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+//    
+//    
+//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+//    
+//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
     
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:prompt attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    // data label
+    [self.dateLabel setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Regular" size:23]];
+    self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.bottomBar addSubview:self.dateLabel];
     
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:prompt attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
     
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
+    
+    
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
     
     
     self.viewPrompt.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.viewPrompt setTextColor:[UIColor whiteColor]];
+    [self.viewPrompt setTextColor:flurRed];
     [self.viewPrompt setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:18]];
-
-    self.viewPrompt.text = self.pin.prompt;
     
     [self.bottomBar addSubview:self.viewPrompt];
     
     self.viewPrompt.numberOfLines = 0;
     self.viewPrompt.lineBreakMode = NSLineBreakByWordWrapping;
     
-    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:prompt attribute:NSLayoutAttributeBottom multiplier:1.0 constant:5]];
+    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.dateLabel attribute:NSLayoutAttributeBottom multiplier:1.0 constant:5]];
     
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-10]];
     
@@ -253,9 +269,12 @@
 
 
 - (void) navBack {
-   // AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-   // [appDelegate popMyself];
-    [FLMasterNavigationController switchToViewController:@"FLInitialMapViewController" fromViewController:@"PhotoViewController" withData:[[NSMutableDictionary alloc]init]];
+    [_delegate hidePhotoPage];
+    
+    if ([[self.pin_data objectForKey:@"previousPage"] isEqualToString: @"tablePage"])
+        [_delegate showTablePage];
+    else
+        [_delegate showMapPage];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -296,6 +315,7 @@
 - (SinglePhotoViewController *)viewControllerAtIndex:(NSUInteger)index {
     
     SinglePhotoViewController *childViewController = [[SinglePhotoViewController alloc] init];
+    [childViewController.view setFrame:self.view.frame];
     
     childViewController.index = index;
     childViewController.viewsToToggle = self.viewsToToggle;
@@ -326,9 +346,9 @@
     
     // Everytime a page is turned, grab the index of the current page, display as current photo number
     SinglePhotoViewController* a= [self.pageController.viewControllers lastObject];
-    NSLog(@"index %lu", a.index);
+    NSLog(@"index %lu", (long)a.index);
     
-    self.currentPicture.text = [NSString stringWithFormat:@"%lu/%lu", (a.index+1), (unsigned long)self.allPhotos.count];
+    self.currentPicture.text = [NSString stringWithFormat:@"%d/%lu", (a.index+1), (unsigned long)self.allPhotos.count];
 }
 
 

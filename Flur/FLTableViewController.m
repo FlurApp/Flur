@@ -26,8 +26,6 @@
 
 - (void) didMoveToParentViewController:(UIViewController *)parent {
     [self getFlurs];
-    NSLog(@"moving to parent");
-
 }
 
 - (void)viewDidLoad {
@@ -85,9 +83,11 @@
 }
 
 - (void) getFlurs {
+    // NSLog(@"Getting flurs");
     // get contributed pins
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
         self.pinsArray = allFlurs[@"allFlurs"];
+        // NSLog(@"Size: %lu", self.pinsArray.count);
         
        // NSLog(@"first: %@", [self.pinsArray[0] prompt]);
         //NSLog(@"second: %@", [self.pinsArray[1] prompt]);
@@ -105,20 +105,17 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
     return self.pinsArray.count;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     static NSString *CellIdentifier = @"Cell";
     FLCustomCellTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
                                             CellIdentifier];
@@ -127,9 +124,10 @@
     if (cell == nil) {
         cell = [[FLCustomCellTableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier];
     }
+    
     cell.delegate = self;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
+
     cell.cellPrompt.text = [[self.pinsArray objectAtIndex:indexPath.row] prompt];
     
     NSDate *date = [[self.pinsArray objectAtIndex:indexPath.row] dateAdded];
@@ -208,13 +206,19 @@
     Flur *flur = (Flur *)[data objectForKey:@"flur"];
     NSMutableDictionary *newData = [[NSMutableDictionary alloc] init];
     
+    [newData setObject:flur forKey: @"flur"];
     [newData setObject:flur.creatorUsername forKey:@"creatorUsername"];
     [newData setObject:flur.dateCreated forKey:@"dateCreated"];
     [newData setObject:flur.dateAdded forKey:@"dateAdded"];
     [newData setObject:flur.totalContentCount forKey:@"totalContentCount"];
     [newData setObject:flur.myContentPosition forKey:@"myContentPosition"];
+    [newData setObject:flur.objectId forKey:@"pinId"];
 
     [self.delegate showInfoPage:newData];
+}
+
+-(void) showPhotoPage:(NSMutableDictionary *)data {
+    [_delegate showPhotoPage:data];
 }
 
 /*

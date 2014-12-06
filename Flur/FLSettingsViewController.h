@@ -13,9 +13,10 @@
 @optional
 - (void)addFlur:(NSString*)prompt;
 - (void)hideInfoView;
-
-@required
--(void)showDropFlurPage;
+- (void)hideSettingsPage;
+- (void)showDropFlurPage;
+- (void)hideMapPage;
+- (void)showSplashPage;
 
 @end
 

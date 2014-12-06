@@ -10,10 +10,17 @@
 #import "FLConstants.h"
 
 @interface FLTopBarViewController ()
-
+@property (nonatomic, strong) UIView *topBarContainer;
 @property (nonatomic, strong) UIImageView *flurImageContainer;
 @property (nonatomic, strong) UILabel *pageTitle;
 @property (nonatomic, strong) UIButton *backButton;
+
+@property (nonatomic, strong) UIView *purpleView;
+@property (nonatomic, strong) UIView *blueView;
+
+
+
+
 
 @property (nonatomic) BOOL tableViewMode;
 @property (nonatomic) BOOL infoViewMode;
@@ -33,53 +40,62 @@
     /* ---------------------------------------
                 Setup Top Bar
     -----------------------------------------*/
-    UIView *topBarContainer = [[UIView alloc] init];
-    topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    topBarContainer.backgroundColor = [UIColor redColor];
+    self.topBarContainer = [[UIView alloc] init];
+    self.topBarContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    self.topBarContainer.backgroundColor = [UIColor redColor];
     
-    [self.view addSubview:topBarContainer];
+    [self.view addSubview:self.topBarContainer];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBarContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:TOP_BAR_HEIGHT]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBarContainer attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:TOP_BAR_HEIGHT]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBarContainer attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:topBarContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBarContainer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     [self.view setNeedsLayout];
     [self.view layoutIfNeeded];
     
+
+
     
     
-    /* ---------------------------------------
-            Add gradient to Top Bar
-     -----------------------------------------*/
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = topBarContainer.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, 1) CGColor], (id)[RGBA(179, 88, 224, 1) CGColor], nil];
 
-    [topBarContainer.layer insertSublayer:gradient atIndex:0];
+    
 
+    
+    
     
     /* ----------------------------------------------------------
-                Add Table List button to Top Bar
+                Add Flur Image  to Top Bar
      -----------------------------------------------------------*/
-    self.tableListButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
-    [self.tableListButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
+    self.flurImageContainer = [[UIImageView alloc] initWithImage:flurImage];
+    self.flurImageContainer.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.topBarContainer addSubview:self.flurImageContainer];
     
-    self.tableListButton.tag = 1;
-    [self.tableListButton addTarget:self action:@selector(showTableView:)
-                   forControlEvents:UIControlEventTouchUpInside];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:35]];
     
-    [self.view addSubview: self.tableListButton];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1 constant:33]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1 constant:-17]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer
+                                                                attribute:NSLayoutAttributeHeight
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:nil
+                                                                attribute:NSLayoutAttributeNotAnAttribute
+                                                               multiplier:1.0
+                                                                 constant:30.0]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer
+                                                                attribute:NSLayoutAttributeWidth
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:nil
+                                                                attribute:NSLayoutAttributeNotAnAttribute
+                                                               multiplier:1.0
+                                                                 constant:60.0]];
     
     
     /* ----------------------------------------------------------
-                Add Settings button to Top Bar
+     Add Settings button to Top Bar
      -----------------------------------------------------------*/
     self.menuButton = [UIButton buttonWithType:(UIButtonTypeCustom)];
     self.menuButton = [[UIButton alloc] init];
@@ -89,7 +105,7 @@
     self.menuButton.backgroundColor = [UIColor clearColor];
     
     // create image for menu button
-    UIImage* hamburger = [UIImage imageNamed:@"menu-32.png"];
+    UIImage* hamburger = [UIImage imageNamed:@"big-menu.png"];
     CGRect rect = CGRectMake(0,0,75,75);
     UIGraphicsBeginImageContext(rect.size);
     [hamburger drawInRect:rect];
@@ -101,43 +117,100 @@
     // set image for menu button
     [self.menuButton setImage:menuImg forState:UIControlStateNormal];
     [self.menuButton setContentMode:UIViewContentModeCenter];
-    [self.menuButton setImageEdgeInsets:UIEdgeInsetsMake(25,25,25,25)];
+    [self.menuButton setImageEdgeInsets:UIEdgeInsetsMake(20,20,20,20)];
     
     // add menu button to view
     [self.menuButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[self view] addSubview:self.menuButton];
+    [self.topBarContainer addSubview:self.menuButton];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:8]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.flurImageContainer attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:4]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-8]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.menuButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-10]];
+    
+
+    
+    /* ----------------------------------------------------------
+     Add Table List button to Top Bar
+     -----------------------------------------------------------*/
+    // create image for tableList button
+    UIImage* tableIcon = [UIImage imageNamed:@"glasses-480.png"];
+    CGRect temp_rect = CGRectMake(0,0,75,75);
+    UIGraphicsBeginImageContext(temp_rect.size);
+    [tableIcon drawInRect:temp_rect];
+    UIImage *tableIconResized = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    NSData *imgData = UIImagePNGRepresentation(tableIconResized);
+    UIImage *tableImg = [UIImage imageWithData:imgData];
+    
+    // create tableList button
+    self.tableListButton = [[UIButton alloc] init];
+    [self.tableListButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    // set image for tableList button
+    [self.tableListButton setImage:tableImg forState:UIControlStateNormal];
+    [self.tableListButton setContentMode:UIViewContentModeCenter];
+    [self.tableListButton setImageEdgeInsets:UIEdgeInsetsMake(22.5,22.5,22.5,22.5)];
+    
+    self.tableListButton.tag = 1;
+    [self.tableListButton addTarget:self action:@selector(showTableView:)
+                   forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.topBarContainer addSubview: self.tableListButton];
+    
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.menuButton attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+    
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:4]];
     
     
     /* ----------------------------------------------------------
-                Add Flur Image  to Top Bar
+                Add Blue and Purple Gradients to Top Bar
      -----------------------------------------------------------*/
-    UIImage *flurImage = [UIImage imageNamed:@"flurfont.png"];
-    self.flurImageContainer = [[UIImageView alloc] initWithImage:flurImage];
-    self.flurImageContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    [topBarContainer addSubview:self.flurImageContainer];
     
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:25]];
+    self.purpleView = [[UIView alloc] init];
+    [self.purpleView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.topBarContainer addSubview:self.purpleView];
+
+    self.purpleView.frame = CGRectMake(0, 0, self.topBarContainer.frame.size.width, self.topBarContainer.frame.size.height);
     
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:topBarContainer attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer
-                                                                attribute:NSLayoutAttributeHeight
-                                                                relatedBy:NSLayoutRelationEqual
-                                                                   toItem:nil
-                                                                attribute:NSLayoutAttributeNotAnAttribute
-                                                               multiplier:1.0
-                                                                 constant:30.0]];
-    [topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurImageContainer
-                                                                attribute:NSLayoutAttributeWidth
-                                                                relatedBy:NSLayoutRelationEqual
-                                                                   toItem:nil
-                                                                attribute:NSLayoutAttributeNotAnAttribute
-                                                               multiplier:1.0
-                                                                 constant:60.0]];
+     CAGradientLayer *gradient1 = [CAGradientLayer layer];
+     gradient1.frame = self.topBarContainer.bounds;
+     gradient1.colors = [NSArray arrayWithObjects:(id)[RGBA(186,108,224, 1) CGColor], (id)[RGBA(179, 88, 224, 1) CGColor], nil];
+     // gradient1.colors = [NSArray arrayWithObjects:(id)[RGBA(255,211,150, 1) CGColor], (id)[RGBA(255,198,119,1) CGColor], nil];
+
+
+
+     [self.purpleView.layer insertSublayer:gradient1 atIndex:0];
+    
+    
+    
+    
+    
+    self.blueView = [[UIView alloc] init];
+    [self.blueView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.topBarContainer addSubview:self.blueView];
+    
+    self.blueView.frame = CGRectMake(self.view.frame.size.width, 0, self.topBarContainer.frame.size.width, self.topBarContainer.frame.size.height);
+    
+    
+    CAGradientLayer *gradient2 = [CAGradientLayer layer];
+    gradient2.frame = self.blueView.bounds;
+    gradient2.colors = [NSArray arrayWithObjects:(id)[RGBA(99, 214, 255, 1) CGColor], (id)[RGBA(9, 190, 255, 1) CGColor], nil];
+
+    
+    [self.blueView.layer insertSublayer:gradient2 atIndex:0];
+    
+    
+    
+    
+    
+    
+    /* ---------------------------------------
+            Add Page Title to Top Bar
+     -----------------------------------------*/
+    
+    
+    
     
     self.pageTitle = [[UILabel alloc] init];
     [self.pageTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -147,11 +220,11 @@
     [self.pageTitle setTextColor:[UIColor whiteColor]];
     self.pageTitle.alpha = 0;
     
-    [self.view addSubview:self.pageTitle];
+    [self.topBarContainer addSubview:self.pageTitle];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.flurImageContainer attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
     
     
     
@@ -164,16 +237,18 @@
               forControlEvents:UIControlEventTouchDown];
     [self.backButton setImage:[UIImage imageNamed:@"less_then-100.png"] forState:UIControlStateNormal];
     self.backButton.alpha = 0;
-    [self.view addSubview:self.backButton];
+    [self.topBarContainer addSubview:self.backButton];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.flurImageContainer attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
     
-   [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30]];
+   [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30]];
     
-   [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30]];
+   [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.backButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30]];
     
+    [self.topBarContainer sendSubviewToBack:self.purpleView];
+    [self.topBarContainer sendSubviewToBack:self.blueView];
 
 }
 
@@ -208,16 +283,27 @@
 
 - (IBAction)showTableView:(id)sender {
     [self.delegate showTablePage];
+
     [self showTableBar];
 }
 
 - (void) showTableBar {
     self.tableViewMode = true;
+    [self.topBarContainer bringSubviewToFront:self.blueView];
+    [self.topBarContainer sendSubviewToBack:self.purpleView];
+
+    
     [UIView animateWithDuration:.2 animations:^{
         self.menuButton.alpha = 0;
         self.tableListButton.alpha = 0;
         self.flurImageContainer.alpha = 0;
+        
+        self.blueView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+        self.purpleView.frame = CGRectMake(-self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+
+
     } completion:^(BOOL finished) {
+        [self.topBarContainer sendSubviewToBack:self.blueView];
         self.pageTitle.text = @"Past Contributions";
         [UIView animateWithDuration:.2 animations:^{
             self.pageTitle.alpha = 1;
@@ -228,10 +314,19 @@
 }
 
 - (void) showMapBar {
+    [self.topBarContainer bringSubviewToFront:self.purpleView];
+    [self.topBarContainer sendSubviewToBack:self.blueView];
+
     [UIView animateWithDuration:.2 animations:^{
         self.pageTitle.alpha = 0;
         self.backButton.alpha = 0;
+        
+        self.blueView.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+        self.purpleView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+
+
     } completion:^(BOOL finished) {
+        [self.topBarContainer sendSubviewToBack:self.purpleView];
         [UIView animateWithDuration:.2 animations:^{
             self.menuButton.alpha = 1;
             self.tableListButton.alpha = 1;

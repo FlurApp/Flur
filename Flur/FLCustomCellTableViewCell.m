@@ -7,9 +7,9 @@
 //
 
 #import "FLCustomCellTableViewCell.h"
-#import "FLMasterNavigationController.h"
 #import "FLConstants.h"
 #import "GrowButton.h"
+#import "FLPhotoManager.h"
 
 @interface FLCustomCellTableViewCell() <UIGestureRecognizerDelegate> {}
 
@@ -55,10 +55,13 @@ static FLCustomCellTableViewCell* currentOpenCell;
         
         [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.rightButtonsColorLayer attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
         
-        
-        
+
+        self.button1 = [UIButton buttonWithType:UIButtonTypeCustom];
         self.button1 = [[UIButton alloc] init];
-        self.button1.backgroundColor =  RGB(13, 191, 255);
+        self.button1.backgroundColor =  RGB(179, 88, 224);
+        [self.button1 addTarget:self action:@selector(viewAlbum:) forControlEvents:UIControlEventTouchUpInside];
+        [self.button1 setTitle:@"View" forState:UIControlStateNormal];
+
         //[self.button1 setTitle:@"Photos" forState:UIControlStateNormal];
         //
 //        [UIView animateWithDuration:.5
@@ -68,6 +71,19 @@ static FLCustomCellTableViewCell* currentOpenCell;
         
         [self.button1 setTranslatesAutoresizingMaskIntoConstraints:NO];
         
+//        // create image for button1
+//        UIImage* tableIcon = [UIImage imageNamed:@"photos.png"];
+//        CGRect temp_rect = CGRectMake(0,0,75,75);
+//        UIGraphicsBeginImageContext(temp_rect.size);
+//        [tableIcon drawInRect:temp_rect];
+//        UIImage *tableIconResized = UIGraphicsGetImageFromCurrentImageContext();
+//        UIGraphicsEndImageContext();
+//        NSData *imgData = UIImagePNGRepresentation(tableIconResized);
+//        UIImage *photosImg = [UIImage imageWithData:imgData];
+//        
+//        [self.button1 setBackgroundImage:photosImg forState:UIControlStateNormal];
+//        [self.button1 setContentMode:UIViewContentModeCenter];
+//        [self.button1 setImageEdgeInsets:UIEdgeInsetsMake(20,20,20,20)];
         
         [self.contentView addSubview:self.button1];
         
@@ -80,9 +96,6 @@ static FLCustomCellTableViewCell* currentOpenCell;
         [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:self.button1 attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
         
         [self.contentView layoutIfNeeded];
-        UIImage *img = [UIImage imageNamed:@"camera_final2.png"];
-        [self.button1 setBackgroundImage:img forState:UIControlStateNormal];
-        //[self.button1 setImageEdgeInsets:UIEdgeInsetsMake(20,20,20,20)];
         
         /*GrowButton *button = [[GrowButton alloc] init];
         [button setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -122,7 +135,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
 
         
         self.button2 = [[UIButton alloc] init];
-        self.button2.backgroundColor = RGB(232, 72, 49);
+        self.button2.backgroundColor = RGB(219,219,219); // RGB(255,182,82); //RGBA(255,198,119,1);//RGB(232, 72, 49);
         [self.button2 setTitle:@"Map" forState:UIControlStateNormal];
         [self.button2 setTranslatesAutoresizingMaskIntoConstraints:NO];
         
@@ -170,8 +183,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
         self.cellPrompt = [[UILabel alloc] init];
         [self.cellPrompt setTranslatesAutoresizingMaskIntoConstraints:NO];
         
-        self.cellPrompt.text = @"Hi this is a test of the app and how it handles long prompts";//[[self.pinsArray objectAtIndex:indexPath.row] prompt];
-        [self.cellPrompt setFont:[UIFont fontWithName:@"Avenir-Light" size:19]];
+        self.cellPrompt.text = @"Hi this is a test of the app and how it handles long prompts";        [self.cellPrompt setFont:[UIFont fontWithName:@"Avenir-Light" size:19]];
         [self.cellPrompt setTextColor:RGB(50,50,50) ];
         self.cellPrompt.numberOfLines = 0;
         self.cellPrompt.lineBreakMode = NSLineBreakByWordWrapping;
@@ -191,7 +203,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
         [self.cellDate setTranslatesAutoresizingMaskIntoConstraints:NO];
         
         self.cellDate.text = @"Aug 1, 2014";
-        [self.cellDate setTextColor:RGB(179, 88, 224) ];
+        [self.cellDate setTextColor:RGB(13, 191, 255) ];
         [self.cellDate setFont:[UIFont fontWithName:@"Avenir-Light" size:14]];
         
         [self.myContentView addSubview:self.cellDate];
@@ -405,10 +417,19 @@ static FLCustomCellTableViewCell* currentOpenCell;
     [self.delegate showInfo:data];
 }
 
-- (void) showInfo {
-  
+- (IBAction)viewAlbum:(id)sender {
+    
+    FLPhotoManager *photoManager = [[FLPhotoManager alloc] init];
+    [photoManager loadPhotosWithPin:self.flur.objectId withCompletion:^(NSMutableArray *allPhotos) {
+        
+        NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+        [data setObject:self.flur forKey: @"flur"];
+        [data setObject:allPhotos forKey:@"allPhotos"];
+        [data setObject:@"tablePage" forKey:@"previousPage"];
+        [_delegate showPhotoPage:data];
+    }];
+    [FLCustomCellTableViewCell closeCurrentlyOpenCell];
+
 }
-
-
 
 @end

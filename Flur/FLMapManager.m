@@ -133,15 +133,16 @@
 }
 
 - (void) addFlur: (NSString *)prompt {
-    PFObject *flurPin = [PFObject objectWithClassName:@"FlurPin"];
+    /*PFObject *flurPi  n = [PFObject objectWithClassName:@"FlurPin"];
     [flurPin setObject:self.currentLocation forKey:@"location"];
     [flurPin setObject: [PFUser currentUser]forKey:@"createdBy"];
     [flurPin setObject:prompt forKey: @"prompt"];
-    [flurPin setObject:@0 forKey:@"contentCount"];
+    [flurPin setObject:@0 forKey:@"totalContentCount"];
     
     [flurPin saveEventually:^(BOOL succeeded, NSError *error) {
         if (succeeded) { }
-    }];
+    }];*/
+    NSLog(@"All this code has been commented out in MapManager");
     
 }
 
@@ -181,6 +182,15 @@
     
     [self.openablePins removeObjectsForKeys:pinsNonOpenable];
     return pinsNonOpenable;
+}
+
+- (void) justContributedToFlur:(NSString *) objectId {
+    ((FLPin*)self.openablePins[objectId]).haveContributedTo = true;
+}
+
+- (void) addNewFlur:(FLPin *)pin {
+    [self.openablePins setObject:pin forKey:pin.pinId];
+    [self.allFlursFromServer setObject:pin forKey:pin.pinId];
 }
 
 @end

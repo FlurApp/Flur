@@ -11,9 +11,7 @@
 #import <Parse/Parse.h>
 
 #import "FLInitialMapViewController.h"
-#import "FLMasterNavigationController.h"
 #import "FLFlurAnnotation.h"
-#import "FLMapManager.h"
 #import "FLPin.h"
 #import "LocalStorage.h"
 #import "FLConstants.h"
@@ -45,8 +43,6 @@
 @property (nonatomic, strong, readwrite) NSMutableArray *viewablePins;
 @property (nonatomic, strong, readwrite) PFGeoPoint *PFCurrentLocation;
 
-@property (nonatomic, strong) FLMapManager* mapManager;
-
 @property (nonatomic, strong) NSMutableArray *myContrPins;
 @property (nonatomic, strong) UIView *whiteLayer;
 
@@ -63,10 +59,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self setNeedsStatusBarAppearanceUpdate];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    
+        
     self.haveLoadedFlurs = false;
     
     _viewablePins = [[NSMutableArray alloc] init];
@@ -80,22 +73,29 @@
     //----Setting up the Location Manager-----//
     _locationManager = [[CLLocationManager alloc] init];
     _locationManager.delegate = self;
+
+    [self.locationManager requestAlwaysAuthorization];
     
-    if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
-        [self.locationManager requestAlwaysAuthorization];
-    }
     
     _locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
     _locationManager.distanceFilter = 3;
     [_locationManager startUpdatingLocation];
     
     //----loading Initial View----//
-    [self loadMapView];
     self.whiteLayer = [[UIView alloc] init];
     [self.whiteLayer setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.whiteLayer.backgroundColor = RGBA(255, 255, 255, 0);
     
+    [self loadMapView];
+
     [self setNeedsStatusBarAppearanceUpdate];
+
+
+    
+   }
+
+-(void)viewDidAppear:(BOOL)animated {
+   
 }
 
 -(BOOL)prefersStatusBarHidden{
@@ -106,7 +106,10 @@
     return UIStatusBarStyleLightContent;
 }
 
-
+- (void) locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    if (status == kCLAuthorizationStatusAuthorizedAlways || status == kCLAuthorizationStatusAuthorizedWhenInUse)
+        self.mapView.showsUserLocation = YES;
+}
 
 - (void)loadMapView {
     self.mapViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
@@ -173,6 +176,9 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+
+    // NSLog(@"New location: %@", newLocation);
+    
     [self.mapManager updateCurrentLocation:newLocation
                         andRefreshLocation:false];
     
@@ -218,22 +224,24 @@
 {
 
     FLFlurAnnotation* fa = view.annotation;
-    NSLog(@"Clicked: %@", fa.pin.pinId);
+    // NSLog(@"Clicked: %@", fa.pin.pinId);
     
     if (fa.pin.pinId) {
         
         NSString* id = fa.pin.pinId;
         FLPin* p = [[[self mapManager] openablePins] objectForKey: id];
-        
         if (p) {
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+            [data setObject:p forKey:@"FLPin"];
+            [data setObject:p.pinId forKey:@"pinId"];
             [data setObject:@"true" forKey:@"contributeView"];
             [data setObject:[(PFUser *)p.createdBy username] forKey:@"creatorUsername"];
             [data setObject:p.dateCreated forKey:@"dateCreated"];
-            [data setObject:[NSNumber numberWithInteger:p.contentCount] forKey:@"totalContentCount"];
+            [data setObject:[NSNumber numberWithInteger:p.totalContentCount] forKey:@"totalContentCount"];
             
             NSString *haveContributedTo = p.haveContributedTo ? @"true" : @"false";
             [data setObject:haveContributedTo forKey:@"haveContributedTo"];
+
             [self.delegate showContributePage:data];
         }
     }
@@ -276,18 +284,6 @@
     [textField resignFirstResponder];
     return NO;
 }
-
-//- (IBAction)creatingFlur:(id)sender {
-//    
-//    NSString *prompt = [self.promptTextField text];
-//    NSLog(@"Creating flur with prompt: %@", prompt);
-//    [self.mapManager addFlur:prompt];
-//    [self.addPinBlurEffectView removeFromSuperview];
-//    
-//    //PUT CODE IN FOR REFRESHING THE VIEW///
-//    [self updateOpenablePins];
-//    
-//}
 
 - (void) addFlur:(NSString*)prompt {
     NSLog(@"adding flur");
@@ -368,6 +364,22 @@
             }
         }
     }
+}
+
+- (void) addNewFlur:(FLPin *)pin {
+    FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithPin:pin];
+    [self.allAnnotations setObject:annotation forKey:pin.pinId];
+    [self.mapView addAnnotation:annotation];
+    
+    [self.mapManager addNewFlur:pin];
+}
+
+- (void) justContributedToFlur:(NSString *) objectId {
+    FLFlurAnnotation* annotation = (FLFlurAnnotation *)self.allAnnotations[@"objectId"];
+    [annotation showAnnotationAsOpenable:[self.mapView viewForAnnotation:annotation]];
+
+    [self.mapManager justContributedToFlur:objectId];
+
 }
 
 @end

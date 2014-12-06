@@ -19,7 +19,7 @@
         self.username = [object[@"createdBy"] username];
         self.pinId = [object objectId];
         self.prompt = object[@"prompt"];
-        self.contentCount = [object[@"contentCount"] integerValue];
+        self.totalContentCount = [object[@"totalContentCount"] integerValue];
         self.haveContributedTo = false;
         
         self.dateCreated = [object createdAt];
@@ -29,7 +29,7 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"Latitude: %f \n Longitude: %f\n", self.coordinate.latitude, self.coordinate.longitude];
+    return [NSString stringWithFormat:@"Pin ID: %@   haveContributedTo : %f\n", self.pinId, self.coordinate.longitude];
 }
 
 @end

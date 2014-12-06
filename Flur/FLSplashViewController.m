@@ -7,7 +7,6 @@
 //
 
 #import "FLSplashViewController.h"
-#import "FLMasterNavigationController.h"
 #import "FLConstants.h"
 
 @interface FLSplashViewController ()
@@ -148,18 +147,15 @@
 - (IBAction)signUp:(id)sender {
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:@"Sign Up" forKey:@"mode"];
-    [FLMasterNavigationController switchToViewController:@"FLLoginViewController"
-                                      fromViewController:@"FLSplashViewController"
-                                                withData:data];
-    
+    [_delegate hideSplashPage];
+    [_delegate showLoginPage:data];
 }
 
 - (IBAction)loginToFlur:(id)sender {
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:@"Login" forKey:@"mode"];
-    [FLMasterNavigationController switchToViewController:@"FLLoginViewController"
-                                      fromViewController:@"FLSplashViewController"
-                                                withData:data];
+    [_delegate hideSplashPage];
+    [_delegate showLoginPage:data];
 }
 
 /*

@@ -11,10 +11,8 @@
 @protocol FLCustomCellTableViewDelegate <NSObject>
 
 @optional
-
-@required
-- (void) showInfo:(NSMutableDictionary *)data;
-
+- (void)showInfo:(NSMutableDictionary *)data;
+- (void)showPhotoPage:(NSMutableDictionary*)data;
 @end
 
 @interface FLCustomCellTableViewCell : UITableViewCell

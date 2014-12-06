@@ -10,7 +10,6 @@
 
 #import "FLSettingsViewController.h"
 #import "FLConstants.h"
-#import "FLMasterNavigationController.h"
 #import "MainViewController.h"
 #import "FLInitialMapViewController.h"
 #import "LocalStorage.h"
@@ -141,7 +140,7 @@
 
     
     [self.addNewFlur setTitle:@"Drop Flur" forState:UIControlStateNormal];
-    self.addNewFlur.backgroundColor = RGB(238, 0 ,255);
+    self.addNewFlur.backgroundColor = RGB(179,88,224);
     self.addNewFlur.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
     [self.addNewFlur setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
@@ -164,6 +163,8 @@
     self.changePassword.backgroundColor = RGB(13,191,255);
     self.changePassword.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
     [self.changePassword setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.changePassword addTarget:self action:@selector(resetPassword:) forControlEvents:UIControlEventTouchUpInside];
+
     
     
     [self.view addSubview:self.changePassword];
@@ -181,7 +182,7 @@
     [self.logoutButton addTarget:self action:@selector(logOut:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.logoutButton setTitle:@"Logout" forState:UIControlStateNormal];
-    self.logoutButton.backgroundColor = RGB(232,72,49);
+    self.logoutButton.backgroundColor = RGB(244,99,83);
     self.logoutButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Light" size:20];
     [self.logoutButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
@@ -201,9 +202,13 @@
 
 - (IBAction)logOut:(id)sender {
     [PFUser logOut];
-    [LocalStorage destroyLocalStorage];
+    [LocalStorage deleteAllFlurs];
     
-    [FLMasterNavigationController switchToViewController:@"FLSplashViewController" fromViewController:@"FLSettingsViewController" withData:nil];
+
+    [LocalStorage destroyLocalStorage];
+    [_delegate hideSettingsPage];
+    [_delegate hideMapPage];
+    [_delegate showSplashPage];
 }
 
 - (IBAction)addFlur:(id)sender {
@@ -215,6 +220,31 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+- (IBAction)resetPassword:(id)sender{
+    
+    [PFUser requestPasswordResetForEmailInBackground:[PFUser currentUser].email
+                                               block:^(BOOL succeeded,NSError *error) {
+   
+       if (!error) {
+           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Reset Password"
+                                                       message:[NSString stringWithFormat: @"A link to reset your password has been sent to your email"]
+                                                          delegate:nil
+                                                 cancelButtonTitle:@"OK"
+                                                 otherButtonTitles:nil];
+           [alert show];
+           return;
+           
+       }
+       else
+       {
+           NSString *errorString = [error userInfo][@"error"];
+           UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!" message:[NSString stringWithFormat: @"%@",errorString] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+           [alert show];
+           return;
+       }
+   }];
+}
 /*
 #pragma mark - Navigation
 

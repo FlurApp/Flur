@@ -12,14 +12,13 @@
 
 #import "FLTableViewController.h"
 #import "FLSettingsViewController.h"
-#import "FLContributeViewController.h"
+#import "FLMapManager.h"
+#import "FLPin.h"
 
 @protocol FLInitialMapViewControllerDelegate <NSObject>
 
 @optional
 - (void)hideSettingsPage;
-
-@required
 - (void) showContributePage:(NSMutableDictionary *)data;
 
 @end
@@ -30,6 +29,8 @@
 
 @property (nonatomic, assign) id<FLInitialMapViewControllerDelegate> delegate;
 
+@property (nonatomic, strong) FLMapManager* mapManager;
+
 @property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) UIButton *tableListButton;
 
@@ -39,7 +40,7 @@
 
 - (void) addFlur:(NSString*)prompt;
 
-
-@property (nonatomic, strong) FLContributeViewController *contributeController;
+- (void) justContributedToFlur:(NSString *) objectId;
+- (void) addNewFlur:(FLPin *)pin;
 
 @end

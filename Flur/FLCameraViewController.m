@@ -8,7 +8,8 @@
 
 #import <Parse/Parse.h>
 
-#import "FLMasterNavigationController.h"
+#import <AVFoundation/AVFoundation.h>
+#import "FLPin.h"
 #import "FLCameraViewController.h"
 #import "FLPhotoManager.h"
 #import "LocalStorage.h"
@@ -34,7 +35,7 @@
 @property (nonatomic, readwrite) UIButton* useButton;
 @property (nonatomic, readwrite) UIButton* backButton;
 @property (nonatomic, readwrite) UIImageView* imageTaken;
-@property (strong, nonatomic) UIImageView * spinner;
+@property (nonatomic, strong) UIImageView * spinner;
 
 
 @property (nonatomic, strong) NSMutableArray* allPhotos;
@@ -50,7 +51,7 @@
 // used for determining when both completion handlers finished
 @property (nonatomic) int count;
 
-
+@property (nonatomic) BOOL newFlur;
 
 
 @end
@@ -60,13 +61,16 @@
 }
 
 - (void) setData:(NSMutableDictionary *)data {
-    FLPin *pin = [data objectForKey:@"FLPin"];
-    self.pin = pin;
-    self.count = 0;
-    self.allPhotos = [[NSMutableArray alloc] init];
-    self.dataToPass = [[NSMutableDictionary alloc] init];
-    [self.dataToPass setObject:pin forKey:@"FLPin"];
-    self.photoManager = [[FLPhotoManager alloc] init];
+    if (data) {
+        FLPin *pin = [data objectForKey:@"FLPin"];
+        self.pin = pin;
+        self.count = 0;
+        self.allPhotos = [[NSMutableArray alloc] init];
+        self.dataToPass = [[NSMutableDictionary alloc] init];
+        [self.dataToPass setObject:pin forKey:@"FLPin"];
+        self.photoManager = [[FLPhotoManager alloc] init];
+        self.newFlur = [data[@"newFlur"] isEqual:@"true"] ? true : false;
+    }
 }
 
 - (void)viewDidLoad {
@@ -166,7 +170,7 @@
 
 - (IBAction)toggleCamera:(id)sender {
     
-    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationCurveEaseInOut animations:^{
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.toggleCamButton.transform = CGAffineTransformMakeScale(1,1);
         
     } completion:^(BOOL finished) {
@@ -279,8 +283,9 @@
 }
 
 - (void) growButtonAnimation: (UIButton*) button {
-    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationCurveEaseInOut animations:^{
-        button.imageView.transform = CGAffineTransformMakeScale(1.5,1.5);
+    
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        button.transform = CGAffineTransformMakeScale(1.5,1.5);
 
     } completion:^(BOOL finished) {
     
@@ -290,11 +295,12 @@
 
 
 - (IBAction)returnToMap:(id)sender {
-    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationCurveEaseInOut animations:^{
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.backButton.transform = CGAffineTransformMakeScale(1,1);
         
     } completion:^(BOOL finished) {
         [_delegate hideCameraPage];
+        [self cleanUp];
     }];
 }
 
@@ -334,6 +340,7 @@
     [_retakeButton addTarget:self action:@selector(retakePicture:) forControlEvents:UIControlEventTouchUpInside];
     [_retakeButton setImage:[UIImage imageNamed:@"retake.png"] forState:UIControlStateNormal];
     _retakeButton.alpha = 0;
+    [_retakeButton  setImageEdgeInsets:UIEdgeInsetsMake(4,4,4,4)];
 
     
     [[self view] addSubview:_retakeButton];
@@ -348,21 +355,23 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_retakeButton
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     
     _useButton = [[UIButton alloc] init];
     [_useButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_useButton setEnabled:TRUE];
     [_useButton addTarget:self action:@selector(uploadImageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [_useButton setImage:[UIImage imageNamed:@"uploadPhoto.png"] forState:UIControlStateNormal];
+    [_useButton setImage:[UIImage imageNamed:@"rightArrow.png"] forState:UIControlStateNormal];
     _useButton.alpha = 0;
+    [_useButton setImageEdgeInsets:UIEdgeInsetsMake(2,2,2,2)];
+    
     
     [[self view] addSubview:_useButton];
     
@@ -377,14 +386,20 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_useButton
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
+    
+    // animate button
+    [UIView animateWithDuration:.4 delay:1 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse | UIViewAnimationOptionAllowUserInteraction animations:^{
+        [UIView setAnimationRepeatCount:FLT_MAX];
+        self.useButton.transform = CGAffineTransformMakeScale(1.2,1.2);
+    } completion:nil];
     
     [self.cameraButton setHidden:YES];
     [self.backButton setHidden:YES];
@@ -394,44 +409,72 @@
     [UIView setAnimationDuration:.4];
     _retakeButton.alpha = 1;
     _useButton.alpha = 1;
-
     [UIView commitAnimations];
+}
+
+- (void) cleanUp {
+    [self retakePicture:nil];
+    
+    if (![self frontBack])
+        [self toggleCamera:nil];
 }
 
 - (IBAction)uploadImageButtonClick:(id)sender {
     [self loadSpinner];
+    [self cleanUp];
     
-    [self.photoManager loadPhotosWithPin:self.pin withCompletion:^(NSMutableArray *allPhotos) {
-        self.allPhotos = allPhotos;
-        [self handOffToPhotoVC];
-    }];
+    [self.delegate haveContributedToFlur:self.pin.pinId];
     
-    [self.photoManager uploadPhotoWithData:self.imageData withPin:self.pin withCompletion:^{
-        [self handOffToPhotoVC];
-    }];
+    
+
+    if (self.newFlur) {
+        NSLog(@"Adding new flur");
+        [self.photoManager uploadPhotoWithData:self.imageData forNewFlur:self.pin withServerCompletion:^{
+            // Go to to photoVC
+            [self handOffToPhotoVC];
+        } WithCoreDataCompletion:^{
+            [self.delegate addNewFlur:self.pin];
+        }];
+    }
+    else {
+        [self.photoManager uploadPhotoWithData:self.imageData forExistingFlur:self.pin withServerCompletion:^{
+            NSLog(@"Server completion");
+            [self handOffToPhotoVC];
+        } WithCoreDataCompletion:^{
+            NSLog(@"core data completion");
+            [self.delegate haveContributedToFlur:self.pin.pinId];
+
+        }];
+        
+        [self.photoManager loadPhotosWithPin:self.pin.pinId withCompletion:^(NSMutableArray *allPhotos) {
+            self.allPhotos = allPhotos;
+            [self handOffToPhotoVC];
+        }];
+    }
+    
+    [self handOffToPhotoVC];
 }
 
 - (void) handOffToPhotoVC {
 
     self.count++;
     if (self.count == 2) {
-        NSLog(@"handOffToPhotoVC Running");
-        NSLog(@"Pin %lu", (long)self.pin.contentCount);
-        if (self.allPhotos.count != self.pin.contentCount) {
+        
+        if (self.allPhotos.count != self.pin.totalContentCount) {
             [self.allPhotos addObject: self.imageData];
         }
-        NSLog(@"out");
-        [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
-        NSLog(@"out2");
         
-        [FLMasterNavigationController switchToViewController:@"PhotoViewController" fromViewController:@"FLCameraViewController" withData:self.dataToPass];
+        [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
+        [self.dataToPass setObject:@"cameraPage" forKey:@"previousPage"];
+        
+        [_delegate hideCameraPage];
+        [_delegate showPhotoPage:self.dataToPass];
 
     }
 }
 
 -(IBAction)retakePicture:(id)sender {
     
-    NSLog(@"retake picture");
     [self.retakeButton removeFromSuperview];
     [self.useButton removeFromSuperview];
     [self.imageTaken removeFromSuperview];
@@ -451,8 +494,8 @@
     UIBlurEffect *blurEffect;
     blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     
-    UIVisualEffectView* blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    blurEffectView.alpha = 1;
+    self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    self.blurEffectView.alpha = 1;
     
     // Vibrancy effect
     UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:blurEffect];
@@ -463,11 +506,11 @@
     
     
     // Add the vibrancy view to the blur view
-    [[blurEffectView contentView] addSubview:vibrancyEffectView];
+    [[self.blurEffectView contentView] addSubview:vibrancyEffectView];
     
     // add blur view to view
-    blurEffectView.frame = self.view.bounds;
-    [self.view addSubview: blurEffectView];
+    self.blurEffectView.frame = self.view.bounds;
+    [self.view addSubview: self.blurEffectView];
     
     self.spinner = [[UIImageView alloc] init];
     self.spinner.translatesAutoresizingMaskIntoConstraints = NO;
@@ -487,12 +530,12 @@
     self.spinner.animationDuration = 1.0f;
     self.spinner.animationRepeatCount = 0;
     [self.spinner startAnimating];
-    [self.view addSubview:self.spinner];
+    [self.blurEffectView addSubview:self.spinner];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
                                                           attribute:NSLayoutAttributeCenterY
                                                           relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
+                                                             toItem:self.blurEffectView
                                                           attribute:NSLayoutAttributeCenterY
                                                          multiplier:1.0
                                                            constant:0.0]];
@@ -501,7 +544,7 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.spinner
                                                           attribute:NSLayoutAttributeCenterX
                                                           relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
+                                                             toItem:self.blurEffectView
                                                           attribute:NSLayoutAttributeCenterX
                                                          multiplier:1.0
                                                            constant:0.0]];

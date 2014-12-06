@@ -13,16 +13,23 @@
 
 @implementation FLPhotoManager
 
-- (void) uploadPhotoWithData:(NSData*)imageData withPin:(FLPin*)pin withCompletion:(void(^)()) completion {
+- (void) uploadPhotoWithData:(NSData*)imageData withFlurObjectId:(NSString *)flurObjectId withCompletion:(void(^)()) completion {
     PFFile *imageFile = [PFFile fileWithName:@"t.gif" data:imageData];
-    NSLog(@"Called");
-     // Save PFFile
+
+    // Save PFFile
      [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
          if (!error) {
-             NSLog(@"whoohoo");
              PFObject *userPhoto = [PFObject objectWithClassName:@"Images"];
              [userPhoto setObject:imageFile forKey:@"imageFile"];
-             [userPhoto setObject:pin.pinId forKey:@"pinId"];
+             PFObject * flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin"
+                                                                  objectId:flurObjectId];
+
+             [userPhoto setObject:flurPin forKey:@"flurPin"];
+             [userPhoto setObject:[PFUser currentUser] forKey:@"createdBy"];
+             [userPhoto setObject:@33 forKey:@"contributionPosition"];
+             NSLog(@"Need to fix uploadPhoto to incorporate contribute position");
+
+
      
              [userPhoto saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                  if (error) {
@@ -30,44 +37,6 @@
                      NSLog(@"Error: %@ %@", error, [error userInfo]);
                  }
                  else {
-     
-                    // Increment content count on server
-                     pin.contentCount++;
-                     PFObject* flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin" objectId:pin.pinId];
-                     [flurPin incrementKey:@"contentCount"];
-                     [flurPin save];
-                     
-                     // Add this flur to SERVER copy of flurs I have contributed to
-                     PFObject *contributedFlurs = [PFObject objectWithClassName:@"ContributedFlurs"];
-                     [contributedFlurs setObject:flurPin forKey:@"flurObjectID"];
-                     NSLog(@"current user%@:",[PFUser currentUser] );
-                     [contributedFlurs setObject:[[PFUser currentUser] username] forKey:@"username"];
-                     
-                     [contributedFlurs saveEventually:^(BOOL succeeded, NSError *error) {
-                         if (succeeded) { }
-                     }];
-                     
-                     // Add this flur to LOCAL copy of flurs I have contributed to
-                     
-                     NSMutableDictionary* flur = [[NSMutableDictionary alloc]init];
-                     flur[@"prompt"] = pin.prompt;
-                     flur[@"lat"] = [NSNumber numberWithDouble:pin.coordinate.latitude];
-                     flur[@"lng"] = [NSNumber numberWithDouble:pin.coordinate.longitude];
-                     flur[@"objectId"] = pin.pinId;
-                     flur[@"numContributions"] = [NSNumber numberWithInt:pin.contentCount];
-                     flur[@"dateCreated"] = pin.dateCreated;
-                     
-                     NSDate *date = [NSDate date];
-//                     NSDateFormatter *dateFormat = [[NSDateFormatter alloc]init];
-//                     [dateFormat setDateFormat:@"MMM dd, yyyy"];
-//                     NSString *dateString = [dateFormat stringFromDate:date];
-                     
-                     flur[@"dateAdded"] = date;
-                     [flur setObject:[PFUser currentUser].username forKey:@"creatorUsername"];
-
-                     
-                     [LocalStorage addFlur:flur];
-     
                      completion();
                  }
              }];
@@ -76,6 +45,7 @@
              // Log details of the failure
              NSLog(@"Error: %@ %@", error, [error userInfo]);
          }
+         
      } progressBlock:^(int percentDone) {
      // Update your progress spinner here. percentDone will be between 0 and 100.
      //HUD.progress = (float)percentDone/100;
@@ -83,11 +53,100 @@
 
 }
 
-- (void) loadPhotosWithPin:(FLPin *)pin withCompletion:(void (^)(NSMutableArray* allPhotos))completion {
-    NSMutableArray* allPhotos = [[NSMutableArray alloc] init];
+- (void) uploadPhotoWithData:(NSData *)imageData forExistingFlur:(FLPin *)pin withServerCompletion:(void (^)())serverCompletion WithCoreDataCompletion:(void (^)())coreDataCompletion{
     
+    [self uploadPhotoWithData:imageData withFlurObjectId:pin.pinId withCompletion:^{
+        // Increment content count on server
+        PFObject* flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin" objectId:pin.pinId];
+        [flurPin incrementKey:@"totalContentCount"];
+        [flurPin save];
+        serverCompletion();
+    }];
+    
+    // Add this flur to LOCAL copy of flurs I have contributed to
+    NSMutableDictionary* flur = [[NSMutableDictionary alloc]init];
+    
+    flur[@"objectId"] = pin.pinId;
+    flur[@"prompt"] = pin.prompt;
+    
+    flur[@"lat"] = [NSNumber numberWithDouble:pin.coordinate.latitude];
+    flur[@"lng"] = [NSNumber numberWithDouble:pin.coordinate.longitude];
+    
+    pin.totalContentCount++;
+    flur[@"totalContentCount"] = [NSNumber numberWithInt:pin.totalContentCount];
+    flur[@"myContentPosition"] = [NSNumber numberWithInt:pin.totalContentCount];
+    
+    NSDate *date = [NSDate date];
+    flur[@"dateAdded"] = date;
+    flur[@"dateCreated"] = pin.dateCreated;
+    
+    flur[@"creatorUsername"] = pin.createdBy.username;
+    
+    [flur setObject:pin.createdBy.username forKey:@"creatorUsername"];
+    
+    NSLog(@"About to save flur in Photo Manager");
+    [LocalStorage addFlur:flur withCompletion:coreDataCompletion];
+
+}
+
+- (void) uploadPhotoWithData:(NSData *)imageData forNewFlur:(FLPin *)pin withServerCompletion:(void (^)())serverCompletion WithCoreDataCompletion:(void (^)())coreDataCompletion{
+
+    PFObject *flurPin = [PFObject objectWithClassName:@"FlurPin"];
+    
+    [flurPin setObject:pin.coordinate forKey:@"location"];
+    [flurPin setObject: [PFUser currentUser]forKey:@"createdBy"];
+    [flurPin setObject:pin.prompt forKey: @"prompt"];
+    [flurPin setObject:@1 forKey:@"totalContentCount"];
+    
+    [flurPin saveEventually:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            
+            pin.pinId = [flurPin objectId];
+            pin.createdBy = [PFUser currentUser];
+            pin.dateCreated = [NSDate date];
+            pin.totalContentCount = 1;
+            pin.haveContributedTo = true;
+        
+            // Add image to server
+            [self uploadPhotoWithData:imageData withFlurObjectId:[flurPin objectId] withCompletion:^{
+                serverCompletion();
+            }];
+            
+            // Add this flur to LOCAL copy of flurs I have contributed to
+            NSMutableDictionary* flur = [[NSMutableDictionary alloc]init];
+            
+            flur[@"objectId"] = [flurPin objectId];
+            flur[@"prompt"] = pin.prompt;
+            
+            flur[@"lat"] = [NSNumber numberWithDouble:pin.coordinate.latitude];
+            flur[@"lng"] = [NSNumber numberWithDouble:pin.coordinate.longitude];
+            
+            flur[@"totalContentCount"] = @1;
+            flur[@"myContentPosition"] = @1;
+            
+            flur[@"dateCreated"] = [NSDate date];
+            flur[@"dateAdded"] = [NSDate date];
+            
+            flur[@"creatorUsername"] = [PFUser currentUser].username;
+            
+            [flur setObject:[PFUser currentUser].username forKey:@"creatorUsername"];
+            [LocalStorage addFlur:flur withCompletion:^{
+                coreDataCompletion();
+            }];
+            
+        }
+    }];
+    
+}
+
+- (void) loadPhotosWithPin:(NSString *)flurPinObjectId withCompletion:(void (^)(NSMutableArray* allPhotos))completion {
+    NSMutableArray* allPhotos = [[NSMutableArray alloc] init];
     PFQuery *query = [PFQuery queryWithClassName:@"Images"];
-    [query whereKey:@"pinId" equalTo:pin.pinId];
+    
+    PFObject * flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin"
+                                                         objectId:flurPinObjectId];
+
+    [query whereKey:@"flurPin" equalTo:flurPin];
     [query orderByAscending:@"createdAt"];
 
     // Run query to download all relevant photos

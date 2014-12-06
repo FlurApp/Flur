@@ -14,6 +14,9 @@
 #import "FLTopBarViewController.h"
 #import "FLNewFlurViewController.h"
 #import "FLCameraViewController.h"
+#import "FLSplashViewController.h"
+#import "FLLoginViewController.h"
+#import "PhotoViewController.h"
 
 
 
@@ -23,7 +26,10 @@
                                                 FLFlurInfoViewControllerDelegate,
                                                 FLNewFlurViewControllerDelegate,
                                                 FLCameraViewControllerDelegate,
-                                                FLTopBarViewControllerDelegate>
+                                                FLTopBarViewControllerDelegate,
+                                                FLSplashViewControllerDelegate,
+                                                FLLoginViewControllerDelegate,
+                                                PhotoViewControllerDelegate>
 
 @property (nonatomic, strong) FLInitialMapViewController *mapView;
 @property (nonatomic, strong) FLSettingsViewController *settingsView;
@@ -32,6 +38,9 @@
 @property (nonatomic, strong) FLTopBarViewController *topBarView;
 @property (nonatomic, strong) FLNewFlurViewController *dropFlurView;
 @property (nonatomic, strong) FLCameraViewController *cameraView;
+@property (nonatomic, strong) FLLoginViewController *loginView;
+@property (nonatomic, strong) PhotoViewController *photoView;
+@property (nonatomic, strong) FLSplashViewController *splashView;
 
 
 
