@@ -300,6 +300,7 @@
         
     } completion:^(BOOL finished) {
         [_delegate hideCameraPage];
+        [self cleanUp];
     }];
 }
 
@@ -413,8 +414,9 @@
 
 - (void) cleanUp {
     [self retakePicture:nil];
-    self.frontBack = true;
-    [self toggleCamButton];
+    
+    if (![self frontBack])
+        [self toggleCamera:nil];
 }
 
 - (IBAction)uploadImageButtonClick:(id)sender {
