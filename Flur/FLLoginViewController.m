@@ -25,15 +25,8 @@
 
 @interface FLLoginViewController ()
 
-@property (nonatomic, strong) NSString *mode;
 
 @property (nonatomic) CGRect keyboard;
-
-@property (nonatomic, strong) UIButton *orDoOpposite;
-@property (nonatomic, strong) UIButton *submitButton;
-@property (nonatomic, strong) UILabel* errorMessage;
-@property (nonatomic, strong) UILabel *pageTitle;
-@property (nonatomic, strong) UIButton *forgotPassword;
 
 
 // All constraints for the submit button, used for animating
@@ -48,7 +41,20 @@
 @property (nonatomic, strong) NSLayoutConstraint *errorMessageTop;
 @property (nonatomic, strong) NSLayoutConstraint *errorMessageBottom;
 
+@property (nonatomic, strong) NSString *mode;
 @property (nonatomic, strong) NSString *otherMode;
+@property (nonatomic, strong) UILabel *pageTitle;
+@property (nonatomic, strong) UIView *topBar;
+
+@property (nonatomic, strong) UITextField *emailInput;
+@property (nonatomic, strong) UILabel *emailDummy;
+
+@property (nonatomic, strong) UITextField *passwordInput;
+@property (nonatomic, strong) UILabel *passwordDummy;
+
+@property (nonatomic, strong) UIButton *signUpWithEmailButton;
+
+
 
 
 @end
@@ -59,250 +65,21 @@
     self.mode = [data objectForKey:@"mode"];
     self.otherMode = [self.mode isEqualToString:@"Sign Up"] ? @"Login" : @"Sign Up";
     self.pageTitle.text = self.mode;
-    [self.submitButton setTitle:self.mode forState:UIControlStateNormal];
+    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     
-    NSString* orDoOppositeText = [NSString stringWithFormat:@"or %@", self.otherMode];
-    [self.orDoOpposite setTitle:orDoOppositeText forState:UIControlStateNormal];
-    [self.orDoOpposite setTitleColor:submitButtonColor forState:UIControlStateNormal];
-    self.orDoOpposite.backgroundColor = [UIColor clearColor];
-    [self.orDoOpposite.titleLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:16]];
+    [self performSelector:@selector(showKeyboard:) withObject:self afterDelay:.2];
+}
+
+- (IBAction)showKeyboard:(id)sender {
+    [self.emailInput becomeFirstResponder];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    // Necessary to later capture return key events
-    self.usernameInput.delegate = self;
-    self.passwordInput.delegate = self;
     
-    // Set background color for view
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = self.view.bounds;
-    //gradient.colors = [NSArray arrayWithObjects:(id)[RGB(186,108,224) CGColor], (id)[RGB(179, 88, 224) CGColor], nil];
-    gradient.colors = [NSArray arrayWithObjects:(id)[backgroundGradientLight CGColor], (id)[backgroundGradientDark CGColor], nil];
-
-    [self.view.layer insertSublayer:gradient atIndex:0];
-    
-    // Create page title, either 'Sign Up' or 'Login'
-
-    self.pageTitle = [[UILabel alloc] init];
-
-    [self.pageTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
-
-    [self.pageTitle setFont:[UIFont fontWithName:@"Avenir-Light" size:30]];
-    self.pageTitle.textColor = [UIColor whiteColor];
-    
-    [self.view addSubview:self.pageTitle];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:60]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterX relatedBy:0 toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
-    
-
-    
-    // Put a long line under the page title that is somewhat transparent
-    UIView* littleLine = [[UIView alloc]init];
-    [littleLine setTranslatesAutoresizingMaskIntoConstraints:NO];
-
-    littleLine.backgroundColor = RGBA(255,255,255,.5);
-    
-    [self.view addSubview:littleLine];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.pageTitle attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:20]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-20]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:littleLine attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1]];
-    
-    // Put a smaller bolder line under the page title
-    UIView* boldLine = [[UIView alloc]init];
-    [boldLine setTranslatesAutoresizingMaskIntoConstraints:NO];
-
-    boldLine.backgroundColor = RGBA(255,255,255,1);
-    
-    [self.view addSubview:boldLine];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.pageTitle attribute:NSLayoutAttributeTop multiplier:1.0 constant:50]];
-    
-
-     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.pageTitle attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:1]];
-    
-     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:boldLine attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
-    
-    
-
-    // Create the username input field
-    self.usernameInput = [[FLTextField alloc] init];
-    [self.usernameInput setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.usernameInput.delegate = self;
-    
-    self.usernameInput.placeholder = @"Email";
-    self.usernameInput.backgroundColor = [UIColor whiteColor];
-    self.usernameInput.textColor = RGB(110,110,110);
-    self.usernameInput.layer.cornerRadius = 4;
-    self.usernameInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.usernameInput.returnKeyType = UIReturnKeyNext;
-    self.usernameInput.keyboardAppearance = UIKeyboardAppearanceDark;
-    self.usernameInput.keyboardType = UIKeyboardTypeEmailAddress;
-    self.usernameInput.autocorrectionType = UITextAutocorrectionTypeNo;
-
-    
-    [self.usernameInput addTarget:self
-                  action:@selector(textFieldDidChange:)
-        forControlEvents:UIControlEventEditingChanged];
-    
-    
-    [self.view addSubview:self.usernameInput];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.pageTitle attribute:NSLayoutAttributeTop multiplier:1.0 constant:80]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.usernameInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
-    
-    
-    // Create the password input field
-    self.passwordInput = [[FLTextField alloc] init];
-    self.passwordInput.delegate = self;
-
-    
-    self.passwordInput.placeholder = @"Password";
-    self.passwordInput.backgroundColor = [UIColor whiteColor];
-    self.passwordInput.textColor = RGB(110,110,110);
-    self.passwordInput.layer.cornerRadius = 4;
-    self.passwordInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.passwordInput.returnKeyType = UIReturnKeyDone;
-    [self.passwordInput setEnablesReturnKeyAutomatically: YES];
-    self.passwordInput.secureTextEntry = YES;
-    self.passwordInput.keyboardAppearance = UIKeyboardAppearanceDark;
-    self.passwordInput.autocorrectionType = UITextAutocorrectionTypeNo;
-
-
-    
-    [self.passwordInput addTarget:self
-                           action:@selector(textFieldDidChange:)
-                 forControlEvents:UIControlEventEditingChanged];
-    
-    [self.passwordInput setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.view addSubview:self.passwordInput];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.usernameInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:3]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:40]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-40]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:40]];
-    
-    // Create the button to change from Sign Up screen to Login and vice versa
-    self.orDoOpposite = [[UIButton alloc]init];
-    [self.orDoOpposite setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    [self.orDoOpposite addTarget:self action:@selector(switchScreen:) forControlEvents:UIControlEventTouchDown];
-    [self.view addSubview:self.orDoOpposite];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:2]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.orDoOpposite attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
-    
-    
-    // Creat the submit button for the login/signup info
-    self.submitButton = [[UIButton alloc] init];
-    [self.submitButton setTranslatesAutoresizingMaskIntoConstraints:NO];
-
-    //[self.submitButton setTitleColor:RGB(179, 88, 224) forState:UIControlStateNormal];
-    [self.submitButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-
-    [self.submitButton setBackgroundColor:submitButtonColor];
-    [[self.submitButton layer] setCornerRadius:2];
-    [self.submitButton setEnabled:TRUE];
-    [self.submitButton setCenter: self.view.center];
-    [self.submitButton addTarget:self action:@selector(submit:) forControlEvents:UIControlEventTouchDown];
-    [self.submitButton addTarget:self action:@selector(unSubmit:) forControlEvents:UIControlEventTouchUpInside];
-    self.submitButton.alpha = 0;
-    
-    [[self view] addSubview:self.submitButton];
-    
-
-    // Put the submit button offscreen and transparent initially, will be animated in later
-    self.submitLeading = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-self.view.frame.size.width];
-    
-    self.submitTrailing = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-self.view.frame.size.width];
-    
-    self.submitTop = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-450];
-    
-    self.submitBottom = [NSLayoutConstraint constraintWithItem:self.submitButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-self.keyboard.size.height];
-    
-    [[self view] addConstraint:self.submitLeading];
-    [[self view] addConstraint:self.submitTrailing];
-    [[self view] addConstraint:self.submitTop];
-    [[self view] addConstraint:self.submitBottom];
-
-
-    
-    
-    // Create the error message label
-    self.errorMessage = [[UILabel alloc]init];
-    self.errorMessage.text = @"Incorrect username/password combo.";
-    self.errorMessage.backgroundColor = RGB(222,58,58);
-    [self.errorMessage setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.errorMessage.alpha = 0;
-    [self.errorMessage setTextColor:[UIColor whiteColor]];
-    self.errorMessage.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:self.errorMessage];
-    
-    self.errorMessageLeading = [NSLayoutConstraint constraintWithItem:self.errorMessage attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeLeading multiplier:1.0 constant:self.view.frame.size.width];
-    
-    self.errorMessageTrailing = [NSLayoutConstraint constraintWithItem:self.errorMessage attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:self.view.frame.size.width];
-    
-    self.errorMessageTop = [NSLayoutConstraint constraintWithItem:self.errorMessage attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-450];
-    
-    self.errorMessageBottom = [NSLayoutConstraint constraintWithItem:self.errorMessage attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-self.keyboard.size.height];
-    
-    // Put the error message label offscreen and transparent initially, will be animated in later
-    [[self view] addConstraint:self.errorMessageLeading];
-    [[self view] addConstraint:self.errorMessageTrailing];
-    [[self view] addConstraint:self.errorMessageTop];
-    [[self view] addConstraint:self.errorMessageBottom];
-    
-    // forgot password
-    
-    self.forgotPassword = [[UIButton alloc] init];
-    self.forgotPassword.backgroundColor = [UIColor clearColor];
-    [self.forgotPassword setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    
-    // i know it looks crazy but thats how u underline shit
-    NSMutableAttributedString *attributeString = [[NSMutableAttributedString alloc] initWithString:@"Forgot password?"];
-    [attributeString addAttribute:NSUnderlineStyleAttributeName
-                            value:[NSNumber numberWithInt:1]
-                            range:(NSRange){0,[attributeString length]}];
-    
-    [attributeString addAttribute:NSForegroundColorAttributeName
-                            value:[UIColor whiteColor]
-                            range:(NSRange){0, [attributeString length]}];
-    
-    UIFont *font = [UIFont fontWithName:@"Avenir-Light" size:12];
-    [attributeString addAttribute:NSFontAttributeName
-                            value:font
-                            range:(NSRange){0, [attributeString length]}];
-    
-    [self.forgotPassword setAttributedTitle:[attributeString copy] forState:UIControlStateNormal];
-    [self.forgotPassword addTarget:self action:@selector(doForgotPassword:) forControlEvents:UIControlEventTouchDown];
-    [self.forgotPassword setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.view addSubview:self.forgotPassword];
-    
-    // constraints for ForgotPasswordLabel
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.forgotPassword attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:2]];
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.forgotPassword attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.passwordInput attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    [self loadTopBar];
+    [self loadInputs];
+    [self loadButton];
 
     
     // Changes the color of the cursor when typing in the text field
@@ -316,8 +93,304 @@
     
 }
 
+- (void) loadTopBar {
+    self.topBar = [[UIView alloc] init];
+    [self.topBar setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.topBar.backgroundColor = RGB(240,240,240);
+    
+    [self.view addSubview:self.topBar];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:70]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    
+    UIView *topBarLine = [[UIView alloc] init];
+    [topBarLine setTranslatesAutoresizingMaskIntoConstraints:NO];
+    topBarLine.backgroundColor = RGB(50,50,50);
+    
+    [self.view addSubview:topBarLine];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:topBarLine attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:topBarLine attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:.5]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:topBarLine attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:topBarLine attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    
+    self.pageTitle = [[UILabel alloc] init];
+    [self.pageTitle setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.pageTitle.text = self.mode;
+    [self.pageTitle setFont:[UIFont fontWithName:@"Avenir-Light" size:22]];
+    [self.pageTitle setTextColor:RGB(10, 10, 10)];
+    
+    [self.topBar addSubview:self.pageTitle];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:32]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+}
 
-- (void)keyboardDidShow:(NSNotification *)notification
+- (void) loadInputs {
+    
+    /* ----------------------------------------------------
+                EMAIL BAR
+     ----------------------------------------------------*/
+    
+    UILabel *emailLabel = [[UILabel alloc] init];
+    [emailLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [emailLabel setTextColor:RGB(13,191,255)];
+    [emailLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:18]];
+    emailLabel.text = @"Email";
+    [self.view addSubview:emailLabel];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:emailLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:emailLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
+    
+    
+    UIView *grayLine = [[UIView alloc] init];
+    [grayLine setTranslatesAutoresizingMaskIntoConstraints:NO];
+    grayLine.backgroundColor = RGB(180,180,180);
+    
+    [self.view addSubview:grayLine];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:grayLine attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:emailLabel attribute:NSLayoutAttributeBottom multiplier:1.0 constant:12]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:grayLine attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:grayLine attribute:NSLayoutAttributeTop multiplier:1.0 constant:.5]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:grayLine attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:grayLine attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    
+    self.emailInput = [[UITextField alloc] init];
+    [self.emailInput setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.emailInput.delegate = self;
+    self.emailInput.userInteractionEnabled = YES;
+    [self.emailInput setFont:[UIFont fontWithName:@"Avenir-Light" size:18]];
+    [self.emailInput setTintColor:RGB(13,191,255)];
+
+    [self.emailInput addTarget:self
+                           action:@selector(emailInputChanged:)
+                 forControlEvents:UIControlEventEditingChanged];
+
+    
+    [self.view addSubview:self.emailInput];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.emailInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.emailInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:120]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.emailInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    
+    self.emailDummy = [[UILabel alloc] init];
+    [self.emailDummy setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.emailDummy setTextColor:RGB(210,210,210)];
+    [self.emailDummy setFont:[UIFont fontWithName:@"Avenir-Light" size:18]];
+    self.emailDummy.text = @"nateLee@flur.com";
+    [self.view addSubview:self.emailDummy];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.emailDummy attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.emailDummy attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:120]];
+
+
+    
+    
+    
+    /* ----------------------------------------------------
+                        PASSWORD BAR
+     ----------------------------------------------------*/
+    
+    UILabel *passwordLabel = [[UILabel alloc] init];
+    [passwordLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [passwordLabel setTextColor:RGB(13,191,255)];
+    [passwordLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:18]];
+    passwordLabel.text = @"Password";
+    [self.view addSubview:passwordLabel];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:passwordLabel attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:grayLine attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:passwordLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
+    
+    
+    UIView *grayLine2 = [[UIView alloc] init];
+    [grayLine2 setTranslatesAutoresizingMaskIntoConstraints:NO];
+    grayLine2.backgroundColor = RGB(180,180,180);
+    
+    [self.view addSubview:grayLine2];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:grayLine2 attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:passwordLabel attribute:NSLayoutAttributeBottom multiplier:1.0 constant:12]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:grayLine2 attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:grayLine2 attribute:NSLayoutAttributeTop multiplier:1.0 constant:.5]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:grayLine2 attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:grayLine2 attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    
+    self.passwordInput = [[UITextField alloc] init];
+    [self.passwordInput setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.passwordInput.delegate = self;
+    self.passwordInput.userInteractionEnabled = YES;
+    [self.passwordInput setFont:[UIFont fontWithName:@"Avenir-Light" size:18]];
+    [self.passwordInput setTintColor:RGB(13,191,255)];
+    
+    [self.passwordInput addTarget:self
+                        action:@selector(passwordInputChanged:)
+              forControlEvents:UIControlEventEditingChanged];
+    
+    
+    [self.view addSubview:self.passwordInput];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:grayLine attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:120]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordInput attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    
+    
+    self.passwordDummy = [[UILabel alloc] init];
+    [self.passwordDummy setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.passwordDummy setTextColor:RGB(210,210,210)];
+    [self.passwordDummy setFont:[UIFont fontWithName:@"Avenir-Light" size:18]];
+    self.passwordDummy.text = @"secret";
+    [self.view addSubview:self.passwordDummy];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordDummy attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:grayLine attribute:NSLayoutAttributeBottom multiplier:1.0 constant:15]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.passwordDummy attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:120]];
+    
+    
+}
+
+- (void) loadButton {
+    self.signUpWithEmailButton = [[UIButton alloc] init];
+    [self.signUpWithEmailButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.signUpWithEmailButton.backgroundColor = RGBA(179, 88, 224, 1);
+    [self.signUpWithEmailButton setTitle:@"Sign Up" forState:UIControlStateNormal];
+    [self.signUpWithEmailButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.signUpWithEmailButton.titleLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:22]];
+ 
+    [self.view addSubview:self.signUpWithEmailButton];
+    
+    self.submitTop = [NSLayoutConstraint constraintWithItem:self.signUpWithEmailButton
+                                                  attribute:NSLayoutAttributeTop
+                                                  relatedBy:NSLayoutRelationEqual toItem:self.view
+                                                  attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0];
+    
+    self.submitBottom = [NSLayoutConstraint constraintWithItem:self.signUpWithEmailButton
+                                                  attribute:NSLayoutAttributeBottom
+                                                  relatedBy:NSLayoutRelationEqual
+                                                     toItem:self.signUpWithEmailButton
+                                                  attribute:NSLayoutAttributeTop multiplier:1.0
+                                                      constant:50];
+    
+    self.submitLeading = [NSLayoutConstraint constraintWithItem:self.signUpWithEmailButton
+                                                     attribute:NSLayoutAttributeLeading
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self.view
+                                                     attribute:NSLayoutAttributeLeading multiplier:1.0
+                                                      constant:-self.view.frame.size.width];
+    
+    self.submitTrailing = [NSLayoutConstraint constraintWithItem:self.signUpWithEmailButton
+                                                      attribute:NSLayoutAttributeTrailing
+                                                      relatedBy:NSLayoutRelationEqual
+                                                         toItem:self.view
+                                                      attribute:NSLayoutAttributeTrailing multiplier:1.0
+                                                       constant:-self.view.frame.size.width];
+    [self.view addConstraint:self.submitTop];
+    [self.view addConstraint:self.submitBottom];
+    [self.view addConstraint:self.submitLeading];
+    [self.view addConstraint:self.submitTrailing];
+    
+}
+
+//- (IBAction)keyboardDidShow:(id)sender {
+//}
+
+-(void)keyboardDidShow:(NSNotification*)notification {
+    // Keyboard frame is in window coordinates
+    NSDictionary *userInfo = [notification userInfo];
+    self.keyboard = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    // Put both the submit button and the error message label right above the keyboard vertically
+    self.submitTop.constant = -self.keyboard.size.height - 50;
+    [self.view layoutIfNeeded];
+    
+    return;
+
+}
+
+- (void) showSubmitButton {
+    
+    [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.submitLeading.constant = 0;
+        self.submitTrailing.constant = 0;
+        
+        [self.view layoutIfNeeded];
+    } completion:nil];
+}
+
+- (void) hideSubmitButton {
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.submitLeading.constant = -self.view.frame.size.width;
+        self.submitTrailing.constant = -self.view.frame.size.width;
+        
+        [self.view layoutIfNeeded];
+    } completion:nil];
+}
+
+- (IBAction)emailInputChanged: (id)sender {
+    if (self.emailInput.text.length == 0)
+        self.emailDummy.text = @"nateLee@flur.com";
+    else
+        self.emailDummy.text = @"";
+    
+    if (self.emailInput.text.length >0 && self.passwordInput.text.length>0)
+        [self showSubmitButton];
+    else
+        [self hideSubmitButton];
+}
+
+- (IBAction)passwordInputChanged: (id)sender {
+    if (self.passwordInput.text.length == 0)
+        self.passwordDummy.text = @"secret";
+    else
+        self.passwordDummy.text = @"";
+    
+    
+    if (self.emailInput.text.length >0 && self.passwordInput.text.length>0)
+        [self showSubmitButton];
+    else
+        [self hideSubmitButton];
+}
+
+
+- (BOOL)textField:(UITextField *) textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    NSUInteger oldLength = [textField.text length];
+    NSUInteger replacementLength = [string length];
+    NSUInteger rangeLength = range.length;
+    
+    NSUInteger newLength = oldLength - rangeLength + replacementLength;
+    
+    if ([string isEqualToString:@" "]){
+        return NO;
+    }
+    
+    BOOL returnKey = [string rangeOfString: @"\n"].location != NSNotFound;
+    
+    return newLength <= MAXLENGTH || returnKey;
+}
+
+/*- (void)d:(NSNotification *)notification
 {
     // Keyboard frame is in window coordinates
     NSDictionary *userInfo = [notification userInfo];

@@ -26,8 +26,6 @@
 
 - (void)setData:(NSMutableDictionary *)data;
 
-@property (nonatomic, strong) FLTextField* usernameInput;
-@property (nonatomic, strong) FLTextField* passwordInput;
 
 
 @property (nonatomic, assign) id<FLLoginViewControllerDelegate> delegate;

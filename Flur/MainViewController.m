@@ -125,6 +125,7 @@
     [self addChildViewController:self.topBarView];
     
     self.topBarView.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
+    [self hideVC:self.topBarView];
     
     
     /* -------------------------------------------
@@ -525,7 +526,7 @@
                                                 self.loginView.view.frame.size.height);
     } completion:^(BOOL finished) {}];
     
-    [self.loginView.usernameInput becomeFirstResponder];
+    //[self.loginView.usernameInput becomeFirstResponder];
 }
 
 -(void)hideLoginPage {
@@ -604,6 +605,10 @@
 
 - (IBAction) animateNewPinAfterDelay:(id)sender {
     [self.mapView addNewFlurAndAnimate];
+}
+
+- (void) hideVC:(UIViewController *) VC {
+    VC.view.frame = CGRectMake(0, 1000, VC.view.frame.size.width, VC.view.frame.size.height);
 }
 
 #pragma mark -
