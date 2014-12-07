@@ -469,7 +469,39 @@
         
         [_delegate hideCameraPage];
         [_delegate showPhotoPage:self.dataToPass];
-
+        
+        //***PUSH NOTIFICATIONS***///
+        
+        // Create our Installation query
+        PFQuery *userQuery = [PFQuery queryWithClassName:@"Images"];
+        
+        PFObject *flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin"
+                                                             objectId:self.pin.pinId];
+        // get images associated with this flur
+        [userQuery whereKey:@"flurPin" equalTo:flurPin];
+        
+        // don't select images with this user attached
+        [userQuery whereKey:@"createdBy" notEqualTo:[PFUser currentUser]];
+        
+        // select the user objects
+        [userQuery selectKeys:@[@"createdBy"]];
+        
+        // make push query that hits installation table for matching users
+        PFQuery *pushQuery = [PFInstallation query];
+        [pushQuery whereKey:@"user" matchesKey:@"createdBy" inQuery:userQuery];
+        
+        NSString *messageContent = @"A flur you have contributed to has new photos!";
+        NSDictionary *pushData = [NSDictionary dictionaryWithObjectsAndKeys:
+                              messageContent, @"alert",
+                              @"Increment", @"badge",
+                              nil];
+        
+        // create push object
+        PFPush *push = [[PFPush alloc] init];
+        [push setData:pushData];
+        
+        // Send push notification to query
+        [PFPush sendPushDataToQueryInBackground:pushQuery withData:pushData];
     }
 }
 

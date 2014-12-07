@@ -492,6 +492,9 @@
             [_delegate hideLoginPage];
             [_delegate showMapPage];
             [self cleanUp];
+            
+            // for push notifications
+            [self updateInstallationWithUser];
         }
     }];
 }
@@ -507,6 +510,9 @@
             [self dropSubmitButton];
             [_delegate hideLoginPage];
             [_delegate showMapPage];
+            
+            // for push notifications
+            [self updateInstallationWithUser];
             
             // clean up
             [self cleanUp];
@@ -527,6 +533,13 @@
         }
                                         
     }];
+}
+
+- (void) updateInstallationWithUser {
+    PFUser *user = [PFUser currentUser];
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setObject:user forKey:@"user"];
+    [currentInstallation saveInBackground];
 }
 
 - (void) cleanUp {

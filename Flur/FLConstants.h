@@ -52,5 +52,4 @@
 #define TOP_BAR_HEIGHT 80
 
 
-
 #endif

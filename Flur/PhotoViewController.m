@@ -13,7 +13,7 @@
 #import "FLConstants.h"
 #import "Flur.h"
 
-#define flurYellow RGBA(255,220,15,.98)
+#define flurYellow RGBA(255,220,70,.98)
 #define flurBlue RGBA(13,191,255,1)
 #define flurPurple RGBA(179,88,224,1)
 #define flurRed RGBA(244,99,83,1)
