@@ -53,6 +53,10 @@
 @property (nonatomic, strong) UILabel *passwordDummy;
 
 @property (nonatomic, strong) UIButton *signUpWithEmailButton;
+@property (nonatomic, strong) UILabel *errorMessage;
+
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+
 
 
 
@@ -65,8 +69,8 @@
     self.mode = [data objectForKey:@"mode"];
     self.otherMode = [self.mode isEqualToString:@"Sign Up"] ? @"Login" : @"Sign Up";
     self.pageTitle.text = self.mode;
-    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     
+    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     [self performSelector:@selector(showKeyboard:) withObject:self afterDelay:.2];
 }
 
@@ -80,7 +84,7 @@
     [self loadTopBar];
     [self loadInputs];
     [self loadButton];
-
+    [self loadError];
     
     // Changes the color of the cursor when typing in the text field
     [[FLTextField appearance] setTintColor:RGB(152,0,194)];
@@ -274,10 +278,14 @@
     self.signUpWithEmailButton = [[UIButton alloc] init];
     [self.signUpWithEmailButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.signUpWithEmailButton.backgroundColor = RGBA(179, 88, 224, 1);
-    [self.signUpWithEmailButton setTitle:@"Sign Up" forState:UIControlStateNormal];
+    [self.signUpWithEmailButton setTitle:@"Login" forState:UIControlStateNormal];
     [self.signUpWithEmailButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.signUpWithEmailButton.titleLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:22]];
- 
+    
+    [self.signUpWithEmailButton addTarget:self
+                                   action:@selector(submitButtonPress:)
+                         forControlEvents:UIControlEventTouchUpInside];
+    
     [self.view addSubview:self.signUpWithEmailButton];
     
     self.submitTop = [NSLayoutConstraint constraintWithItem:self.signUpWithEmailButton
@@ -310,6 +318,64 @@
     [self.view addConstraint:self.submitLeading];
     [self.view addConstraint:self.submitTrailing];
     
+    
+    
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    self.activityIndicator.alpha = 1.0;
+    self.activityIndicator.center = CGPointMake(self.view.frame.size.width/2, 25);
+    self.activityIndicator.hidesWhenStopped = NO;
+    self.activityIndicator.alpha = 0;
+    [self.signUpWithEmailButton addSubview:self.activityIndicator];
+    [self.activityIndicator startAnimating];
+    
+}
+
+- (void) loadError {
+    self.errorMessage = [[UILabel alloc] init];
+    [self.errorMessage setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.errorMessage.backgroundColor = RGB(244,99,83);
+    [self.errorMessage setTextColor:[UIColor whiteColor]];
+    [self.errorMessage setFont:[UIFont fontWithName:@"Avenir-Light" size:19]];
+    self.errorMessage.text = @"Invalid username/password combination";
+    self.errorMessage.textAlignment = NSTextAlignmentCenter;
+
+    [self.view addSubview:self.errorMessage];
+    
+    self.errorMessageTop = [NSLayoutConstraint constraintWithItem:self.errorMessage
+                                                  attribute:NSLayoutAttributeTop
+                                                  relatedBy:NSLayoutRelationEqual toItem:self.view
+                                                  attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0];
+    
+    self.errorMessageBottom = [NSLayoutConstraint constraintWithItem:self.errorMessage
+                                                     attribute:NSLayoutAttributeBottom
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self.errorMessage
+                                                     attribute:NSLayoutAttributeTop multiplier:1.0
+                                                      constant:50];
+    
+    self.errorMessageLeading = [NSLayoutConstraint constraintWithItem:self.errorMessage
+                                                      attribute:NSLayoutAttributeLeading
+                                                      relatedBy:NSLayoutRelationEqual
+                                                         toItem:self.view
+                                                      attribute:NSLayoutAttributeLeading multiplier:1.0
+                                                       constant:self.view.frame.size.width];
+    
+    self.errorMessageTrailing = [NSLayoutConstraint constraintWithItem:self.errorMessage
+                                                       attribute:NSLayoutAttributeTrailing
+                                                       relatedBy:NSLayoutRelationEqual
+                                                          toItem:self.view
+                                                       attribute:NSLayoutAttributeTrailing multiplier:1.0
+                                                        constant:self.view.frame.size.width];
+    [self.view addConstraint:self.errorMessageTop];
+    [self.view addConstraint:self.errorMessageBottom];
+    [self.view addConstraint:self.errorMessageLeading];
+    [self.view addConstraint:self.errorMessageTrailing];
+
+
+}
+
+- (IBAction)submitButtonPress:(id)sender {
+    [self loginWithUsername:self.emailInput.text withPassword:self.passwordInput.text];
 }
 
 //- (IBAction)keyboardDidShow:(id)sender {
@@ -322,6 +388,7 @@
     
     // Put both the submit button and the error message label right above the keyboard vertically
     self.submitTop.constant = -self.keyboard.size.height - 50;
+    self.errorMessageTop.constant = -self.keyboard.size.height - 50;
     [self.view layoutIfNeeded];
     
     return;
@@ -329,7 +396,8 @@
 }
 
 - (void) showSubmitButton {
-    
+    [self.signUpWithEmailButton setTitle:@"Login" forState:UIControlStateNormal];
+    self.activityIndicator.alpha = 0;
     [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.submitLeading.constant = 0;
         self.submitTrailing.constant = 0;
@@ -348,6 +416,24 @@
     } completion:nil];
 }
 
+- (void) showErrorMessage {
+    [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.errorMessageLeading.constant = 0;
+        self.errorMessageTrailing.constant = 0;
+        
+        [self.view layoutIfNeeded];
+    } completion:nil];
+}
+
+- (void) hideErrorMessage {
+    [UIView animateWithDuration:0.4 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.errorMessageLeading.constant = self.view.frame.size.width;
+        self.errorMessageTrailing.constant = self.view.frame.size.width;
+        
+        [self.view layoutIfNeeded];
+    } completion:nil];
+}
+
 - (IBAction)emailInputChanged: (id)sender {
     if (self.emailInput.text.length == 0)
         self.emailDummy.text = @"nateLee@flur.com";
@@ -358,6 +444,9 @@
         [self showSubmitButton];
     else
         [self hideSubmitButton];
+    
+    [self hideErrorMessage];
+
 }
 
 - (IBAction)passwordInputChanged: (id)sender {
@@ -371,6 +460,8 @@
         [self showSubmitButton];
     else
         [self hideSubmitButton];
+    
+    [self hideErrorMessage];
 }
 
 
@@ -390,25 +481,8 @@
     return newLength <= MAXLENGTH || returnKey;
 }
 
-/*- (void)d:(NSNotification *)notification
-{
-    // Keyboard frame is in window coordinates
-    NSDictionary *userInfo = [notification userInfo];
-    self.keyboard = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    NSLog(@"keyboard showed");
-    
-    // Put both the submit button and the error message label right above the keyboard vertically
-    self.submitTop.constant = -self.keyboard.size.height - 50;
-    self.submitBottom.constant = -self.keyboard.size.height;
-    
-    self.errorMessageTop.constant = -self.keyboard.size.height - 50;
-    self.errorMessageBottom.constant = -self.keyboard.size.height;
-    [self.view layoutIfNeeded];
 
-    return;
-}
-
-- (IBAction)unSubmit:(id)sender {
+/*- (IBAction)unSubmit:(id)sender {
     self.submitButton.backgroundColor = submitButtonColor;
     
     if ([self.mode isEqualToString: @"Sign Up"]) {
@@ -511,7 +585,7 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
+}*/
 
 - (BOOL)validateEmail: (NSString *) candidate {
     
@@ -561,39 +635,41 @@
             return;
         }
         else {
-            [self dropSubmitButton];
-            [_delegate hideLoginPage];
-            [_delegate showMapPage];
-            [self cleanUp];
+//            [self dropSubmitButton];
+//            [_delegate hideLoginPage];
+//            [_delegate showMapPage];
+//            [self cleanUp];
         }
     }];
 }
 
 - (void) loginWithUsername:(NSString*)username withPassword:(NSString*)password {
+    
+    [UIView animateWithDuration:.1 animations:^{
+        [self.signUpWithEmailButton setTitle:@"" forState:UIControlStateNormal];
+        self.activityIndicator.alpha = 1;
+    }];
+
+    
     [PFUser logInWithUsernameInBackground:username password:password
                                     block:^(PFUser *user, NSError *error) {
-                                        
+
         if (user) {
             // Do stuff after successful login.
-            NSLog(@"successful login");
             
-            [self dropSubmitButton];
             [_delegate hideLoginPage];
             [_delegate showMapPage];
             
             // clean up
             [self cleanUp];
-            
             [self syncCoreDataWithServer];
             
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:@"true" forKey:@"sync"];
         } else {
             // The login failed. Check error to see why.
-            NSLog(@"login failed...");
-
-            [self showErrorMessage];
             [self hideSubmitButton];
+            [self showErrorMessage];
             [self.passwordInput becomeFirstResponder];
             
             // check reasons...and display
@@ -604,18 +680,21 @@
 
 - (void) cleanUp {
     [self hideSubmitButton];
-    self.usernameInput.text = @"";
+    self.emailInput.text = @"";
     self.passwordInput.text = @"";
     
-    self.errorMessageBottom.constant = 0;
-    self.errorMessageTop.constant = self.view.frame.size.height;
+    self.errorMessageTop.constant = 2000;
+    self.errorMessageBottom.constant = 2500;
+    
+    self.submitTop.constant = 2000;
+    self.submitBottom.constant = 2500;
     
 }
 - (void) syncCoreDataWithServer {
     
 }
 
-- (IBAction)doForgotPassword:(id)sender {
+/*- (IBAction)doForgotPassword:(id)sender {
     
      [PFUser requestPasswordResetForEmailInBackground:self.usernameInput.text
                                                 block:^(BOOL succeeded,NSError *error) {
