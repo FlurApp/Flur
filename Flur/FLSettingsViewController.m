@@ -121,10 +121,13 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.email attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.profilePicture attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
     
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MMM d, YYYY"];
+    
     self.contributionCount = [[UILabel alloc]init];
     [self.contributionCount setTranslatesAutoresizingMaskIntoConstraints:NO];
     //self.contributionCount.text =[NSString stringWithFormat:@"Contributions: %lu", [PFUser currentUser].numContributions];
-     self.contributionCount.text = @"Contributions: 7";
+    self.contributionCount.text = [NSString stringWithFormat:@"Joined: %@",[dateFormatter stringFromDate:user.createdAt]];
      self.contributionCount.font = personalInfoFont;
     [self.contributionCount setTextColor:personalInfoColor];
     
