@@ -71,7 +71,7 @@
     
     [self.profilePictureBorder.layer insertSublayer:gradient atIndex:0];
     
-    self.profilePicture = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"nate.png"]];
+    self.profilePicture = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"flur_icon/flur_512.png"]];
     [self.profilePicture setTranslatesAutoresizingMaskIntoConstraints:NO];
   
     

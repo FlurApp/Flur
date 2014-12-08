@@ -15,6 +15,7 @@
 @optional
 - (void)hideLoginPage;
 - (void)showMapPageFromLogin;
+- (void)showSplashPage;
 
 @end
 

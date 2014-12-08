@@ -770,9 +770,17 @@
     self.submitBottom.constant = 2500;
     
     [self.view endEditing:YES];
-
+    
+    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleLightContent];
     
 }
+
+- (IBAction)exit:(id)sender{
+    [self cleanUp];
+    [_delegate hideLoginPage];
+    [_delegate showSplashPage];
+}
+
 - (void) syncCoreDataWithServer {
     
 }
