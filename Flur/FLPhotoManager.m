@@ -13,8 +13,8 @@
 
 @implementation FLPhotoManager
 
-- (void) uploadPhotoWithData:(NSData*)imageData withFlurObjectId:(NSString *)flurObjectId withCompletion:(void(^)()) completion {
-    PFFile *imageFile = [PFFile fileWithName:@"t.gif" data:imageData];
+- (void) uploadPhotoWithData:(NSData*)imageData withFlurObjectId:(NSString *)flurObjectId withCount:(NSInteger)totalContentCount withCompletion:(void(^)()) completion {
+    PFFile *imageFile = [PFFile fileWithName:@"flur_img.gif" data:imageData];
 
     // Save PFFile
      [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -23,10 +23,12 @@
              [userPhoto setObject:imageFile forKey:@"imageFile"];
              PFObject * flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin"
                                                                   objectId:flurObjectId];
+             
+             NSNumber *numTotalContentCount = [NSNumber numberWithInteger:totalContentCount+1];
 
              [userPhoto setObject:flurPin forKey:@"flurPin"];
              [userPhoto setObject:[PFUser currentUser] forKey:@"createdBy"];
-             [userPhoto setObject:@33 forKey:@"contributionPosition"];
+             [userPhoto setObject:numTotalContentCount forKey:@"contributionPosition"];
              NSLog(@"Need to fix uploadPhoto to incorporate contribute position");
 
 
@@ -55,7 +57,7 @@
 
 - (void) uploadPhotoWithData:(NSData *)imageData forExistingFlur:(FLPin *)pin withServerCompletion:(void (^)())serverCompletion WithCoreDataCompletion:(void (^)())coreDataCompletion{
     
-    [self uploadPhotoWithData:imageData withFlurObjectId:pin.pinId withCompletion:^{
+    [self uploadPhotoWithData:imageData withFlurObjectId:pin.pinId withCount:pin.totalContentCount withCompletion:^{
         // Increment content count on server
         PFObject* flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin" objectId:pin.pinId];
         [flurPin incrementKey:@"totalContentCount"];
