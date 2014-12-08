@@ -94,9 +94,9 @@
 
     NSMutableArray *frames = [[NSMutableArray alloc] init];
     
-    for (int i=1; i<=18; i++)
+    for (int i=1; i<=23; i++)
         [frames addObject:[UIImage imageNamed:[NSString stringWithFormat:@"redGrowing%d.png", i]]];
-    for (int i=18; i>=15; i--)
+    for (int i=23; i>=17; i--)
         [frames addObject:[UIImage imageNamed:[NSString stringWithFormat:@"redGrowing%d.png", i]]];
     
     
@@ -107,12 +107,12 @@
     [self.myAnnotationView startAnimating];
     [self.myAnnotationView setFrame: self.myImageSize];
     
-    [self performSelector:@selector(drawRedIB:) withObject:nil afterDelay:.4];
+    [self performSelector:@selector(drawRedIB:) withObject:nil afterDelay:.45];
 
 }
 
 - (IBAction)drawRedIB:(id)sender {
-    [self drawRed];
+    [self animateRed];
 }
 
 - (void) animateRed {

@@ -143,7 +143,8 @@
     
     cell.cellDate.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:date]];
 
-    cell.cellContentCount.text = [NSString stringWithFormat:@"%@ contributions", [[[self.pinsArray objectAtIndex:indexPath.row] totalContentCount] stringValue]];
+    NSNumber *totalContentCount = [(Flur*)[self.pinsArray objectAtIndex:indexPath.row] totalContentCount];
+    cell.cellContentCount.text = [NSString stringWithFormat:@"%@ contributions", [totalContentCount stringValue]];
     
     cell.flur = [self.pinsArray objectAtIndex:indexPath.row];
 
