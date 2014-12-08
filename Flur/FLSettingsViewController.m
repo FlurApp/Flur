@@ -26,17 +26,18 @@
 @property (nonatomic, strong) UIButton *addNewFlur;
 @property (nonatomic, strong) UIView *profilePictureBorder;
 
-
-
-
-
-
 @end
 
 
 
 
 @implementation FLSettingsViewController
+
+- (void) setData {
+    PFUser *user = [PFUser currentUser];
+    self.email.text = user.email;
+    self.contributionCount.text = user[@"createdAt"];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];

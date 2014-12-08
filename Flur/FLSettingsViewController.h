@@ -26,4 +26,6 @@
 
 @property (nonatomic, assign) id<FLSettingsViewControllerDelegate> delegate;
 
+- (void) setData;
+
 @end

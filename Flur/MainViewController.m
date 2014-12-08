@@ -575,6 +575,8 @@
 -(void)showMapPageFromLogin {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [[self settingsView] setData];
+    
     self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
     self.mapView.view.frame = CGRectMake(0, 0,
                                          self.mapView.view.frame.size.width,
