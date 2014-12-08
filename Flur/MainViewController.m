@@ -561,18 +561,23 @@
                                            self.topBarView.view.frame.size.width,
                                            self.topBarView.view.frame.size.height);
     
-    self.mapView.view.frame = CGRectMake(self.view.frame.size.width, TOP_BAR_HEIGHT,
+    self.mapView.view.frame = CGRectMake(self.view.frame.size.width, 0,
                                             self.mapView.view.frame.size.width,
                                             self.mapView.view.frame.size.height);
+    
+    [self.view sendSubviewToBack:self.loginView.view];
+    [self.view bringSubviewToFront:self.mapView.view];
+    [self.view bringSubviewToFront:self.topBarView.view];
     
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
         self.mapView.view.frame = CGRectMake(0, 0,
                                              self.mapView.view.frame.size.width,
                                              self.mapView.view.frame.size.height);
+        
         self.loginView.view.frame = CGRectMake(-self.view.frame.size.width, 0,
-                                             self.mapView.view.frame.size.width,
-                                             self.mapView.view.frame.size.height);
+                                             self.loginView.view.frame.size.width,
+                                             self.loginView.view.frame.size.height);
         
     } completion:^(BOOL finished) {}];
     

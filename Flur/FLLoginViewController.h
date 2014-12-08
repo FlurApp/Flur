@@ -14,7 +14,7 @@
 
 @optional
 - (void)hideLoginPage;
-- (void)showMapPage;
+- (void)showMapPageFromLogin;
 
 @end
 

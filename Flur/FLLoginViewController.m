@@ -700,7 +700,7 @@
 
             //[self dropSubmitButton];
             [_delegate hideLoginPage];
-            [_delegate showMapPage];
+            [_delegate showMapPageFromLogin];
             [self cleanUp];
             
             // for push notifications
@@ -725,7 +725,7 @@
             // Do stuff after successful login.
             
             [_delegate hideLoginPage];
-            [_delegate showMapPage];
+            [_delegate showMapPageFromLogin];
             
             // for push notifications
             [self updateInstallationWithUser];
