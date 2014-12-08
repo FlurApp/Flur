@@ -206,9 +206,11 @@
     
 
     [LocalStorage destroyLocalStorage];
-    [_delegate hideSettingsPage];
-    [_delegate hideMapPage];
-    [_delegate showSplashPage];
+    
+    [_delegate logout];
+//    [_delegate hideSettingsPage];
+//    [_delegate hideMapPage];
+//    [_delegate showSplashPage];
 }
 
 - (IBAction)addFlur:(id)sender {

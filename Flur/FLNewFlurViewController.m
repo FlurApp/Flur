@@ -130,10 +130,12 @@
     if (self.promptInput.text.length == 0)
         return;
     
-    [self cleanUp];
     data[@"prompt"] = self.promptInput.text;
     [self.delegate addFlurToCamera:data];
     [self.view endEditing:YES];
+    
+    [self cleanUp];
+
 }
 
 - (void) loadWaste {

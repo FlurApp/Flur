@@ -74,7 +74,11 @@
     self.mode = [data objectForKey:@"mode"];
     self.otherMode = [self.mode isEqualToString:@"Sign Up"] ? @"Login" : @"Sign Up";
     self.pageTitle.text = self.mode;
+    
+    NSLog(@"IN");
     self.active = true;
+    [self.signUpWithEmailButton setTitle:@"Login" forState:UIControlStateNormal];
+    [self.signUpWithEmailButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     [self performSelector:@selector(showKeyboard:) withObject:self afterDelay:.2];
@@ -756,7 +760,6 @@
 }
 
 - (void) cleanUp {
-    [self hideSubmitButton];
     self.emailInput.text = @"";
     self.passwordInput.text = @"";
     

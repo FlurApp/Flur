@@ -521,6 +521,11 @@
 
 -(void)showLoginPage:(NSMutableDictionary*)data {
     [self.loginView setData:data];
+    self.loginView.view.frame = CGRectMake(self.view.frame.size.width, 0,
+                                           self.loginView.view.frame.size.width,
+                                           self.loginView.view.frame.size.height);
+    self.loginView.view.alpha = 1;
+
     
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.loginView.view.frame = CGRectMake(0, 0,
@@ -556,28 +561,23 @@
 }
 
 -(void)showMapPageFromLogin {
-    
-    self.topBarView.view.frame = CGRectMake(self.view.frame.size.width, 0,
-                                           self.topBarView.view.frame.size.width,
-                                           self.topBarView.view.frame.size.height);
-    
-    self.mapView.view.frame = CGRectMake(self.view.frame.size.width, 0,
-                                            self.mapView.view.frame.size.width,
-                                            self.mapView.view.frame.size.height);
+    self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
+    self.mapView.view.frame = CGRectMake(0, 0,
+                                         self.mapView.view.frame.size.width,
+                                         self.mapView.view.frame.size.height);
+
+    self.topBarView.view.alpha = 0;
+    self.mapView.view.alpha = 0;
     
     [self.view sendSubviewToBack:self.loginView.view];
     [self.view bringSubviewToFront:self.mapView.view];
     [self.view bringSubviewToFront:self.topBarView.view];
     
-    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
-        self.mapView.view.frame = CGRectMake(0, 0,
-                                             self.mapView.view.frame.size.width,
-                                             self.mapView.view.frame.size.height);
+    [UIView animateWithDuration:1.0 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         
-        self.loginView.view.frame = CGRectMake(-self.view.frame.size.width, 0,
-                                             self.loginView.view.frame.size.width,
-                                             self.loginView.view.frame.size.height);
+        self.loginView.view.alpha = 0;
+        self.mapView.view.alpha = 1;
+        self.topBarView.view.alpha = 1;
         
     } completion:^(BOOL finished) {}];
     
@@ -616,6 +616,34 @@
 
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+}
+
+- (void) logout {
+    self.splashView.view.alpha = 0;
+    [self.view bringSubviewToFront:self.splashView.view];
+    self.splashView.view.frame = CGRectMake(0, 0,
+                                           self.splashView.view.frame.size.width,
+                                           self.splashView.view.frame.size.height);
+    
+    [UIView animateWithDuration:.7 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.settingsView.view.alpha = 0;
+        self.mapView.view.alpha = 0;
+        self.topBarView.view.alpha = 0;
+    } completion:^(BOOL finished) {
+        self.settingsView.view.alpha = 1;
+        self.mapView.view.alpha = 1;
+        self.topBarView.view.alpha = 1;
+        [self hideVC:self.mapView];
+        [self hideVC:self.settingsView];
+        [self hideVC:self.topBarView];
+    }];
+    
+    [UIView animateWithDuration:1.0 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.splashView.view.alpha = 1;
+    } completion:^(BOOL finished) {
+    }];
+
+    
 }
 
 - (void) haveContributedToFlur:(NSString *) objectId {

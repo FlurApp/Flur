@@ -153,6 +153,16 @@
     for (int i=1; i<=16; i++)
         [frames addObject:[UIImage imageNamed:[NSString stringWithFormat:@"bluePulsing%d.png", i]]];
     
+    for (int i=1; i<=4; i++)
+        [frames addObject:[UIImage imageNamed:@"bluePulsing16"]];
+    
+    for (int i=16; i>=1; i--)
+        [frames addObject:[UIImage imageNamed:[NSString stringWithFormat:@"bluePulsing%d.png", i]]];
+    
+    for (int i=1; i<=4; i++)
+        [frames addObject:[UIImage imageNamed:@"bluePulsing1"]];
+
+    
     self.myAnnotationView.animationImages = [[NSArray alloc] initWithArray:frames];
     
     self.myAnnotationView.animationDuration = 1.0f;
