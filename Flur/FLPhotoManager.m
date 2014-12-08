@@ -110,7 +110,7 @@
             pin.haveContributedTo = true;
         
             // Add image to server
-            [self uploadPhotoWithData:imageData withFlurObjectId:[flurPin objectId] withCompletion:^{
+            [self uploadPhotoWithData:imageData withFlurObjectId:[flurPin objectId] withCount:pin.totalContentCount  withCompletion:^{
                 serverCompletion();
             }];
             

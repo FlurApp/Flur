@@ -13,7 +13,7 @@
 
 - (void) loadPhotosWithPin:(NSString *)flurPinObjectId withCompletion:(void (^)(NSMutableArray* allPhotos))completion;
 
-- (void) uploadPhotoWithData:(NSData*)imageData withFlurObjectId:(NSString *)flurObjectId withCompletion:(void(^)()) completion;
+- (void) uploadPhotoWithData:(NSData*)imageData withFlurObjectId:(NSString *)flurObjectId withCount:(NSInteger)totalContentCount withCompletion:(void(^)()) completion;
 
 - (void) uploadPhotoWithData:(NSData *)imageData forExistingFlur:(FLPin *)pin withServerCompletion:(void (^)())serverCompletion WithCoreDataCompletion:(void (^)())coreDataCompletion;
     
