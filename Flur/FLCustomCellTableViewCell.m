@@ -39,7 +39,7 @@ static FLCustomCellTableViewCell* currentOpenCell;
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
         
-        self.rightButtonBackgroundColor = RGB(232, 72, 49);
+        self.rightButtonBackgroundColor = RGB(219,219,219);
         self.rightButtonsColorLayer = [[UIView alloc] init];
         self.rightButtonsColorLayer.backgroundColor = self.rightButtonBackgroundColor;
         [self.rightButtonsColorLayer setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -391,12 +391,12 @@ static FLCustomCellTableViewCell* currentOpenCell;
 
 - (IBAction)changeMapButtonColor:(id)sender {
     UIButton* button = (UIButton*) sender;
-    button.backgroundColor = RGB(232, 102, 67);
+   // button.backgroundColor = RGB(232, 102, 67);
 }
 
 - (IBAction)switchToFlurInfoVC:(id)sender {
     UIButton* button = (UIButton*) sender;
-    button.backgroundColor = RGB(232, 72, 49);
+    //button.backgroundColor = RGB(232, 72, 49);
     NSMutableDictionary *data = [[NSMutableDictionary alloc ] init];
     [data setObject:self.flur forKey:@"flur"];
     [FLCustomCellTableViewCell closeCurrentlyOpenCell];

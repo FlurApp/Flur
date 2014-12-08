@@ -53,9 +53,12 @@
 @property (nonatomic, strong) UILabel *passwordDummy;
 
 @property (nonatomic, strong) UIButton *signUpWithEmailButton;
+@property (nonatomic, strong) UIButton *exitButton;
+
 @property (nonatomic, strong) UILabel *errorMessage;
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+
 
 
 
@@ -139,7 +142,40 @@
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:32]];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageTitle attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
-}
+    
+    
+    
+    self.exitButton = [[UIButton alloc] init];
+    [self.exitButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.exitButton.backgroundColor = [UIColor redColor];
+    
+    UIImage* tableIcon = [UIImage imageNamed:@"exit.png"];
+    CGRect temp_rect = CGRectMake(0,0,75,75);
+    CGRect rect = CGRectMake(0,0,75,75);
+    UIGraphicsBeginImageContext(rect.size);
+    [tableIcon drawInRect:temp_rect];
+    UIImage *tableIconResized = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    NSData *imgData = UIImagePNGRepresentation(tableIconResized);
+    UIImage *tableImg = [UIImage imageWithData:imgData];
+
+    
+    self.exitButton.backgroundColor = [UIColor clearColor];
+    [self.exitButton setImage:tableImg forState:UIControlStateNormal];
+    [self.exitButton setContentMode:UIViewContentModeCenter];
+    [self.exitButton setImageEdgeInsets:UIEdgeInsetsMake(22.5,22.5,22.5,22.5)];
+    
+    [self.exitButton addTarget:self
+                                   action:@selector(exit:)
+                         forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.topBar addSubview:self.exitButton];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.exitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.exitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:-5]];
+    
+   }
 
 - (void) loadInputs {
     
@@ -178,6 +214,8 @@
     [self.emailInput setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.emailInput.delegate = self;
     self.emailInput.userInteractionEnabled = YES;
+    self.emailInput.autocorrectionType = UITextAutocorrectionTypeNo;
+    self.emailInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     [self.emailInput setFont:[UIFont fontWithName:@"Avenir-Light" size:18]];
     [self.emailInput setTintColor:RGB(13,191,255)];
 
@@ -246,6 +284,11 @@
     self.passwordInput.userInteractionEnabled = YES;
     [self.passwordInput setFont:[UIFont fontWithName:@"Avenir-Light" size:18]];
     [self.passwordInput setTintColor:RGB(13,191,255)];
+    
+    self.passwordInput.autocorrectionType = UITextAutocorrectionTypeNo;
+    self.passwordInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.passwordInput.secureTextEntry = YES;
+
     
     [self.passwordInput addTarget:self
                         action:@selector(passwordInputChanged:)
@@ -688,6 +731,9 @@
     
     self.submitTop.constant = 2000;
     self.submitBottom.constant = 2500;
+    
+    [self.view endEditing:YES];
+
     
 }
 - (void) syncCoreDataWithServer {
