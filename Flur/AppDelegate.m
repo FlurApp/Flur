@@ -72,12 +72,15 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     //[PFPush handlePush:userInfo];
-    
+    NSLog(@"RED: %@", userInfo);
     if ([userInfo objectForKey:@"alert"]) {
         
-        PFObject *pin = [userInfo objectForKey:@"pin"];
-        [LocalStorage updateFlurWithObjectId:[pin objectId] andTotalContentCount:pin[@"totalContentCount"] completion:^{
-
+         NSString *flurObjectId = [userInfo objectForKey:@"flurObjectId"];
+         NSInteger b = [userInfo objectForKey:@"totalContentCount"];
+         NSNumber *totalContentCount = [NSNumber numberWithInteger:b];
+        NSLog(@"%@ %@", flurObjectId, totalContentCount);
+        [LocalStorage updateFlurWithObjectId:flurObjectId andTotalContentCount:totalContentCount completion:^{
+            NSLog(@"UN");
             [self.tvp getFlurs];
             
             NSString *message = [userInfo objectForKey:@"alert"];
