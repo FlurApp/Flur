@@ -206,6 +206,7 @@
     
 
     [LocalStorage destroyLocalStorage];
+    
     [_delegate hideSettingsPage];
     [_delegate hideMapPage];
     [_delegate showSplashPage];
