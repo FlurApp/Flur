@@ -15,6 +15,7 @@
 
 @optional
 - (void)showInfoPage:(NSMutableDictionary *)data;
+- (void)showPhotoPage:(NSMutableDictionary *)data;
 
 @end
 

@@ -23,6 +23,7 @@
 
 
 - (void) setFocus;
+- (void) setup;
 
 
 

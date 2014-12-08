@@ -58,6 +58,8 @@
 @property (nonatomic, strong) UILabel *errorMessage;
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic) BOOL active;
+
 
 
 
@@ -72,6 +74,7 @@
     self.mode = [data objectForKey:@"mode"];
     self.otherMode = [self.mode isEqualToString:@"Sign Up"] ? @"Login" : @"Sign Up";
     self.pageTitle.text = self.mode;
+    self.active = true;
     
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     [self performSelector:@selector(showKeyboard:) withObject:self afterDelay:.2];
@@ -425,6 +428,8 @@
 //}
 
 -(void)keyboardDidShow:(NSNotification*)notification {
+    if (!self.active)
+        return;
     // Keyboard frame is in window coordinates
     NSDictionary *userInfo = [notification userInfo];
     self.keyboard = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -678,10 +683,14 @@
             return;
         }
         else {
-//            [self dropSubmitButton];
-//            [_delegate hideLoginPage];
-//            [_delegate showMapPage];
-//            [self cleanUp];
+
+            //[self dropSubmitButton];
+            [_delegate hideLoginPage];
+            [_delegate showMapPage];
+            [self cleanUp];
+            
+            // for push notifications
+            [self updateInstallationWithUser];
         }
     }];
 }
@@ -698,10 +707,14 @@
                                     block:^(PFUser *user, NSError *error) {
 
         if (user) {
+            self.active = false;
             // Do stuff after successful login.
             
             [_delegate hideLoginPage];
             [_delegate showMapPage];
+            
+            // for push notifications
+            [self updateInstallationWithUser];
             
             // clean up
             [self cleanUp];
@@ -719,6 +732,13 @@
         }
                                         
     }];
+}
+
+- (void) updateInstallationWithUser {
+    PFUser *user = [PFUser currentUser];
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setObject:user forKey:@"user"];
+    [currentInstallation saveInBackground];
 }
 
 - (void) cleanUp {
@@ -746,7 +766,7 @@
                                                 block:^(BOOL succeeded,NSError *error) {
         
         if (!error) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Password Reset"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Reset Password"
                                                             message:[NSString stringWithFormat: @"A link to reset your password has been sent to your email"]
                                                            delegate:nil
                                                     cancelButtonTitle:@"OK"

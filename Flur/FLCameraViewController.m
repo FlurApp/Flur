@@ -300,6 +300,7 @@
         
     } completion:^(BOOL finished) {
         [_delegate hideCameraPage];
+        [self cleanUp];
     }];
 }
 
@@ -339,6 +340,7 @@
     [_retakeButton addTarget:self action:@selector(retakePicture:) forControlEvents:UIControlEventTouchUpInside];
     [_retakeButton setImage:[UIImage imageNamed:@"retake.png"] forState:UIControlStateNormal];
     _retakeButton.alpha = 0;
+    [_retakeButton  setImageEdgeInsets:UIEdgeInsetsMake(4,4,4,4)];
 
     
     [[self view] addSubview:_retakeButton];
@@ -353,21 +355,23 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_retakeButton
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     
     _useButton = [[UIButton alloc] init];
     [_useButton setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_useButton setEnabled:TRUE];
     [_useButton addTarget:self action:@selector(uploadImageButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    [_useButton setImage:[UIImage imageNamed:@"right_arrow.png"] forState:UIControlStateNormal];
+    [_useButton setImage:[UIImage imageNamed:@"rightArrow.png"] forState:UIControlStateNormal];
     _useButton.alpha = 0;
+    [_useButton setImageEdgeInsets:UIEdgeInsetsMake(2,2,2,2)];
+    
     
     [[self view] addSubview:_useButton];
     
@@ -382,14 +386,20 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:_useButton
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
+    
+    // animate button
+    [UIView animateWithDuration:.4 delay:1 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionRepeat | UIViewAnimationOptionAutoreverse | UIViewAnimationOptionAllowUserInteraction animations:^{
+        [UIView setAnimationRepeatCount:FLT_MAX];
+        self.useButton.transform = CGAffineTransformMakeScale(1.2,1.2);
+    } completion:nil];
     
     [self.cameraButton setHidden:YES];
     [self.backButton setHidden:YES];
@@ -399,14 +409,14 @@
     [UIView setAnimationDuration:.4];
     _retakeButton.alpha = 1;
     _useButton.alpha = 1;
-
     [UIView commitAnimations];
 }
 
 - (void) cleanUp {
     [self retakePicture:nil];
-    self.frontBack = true;
-    [self toggleCamButton];
+    
+    if (![self frontBack])
+        [self toggleCamera:nil];
 }
 
 - (IBAction)uploadImageButtonClick:(id)sender {
@@ -459,7 +469,39 @@
         
         [_delegate hideCameraPage];
         [_delegate showPhotoPage:self.dataToPass];
-
+        
+        //***PUSH NOTIFICATIONS***///
+        
+        // Create our Installation query
+        PFQuery *userQuery = [PFQuery queryWithClassName:@"Images"];
+        
+        PFObject *flurPin = [PFObject objectWithoutDataWithClassName:@"FlurPin"
+                                                             objectId:self.pin.pinId];
+        // get images associated with this flur
+        [userQuery whereKey:@"flurPin" equalTo:flurPin];
+        
+        // don't select images with this user attached
+        [userQuery whereKey:@"createdBy" notEqualTo:[PFUser currentUser]];
+        
+        // select the user objects
+        [userQuery selectKeys:@[@"createdBy"]];
+        
+        // make push query that hits installation table for matching users
+        PFQuery *pushQuery = [PFInstallation query];
+        [pushQuery whereKey:@"user" matchesKey:@"createdBy" inQuery:userQuery];
+        
+        NSString *messageContent = @"A flur you have contributed to has new photos!";
+        NSDictionary *pushData = [NSDictionary dictionaryWithObjectsAndKeys:
+                              messageContent, @"alert",
+                              @"Increment", @"badge",
+                              nil];
+        
+        // create push object
+        PFPush *push = [[PFPush alloc] init];
+        [push setData:pushData];
+        
+        // Send push notification to query
+        [PFPush sendPushDataToQueryInBackground:pushQuery withData:pushData];
     }
 }
 

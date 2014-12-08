@@ -23,6 +23,15 @@
 @property (nonatomic, strong) UILabel *charCount;
 @property (nonatomic, strong) UIButton *addFlur;
 
+@property (nonatomic, strong) NSLayoutConstraint *promptInputBottom;
+@property (nonatomic, strong) NSLayoutConstraint *addButtonBottom;
+
+@property (nonatomic) BOOL active;
+@property (nonatomic) CGRect keyboard;
+
+
+
+
 
 
 @end
@@ -31,14 +40,26 @@
 @implementation FLNewFlurViewController
 
 - (void) setup {
-    
+    self.active = true;
 }
 
 - (void) setFocus {
     [self.promptInput becomeFirstResponder];
 }
 
+- (void) cleanUp {
+    self.active = false;
+    [UIView animateWithDuration:.2 animations:^{
+        self.addButtonBottom.constant = 110;
+    }];
+}
+
 - (void)viewDidLoad {
+    
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(keyboardDidShow:)
+                   name:UIKeyboardDidShowNotification object:nil];
+    
     
     self.promptInput = [[UITextView alloc] init];
     [self.promptInput setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -62,7 +83,9 @@
 
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.promptInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.promptInput attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:300]];
+    self.promptInputBottom = [NSLayoutConstraint constraintWithItem:self.promptInput attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0];
+    
+    //[self.view addConstraint:self.promptInputBottom];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.promptInput attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
     
@@ -86,22 +109,6 @@
     
     
     
-    self.addFlur = [[UIButton alloc] init];
-    [self.addFlur setTitle:@"Add Flur" forState:UIControlStateNormal];
-    [self.addFlur setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.addFlur.backgroundColor = RGBA(24, 112, 89, 1);
-    [self.addFlur setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
-    [self.addFlur addTarget:self action:@selector(addFlur:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.view addSubview:self.addFlur];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addFlur attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:200]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addFlur attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:250]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addFlur attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addFlur attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
     
     
     [self loadWaste];
@@ -113,6 +120,7 @@
     if (self.promptInput.text.length == 0)
         return;
     
+    [self cleanUp];
     data[@"prompt"] = self.promptInput.text;
     [self.delegate addFlurToCamera:data];
     [self.view endEditing:YES];
@@ -126,7 +134,7 @@
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:waste1 attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:waste1 attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.promptInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:300]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:waste1 attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.promptInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:waste1 attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
     
@@ -151,7 +159,7 @@
     UIView *bottomBar = [[UIView alloc] init];
     [bottomBar setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:bottomBar];
-    bottomBar.backgroundColor = RGBA(13,191,255, .9);
+    bottomBar.backgroundColor = RGB(240,240,240);//RGBA(13,191,255, .9);
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:bottomBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.promptInput attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
     
@@ -166,7 +174,7 @@
     
     self.charCount = [[UILabel alloc] init];
     [self.charCount setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
-    [self.charCount setTextColor:RGBA(255,255,255, 1)];
+    [self.charCount setTextColor:RGBA(179, 88, 224, 1)];//RGBA(255,255,255, 1)];
     self.charCount.text = @"0/200";
     
     [self.charCount setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -179,7 +187,7 @@
     
     UILabel *dateLabel = [[UILabel alloc] init];
     [dateLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
-    [dateLabel setTextColor:RGBA(255,255,255, 1)];
+    [dateLabel setTextColor:RGBA(179, 88, 224, 1)];//RGBA(255,255,255, 1)];
     
     [dateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     [bottomBar addSubview:dateLabel];
@@ -194,7 +202,54 @@
     [dateFormatter setDateFormat:@"MMM d, YYYY"];
     
     dateLabel.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:[NSDate date]]];
+    
+    
+    
+    
+    
+    
+    self.addFlur = [[UIButton alloc] init];
+    [self.addFlur setTitle:@"Add Flur" forState:UIControlStateNormal];
+    [self.addFlur setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.addFlur.backgroundColor = RGBA(13,191,255, 1);
+    [self.addFlur setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
+    [self.addFlur addTarget:self action:@selector(addFlur:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.view addSubview:self.addFlur];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addFlur attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
+    
+    self.addButtonBottom = [NSLayoutConstraint constraintWithItem:self.addFlur attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:110];
+    
+    [self.view addConstraint:self.addButtonBottom];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addFlur attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:55]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addFlur attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.addFlur attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
 
+
+}
+
+-(void)keyboardDidShow:(NSNotification*)notification {
+    if (!self.active)
+        return;
+    // Keyboard frame is in window coordinates
+    NSDictionary *userInfo = [notification userInfo];
+    self.keyboard = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    self.addButtonBottom.constant = -self.keyboard.size.height + 110;
+    [self.view layoutIfNeeded];
+    // Put both the submit button and the error message label right above the keyboard vertically
+    [UIView animateWithDuration:.15 animations:^{
+        self.addButtonBottom.constant = -self.keyboard.size.height;
+        [self.view layoutIfNeeded];
+
+    }];
+    
+    return;
+    
 }
 
 - (void)textViewDidChange:(UITextView *)textView {

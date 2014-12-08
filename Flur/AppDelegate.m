@@ -49,6 +49,10 @@
     }
 
     
+    //app badge
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    
     // Create navigation controller
     self.window.rootViewController = [[MainViewController alloc] init];
     

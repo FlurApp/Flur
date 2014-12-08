@@ -405,6 +405,8 @@
 - (void) showDropFlurPage {
     [self.topBarView showDropFlurBar];
     [self hideSettingsPage];
+    [self.dropFlurView setup];
+    
     self.dropFlurView.view.frame = CGRectMake(0, self.view.frame.size.height,
                                               self.dropFlurView.view.frame.size.width,
                                               self.dropFlurView.view.frame.size.height);
@@ -561,6 +563,7 @@
 }
 
 - (void) showPhotoPage:(NSMutableDictionary*)data {
+    
     self.photoView = [[PhotoViewController alloc] init];
     self.photoView.delegate = self;
     [self.view addSubview:self.photoView.view];

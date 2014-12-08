@@ -135,7 +135,7 @@
     // create image for tableList button
     UIImage* tableIcon = [UIImage imageNamed:@"glasses-480.png"];
     CGRect temp_rect = CGRectMake(0,0,75,75);
-    UIGraphicsBeginImageContext(rect.size);
+    UIGraphicsBeginImageContext(temp_rect.size);
     [tableIcon drawInRect:temp_rect];
     UIImage *tableIconResized = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -159,7 +159,7 @@
     
     [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.menuButton attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
     
-    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
+    [self.topBarContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.tableListButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBarContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:4]];
     
     
     /* ----------------------------------------------------------
