@@ -343,6 +343,8 @@
                                               self.flurInfoView.view.frame.size.width,
                                               self.flurInfoView.view.frame.size.height);
     
+    [self.view bringSubviewToFront:self.flurInfoView.view];
+    
     [UIView animateWithDuration:.3 delay:.2 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
             self.flurInfoView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
                                                     self.flurInfoView.view.frame.size.width,
@@ -366,6 +368,7 @@
     self.flurInfoView.view.frame = CGRectMake(0, self.view.frame.size.height,
                                               self.flurInfoView.view.frame.size.width,
                                               self.flurInfoView.view.frame.size.height);
+    [self.view bringSubviewToFront:self.flurInfoView.view];
     
     [UIView animateWithDuration:.3 delay:.2 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.flurInfoView.view.frame = CGRectMake(0, TOP_BAR_HEIGHT,
@@ -406,6 +409,7 @@
     [self.topBarView showDropFlurBar];
     [self hideSettingsPage];
     [self.dropFlurView setup];
+    [self.view bringSubviewToFront:self.dropFlurView.view];
     
     self.dropFlurView.view.frame = CGRectMake(0, self.view.frame.size.height,
                                               self.dropFlurView.view.frame.size.width,
@@ -458,6 +462,7 @@
     self.cameraView.view.frame = CGRectMake(0, -self.view.frame.size.height,
                                               self.cameraView.view.frame.size.width,
                                               self.cameraView.view.frame.size.height);
+    [self.view bringSubviewToFront:self.cameraView.view];
     
     [UIView animateWithDuration:.3 delay:.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.cameraView.view.frame = CGRectMake(0, -20,
@@ -552,7 +557,12 @@
 
 -(void)showMapPage {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 
+
+    [self.view bringSubviewToFront:self.mapView.view];
+    [self.view bringSubviewToFront:self.topBarView.view];
+    
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
         self.mapView.view.frame = CGRectMake(0, 0,
@@ -563,6 +573,8 @@
 }
 
 -(void)showMapPageFromLogin {
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
     self.mapView.view.frame = CGRectMake(0, 0,
                                          self.mapView.view.frame.size.width,
@@ -601,6 +613,8 @@
     [self.view addSubview:self.photoView.view];
     [self addChildViewController:self.photoView];
     [self.photoView setData:data];
+    
+    [self.view bringSubviewToFront:self.photoView.view];
     
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.photoView.view.frame = CGRectMake(0, 0,

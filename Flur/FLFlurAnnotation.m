@@ -35,6 +35,8 @@
         self.myImageSize = CGRectMake(-15,-15,30,30);
         self.hey = 1;
         self.newFlur = false;
+        NSLog(@"COord: %f %f", coord.latitude, coord.longitude);
+
     }
     
     return self;
@@ -45,13 +47,13 @@
     if (self) {
         CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(lat, lng);
         _coordinate = coord;
-        self.pin = nil;
+        self.pin = [[FLPin alloc] init];
         self.myAnnotationView = [[UIImageView alloc] init];
         self.myImageSize = CGRectMake(-15,-15,30,30);
         self.hey = 1;
         self.newFlur = false;
-
-
+        self.pin.haveContributedTo = true;
+        NSLog(@"COord: %f %f", coord.latitude, coord.longitude);
 
     }
     return self;
