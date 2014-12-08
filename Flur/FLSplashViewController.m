@@ -32,21 +32,22 @@
     backSplash.contentMode = UIViewContentModeScaleToFill;
     [self.view addSubview:backSplash];*/
     
-    UIImageView *image = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"white-120px.png"]];
+    UIImageView *image = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"flur_clear.png"]];
     //image.layer.edgeAntialiasingMask = kCALayerLeftEdge | kCALayerRightEdge | kCALayerBottomEdge | kCALayerTopEdge;
 
     [image setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:image];
     
     
-
-    
-   
-
-    
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:image attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
     
-        [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:image attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:-100]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:image attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:[self view] attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:-100]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:image attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:150]];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:image attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:150]];
+    
+    
 
     UIColor *buttonBackgroundColor = RGB(255,255,255);
     UIColor *buttonTextColor = RGB(152,0,194);
@@ -122,10 +123,12 @@
       [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.loginButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:50]];
     
     
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = self.view.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[RGB(186,108,224) CGColor], (id)[RGB(179, 88, 224) CGColor], nil];
-    [self.view.layer insertSublayer:gradient atIndex:0];
+//    CAGradientLayer *gradient = [CAGradientLayer layer]; 
+//    gradient.frame = self.view.bounds;
+//    gradient.colors = [NSArray arrayWithObjects:(id)[RGB(186,108,224) CGColor], (id)[RGB(179, 88, 224) CGColor], nil];
+//    [self.view.layer insertSublayer:gradient atIndex:0];
+    
+    self.view.backgroundColor = RGBA(179, 88, 224, 1);
     
     [self.view layoutIfNeeded];
     

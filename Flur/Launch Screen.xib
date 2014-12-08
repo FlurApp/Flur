@@ -20,21 +20,11 @@
             </subviews>
             <color key="backgroundColor" red="0.70196078431372544" green="0.34509803921568627" blue="0.8784313725490196" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="centerX" secondItem="gYh-mS-BbR" secondAttribute="centerX" id="F75-Xr-eEV"/>
-                <constraint firstAttribute="centerY" secondItem="gYh-mS-BbR" secondAttribute="centerY" id="FA7-oz-Ibh"/>
-                <constraint firstAttribute="centerX" secondItem="gYh-mS-BbR" secondAttribute="centerX" id="dg3-ek-alE"/>
-                <constraint firstAttribute="centerY" secondItem="gYh-mS-BbR" secondAttribute="centerY" id="ldV-Rv-VJt"/>
-                <constraint firstAttribute="centerY" secondItem="gYh-mS-BbR" secondAttribute="centerY" constant="100" id="qAI-dW-YA5"/>
+                <constraint firstAttribute="centerY" secondItem="gYh-mS-BbR" secondAttribute="centerY" constant="100" id="flJ-B0-F8I"/>
+                <constraint firstAttribute="centerX" secondItem="gYh-mS-BbR" secondAttribute="centerX" id="hJv-XS-NC0"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <variation key="default">
-                <mask key="constraints">
-                    <exclude reference="FA7-oz-Ibh"/>
-                    <exclude reference="dg3-ek-alE"/>
-                    <exclude reference="ldV-Rv-VJt"/>
-                </mask>
-            </variation>
             <point key="canvasLocation" x="404" y="445"/>
         </view>
     </objects>

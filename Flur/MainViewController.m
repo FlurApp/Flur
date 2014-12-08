@@ -537,6 +537,7 @@
         [self.tableView getFlurs];
     }];
     
+    
     [UIView animateWithDuration:0 delay:.3 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.loginView.view.frame = CGRectMake(-self.loginView.view.frame.size.width, 0,
                                                 self.loginView.view.frame.size.width,
@@ -554,7 +555,31 @@
     
 }
 
+-(void)showMapPageFromLogin {
+    
+    self.topBarView.view.frame = CGRectMake(self.view.frame.size.width, 0,
+                                           self.topBarView.view.frame.size.width,
+                                           self.topBarView.view.frame.size.height);
+    
+    self.mapView.view.frame = CGRectMake(self.view.frame.size.width, TOP_BAR_HEIGHT,
+                                            self.mapView.view.frame.size.width,
+                                            self.mapView.view.frame.size.height);
+    
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
+        self.mapView.view.frame = CGRectMake(0, 0,
+                                             self.mapView.view.frame.size.width,
+                                             self.mapView.view.frame.size.height);
+        self.loginView.view.frame = CGRectMake(-self.view.frame.size.width, 0,
+                                             self.mapView.view.frame.size.width,
+                                             self.mapView.view.frame.size.height);
+        
+    } completion:^(BOOL finished) {}];
+    
+}
+
 -(void)hideMapPage {
+    
     [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.mapView.view.frame = CGRectMake(self.mapView.view.frame.size.width, 0,
                                                self.mapView.view.frame.size.width,
