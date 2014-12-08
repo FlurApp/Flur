@@ -494,7 +494,8 @@
         NSDictionary *pushData = [NSDictionary dictionaryWithObjectsAndKeys:
                               messageContent, @"alert",
                               @"Increment", @"badge",
-                              flurPin, @"pin",
+                              self.pin.pinId, @"flurObjectId",
+                              self.pin.totalContentCount, @"totalContentCount",
                               nil];
         
         // create push object
