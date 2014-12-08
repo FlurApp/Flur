@@ -84,7 +84,7 @@
       <AdditionalOptions>
       </AdditionalOptions>
       <LocationScenarioReference
-         identifier = "New York, NY, USA"
+         identifier = "Johannesburg, South Africa"
          referenceType = "1">
       </LocationScenarioReference>
    </LaunchAction>

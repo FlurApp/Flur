@@ -19,11 +19,10 @@
 #define RGBA(r,g,b,a) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:a]
 
 
-/*@interface InsetLabel : UILabel
-@property (nonatomic)
-@end*/
+@interface FLFlurInfoViewController () {
+    CLLocation *currentLocation;
+}
 
-@interface FLFlurInfoViewController ()
 
 @property (nonatomic, strong) UIButton *viewAlbumButton;
 @property (nonatomic, strong) UIButton *contributeButton;
@@ -120,12 +119,27 @@
             [self.contributeButton.layer setShadowColor:[UIColor blackColor].CGColor];
             [self.contributeButton.layer setShadowOpacity:.3];
             [self.contributeButton.layer setShadowOffset:CGSizeMake(0.0f, -2.0f)];
-
         }
         
         [self.view layoutIfNeeded];
     }
     else {
+
+
+        MKCoordinateRegion region = { {0.0, 0.0 }, { 0.0, 0.0 } };
+        region.center.latitude = [[data objectForKey:@"lat"] doubleValue];
+        region.center.longitude = [[data objectForKey:@"lng"] doubleValue];
+        region.span.longitudeDelta = 0.15f;
+        region.span.latitudeDelta = 0.15f;
+        [self.mapView setRegion:region animated:NO];
+        
+        
+        FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithLat:region.center.latitude initWithLng:region.center.longitude];
+        [self.mapView addAnnotation:annotation];
+
+        
+        
+
         self.contributeView = false;
         self.yourContributionConstraint.constant = 0;
 
@@ -278,7 +292,7 @@
     [self.mapView setZoomEnabled:YES];
     [self.mapView setPitchEnabled:YES];
     [self.mapView setShowsUserLocation:NO];
-    [self.mapView setUserTrackingMode:MKUserTrackingModeFollowWithHeading];
+    //[self.mapView setUserTrackingMode:MKUserTrackingModeFollowWithHeading];
     
     self.mapView.alpha = 0;
     
@@ -450,6 +464,7 @@
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
     //NSLog(@"WHOOOooooo: %@", [annotation class]);
+    NSLog(@"INN");
 
     if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
         //NSLog(@"THATS WATSUP");

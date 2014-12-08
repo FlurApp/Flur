@@ -220,6 +220,11 @@
     [newData setObject:flur.totalContentCount forKey:@"totalContentCount"];
     [newData setObject:flur.myContentPosition forKey:@"myContentPosition"];
     [newData setObject:flur.objectId forKey:@"pinId"];
+    
+    [newData setObject:flur.lat forKey:@"lat"];
+    [newData setObject:flur.lng forKey:@"lng"];
+
+
 
     [self.delegate showInfoPage:newData];
 }

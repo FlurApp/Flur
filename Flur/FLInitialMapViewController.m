@@ -176,14 +176,11 @@
             
             [self updateAnnotations:[self.mapManager getNewlyNonOpenablePins] isNowOpenable:false];
         }
-        
-
     }];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
 
-    // NSLog(@"New location: %@", newLocation);
     
     [self.mapManager updateCurrentLocation:newLocation
                         andRefreshLocation:false];
@@ -229,7 +226,6 @@
 {
 
     FLFlurAnnotation* fa = view.annotation;
-    // NSLog(@"Clicked: %@", fa.pin.pinId);
     
     if (fa.pin.pinId) {
         
