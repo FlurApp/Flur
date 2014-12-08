@@ -129,8 +129,8 @@
         MKCoordinateRegion region = { {0.0, 0.0 }, { 0.0, 0.0 } };
         region.center.latitude = [[data objectForKey:@"lat"] doubleValue];
         region.center.longitude = [[data objectForKey:@"lng"] doubleValue];
-        region.span.longitudeDelta = 0.15f;
-        region.span.latitudeDelta = 0.15f;
+        region.span.longitudeDelta = 0.01f;
+        region.span.latitudeDelta = 0.01f;
         [self.mapView setRegion:region animated:NO];
         
         
