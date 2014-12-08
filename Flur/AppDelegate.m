@@ -10,9 +10,9 @@
 
 #import "AppDelegate.h"
 #import "MainViewController.h"
+#import "LocalStorage.h"
 
 @interface AppDelegate ()
-
 
 @end
 
@@ -71,7 +71,25 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    [PFPush handlePush:userInfo];
+    //[PFPush handlePush:userInfo];
+    
+    if ([userInfo objectForKey:@"alert"]) {
+        
+        PFObject *pin = [userInfo objectForKey:@"pin"];
+        [LocalStorage updateFlurWithObjectId:[pin objectId] andTotalContentCount:pin[@"totalContentCount"] completion:^{
+
+            [self.tvp getFlurs];
+            
+            NSString *message = [userInfo objectForKey:@"alert"];
+            
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Flur Update"
+                                                            message: message
+                                                           delegate: self
+                                                  cancelButtonTitle: @"View"
+                                                  otherButtonTitles: nil];
+            [alert show];
+        }];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

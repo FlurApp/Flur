@@ -10,6 +10,7 @@
 #import "FLTableViewController.h"
 #import "LocalStorage.h"
 #import "FLConstants.h"
+#import "AppDelegate.h"
 
 @interface FLTableViewController ()
 
@@ -30,6 +31,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    appDelegate.tvp = self;
+    
     //[LocalStorage destroyLocalStorage];
     // [LocalStorage createTestData];
     

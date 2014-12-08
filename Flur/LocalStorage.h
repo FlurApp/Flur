@@ -31,4 +31,7 @@
 + (void) createTestData;
 + (void) createTestDataWithCompletion:(void(^)()) completion;
 
++ (void) updateFlurWithObjectId:(NSString *) flurObjectId andTotalContentCount:(NSNumber *) totalContentCount completion:(void(^)()) completion;
+
+
 @end
