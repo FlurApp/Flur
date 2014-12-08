@@ -417,6 +417,8 @@
     
     if (![self frontBack])
         [self toggleCamera:nil];
+    
+    self.count = 0;
 }
 
 - (IBAction)uploadImageButtonClick:(id)sender {
