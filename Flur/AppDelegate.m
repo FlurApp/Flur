@@ -76,8 +76,8 @@
     if ([userInfo objectForKey:@"alert"]) {
         
          NSString *flurObjectId = [userInfo objectForKey:@"flurObjectId"];
-         NSInteger b = [userInfo objectForKey:@"totalContentCount"];
-         NSNumber *totalContentCount = [NSNumber numberWithInteger:b];
+         NSNumber *totalContentCount = [userInfo objectForKey:@"totalContentCount"];
+        
         NSLog(@"%@ %@", flurObjectId, totalContentCount);
         [LocalStorage updateFlurWithObjectId:flurObjectId andTotalContentCount:totalContentCount completion:^{
             NSLog(@"UN");

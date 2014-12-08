@@ -490,12 +490,14 @@
         PFQuery *pushQuery = [PFInstallation query];
         [pushQuery whereKey:@"user" matchesKey:@"createdBy" inQuery:userQuery];
         
+        NSLog(@"Hey: %@ %lu", self.pin.pinId, self.pin.totalContentCount);
+        
         NSString *messageContent = @"A flur you have contributed to has new photos!";
         NSDictionary *pushData = [NSDictionary dictionaryWithObjectsAndKeys:
                               messageContent, @"alert",
                               @"Increment", @"badge",
                               self.pin.pinId, @"flurObjectId",
-                              self.pin.totalContentCount, @"totalContentCount",
+                              [NSNumber numberWithInteger:self.pin.totalContentCount], @"totalContentCount",
                               nil];
         
         // create push object
