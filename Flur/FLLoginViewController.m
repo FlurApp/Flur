@@ -219,6 +219,8 @@
     self.emailInput.userInteractionEnabled = YES;
     self.emailInput.autocorrectionType = UITextAutocorrectionTypeNo;
     self.emailInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.emailInput.returnKeyType = UIReturnKeyNext;
+
     [self.emailInput setFont:[UIFont fontWithName:@"Avenir-Light" size:18]];
     [self.emailInput setTintColor:RGB(13,191,255)];
 
@@ -290,6 +292,8 @@
     
     self.passwordInput.autocorrectionType = UITextAutocorrectionTypeNo;
     self.passwordInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.passwordInput.returnKeyType = UIReturnKeyDone;
+
     self.passwordInput.secureTextEntry = YES;
 
     
@@ -527,6 +531,16 @@
     BOOL returnKey = [string rangeOfString: @"\n"].location != NSNotFound;
     
     return newLength <= MAXLENGTH || returnKey;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    if (textField == self.emailInput)
+        [self.passwordInput becomeFirstResponder];
+    else if (textField == self.passwordInput) {
+        [self.signUpWithEmailButton sendActionsForControlEvents:UIControlEventTouchUpInside];
+    }
+    return NO;
 }
 
 

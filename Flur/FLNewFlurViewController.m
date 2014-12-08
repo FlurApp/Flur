@@ -29,6 +29,8 @@
 @property (nonatomic) BOOL active;
 @property (nonatomic) CGRect keyboard;
 
+@property (nonatomic, strong) UILabel *dateLabel;
+
 
 
 
@@ -49,6 +51,14 @@
 
 - (void) cleanUp {
     self.active = false;
+    self.promptInput.text = @"";
+    self.placeholder.text = @"Add your prompt here";
+    self.charCount.text = @"0/200";
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MMM d, YYYY"];
+    self.dateLabel.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:[NSDate date]]];
+    
     [UIView animateWithDuration:.2 animations:^{
         self.addButtonBottom.constant = 110;
     }];
@@ -185,23 +195,21 @@
     [bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.charCount attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
     
     
-    UILabel *dateLabel = [[UILabel alloc] init];
-    [dateLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
-    [dateLabel setTextColor:RGBA(179, 88, 224, 1)];//RGBA(255,255,255, 1)];
+    self.dateLabel = [[UILabel alloc] init];
+    [self.dateLabel setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
+    [self.dateLabel setTextColor:RGBA(179, 88, 224, 1)];//RGBA(255,255,255, 1)];
     
-    [dateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [bottomBar addSubview:dateLabel];
+    [self.dateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [bottomBar addSubview:self.dateLabel];
     
-    [bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:dateLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:bottomBar attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+    [bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:bottomBar attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
     
-    [bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:dateLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    [bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.dateLabel attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
     
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    
     [dateFormatter setDateFormat:@"MMM d, YYYY"];
-    
-    dateLabel.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:[NSDate date]]];
+    self.dateLabel.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:[NSDate date]]];
     
     
     
