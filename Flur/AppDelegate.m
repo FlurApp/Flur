@@ -71,26 +71,23 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    //[PFPush handlePush:userInfo];
-    NSLog(@"RED: %@", userInfo);
-    if ([userInfo objectForKey:@"alert"]) {
+    [PFPush handlePush:userInfo];
+    if ([userInfo objectForKey:@"flurObjectId"] != nil) {
         
          NSString *flurObjectId = [userInfo objectForKey:@"flurObjectId"];
          NSNumber *totalContentCount = [userInfo objectForKey:@"totalContentCount"];
-        
-        NSLog(@"%@ %@", flurObjectId, totalContentCount);
         [LocalStorage updateFlurWithObjectId:flurObjectId andTotalContentCount:totalContentCount completion:^{
-            NSLog(@"UN");
             [self.tvp getFlurs];
             
-            NSString *message = [userInfo objectForKey:@"alert"];
+            NSString *message = [[userInfo objectForKey:@"aps"] objectForKey:@"alert"];
+            
             
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle: @"Flur Update"
                                                             message: message
                                                            delegate: self
                                                   cancelButtonTitle: @"View"
                                                   otherButtonTitles: nil];
-            [alert show];
+            // [alert show];
         }];
     }
 }

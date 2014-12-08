@@ -280,7 +280,9 @@ static bool userFound = false;
 }
 
 + (void) updateFlurWithObjectId:(NSString *) flurObjectId andTotalContentCount:(NSNumber *) totalContentCount completion:(void(^)()) completion{
+    NSLog(@"HEEEEYYY");
     [self getFlursInDict:^(NSMutableDictionary *allFlurs) {
+        NSLog(@"IN");
         Flur *flur = [allFlurs objectForKey:flurObjectId];
         if (flur == nil) {
             NSLog(@"Error: Trying to update flur that does not exist in core data.");
@@ -294,13 +296,18 @@ static bool userFound = false;
 + (void) updateFlurWithCoreDataFlur:(Flur *) flur andTotalContentCount:(NSNumber *) totalContentCount completion:(void(^)()) completion {
     
     flur.totalContentCount = totalContentCount;
+    NSLog(@"Content: %lu", flur.totalContentCount);
     
-    if (completion != nil) {
-        completion();
-    }
-    else {
-        NSLog(@"Not calling completion");
-    }
+    [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
+        NSLog(success ? @"successfully saved" : @"Not saved");
+        [document.managedObjectContext save:nil];
+        
+        if (completion != nil) {
+            completion();
+        }
+        else
+            NSLog(@"Not calling completion");
+    }];
     
 }
 
