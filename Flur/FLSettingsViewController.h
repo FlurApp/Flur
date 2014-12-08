@@ -17,6 +17,7 @@
 - (void)showDropFlurPage;
 - (void)hideMapPage;
 - (void)showSplashPage;
+- (void) logout;
 
 @end
 

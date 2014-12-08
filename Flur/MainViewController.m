@@ -618,6 +618,20 @@
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
+- (void) logout {
+    self.splashView.view.alpha = 0;
+    self.photoView.view.frame = CGRectMake(0, 0,
+                                           self.splashView.view.frame.size.width,
+                                           self.splashView.view.frame.size.height);
+    
+    [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.photoView.view.frame = CGRectMake(0, self.photoView.view.frame.size.height,
+                                               self.photoView.view.frame.size.width,
+                                               self.photoView.view.frame.size.height);
+    } completion:^(BOOL finished) {}];
+    
+}
+
 - (void) haveContributedToFlur:(NSString *) objectId {
     [self.mapView justContributedToFlur:objectId];
     [self.tableView getFlurs];
