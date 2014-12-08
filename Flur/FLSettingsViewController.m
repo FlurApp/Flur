@@ -208,7 +208,7 @@
     [LocalStorage destroyLocalStorage];
     
     [_delegate logout];
-//    [_delegate hideSettingsPage];
+    [_delegate hideSettingsPage];
 //    [_delegate hideMapPage];
 //    [_delegate showSplashPage];
 }
