@@ -20,11 +20,7 @@
 
 @property (nonatomic, assign) id<FLNewFlurViewControllerDelegate> delegate;
 
-
-
-- (void) setFocus;
+- (void) setFocus:(BOOL)yesNo;
 - (void) setup;
-
-
 
 @end

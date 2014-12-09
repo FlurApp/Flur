@@ -420,22 +420,24 @@
                                                   self.dropFlurView.view.frame.size.width,
                                                     self.dropFlurView.view.frame.size.height);
     } completion:^(BOOL finished) {
-        [self.dropFlurView setFocus];
+        [self.dropFlurView setFocus:YES];
     }];
 }
 
 - (void) hideDropFlurPage {
+    [self.dropFlurView setFocus:NO];
     [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
         self.dropFlurView.view.frame = CGRectMake(0, self.view.frame.size.height,
                                                   self.dropFlurView.view.frame.size.width,
                                                   self.dropFlurView.view.frame.size.height);
-    } completion:^(BOOL finished) { }];
+        [self.topBarView showMapBar];
+    } completion:^(BOOL finished) {
+    }];
 }
 
 
 - (void)addFlurToCamera: (NSMutableDictionary*)data {
     [self hideDropFlurPage];
-    
     
     FLPin *pin = [[FLPin alloc] init];
     pin.coordinate = [self getCurrentLocation];

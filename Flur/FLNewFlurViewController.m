@@ -45,8 +45,11 @@
     self.active = true;
 }
 
-- (void) setFocus {
-    [self.promptInput becomeFirstResponder];
+- (void) setFocus:(BOOL)yesNo {
+    if (yesNo)
+        [self.promptInput becomeFirstResponder];
+    else
+        [self.promptInput resignFirstResponder];
 }
 
 - (void) cleanUp {
@@ -73,7 +76,6 @@
     
     self.promptInput = [[UITextView alloc] init];
     [self.promptInput setTranslatesAutoresizingMaskIntoConstraints:NO];
-    self.promptInput.delegate = self;
     [self.view addSubview:self.promptInput];
     self.promptInput.backgroundColor = RGBA(255, 255, 255, .9);
     [self.promptInput setTintColor: RGB(13,191,255)];
@@ -82,7 +84,8 @@
 
     
     self.promptInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.promptInput.returnKeyType = UIReturnKeyNext;
+    self.promptInput.delegate = self;
+    [self.promptInput setReturnKeyType:UIReturnKeyDone];
     self.promptInput.keyboardAppearance = UIKeyboardAppearanceLight;
     self.promptInput.keyboardType = UIKeyboardTypeAlphabet;
     self.promptInput.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -115,11 +118,6 @@
     [self.promptInput addConstraint:[NSLayoutConstraint constraintWithItem:self.placeholder attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.promptInput attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
     
     [self.promptInput addConstraint:[NSLayoutConstraint constraintWithItem:self.placeholder attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.promptInput attribute:NSLayoutAttributeLeading multiplier:1.0 constant:5]];
-    
-    
-    
-    
-    
     
     [self loadWaste];
     
@@ -268,8 +266,13 @@
         self.placeholder.text = @"Add your prompt here";
     else
         self.placeholder.text = @"";
-
     
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [self addFlur:textField];
+    return NO;
 }
 
 //- (IBAction)addFlur:(id)sender {

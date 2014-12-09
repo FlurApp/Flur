@@ -24,7 +24,7 @@
 
 @property (nonatomic) BOOL tableViewMode;
 @property (nonatomic) BOOL infoViewMode;
-//@property (nonatomic) BOOL dropFlurViewMode;
+@property (nonatomic) BOOL dropFlurViewMode;
 
 
 @end
@@ -273,6 +273,10 @@
         }];
         
     }
+    else if (self.dropFlurViewMode) {
+        self.dropFlurViewMode = FALSE;
+        [self.delegate hideDropFlurPage];
+    }
     
 }
 
@@ -357,17 +361,22 @@
 }
 
 - (void) showDropFlurBar {
-    
+    self.dropFlurViewMode = TRUE;
     self.flurImageContainer.alpha = 0;
     
     [UIView animateWithDuration:.2 animations:^{
         self.pageTitle.alpha = 0;
+        self.menuButton.alpha = 0;
+        self.tableListButton.alpha = 0;
     } completion:^(BOOL finished) {
         self.pageTitle.text = @"Drop Flur";
         [UIView animateWithDuration:.2 animations:^{
             self.pageTitle.alpha = 1;
+            self.backButton.alpha = 1;
         }];
     }];
+    
+    
     
 }
 

@@ -14,8 +14,8 @@
 - (void)settingButtonPress;
 - (void)showTablePage;
 - (void)hideTablePage;
-- (void) hideInfoPage;
-
+- (void)hideInfoPage;
+- (void)hideDropFlurPage;
 
 
 
