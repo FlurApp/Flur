@@ -634,6 +634,7 @@
                                                self.photoView.view.frame.size.height);
     } completion:^(BOOL finished) {}];
 
+    self.photoView = nil;
     [self setNeedsStatusBarAppearanceUpdate];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }

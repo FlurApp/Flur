@@ -156,20 +156,21 @@
         if (!error) {
 
             // Iterate over all objects and download corresponding data
-            int i = 0;
+            __block int i = 0;
             if (objects.count == 0)
                 completion(allPhotos);
 
 
             for (PFObject *object in objects) {
-                i++;
+                
                 PFFile *imageFile = [object objectForKey:@"imageFile"];
                 [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                     if (!error) {
                         [allPhotos addObject:data];
+                        i++;
                     }
                     else {
-                        NSLog(@"fack me");
+                        NSLog(@"error!!!");
                     }
 
                     if (i == objects.count) {
