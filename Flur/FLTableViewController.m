@@ -89,14 +89,17 @@
 }
 
 - (void) getFlurs {
-    // NSLog(@"Getting flurs");
-    // get contributed pins
+
     [LocalStorage getFlurs:^(NSMutableDictionary *allFlurs) {
-        self.pinsArray = allFlurs[@"allFlurs"];
-        // NSLog(@"Size: %lu", self.pinsArray.count);
+        self.pinsArray = [[NSMutableArray alloc] initWithArray:allFlurs[@"allFlurs"]];
         
-       // NSLog(@"first: %@", [self.pinsArray[0] prompt]);
-        //NSLog(@"second: %@", [self.pinsArray[1] prompt]);
+        [self.pinsArray sortUsingComparator:^NSComparisonResult(id a, id b) {
+            
+            NSDate *date1 = [a dateAdded];
+            NSDate *date2 = [b dateAdded];
+            
+            return [date2 compare:date1];
+        }];
         
         [self reloadData];
         

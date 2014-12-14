@@ -459,7 +459,9 @@
     if (self.count == 2) {
         
         if (self.allPhotos.count != self.pin.totalContentCount) {
-            [self.allPhotos addObject: self.imageData];
+            NSDate *currentDate = [NSDate date];
+            NSArray *dateAndImage = [NSArray arrayWithObjects:currentDate,self.imageData, nil];
+            [self.allPhotos addObject: dateAndImage];
         }
         
         [self.dataToPass setObject:self.allPhotos forKey:@"allPhotos"];
