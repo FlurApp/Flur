@@ -76,9 +76,9 @@ static bool userFound = false;
                 PFObject *flurContributedTo = image[@"flurPin"];
 
                 // If I haven't yet added this flur to my master container
-                if ([localStorageFlurData objectForKey:flurContributedTo[@"objectId"]] == nil) {
+                if ([localStorageFlurData objectForKey:flurContributedTo[@"objectId"]] == nil && flurContributedTo != nil) {
                     NSLog(@"Image: %@", image);
-                    NSLog(@"Flur: %@", flurContributedTo);
+                    NSLog(@"Flurr: %@", flurContributedTo.objectId);
                     
                     NSMutableDictionary *flurToAdd = [[NSMutableDictionary alloc] init];
                     
