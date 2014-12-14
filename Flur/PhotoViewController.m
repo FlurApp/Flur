@@ -52,6 +52,15 @@
     self.topBarVisible = true;
     self.allPhotos = [data objectForKey:@"allPhotos"];
     
+    // sort the photos by date
+    [self.allPhotos sortUsingComparator:^NSComparisonResult(id a, id b) {
+        
+        NSDate *date1 = a[0];
+        NSDate *date2 = b[0];
+        
+        return [date1 compare:date2];
+    }];
+    
     self.view.backgroundColor = [UIColor blackColor];
     
     // Set up controller for the multiple page view
@@ -328,7 +337,7 @@
     
     childViewController.index = index;
     childViewController.viewsToToggle = self.viewsToToggle;
-    [childViewController setImage:self.allPhotos[index]];
+    [childViewController setImage:self.allPhotos[index][1]];
     
     return childViewController;    
 }
@@ -359,6 +368,5 @@
     
     self.currentPicture.text = [NSString stringWithFormat:@"%d/%lu", (a.index+1), (unsigned long)self.allPhotos.count];
 }
-
 
 @end
