@@ -307,11 +307,11 @@
     }];
 }
 
-- (void) showTablePage {
+- (void) showTablePage:(int)fromPhotoAlbum {
     self.tableVisible = true;
     [self.tableView didMoveToParentViewController:self];
     
-    self.tableView.view.frame = CGRectMake(self.view.frame.size.width, TOP_BAR_HEIGHT,
+    self.tableView.view.frame = CGRectMake(self.view.frame.size.width*fromPhotoAlbum, TOP_BAR_HEIGHT,
                                            self.view.frame.size.width, self.view.frame.size.height - TOP_BAR_HEIGHT);
 
     [self.view sendSubviewToBack:self.tableView.view];
@@ -681,15 +681,13 @@
 }
 
 -(void)hidePhotoPage {
-    [UIView animateWithDuration:0 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
-        self.photoView.view.frame = CGRectMake(0, self.photoView.view.frame.size.height,
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.photoView.view.frame = CGRectMake(self.photoView.view.frame.size.width, 0,
                                                self.photoView.view.frame.size.width,
                                                self.photoView.view.frame.size.height);
     } completion:^(BOOL finished) {}];
 
     self.photoView = nil;
-    [self setNeedsStatusBarAppearanceUpdate];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 - (void) logout {

@@ -15,7 +15,7 @@
 -(void)hidePhotoPage;
 -(void)showMapPage;
 -(void)showPhotoPage;
--(void)showTablePage;
+-(void)showTablePage:(int)fromPhotoAlbum;
 - (void) animateNewPin;
 @end
 

@@ -286,7 +286,7 @@
 }
 
 - (IBAction)showTableView:(id)sender {
-    [self.delegate showTablePage];
+    [self.delegate showTablePage:1];
 
     [self showTableBar];
 }

@@ -21,10 +21,11 @@
 @interface PhotoViewController ()
 
 // UI elements
-@property   (strong, nonatomic) UILabel * viewPrompt;
-@property   (strong, nonatomic) UIView * topBar;
-@property   (strong, nonatomic) UIView * bottomBar;
-@property   (strong, nonatomic) UILabel* currentPicture;
+@property (strong, nonatomic) UILabel * viewPrompt;
+@property (strong, nonatomic) UIView * topBar;
+@property (strong, nonatomic) UIView * bottomBar;
+@property (strong, nonatomic) UILabel* currentPicture;
+@property (nonatomic, strong) UIButton *exitButton;
 
 // Used to pass top/bottom bar to SinglePhotoVC so it can toggle views
 @property   (strong, nonatomic) NSMutableArray *viewsToToggle;
@@ -124,7 +125,7 @@
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:0]];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:70]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTopMargin multiplier:1.0 constant:80]];
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.topBar attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
     
@@ -153,18 +154,19 @@
     UIButton *exitButton = [[UIButton alloc] init];
     exitButton.translatesAutoresizingMaskIntoConstraints = NO;
     [exitButton setImage:[UIImage imageNamed:@"less_then-100.png"] forState:UIControlStateNormal];
-
+    [exitButton setImageEdgeInsets:UIEdgeInsetsMake(5,5,5,5)];
    
     [exitButton addTarget:self
                    action:@selector(navBack)
          forControlEvents:UIControlEventTouchUpInside];
     
+    self.exitButton = exitButton;
     [self.topBar addSubview:exitButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:28 ]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:10]];
     
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:5]];
     
     
     
@@ -174,14 +176,14 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:exitButton
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:30.0]];
+                                                           constant:40.0]];
 
     self.currentPicture.text = [NSString stringWithFormat:@"1/%lu", (unsigned long) self.allPhotos.count];
     NSLog(@"%@",self.currentPicture.text);
@@ -193,7 +195,7 @@
     
     [self.topBar addSubview:self.currentPicture];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:30]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.exitButton attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:2]];
     
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.currentPicture attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
@@ -281,7 +283,7 @@
     [_delegate hidePhotoPage];
     
     if ([[self.pin_data objectForKey:@"previousPage"] isEqualToString: @"tablePage"])
-        [_delegate showTablePage];
+        [_delegate showTablePage:-1];
     else {
         NSLog(@"ookkkk");
         if ([[self.pin_data objectForKey:@"justAddedFlur"] isEqualToString:@"true"]) {
@@ -367,6 +369,10 @@
     NSLog(@"index %lu", (long)a.index);
     
     self.currentPicture.text = [NSString stringWithFormat:@"%d/%lu", (a.index+1), (unsigned long)self.allPhotos.count];
+    
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MMM d, YYYY"];
+    self.dateLabel.text = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:self.allPhotos[a.index][0]]];
 }
 
 @end

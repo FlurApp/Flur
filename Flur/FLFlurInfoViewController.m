@@ -150,11 +150,6 @@
         
         NSString *ordinal;
         
-        // If number % 100 is 11, 12, or 13
-        if (NSLocationInRange(myContentPosition % 100, NSMakeRange(11, 3))) {
-            ordinal = @"th";
-        }
-        
         switch (myContentPosition % 10) {
             case 1:
                 ordinal = @"st";
@@ -168,6 +163,11 @@
             default:
                 ordinal = @"th";
                 break;
+        }
+        
+        // If number % 100 is 11, 12, or 13
+        if (NSLocationInRange(myContentPosition % 100, NSMakeRange(11, 3))) {
+            ordinal = @"th";
         }
         
         self.yourContribution.text = [NSString stringWithFormat:@"You were the %i%@ person to contribute to this flur on %@.", myContentPosition, ordinal, dateAdded];

@@ -12,7 +12,7 @@
 
 @optional
 - (void)settingButtonPress;
-- (void)showTablePage;
+- (void)showTablePage:(int)fromPhotoAlbum;
 - (void)hideTablePage;
 - (void)hideInfoPage;
 - (void)hideDropFlurPage;

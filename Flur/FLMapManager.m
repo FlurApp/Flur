@@ -68,7 +68,7 @@
     
     PFQuery *query = [PFQuery queryWithClassName:@"FlurPin"];
     [query includeKey:@"createdBy"];
-    [query setLimit:10];
+    [query setLimit:100];
     [query whereKey: @"location"
        nearGeoPoint: [PFGeoPoint geoPointWithLatitude: [self currentLat]
                                            longitude: [self currentLng]]

@@ -30,9 +30,9 @@
 
 
 // FLMapManager
-#define viewablePinRadius 10
+#define viewablePinRadius 100
 #define refreshRadius 1
-#define closeToPinDistance .02 //how close we are to open a pin
+#define closeToPinDistance .05 //how close we are to open a pin
 
 // FLSettingsViewController
 #define profilePictureSize 180
@@ -46,7 +46,7 @@
 
 // MainViewController
 #define CORNER_RADIUS 4
-#define SLIDE_TIMING .20
+#define SLIDE_TIMING .25
 #define PANEL_WIDTH 120
 
 #define TOP_BAR_HEIGHT 80
