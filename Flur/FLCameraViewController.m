@@ -71,6 +71,7 @@
         self.photoManager = [[FLPhotoManager alloc] init];
         self.newFlur = [data[@"newFlur"] isEqual:@"true"] ? true : false;
     }
+    [self.session startRunning];
 }
 
 - (void)viewDidLoad {
@@ -114,14 +115,6 @@
     
     captureVideoPreviewLayer.frame = self.view.bounds;
     [self.view.layer addSublayer:captureVideoPreviewLayer];
-    
-    CALayer *viewLayer = [self.view layer];
-    [viewLayer setMasksToBounds:YES];
-    
-    CGRect bounds = [self.view bounds];
-    [captureVideoPreviewLayer setFrame:bounds];
-    
-    [self.session startRunning];
     
     retake = false;
     [self loadCameraButton];
@@ -320,8 +313,17 @@
     [[self stillImageOutput] captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         if (imageDataSampleBuffer != NULL) {
             NSData *data = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+            
             UIImage *image = [[UIImage alloc] initWithData:data];
-            _imageTaken = [[UIImageView alloc] initWithImage:image];
+            
+            if (self.frontBack == front) {
+                UIImage *flipped = [UIImage imageWithCGImage:image.CGImage scale:image.scale
+                                                 orientation:UIImageOrientationLeftMirrored];
+                _imageTaken = [[UIImageView alloc] initWithImage:flipped];
+            }
+            else
+                _imageTaken = [[UIImageView alloc] initWithImage:image];
+
             self.imageData = data;
             [self configureImageView];
         }
@@ -418,6 +420,7 @@
     if (![self frontBack])
         [self toggleCamera:nil];
     
+    [self.session stopRunning];
     self.count = 0;
 }
 

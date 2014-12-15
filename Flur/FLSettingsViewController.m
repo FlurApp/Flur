@@ -37,6 +37,26 @@
     PFUser *user = [PFUser currentUser];
     self.email.text = user.email;
     self.contributionCount.text = user[@"createdAt"];
+    
+    PFQuery *profilePicQuery = [PFQuery queryWithClassName:@"_User"];
+    [profilePicQuery whereKey:@"objectId" equalTo:user.objectId];
+    [profilePicQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            
+            PFFile *imageFile = [objects[0] objectForKey:@"profilePic"];
+            [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+                if (!error) {
+                    UIImage *pp = [UIImage imageWithData:data];
+                    UIImageView *ppView = [[UIImageView alloc] initWithImage:pp];
+                    CGRect bounds = [self.profilePicture bounds];
+                    [ppView setFrame:bounds];
+                    ppView.contentMode = UIViewContentModeScaleAspectFill;
+                    ppView.clipsToBounds = YES;
+                    [self.profilePicture addSubview:ppView];
+                }
+            }];
+        }
+    }];
 }
 
 - (void)viewDidLoad {
@@ -71,7 +91,7 @@
     [gradient setShadowOpacity:0.5];*/
     
     [self.profilePictureBorder.layer insertSublayer:gradient atIndex:0];
-    
+    self.profilePicture.contentMode = UIViewContentModeScaleAspectFill;
     self.profilePicture = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"flur_icon/flur_512.png"]];
     [self.profilePicture setTranslatesAutoresizingMaskIntoConstraints:NO];
   

@@ -9,6 +9,7 @@
 #import <Parse/Parse.h>
 #import "FLSignupViewController.h"
 #import "FLConstants.h"
+#import <AVFoundation/AVFoundation.h>
 
 //@implementation FLTextField
 //
@@ -62,6 +63,15 @@
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic) BOOL active;
 
+//camera shit
+@property (nonatomic) AVCaptureDevice* frontDevice;
+@property (nonatomic) AVCaptureSession* session;
+@property (nonatomic, readwrite) AVCaptureStillImageOutput *stillImageOutput;
+@property (nonatomic) AVCaptureDeviceInput *captureInput;
+@property (nonatomic, strong) NSData *imageData;
+@property (nonatomic, readwrite) UIImageView* imageTaken;
+@property (nonatomic, strong) UIButton *profilePic;
+
 
 @end
 
@@ -78,6 +88,8 @@
     
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     [self performSelector:@selector(showKeyboard:) withObject:self afterDelay:.2];
+    
+    [self loadCamera];
 }
 
 - (IBAction)showKeyboard:(id)sender {
@@ -603,6 +615,7 @@
         else {
             
             //[self dropSubmitButton];
+            [self saveProfilePic];
             [_delegate hideSignupPage];
             [_delegate showMapPageFromLogin];
             [self cleanUp];
@@ -634,6 +647,11 @@
     [self hideSubmitButton];
     [self hideErrorMessage];
     
+    [self.session beginConfiguration];
+    [self.session removeInput:self.captureInput];
+    [self.session commitConfiguration];
+    [self.session stopRunning];
+    
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleLightContent];
 }
 
@@ -645,6 +663,145 @@
 
 - (void) syncCoreDataWithServer {
     
+}
+
+
+- (void) loadCamera {
+    
+    self.session = [[AVCaptureSession alloc] init];
+    
+    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    
+    for (AVCaptureDevice *device in devices) {
+        if ([device position] == AVCaptureDevicePositionFront) {
+            self.frontDevice = device;
+        }
+    }
+    
+    self.session.sessionPreset = AVCaptureSessionPresetPhoto;
+    
+    NSError *error;
+    self.captureInput = [AVCaptureDeviceInput deviceInputWithDevice:self.frontDevice error:&error];
+    if (!self.captureInput) {
+        // Handle the error appropriately.
+    }
+    [self.session addInput:self.captureInput];
+    
+    NSDictionary *outputSettings = @{ AVVideoCodecKey : AVVideoCodecJPEG };
+    AVCaptureStillImageOutput *newStillImageOutput = [[AVCaptureStillImageOutput alloc] init];
+    [newStillImageOutput setOutputSettings:outputSettings];
+    
+    if ([self.session canAddOutput:newStillImageOutput]) {
+        [self.session addOutput:newStillImageOutput];
+        self.stillImageOutput = newStillImageOutput;
+    }
+    
+    AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
+    [captureVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+    
+    
+    // set up the viewing hole
+    self.profilePic = [[UIButton alloc] initWithFrame:CGRectMake(0,0,150,150)];
+    [self.profilePic setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.profilePic setBackgroundColor:[UIColor redColor]];
+    [self.profilePic addTarget:self action:@selector(growButtonAnimation:) forControlEvents:UIControlEventTouchDown];
+    [self.profilePic addTarget:self action:@selector(shrinkButtonAnimation:) forControlEvents:UIControlEventTouchUpInside];
+    [self.profilePic addTarget:self action:@selector(shrinkButtonAnimation:) forControlEvents:UIControlEventTouchUpOutside];
+
+    [self.view addSubview:self.profilePic];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.profilePic attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.passwordDummy attribute:NSLayoutAttributeBottom multiplier:1.0 constant:20]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.profilePic attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.profilePic attribute:NSLayoutAttributeTop multiplier:1.0 constant:150]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.profilePic attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:self.profilePic.frame.size.height]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.profilePic attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    
+    CGRect bounds = [self.profilePic bounds];
+    [captureVideoPreviewLayer setFrame:bounds];
+    [self.profilePic.layer addSublayer:captureVideoPreviewLayer];
+    
+    self.profilePic.layer.cornerRadius = self.profilePic.layer.frame.size.width/2;
+    self.profilePic.clipsToBounds = YES;
+    
+    [self.session startRunning];
+}
+
+- (void) growButtonAnimation: (UIButton*) button {
+    [self.imageTaken.layer removeFromSuperlayer];
+
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        button.transform = CGAffineTransformMakeScale(1.5,1.5);
+        
+    } completion:^(BOOL finished) {
+        
+        return;
+    }];
+}
+
+- (void)shrinkButtonAnimation: (UIButton *) button  {
+    [UIView animateWithDuration:.1 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        button.transform = CGAffineTransformMakeScale(1,1);
+        
+    } completion:^(BOOL finished) {
+        [self takePhoto];
+        return;
+    }];
+}
+
+- (void) takePhoto {
+    
+    AVCaptureConnection *videoConnection = nil;
+    for (AVCaptureConnection *connection in self.stillImageOutput.connections) {
+        for (AVCaptureInputPort *port in [connection inputPorts]) {
+            if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
+                videoConnection = connection;
+                break;
+            }
+        }
+        if (videoConnection) { break; }
+    }
+    
+    [[self stillImageOutput] captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+        if (imageDataSampleBuffer != NULL) {
+            NSData *data = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+            UIImage *image = [[UIImage alloc] initWithData:data];
+            UIImage *flipped = [UIImage imageWithCGImage:image.CGImage scale:image.scale orientation:UIImageOrientationLeftMirrored];
+
+            
+            self.imageTaken = [[UIImageView alloc] initWithImage:flipped];
+            self.imageData = data;
+        
+            self.imageTaken.contentMode = UIViewContentModeScaleAspectFill;
+            self.imageTaken.clipsToBounds = YES;
+            self.imageTaken.frame = self.profilePic.layer.bounds;
+            
+            [self.profilePic.layer addSublayer:self.imageTaken.layer];
+        }
+    }];
+}
+
+- (void) saveProfilePic {
+    PFFile *imageFile = [PFFile fileWithName:@"profilePic.gif" data:self.imageData];
+
+    // Save PFFile
+    [imageFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (!error) {
+            PFUser *user = [PFUser currentUser];
+            [user setObject:imageFile forKey:@"profilePic"];
+            [user saveInBackground];
+
+        }
+        else{
+            // Log details of the failure
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+        
+    } progressBlock:^(int percentDone) {
+        // Update your progress spinner here. percentDone will be between 0 and 100.
+        //HUD.progress = (float)percentDone/100;
+    }];
 }
 
 @end
