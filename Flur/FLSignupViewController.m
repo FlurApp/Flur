@@ -617,6 +617,7 @@
 }
 
 - (void) cleanUp {
+    self.active = false;
     self.emailInput.text = @"";
     self.passwordInput.text = @"";
     [self.emailInput sendActionsForControlEvents:UIControlEventEditingChanged];
@@ -627,12 +628,8 @@
 
     [self.view endEditing:YES];
     
-    
     [self hideSubmitButton];
     [self hideErrorMessage];
-    self.active = false;
-    
-    [self.view updateConstraints];
     
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleLightContent];
 }
