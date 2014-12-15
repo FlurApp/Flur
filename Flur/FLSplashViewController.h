@@ -13,6 +13,8 @@
 @optional
 -(void)hideSplashPage;
 -(void)showLoginPage:(NSMutableDictionary*)data;
+-(void)showSignupPage:(NSMutableDictionary*)data;
+
 
 @end
 

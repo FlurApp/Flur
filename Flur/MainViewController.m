@@ -190,6 +190,19 @@
     self.loginView.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width,
                                             self.view.frame.size.height);
     
+    /* -------------------------------------------
+                Setup signup View
+     -----------------------------------------------*/
+    self.signupView = [[FLSignupViewController alloc] init];
+    self.signupView.delegate = self;
+    
+    [self.view addSubview:self.signupView.view];
+    [self addChildViewController:self.signupView];
+    self.signupView.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width,
+                                           self.view.frame.size.height);
+    
+    
+    
     
     /* -------------------------------------------
                 Setup splash View
@@ -543,6 +556,31 @@
     //[self.loginView.usernameInput becomeFirstResponder];
 }
 
+-(void)showSignupPage:(NSMutableDictionary*)data {
+    
+    [self.signupView setData:data];
+    self.signupView.view.frame = CGRectMake(self.view.frame.size.width, 0,
+                                           self.signupView.view.frame.size.width,
+                                           self.signupView.view.frame.size.height);
+    self.signupView.view.alpha = 1;
+    
+    
+    [UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.signupView.view.frame = CGRectMake(0, 0,
+                                               self.signupView.view.frame.size.width,
+                                               self.signupView.view.frame.size.height);
+    } completion:^(BOOL finished) {}];
+    
+}
+
+-(void)hideSignupPage {
+    [UIView animateWithDuration:0 delay:.3 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.signupView.view.frame = CGRectMake(-self.loginView.view.frame.size.width, 0,
+                                               self.loginView.view.frame.size.width,
+                                               self.loginView.view.frame.size.height);
+    } completion:^(BOOL finished) { }];
+}
+
 -(void)hideLoginPage {
     [LocalStorage syncWithServer:^{
         NSLog(@"Done syncing");
@@ -560,8 +598,7 @@
 -(void)showMapPage {
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
-
-
+    
     [self.view bringSubviewToFront:self.mapView.view];
     [self.view bringSubviewToFront:self.topBarView.view];
     
@@ -575,9 +612,25 @@
 }
 
 -(void)showMapPageFromLogin {
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     [[self settingsView] setData];
+    
+    if (self.mapView == nil) {
+        self.mapView = [[FLInitialMapViewController alloc] init];
+        self.mapView.delegate = self;
+        
+        [self.view addSubview:self.mapView.view];
+        [self addChildViewController:self.mapView];
+        self.mapView.view.frame = CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height);
+        
+        self.mapView.view.layer.masksToBounds = NO;
+        [self.mapView.view.layer setCornerRadius:0];
+        [self.mapView.view.layer setShadowColor:[UIColor blackColor].CGColor];
+        [self.mapView.view.layer setShadowOpacity:.4];
+        [self.mapView.view.layer setShadowOffset:CGSizeMake(0.0f, 3.0f)];
+    }
     
     self.topBarView.view.frame = CGRectMake(0, 0, self.view.frame.size.width, TOP_BAR_HEIGHT);
     self.mapView.view.frame = CGRectMake(0, 0,
@@ -662,6 +715,9 @@
     [UIView animateWithDuration:1.0 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.splashView.view.alpha = 1;
     } completion:^(BOOL finished) {
+        
+        // I AM NOW CRUSHING THE MAP ON LOGOUT
+        self.mapView = nil;
     }];
 
     

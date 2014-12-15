@@ -76,12 +76,10 @@
     
     self.promptInput = [[UITextView alloc] init];
     [self.promptInput setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.view addSubview:self.promptInput];
+    
     self.promptInput.backgroundColor = RGBA(255, 255, 255, .9);
     [self.promptInput setTintColor: RGB(13,191,255)];
-
-
-
+    [self.promptInput setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
     
     self.promptInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.promptInput.delegate = self;
@@ -90,9 +88,8 @@
     self.promptInput.keyboardType = UIKeyboardTypeAlphabet;
     self.promptInput.autocorrectionType = UITextAutocorrectionTypeNo;
     self.promptInput.textAlignment = NSTextAlignmentLeft;
-
-
-    [self.promptInput setFont:[UIFont fontWithName:@"Avenir-Light" size:23]];
+    
+    [self.view addSubview:self.promptInput];
 
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.promptInput attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
     

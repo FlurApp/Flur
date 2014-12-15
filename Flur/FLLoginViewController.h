@@ -19,10 +19,6 @@
 
 @end
 
-@interface FLTextField : UITextField<UITextFieldDelegate>
-
-@end
-
 @interface FLLoginViewController : UIViewController <UITextFieldDelegate, FLLoginViewControllerDelegate>
 
 - (void)setData:(NSMutableDictionary *)data;

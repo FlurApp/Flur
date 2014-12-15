@@ -17,6 +17,7 @@
 #import "FLSplashViewController.h"
 #import "FLLoginViewController.h"
 #import "PhotoViewController.h"
+#import "FLSignupViewController.h"
 
 
 
@@ -29,7 +30,8 @@
                                                 FLTopBarViewControllerDelegate,
                                                 FLSplashViewControllerDelegate,
                                                 FLLoginViewControllerDelegate,
-                                                PhotoViewControllerDelegate>
+                                                PhotoViewControllerDelegate,
+                                                FLSignupViewControllerDelegate>
 
 @property (nonatomic, strong) FLInitialMapViewController *mapView;
 @property (nonatomic, strong) FLSettingsViewController *settingsView;
@@ -41,6 +43,7 @@
 @property (nonatomic, strong) FLLoginViewController *loginView;
 @property (nonatomic, strong) PhotoViewController *photoView;
 @property (nonatomic, strong) FLSplashViewController *splashView;
+@property (nonatomic, strong) FLSignupViewController *signupView;
 
 
 

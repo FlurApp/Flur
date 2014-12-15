@@ -52,4 +52,11 @@
 #define TOP_BAR_HEIGHT 80
 
 
+// CUSTOM TEXT FIELD INTERFACE
+
+//@interface FLTextField : UITextField<UITextFieldDelegate>
+//
+//@end
+
+
 #endif

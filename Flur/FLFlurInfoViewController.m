@@ -137,9 +137,6 @@
         FLFlurAnnotation *annotation = [[FLFlurAnnotation alloc] initWithLat:region.center.latitude initWithLng:region.center.longitude];
         [self.mapView addAnnotation:annotation];
 
-        
-        
-
         self.contributeView = false;
         self.yourContributionConstraint.constant = 0;
 
@@ -214,11 +211,6 @@
     self.coord = CLLocationCoordinate2DMake(coord.latitude, coord.longitude);
     NSLog(@"coord2: %f %f", self.coord.latitude, self.coord.longitude);
     [self.mapView addAnnotation:point];*/
-
-
-    
-
-    
     
 }
 
@@ -393,7 +385,6 @@
     self.totalContributions = [[UILabel alloc] init];
     [self.totalContributions setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.totalContributions.font = [UIFont fontWithName:@"Avenir-Light" size:17];
-    //self.totalContributions.text = @"asdf jedfa asdf asdf asdf asdf asdf f fdsa ff d fasdf";
 
     [self.totalContributions setNumberOfLines:0];
     
@@ -422,9 +413,6 @@
     tgr.numberOfTapsRequired = 1;
     tgr.numberOfTouchesRequired = 1;
     [self.mapViewContainer addGestureRecognizer:tgr];
-
-
-    
     
     // Do any additional setup after loading the view.
 }
@@ -485,11 +473,9 @@
 }
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation {
-    //NSLog(@"WHOOOooooo: %@", [annotation class]);
-    NSLog(@"INN");
 
     if([annotation isKindOfClass:[FLFlurAnnotation class]]) {
-        //NSLog(@"THATS WATSUP");
+        
         FLFlurAnnotation *myLocation = (FLFlurAnnotation *)annotation;
         MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"MyCustomAnnotation"];
         if (annotation == mapView.userLocation) {
@@ -516,8 +502,7 @@
     // Add an annotation
     MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
     point.coordinate = userLocation.coordinate;
-    point.title = @"Where am I?";
-    point.subtitle = @"I'm here!!!";
+
     self.coord = userLocation.coordinate;
     
     //[self.mapView addAnnotation:point];

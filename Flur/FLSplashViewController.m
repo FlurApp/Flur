@@ -151,7 +151,7 @@
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     [data setObject:@"Sign Up" forKey:@"mode"];
     [_delegate hideSplashPage];
-    [_delegate showLoginPage:data];
+    [_delegate showSignupPage:data];
 }
 
 - (IBAction)loginToFlur:(id)sender {
