@@ -225,6 +225,9 @@
     self.emailInput.autocorrectionType = UITextAutocorrectionTypeNo;
     self.emailInput.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.emailInput.returnKeyType = UIReturnKeyNext;
+    self.emailInput.keyboardType = UIKeyboardTypeEmailAddress;
+    [self.emailInput setEnablesReturnKeyAutomatically: YES];
+
 
     [self.emailInput setFont:[UIFont fontWithName:@"Avenir-Light" size:18]];
     [self.emailInput setTintColor:RGB(13,191,255)];
