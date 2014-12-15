@@ -89,9 +89,9 @@
     NSNumber *num = [data objectForKey:@"totalContentCount"];
     NSInteger totalContentCount = num.integerValue;
     
-    self.totalContributions.text = [NSString stringWithFormat:@"%lu other people have contributed to this flur.", (long)totalContentCount];
+    self.totalContributions.text = [NSString stringWithFormat:@"There are %lu photos in this flur.", (long)totalContentCount];
     [self.totalContributions setTextColor:RGB(238, 0, 255)
-                                    range:NSMakeRange(0, [self numDigits:totalContentCount])];
+                                    range:NSMakeRange(10, [self numDigits:totalContentCount])];
 
     
     if ([data objectForKey:@"contributeView"]) {
@@ -151,9 +151,31 @@
         date = [data objectForKey:@"dateAdded"];
         NSString* dateAdded = [NSString stringWithFormat:@"%@", [dateFormatter stringFromDate:date]];
         
-        self.yourContribution.text = [NSString stringWithFormat:@"You were the %lu person to contribute to this flur on %@.", myContentPosition, dateAdded];
+        NSString *ordinal;
+        
+        // If number % 100 is 11, 12, or 13
+        if (NSLocationInRange(myContentPosition % 100, NSMakeRange(11, 3))) {
+            ordinal = @"th";
+        }
+        
+        switch (myContentPosition % 10) {
+            case 1:
+                ordinal = @"st";
+                break;
+            case 2:
+                ordinal = @"nd";
+                break;
+            case 3:
+                ordinal = @"rd";
+                break;
+            default:
+                ordinal = @"th";
+                break;
+        }
+        
+        self.yourContribution.text = [NSString stringWithFormat:@"You were the %i%@ person to contribute to this flur on %@.", myContentPosition, ordinal, dateAdded];
         [self.yourContribution setTextColor:RGB(232,72,49)
-                                        range:NSMakeRange(13, [self numDigits:myContentPosition])];
+                                        range:NSMakeRange(13, [self numDigits:myContentPosition]+2)];
         self.yourContributionConstraint.constant = 10;
 
         self.contributeButtonHeight.constant = 0;
