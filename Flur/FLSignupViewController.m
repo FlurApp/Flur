@@ -10,6 +10,7 @@
 #import "FLSignupViewController.h"
 #import "FLConstants.h"
 #import <AVFoundation/AVFoundation.h>
+#import "LocalStorage.h"
 
 //@implementation FLTextField
 //
@@ -599,6 +600,16 @@
         [alert show];
         return;
     }
+    else if (self.imageTaken == nil) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Oops!"
+                                                        message:[NSString stringWithFormat: @"Please take a photo of yourself by pressing inside the camera circle. This will be used for your profile picture."]
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [self showErrorMessage];
+        [alert show];
+        return;
+    }
     
     [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (error) {
@@ -615,13 +626,14 @@
         else {
             
             //[self dropSubmitButton];
-            [self saveProfilePic];
-            [_delegate hideSignupPage];
-            [_delegate showMapPageFromLogin];
-            [self cleanUp];
-            
-            // for push notifications
-            [self updateInstallationWithUser];
+            [self saveProfilePic:^ {
+                [_delegate hideSignupPage];
+                [_delegate showMapPageFromLogin];
+                [self cleanUp];
+                
+                // for push notifications
+                [self updateInstallationWithUser];
+            }];
         }
     }];
 }
@@ -651,6 +663,8 @@
     [self.session removeInput:self.captureInput];
     [self.session commitConfiguration];
     [self.session stopRunning];
+    self.imageTaken = nil;
+
     
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleLightContent];
 }
@@ -752,6 +766,8 @@
 
 - (void) takePhoto {
     
+    [self hideErrorMessage];
+    
     AVCaptureConnection *videoConnection = nil;
     for (AVCaptureConnection *connection in self.stillImageOutput.connections) {
         for (AVCaptureInputPort *port in [connection inputPorts]) {
@@ -782,7 +798,8 @@
     }];
 }
 
-- (void) saveProfilePic {
+
+- (void) saveProfilePic:(void (^)()) completion {
     PFFile *imageFile = [PFFile fileWithName:@"profilePic.gif" data:self.imageData];
 
     // Save PFFile
@@ -790,8 +807,17 @@
         if (!error) {
             PFUser *user = [PFUser currentUser];
             [user setObject:imageFile forKey:@"profilePic"];
-            [user saveInBackground];
-
+            [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                [LocalStorage getUser:^(NSMutableDictionary *data2) {
+                    User *user = [data2 objectForKey:@"users"];
+                    user.profilePic = self.imageData;
+                    [LocalStorage saveDoc];
+                    if (completion)
+                        completion();
+                }];
+                
+            }];
         }
         else{
             // Log details of the failure

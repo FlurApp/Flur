@@ -20,15 +20,11 @@ static UIManagedDocument * document;
 static bool documentLoaded = false;
 static bool userFound = false;
 
-+ (void) getUserFound:(void(^)(bool))completion {
-    [LocalStorage loadCurrentUser:^(NSMutableDictionary *data) {
-        completion(data.count == 1);
-    }];
-}
-
-+ (void) createUser {
-    
-}
+//+ (void) getUserFound:(void(^)(bool))completion {
+//    [LocalStorage loadCurrentUser:^(NSMutableDictionary *data) {
+//        completion(data.count == 1);
+//    }];
+//}
 
 + (void) destroyLocalStorage {
     /*NSError *error;
@@ -45,12 +41,12 @@ static bool userFound = false;
 }
 
 + (void) syncWithServer:(void(^)()) completion {
-    NSLog(@"SYncing");
+    NSLog(@"Syncing");
     //[LocalStorage deleteAllFlursWithCompletion:^{
         
     PFUser* curUser = [PFUser currentUser];
     if (!curUser) {
-        NSLog(@"Error: Trying to sync with server in LocalStorage.m but not logged.");
+        NSLog(@"Error: Trying to sync with server in LocalStorage.m but not logged in.");
         return;
     }
     
@@ -351,6 +347,12 @@ static bool userFound = false;
             NSLog(@"Not calling completion");
     }];
     
+}
+
++ (void) saveDoc {
+    [document saveToURL:document.fileURL forSaveOperation:UIDocumentSaveForOverwriting completionHandler:^(BOOL success) {
+        [document.managedObjectContext save:nil];
+    }];
 }
 
 + (BOOL) checkForKey:(NSArray *)keys inData:(NSMutableDictionary *)data {
