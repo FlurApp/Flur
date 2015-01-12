@@ -2,8 +2,8 @@
 //  User.h
 //  Flur
 //
-//  Created by Netanel Rubin on 11/5/14.
-//  Copyright (c) 2014 stevezookerman@gmail.com. All rights reserved.
+//  Created by David Lee on 12/29/14.
+//  Copyright (c) 2014 Steve Zuckerman. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -14,5 +14,6 @@
 
 @property (nonatomic, retain) NSString * passwordHash;
 @property (nonatomic, retain) NSString * username;
+@property (nonatomic, retain) NSData * profilePic;
 
 @end

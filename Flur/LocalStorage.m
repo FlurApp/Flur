@@ -54,6 +54,29 @@ static bool userFound = false;
         return;
     }
     
+    // Get the local user's profile picture
+    PFQuery *profilePicQuery = [PFQuery queryWithClassName:@"_User"];
+    [profilePicQuery whereKey:@"objectId" equalTo:curUser.objectId];
+    
+    [profilePicQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            
+            PFFile *imageFile = [objects[0] objectForKey:@"profilePic"];
+            [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+                if (!error) {
+                    
+                    [LocalStorage getUser:^(NSMutableDictionary *data2) {
+                        User *user = [data2 objectForKey:@"users"];
+                        user.profilePic = data;
+                    }];
+                }
+            }];
+        }
+        else {
+            NSLog(@"%@",error);
+        }
+    }];
+    
     // Set up inner query so that the User pointer points to the local users account
     PFQuery *innerQuery = [PFQuery queryWithClassName:@"_User"];
     [innerQuery whereKey:@"username" equalTo:curUser.username];
@@ -129,7 +152,6 @@ static bool userFound = false;
             }];
         }
     }];
-    //}];
     //[self createTestDataWithCompletion:completion];
     
 }
@@ -183,6 +205,26 @@ static bool userFound = false;
     }];
 }
 
++ (void) getUser:(void(^)(NSMutableDictionary*)) completion {
+    
+    NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
+    [LocalStorage openDocumentWithCompletion:^ {
+        if (documentLoaded) {
+            
+            NSManagedObjectContext *context = document.managedObjectContext;
+            NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"User"];
+            NSError *error;
+            NSArray *users = [context executeFetchRequest:request error:&error];
+            [data setObject:users[0] forKey:@"users"];
+            completion(data);
+        }
+        else {
+            completion(data);
+        }
+    }];
+}
+
+
 + (void) getFlurs:(void(^)(NSMutableDictionary*)) completion {
     [LocalStorage openDocumentWithCompletion:^ {
         if (documentLoaded) {
@@ -209,7 +251,7 @@ static bool userFound = false;
             }
         }
         else {
-            NSLog(@"badddd");
+            NSLog(@"Error in local storage.");
         }
     }];
 }

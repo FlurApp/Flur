@@ -88,7 +88,11 @@
      -----------------------------------------------*/
     self.settingsView = [[FLSettingsViewController alloc] init];
     self.settingsView.delegate = self;
-   
+    
+    // This is necessary for loading the profile pic from
+    //  core data on a launch when user is already logged in.
+    // setData method is also called when hiding login page.
+    [self.settingsView setData];
     
     [self.view addSubview:self.settingsView.view];
     [self addChildViewController:self.settingsView];
@@ -266,6 +270,7 @@
 }
 
 - (void) showSettingsPage {
+    
     self.settingsVisible = true;
     [self.mapView showWhiteLayer];
     [self.settingsView didMoveToParentViewController:self];
@@ -585,6 +590,7 @@
     [LocalStorage syncWithServer:^{
         NSLog(@"Done syncing");
         [self.tableView getFlurs];
+        [self.settingsView setData];
     }];
     
     

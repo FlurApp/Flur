@@ -92,6 +92,9 @@
         }
     }
     
+    if (!(self.frontDevice || self.backDevice))
+        return;
+    
     self.session.sessionPreset = AVCaptureSessionPresetPhoto;
     
     NSError *error;
@@ -143,6 +146,7 @@
     
     
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.toggleCamButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
+    
     [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.toggleCamButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.toggleCamButton

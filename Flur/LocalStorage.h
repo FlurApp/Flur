@@ -16,6 +16,7 @@
 + (void) destroyLocalStorage;
 
 + (void) loadCurrentUser:(void(^)(NSMutableDictionary*)) completion;
++ (void) getUser:(void(^)(NSMutableDictionary*)) completion;
 + (void) getUserFound:(void(^)(bool))completion;
 
 + (void) getFlurs:(void(^)(NSMutableDictionary*)) completion;
