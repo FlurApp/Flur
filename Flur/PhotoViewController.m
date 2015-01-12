@@ -26,6 +26,7 @@
 @property (strong, nonatomic) UIView * bottomBar;
 @property (strong, nonatomic) UILabel* currentPicture;
 @property (nonatomic, strong) UIButton *exitButton;
+@property (nonatomic, strong) UIButton *flagButton;
 
 // Used to pass top/bottom bar to SinglePhotoVC so it can toggle views
 @property   (strong, nonatomic) NSMutableArray *viewsToToggle;
@@ -119,7 +120,7 @@
 
 - (void) loadTopBar {
     self.topBar.translatesAutoresizingMaskIntoConstraints = NO;
-    self.topBar.backgroundColor = flurYellow;
+    self.topBar.backgroundColor = flurRed;
 
     [self.view addSubview:self.topBar];
     
@@ -161,29 +162,30 @@
          forControlEvents:UIControlEventTouchUpInside];
     
     self.exitButton = exitButton;
-    [self.topBar addSubview:exitButton];
+    [self.topBar addSubview:self.exitButton];
     
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:10]];
-    
-    
-    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:exitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:5]];
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.exitButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:10]];
     
     
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.exitButton attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.topBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:5]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:exitButton
+    
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.exitButton
                                                           attribute:NSLayoutAttributeHeight
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
                                                            constant:40.0]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:exitButton
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.exitButton
                                                           attribute:NSLayoutAttributeWidth
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
                                                            constant:40.0]];
+    
 
     self.currentPicture.text = [NSString stringWithFormat:@"1/%lu", (unsigned long) self.allPhotos.count];
     NSLog(@"%@",self.currentPicture.text);
@@ -203,7 +205,7 @@
 
 - (void) loadBottomBar {
     self.bottomBar.translatesAutoresizingMaskIntoConstraints = NO;
-    self.bottomBar.backgroundColor = flurYellow;
+    self.bottomBar.backgroundColor = flurRed;
     [self.view addSubview:self.bottomBar];
     
     
@@ -220,27 +222,7 @@
     self.topBar.alpha = 1;
     self.bottomBar.alpha = 1;
     
-//    UIBlurEffect *blurEffect;
-//    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-//    
-//    UIVisualEffectView *blurEffectView;
-//    blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-//    blurEffectView.translatesAutoresizingMaskIntoConstraints = NO;
-//    
-//    
-//    [self.bottomBar addSubview:blurEffectView];
-//    
-//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTop multiplier:1.0 constant:0]];
-//    
-//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0]];
-//    
-//    
-//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0]];
-//    
-//    [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0]];
-    
-    
-    // data label
+    // date label
     [self.dateLabel setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Regular" size:23]];
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.bottomBar addSubview:self.dateLabel];
@@ -255,7 +237,7 @@
     
     
     self.viewPrompt.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.viewPrompt setTextColor:flurRed];
+    [self.viewPrompt setTextColor:flurYellow];
     [self.viewPrompt setFont:[UIFont fontWithName:@"AppleSDGothicNeo-Light" size:18]];
     
     [self.bottomBar addSubview:self.viewPrompt];
@@ -271,6 +253,38 @@
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeLeading multiplier:1.0 constant:10]];
     
     [self.bottomBar addConstraint:[NSLayoutConstraint constraintWithItem:self.viewPrompt attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-10]];
+    
+    // Flag Button
+    UIButton *flagButton = [[UIButton alloc] init];
+    flagButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [flagButton setImage:[UIImage imageNamed:@"down_thumb.png"] forState:UIControlStateNormal];
+    [flagButton setImageEdgeInsets:UIEdgeInsetsMake(5,5,5,5)];
+    [flagButton addTarget:self
+                   action:@selector(flagContent)
+         forControlEvents:UIControlEventTouchUpInside];
+    
+    self.flagButton = flagButton;
+    [self.bottomBar addSubview:self.flagButton];
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flagButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+    
+    
+    [[self view] addConstraint:[NSLayoutConstraint constraintWithItem:self.flagButton attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.bottomBar attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-5]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.flagButton
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:40.0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.flagButton
+                                                          attribute:NSLayoutAttributeWidth
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:40.0]];
 }
 
 - (void) loadViews {
@@ -284,16 +298,48 @@
     
     if ([[self.pin_data objectForKey:@"previousPage"] isEqualToString: @"tablePage"])
         [_delegate showTablePage:-1];
+    
     else {
-        NSLog(@"ookkkk");
+        
         if ([[self.pin_data objectForKey:@"justAddedFlur"] isEqualToString:@"true"]) {
             [self.delegate animateNewPin];
-            NSLog(@"fuck");
-
         }
         else {
             [_delegate showMapPage];
         }
+    }
+}
+
+- (void)flagContent {
+    NSLog(@"flag content");
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Report Content"
+                                                    message:[NSString stringWithFormat: @"Press 'Report' to flag this photo as objectionable content."]
+                                                   delegate:self
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:@"Report",@"Cancel",nil];
+    [alert show];
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0)
+    {
+        // Code for Report button
+        SinglePhotoViewController* a= [self.pageController.viewControllers lastObject];
+        
+        Flur *flur = [self.pin_data objectForKey:@"flur"];
+        PFObject* flurPin = [PFObject objectWithoutDataWithClassName:@"Images" objectId:self.allPhotos[a.index][2]];
+        NSLog(@"%@",self.allPhotos[a.index][2]);
+        [flurPin incrementKey:@"flagCount"];
+        [flurPin saveInBackground];
+        
+        [alertView dismissWithClickedButtonIndex:0 animated:YES];
+    }
+    if (buttonIndex == 1)
+    {
+        // Code for Cancel button
+        [alertView dismissWithClickedButtonIndex:1 animated:YES];
     }
 }
 

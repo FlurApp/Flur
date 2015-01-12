@@ -166,7 +166,7 @@
                 PFFile *imageFile = [object objectForKey:@"imageFile"];
                 [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                     if (!error) {
-                        NSArray *dateAndImage = [NSArray arrayWithObjects: [object createdAt],data, nil];
+                        NSArray *dateAndImage = [NSArray arrayWithObjects: [object createdAt],data,object.objectId, nil];
                         [allPhotos addObject:dateAndImage];
                         i++;
                     }

@@ -236,6 +236,7 @@
             [data setObject:p forKey:@"FLPin"];
             [data setObject:p.pinId forKey:@"pinId"];
             [data setObject:@"true" forKey:@"contributeView"];
+            [data setObject:p.prompt forKey:@"prompt"];
             [data setObject:[(PFUser *)p.createdBy username] forKey:@"creatorUsername"];
             [data setObject:p.dateCreated forKey:@"dateCreated"];
             [data setObject:[NSNumber numberWithInteger:p.totalContentCount] forKey:@"totalContentCount"];

@@ -35,6 +35,7 @@
 @property (nonatomic, strong) UILabel *flurCreated;
 @property (nonatomic, strong) UILabel *yourContribution;
 @property (nonatomic, strong) UILabel *totalContributions;
+@property (nonatomic, strong) UILabel *flurPrompt;
 
 @property (nonatomic, strong) UIButton *backButton;
 @property (nonatomic) CLLocationCoordinate2D coord;
@@ -92,6 +93,9 @@
     self.totalContributions.text = [NSString stringWithFormat:@"There are %lu photos in this flur.", (long)totalContentCount];
     [self.totalContributions setTextColor:RGB(238, 0, 255)
                                     range:NSMakeRange(10, [self numDigits:totalContentCount])];
+    
+    // Prompt label
+    self.flurPrompt.text = [data objectForKey:@"prompt"];
 
     
     if ([data objectForKey:@"contributeView"]) {
@@ -348,17 +352,29 @@
     [self.flurInfoContainer.layer setShadowOpacity:.2];
     [self.flurInfoContainer.layer setShadowOffset:CGSizeMake(0.0f, 2.0f)];
     
+    // Prompt label
+    self.flurPrompt = [[UILabel alloc] init];
+    [self.flurPrompt setTranslatesAutoresizingMaskIntoConstraints:NO];
+    self.flurPrompt.font = [UIFont fontWithName:@"Avenir-Light" size:17];
+    [self.flurPrompt setNumberOfLines:0];
+    [self.flurPrompt setTextColor:RGB(238, 0, 255)];
+    [self.flurInfoContainer addSubview:self.flurPrompt];
+    
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurPrompt attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
+    
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurPrompt attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
+    
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurPrompt attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:-15]];
+    
     self.flurCreated = [[UILabel alloc] init];
     [self.flurCreated setTranslatesAutoresizingMaskIntoConstraints:NO];
-
     self.flurCreated.font = [UIFont fontWithName:@"Avenir-Light" size:17];
-
     [self.flurCreated setNumberOfLines:0];
     
     [self.flurInfoContainer addSubview:self.flurCreated];
     
     
-    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeTop multiplier:1.0 constant:15]];
+    [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.flurPrompt attribute:NSLayoutAttributeBottom multiplier:1.0 constant:10]];
     
     [self.flurInfoContainer addConstraint:[NSLayoutConstraint constraintWithItem:self.flurCreated attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.flurInfoContainer attribute:NSLayoutAttributeLeading multiplier:1.0 constant:15]];
     

@@ -19,7 +19,7 @@
 - (void) animateNewPin;
 @end
 
-@interface PhotoViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, PhotoViewControllerDelegate>
+@interface PhotoViewController : UIViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate, PhotoViewControllerDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) UIPageViewController *pageController;
 @property (assign, nonatomic) FLPin* pin;

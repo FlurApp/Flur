@@ -583,7 +583,9 @@
         self.signupView.view.frame = CGRectMake(-self.loginView.view.frame.size.width, 0,
                                                self.loginView.view.frame.size.width,
                                                self.loginView.view.frame.size.height);
-    } completion:^(BOOL finished) { }];
+    } completion:^(BOOL finished) {
+        [self.settingsView setData];
+    }];
 }
 
 -(void)hideLoginPage {
