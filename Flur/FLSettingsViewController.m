@@ -51,6 +51,9 @@
         ppView.contentMode = UIViewContentModeScaleAspectFill;
         ppView.clipsToBounds = YES;
         [self.profilePicture addSubview:ppView];
+        
+        [self.view setNeedsLayout];
+        [self.view layoutIfNeeded];
     }];
     
 }

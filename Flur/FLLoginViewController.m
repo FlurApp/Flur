@@ -722,7 +722,7 @@
             
             // clean up
             [self cleanUp];
-            [self syncCoreDataWithServer];
+            //[self syncCoreDataWithServer];
             
             NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
             [data setObject:@"true" forKey:@"sync"];

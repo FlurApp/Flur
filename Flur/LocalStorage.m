@@ -211,7 +211,13 @@ static bool userFound = false;
             NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"User"];
             NSError *error;
             NSArray *users = [context executeFetchRequest:request error:&error];
-            [data setObject:users[0] forKey:@"users"];
+            if (users.count > 0)
+                [data setObject:users[0] forKey:@"users"];
+            else {
+                User* user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
+                                                               inManagedObjectContext:document.managedObjectContext];
+                [data setObject:user forKey:@"users"];
+            }
             completion(data);
         }
         else {
