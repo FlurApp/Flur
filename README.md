@@ -1,4 +1,3 @@
 Flur
-====
 
-The Xcode project
+Flur, the photo discovery app for iOS app.
