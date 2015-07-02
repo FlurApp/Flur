@@ -29,8 +29,8 @@
     [[UIView appearance] setTintColor:[UIColor whiteColor]];
     
     // Override point for customization after application launch.
-    [Parse setApplicationId:@"***REMOVED***"
-                  clientKey:@"***REMOVED***"];
+    [Parse setApplicationId:@"removed"
+                  clientKey:@"removed"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
